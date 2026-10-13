@@ -2,16 +2,13 @@
 # Address = page * 256 + offset. Pages 6 and 7 use the 3xx layout.
 # Monitoring map: read-only. Control registers (page 16) are left out on
 # purpose; writing them operates the transfer switch.
-# Sentinels: 0xFFFF / 0x7FFF (16-bit) and 0xFFFFFFFF / 0x7FFFFFFF (32-bit)
-# mean unimplemented; the values just below them mean over range, under
-# range, transducer fault, bad data, high or low digital input.
 # Checked on a real DSE335 (RS485, 9600 8N2) on 2026-10-13: status, battery,
 # S1 voltages and frequency, phase rotation and clock read correctly.
 @mbmap=1
 @vendor=Deep Sea Electronics
 @model=DSE335
 @description=Automatic transfer switch controller (3xx family), GenComm Modbus protocol. S1 and S2 are the two supplies; Load is the switched output
-@source=Deep Sea Electronics, "GenComm standard for use with generating set control equipment" v2.272 (2025-07-21): pages 3, 4, 6 and 7 (3xx register allocation)
+@source=Deep Sea Electronics, "GenComm standard for use with generating set control equipment" v2.272 (2025-07-21): pages 3, 4, 6 and 7 (3xx register allocation); sentinel values from section 8.1
 @protocol=rtu
 @parity=N
 @databits=8
@@ -19,6 +16,10 @@
 @byte_order=ABCD
 @address_base=0
 @max_read_registers=125
+@sentinel_uint16=0xFFFF=Unimplemented|0xFFFE=Over measurable range|0xFFFD=Under measurable range|0xFFFC=Transducer fault|0xFFFB=Bad data|0xFFFA=High digital input|0xFFF9=Low digital input
+@sentinel_int16=0x7FFF=Unimplemented|0x7FFE=Over measurable range|0x7FFD=Under measurable range|0x7FFC=Transducer fault|0x7FFB=Bad data|0x7FFA=High digital input|0x7FF9=Low digital input
+@sentinel_uint32=0xFFFFFFFF=Unimplemented|0xFFFFFFFE=Over measurable range|0xFFFFFFFD=Under measurable range|0xFFFFFFFC=Transducer fault|0xFFFFFFFB=Bad data|0xFFFFFFFA=High digital input|0xFFFFFFF9=Low digital input
+@sentinel_int32=0x7FFFFFFF=Unimplemented|0x7FFFFFFE=Over measurable range|0x7FFFFFFD=Under measurable range|0x7FFFFFFC=Transducer fault|0x7FFFFFFB=Bad data|0x7FFFFFFA=High digital input|0x7FFFFFF9=Low digital input
 @enum_control_mode=0=Stop|1=Auto|2=Manual|3=Test on load|4=Auto with manual restore|5=User configuration|6=Test off load|7=Off
 @enum_phase_rotation=0=Indeterminate|1=L1-L2-L3|2=L3-L2-L1|3=Phase error
 

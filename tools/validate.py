@@ -31,6 +31,14 @@ TYPE_REGISTERS = {
     "string": None,
 }
 BYTE_ORDERS = {"ABCD", "CDAB", "BADC", "DCBA"}
+SENTINEL_RANGES = {
+    "int16": (-(2**15), 2**15 - 1),
+    "uint16": (0, 2**16 - 1),
+    "int32": (-(2**31), 2**31 - 1),
+    "uint32": (0, 2**32 - 1),
+    "int64": (-(2**63), 2**63 - 1),
+    "uint64": (0, 2**64 - 1),
+}
 REQUIRED_META = ("mbmap", "vendor", "model")
 REQUIRED_COLUMNS = ("name", "area", "address", "type")
 KNOWN_COLUMNS = {
@@ -89,6 +97,13 @@ def is_number(text: str) -> bool:
     return text.lower() not in {"nan", "inf", "-inf", "+inf", "infinity", "-infinity"}
 
 
+def valid_sentinels(type_name: str, text: str) -> bool:
+    if type_name not in SENTINEL_RANGES or not valid_enum(text):
+        return False
+    lo, hi = SENTINEL_RANGES[type_name]
+    return all(lo <= parse_int(pair.partition("=")[0].strip()) <= hi for pair in text.split("|"))
+
+
 def valid_enum(text: str) -> bool:
     for pair in text.split("|"):
         value, sep, label = pair.partition("=")
@@ -141,7 +156,10 @@ def check_text(text: str) -> list[Diagnostic]:
             else:
                 meta[key] = value
                 rule = META_RULES.get(key)
-                if key.startswith("enum_") and len(key) > 5:
+                if key.startswith("sentinel_"):
+                    if not valid_sentinels(key[len("sentinel_"):], value):
+                        error(lineno, "bad-sentinel", f"invalid sentinel table @{key}")
+                elif key.startswith("enum_") and len(key) > 5:
                     if not valid_enum(value):
                         error(lineno, "bad-enum", f"malformed table @{key} (expected 0=Off|1=On)")
                 elif rule and not rule(value):

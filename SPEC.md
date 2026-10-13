@@ -68,6 +68,7 @@ Keys are lowercase (`a-z`, `0-9`, `_`). A key **MUST NOT** appear twice in the s
 | `address_base` | no | `0`, `1` | `0` | Whether `address` is 0-based or 1-based (§5) |
 | `max_read_registers` | no | `1`–`125` | `125` | Largest block the device accepts per read (FC03/04) |
 | `max_read_bits` | no | `1`–`2000` | `2000` | Largest block the device accepts per read (FC01/02) |
+| `sentinel_<type>` | no | `value=label` pairs separated by `\|` | | Reserved raw values for registers of that type (§4.2), e.g. `@sentinel_uint16=0xFFFF=Unimplemented` |
 | `enum_<name>` | no | `value=label` pairs separated by `\|` | | A named translation table (§4.1), e.g. `@enum_run_state=0=Stopped\|1=Idle\|2=Running` |
 
 Connection values are **defaults**: the user can still change them when connecting.
@@ -109,6 +110,21 @@ Pump 2 state,holding,101,uint16,@run_state
 ```
 
 Values are integers (decimal or `0x` hex), compared with the **raw** value before `scale` and `offset`. A label is any text without `|`; leading and trailing spaces are trimmed. A value that is not in the table is shown as a plain number. Tools **SHOULD** offer the labels when writing.
+
+### 4.2 Sentinel values
+
+Some devices answer with a reserved raw value instead of a reading: one value means "not implemented", another "over range", another "sensor fault". A sentinel table declares them for every register of one type:
+
+```text
+@sentinel_uint16=0xFFFF=Unimplemented|0xFFFE=Over range|0xFFFD=Under range
+@sentinel_int16=0x7FFF=Unimplemented|0x7FFE=Over range|0x7FFD=Under range
+@sentinel_uint32=0xFFFFFFFF=Unimplemented
+```
+
+- `<type>` is one of `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`. A table applies to every register of that type.
+- Values are integers (decimal or `0x` hex) that fit the type, compared with the **raw** value before `scale` and `offset`.
+- When a reading matches, tools **SHOULD** show the label instead of a number and **SHOULD NOT** treat it as a measurement (in charts, limits or averages).
+- An `enum` label for the same raw value takes precedence over the sentinel.
 
 Engineering value = raw × `scale` + `offset`. When writing, a tool applies the inverse and rounds to the nearest integer for integer types.
 
@@ -176,6 +192,7 @@ Readers **SHOULD** report every problem with its line number and one of the code
 | `bad-byte-order` | error | Unknown `byte_order` in a row |
 | `bad-number` | error | `scale` or `offset` is not a number |
 | `bad-enum` | error | An `enum` cell or an `@enum_<name>` table is not a list of `integer=label` pairs |
+| `bad-sentinel` | error | `@sentinel_<type>` names an unsupported type, is not a list of `integer=label` pairs, or has a value that does not fit the type |
 | `unknown-enum` | error | An `enum` cell references `@name`, but no `@enum_<name>` table defines it |
 | `no-rows` | warning | The file has a header but no registers |
 | `duplicate-name` | warning | A `name` is used more than once |
