@@ -1,0 +1,103 @@
+# DSE335 automatic transfer switch controller, GenComm protocol.
+# Address = page * 256 + offset. Pages 6 and 7 use the 3xx layout.
+# Monitoring map: read-only. Control registers (page 16) are left out on
+# purpose; writing them operates the transfer switch.
+# Sentinels: 0xFFFF / 0x7FFF (16-bit) and 0xFFFFFFFF / 0x7FFFFFFF (32-bit)
+# mean unimplemented; the values just below them mean over range, under
+# range, transducer fault, bad data, high or low digital input.
+# Checked on a real DSE335 (RS485, 9600 8N2) on 2026-10-13: status, battery,
+# S1 voltages and frequency, phase rotation and clock read correctly.
+@mbmap=1
+@vendor=Deep Sea Electronics
+@model=DSE335
+@description=Automatic transfer switch controller (3xx family), GenComm Modbus protocol. S1 and S2 are the two supplies; Load is the switched output
+@source=Deep Sea Electronics, "GenComm standard for use with generating set control equipment" v2.272 (2025-07-21): pages 3, 4, 6 and 7 (3xx register allocation)
+@protocol=rtu
+@parity=N
+@databits=8
+@stopbits=2
+@byte_order=ABCD
+@address_base=0
+@max_read_registers=125
+@enum_control_mode=0=Stop|1=Auto|2=Manual|3=Test on load|4=Auto with manual restore|5=User configuration|6=Test off load|7=Off
+@enum_phase_rotation=0=Indeterminate|1=L1-L2-L3|2=L3-L2-L1|3=Phase error
+
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,enum,description
+# Page 3 - status (base 768)
+Manufacturer code,Status,holding,768,uint16,,,,,R,,,,
+Model number,Status,holding,769,uint16,,,,,R,,,,
+Serial number,Status,holding,770,uint32,,,,,R,,,,
+Control mode,Status,holding,772,uint16,,,,,R,,,@control_mode,
+Control mode selection,Status,holding,773,uint16,,,,,R,,,@control_mode,Mode chosen with the single mode button (330/331/334/335)
+Control unit not configured,Status,holding,774,bool,,,,,R,,15,,
+Control unit failure,Status,holding,774,bool,,,,,R,,13,,
+Shutdown alarm active,Status,holding,774,bool,,,,,R,,12,,
+Electrical trip alarm active,Status,holding,774,bool,,,,,R,,11,,
+Warning alarm active,Status,holding,774,bool,,,,,R,,10,,
+Telemetry alarm,Status,holding,774,bool,,,,,R,,9,,
+Controlled shutdown alarm active,Status,holding,774,bool,,,,,R,,6,,
+# Page 4 - basic instrumentation (base 1024)
+Battery voltage,Supply,holding,1029,uint16,,0.1,,V,R,,,,Engine battery voltage register
+S1 frequency,S1,holding,1148,uint16,,0.1,,Hz,R,,,,
+S1 L1-N voltage,S1,holding,1149,uint32,,0.1,,V,R,,,,
+S1 L2-N voltage,S1,holding,1151,uint32,,0.1,,V,R,,,,
+S1 L3-N voltage,S1,holding,1153,uint32,,0.1,,V,R,,,,
+S1 L1-L2 voltage,S1,holding,1155,uint32,,0.1,,V,R,,,,
+S1 L2-L3 voltage,S1,holding,1157,uint32,,0.1,,V,R,,,,
+S1 L3-L1 voltage,S1,holding,1159,uint32,,0.1,,V,R,,,,
+S1 L1 current,S1,holding,1161,uint32,,0.1,,A,R,,,,
+S1 L2 current,S1,holding,1163,uint32,,0.1,,A,R,,,,
+S1 L3 current,S1,holding,1165,uint32,,0.1,,A,R,,,,
+S1 earth current,S1,holding,1167,uint32,,0.1,,A,R,,,,
+S1 L1 power,S1,holding,1169,int32,,,,W,R,,,,
+S1 L2 power,S1,holding,1171,int32,,,,W,R,,,,
+S1 L3 power,S1,holding,1173,int32,,,,W,R,,,,
+S1 current lag/lead,S1,holding,1175,int16,,,,°,R,,,,
+S1 phase rotation,S1,holding,1217,uint16,,,,,R,,,@phase_rotation,
+S2 frequency,S2,holding,1176,uint16,,0.1,,Hz,R,,,,
+S2 L1-N voltage,S2,holding,1177,uint32,,0.1,,V,R,,,,
+S2 L2-N voltage,S2,holding,1179,uint32,,0.1,,V,R,,,,
+S2 L3-N voltage,S2,holding,1181,uint32,,0.1,,V,R,,,,
+S2 L1-L2 voltage,S2,holding,1183,uint32,,0.1,,V,R,,,,
+S2 L2-L3 voltage,S2,holding,1185,uint32,,0.1,,V,R,,,,
+S2 L3-L1 voltage,S2,holding,1187,uint32,,0.1,,V,R,,,,
+S2 L1 current,S2,holding,1189,uint32,,0.1,,A,R,,,,
+S2 L2 current,S2,holding,1191,uint32,,0.1,,A,R,,,,
+S2 L3 current,S2,holding,1193,uint32,,0.1,,A,R,,,,
+S2 earth current,S2,holding,1195,uint32,,0.1,,A,R,,,,
+S2 L1 power,S2,holding,1197,int32,,,,W,R,,,,
+S2 L2 power,S2,holding,1199,int32,,,,W,R,,,,
+S2 L3 power,S2,holding,1201,int32,,,,W,R,,,,
+S2 current lag/lead,S2,holding,1203,int16,,,,°,R,,,,
+S2 phase rotation,S2,holding,1218,uint16,,,,,R,,,@phase_rotation,
+Load L1 current,Load,holding,1204,uint32,,0.1,,A,R,,,,
+Load L2 current,Load,holding,1206,uint32,,0.1,,A,R,,,,
+Load L3 current,Load,holding,1208,uint32,,0.1,,A,R,,,,
+Load L1 power,Load,holding,1210,int32,,,,W,R,,,,
+Load L2 power,Load,holding,1212,int32,,,,W,R,,,,
+Load L3 power,Load,holding,1214,int32,,,,W,R,,,,
+Load current lag/lead,Load,holding,1216,int16,,,,°,R,,,,
+# Page 6 - derived instrumentation, 3xx layout (base 1536)
+S2 total power,S2,holding,1536,int32,,,,W,R,,,,
+S2 total apparent power,S2,holding,1544,uint32,,,,VA,R,,,,
+S2 total reactive power,S2,holding,1552,uint32,,,,var,R,,,,
+S2 average power factor,S2,holding,1557,int16,,0.01,,,R,,,,
+S2 percentage of full power,S2,holding,1558,int16,,0.1,,%,R,,,,
+S2 total lead/lag,S2,holding,1617,uint16,,,,,R,,,,Lead/lag code; values not defined for 3xx in GenComm
+S1 total power,S1,holding,1560,int32,,,,W,R,,,,
+S1 total apparent power,S1,holding,1568,uint32,,,,VA,R,,,,
+S1 total reactive power,S1,holding,1576,uint32,,,,var,R,,,,
+S1 average power factor,S1,holding,1581,int16,,0.01,,,R,,,,
+S1 percentage of full power,S1,holding,1582,int16,,0.1,,%,R,,,,
+S1 total lead/lag,S1,holding,1648,uint16,,,,,R,,,,Lead/lag code; values not defined for 3xx in GenComm
+335 misc status register 1,Status,holding,1649,uint16,,,,,R,,,,Bit meanings are not defined in GenComm
+335 misc status register 2,Status,holding,1650,uint16,,,,,R,,,,Bit meanings are not defined in GenComm
+335 misc status register 3,Status,holding,1651,uint16,,,,,R,,,,Bit meanings are not defined in GenComm
+# Page 7 - accumulated instrumentation, 3xx layout (base 1792)
+Controller clock,Counters,holding,1792,uint32,,,,s,R,,,,Seconds since 1970-01-01
+S2 positive energy,Counters,holding,1800,uint32,,0.1,,kWh,R,,,,
+S2 apparent energy,Counters,holding,1804,uint32,,0.1,,kVAh,R,,,,
+S2 reactive energy,Counters,holding,1806,uint32,,0.1,,kvarh,R,,,,
+S1 positive energy,Counters,holding,1810,uint32,,0.1,,kWh,R,,,,
+S1 apparent energy,Counters,holding,1814,uint32,,0.1,,kVAh,R,,,,
+S1 reactive energy,Counters,holding,1816,uint32,,0.1,,kvarh,R,,,,
