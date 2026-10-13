@@ -18,13 +18,14 @@ The key words **MUST**, **SHOULD** and **MAY** are used as in [RFC 2119](https:/
 @stopbits=1
 @byte_order=ABCD
 @address_base=0
+@enum_relay=0=Open|1=Closed
 
 # Measurements
 name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,enum,description
 Voltage,Measurements,input,0,float32,,1,0,V,R,,,,RMS voltage
 Current,Measurements,input,6,float32,,1,0,A,R,,,,RMS current
 Active energy,Energy,holding,256,uint32,,0.01,0,kWh,R,CDAB,,,
-Relay state,Status,holding,512,bool,,,,,R,,3,0=Open|1=Closed,Bit 3 of status word
+Relay state,Status,holding,512,bool,,,,,R,,3,@relay,Bit 3 of status word
 Reset energy,Commands,coil,0,bool,,,,,W,,,,Write 1 to reset counters
 Serial number,Info,holding,1024,string,8,,,,R,,,,16 ASCII characters
 ```
@@ -67,6 +68,7 @@ Keys are lowercase (`a-z`, `0-9`, `_`). A key **MUST NOT** appear twice in the s
 | `address_base` | no | `0`, `1` | `0` | Whether `address` is 0-based or 1-based (§5) |
 | `max_read_registers` | no | `1`–`125` | `125` | Largest block the device accepts per read (FC03/04) |
 | `max_read_bits` | no | `1`–`2000` | `2000` | Largest block the device accepts per read (FC01/02) |
+| `enum_<name>` | no | `value=label` pairs separated by `\|` | | A named translation table (§4.1), e.g. `@enum_run_state=0=Stopped\|1=Idle\|2=Running` |
 
 Connection values are **defaults**: the user can still change them when connecting.
 
@@ -88,8 +90,25 @@ The header names the columns. Order does not matter, and names are case-insensit
 | `access` | `R`, `W`, `RW` | `R` | Allowed operations |
 | `byte_order` | `ABCD`, `CDAB`, `BADC`, `DCBA` | file `@byte_order` | Overrides the default for this register |
 | `bit` | `0`–`15` | | For `bool` in `input`/`holding`: which bit of the register, 0 = least significant |
-| `enum` | `value=label` pairs separated by `\|` | | Labels for integer or bool values, e.g. `0=Off\|1=On\|2=Fault` |
+| `enum` | `value=label` pairs separated by `\|`, or `@name` | | Labels for integer or bool values (§4.1), e.g. `0=Off\|1=On\|2=Fault` or `@run_state` |
 | `description` | text | | Free text |
+
+### 4.1 Translation tables
+
+Many registers hold a number that stands for a state: `0` is stopped, `1` is idle, `2` is starting, and so on. The `enum` column turns those numbers into labels. It takes either:
+
+- **inline pairs**, written in the cell: `0=Stopped|1=Idle|2=Starting|3=Running|4=Fault`;
+- **a named table**, defined once in the metadata and referenced as `@name`. This avoids repeating the same list on every register that uses it:
+
+```text
+@enum_run_state=0=Stopped|1=Idle|2=Starting|3=Running|4=Fault
+
+name,area,address,type,enum
+Pump 1 state,holding,100,uint16,@run_state
+Pump 2 state,holding,101,uint16,@run_state
+```
+
+Values are integers (decimal or `0x` hex), compared with the **raw** value before `scale` and `offset`. A label is any text without `|`; leading and trailing spaces are trimmed. A value that is not in the table is shown as a plain number. Tools **SHOULD** offer the labels when writing.
 
 Engineering value = raw × `scale` + `offset`. When writing, a tool applies the inverse and rounds to the nearest integer for integer types.
 
@@ -156,7 +175,8 @@ Readers **SHOULD** report every problem with its line number and one of the code
 | `bad-access` | error | Unknown `access`, or not allowed for the `area` |
 | `bad-byte-order` | error | Unknown `byte_order` in a row |
 | `bad-number` | error | `scale` or `offset` is not a number |
-| `bad-enum` | error | `enum` is not a list of `integer=label` pairs |
+| `bad-enum` | error | An `enum` cell or an `@enum_<name>` table is not a list of `integer=label` pairs |
+| `unknown-enum` | error | An `enum` cell references `@name`, but no `@enum_<name>` table defines it |
 | `no-rows` | warning | The file has a header but no registers |
 | `duplicate-name` | warning | A `name` is used more than once |
 | `overlap` | warning | Two values share registers in the same area. This can be intentional, for example a register read as a whole word and as single bits; bits of the same register (`bool` + `bit`) never count as overlap |

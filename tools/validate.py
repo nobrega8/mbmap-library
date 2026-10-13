@@ -141,7 +141,10 @@ def check_text(text: str) -> list[Diagnostic]:
             else:
                 meta[key] = value
                 rule = META_RULES.get(key)
-                if rule and not rule(value):
+                if key.startswith("enum_") and len(key) > 5:
+                    if not valid_enum(value):
+                        error(lineno, "bad-enum", f"malformed table @{key} (expected 0=Off|1=On)")
+                elif rule and not rule(value):
                     error(lineno, "bad-meta-value", f"invalid value for @{key}: {value!r}")
             continue
 
@@ -257,8 +260,12 @@ def check_text(text: str) -> list[Diagnostic]:
             if row.get(col) and not is_number(row[col]):
                 error(lineno, "bad-number", f"{col} is not a number: {row[col]!r}")
 
-        if row.get("enum") and not valid_enum(row["enum"]):
-            error(lineno, "bad-enum", f"malformed enum {row['enum']!r} (expected 0=Off|1=On)")
+        enum = row.get("enum", "")
+        if enum.startswith("@"):
+            if f"enum_{enum[1:]}" not in meta:
+                error(lineno, "unknown-enum", f"no table @enum_{enum[1:]} for {enum!r}")
+        elif enum and not valid_enum(enum):
+            error(lineno, "bad-enum", f"malformed enum {enum!r} (expected 0=Off|1=On)")
 
         # Rows with errors are left out of the overlap check. Bits of the same
         # register (bool + bit) are meant to share it.
