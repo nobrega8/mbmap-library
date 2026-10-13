@@ -1,0 +1,117 @@
+# Eastron SDM630-Modbus three-phase energy meter (RS485).
+# Every value is a float32 in two registers. The meter answers FC03, FC04 and FC16 only (no FC06)
+# and rejects reads or writes of an odd number of registers.
+@mbmap=1
+@vendor=Eastron
+@model=SDM630-Modbus
+@vendor_website=eastroneurope.com
+@description=Three-phase multifunction DIN rail energy meter, direct connection (SDM630-Modbus and SDM630-Modbus V2). Values a wiring system does not use read 0
+@source=Eastron Europe, "Eastron SDM630Modbus Smart Meter Modbus Protocol Implementation V1.8"; https://www.eastroneurope.com/images/uploads/products/protocol/SDM630_MODBUS_Protocol.pdf
+@protocol=rtu
+@unit_id=1
+@baudrate=9600
+@parity=N
+@databits=8
+@stopbits=1
+@byte_order=ABCD
+@address_base=0
+@max_read_registers=80
+
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,bits,enum,description
+Phase 1 line to neutral volts,Volts,input,0,float32,,,,V,R,,,,,"Valid on 3P4W, 1P2W; reads 0 otherwise"
+Phase 2 line to neutral volts,Volts,input,2,float32,,,,V,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 3 line to neutral volts,Volts,input,4,float32,,,,V,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 1 current,Current,input,6,float32,,,,A,R
+Phase 2 current,Current,input,8,float32,,,,A,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Phase 3 current,Current,input,10,float32,,,,A,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Phase 1 power,Power,input,12,float32,,,,W,R,,,,,"Valid on 3P4W, 1P2W; reads 0 otherwise"
+Phase 2 power,Power,input,14,float32,,,,W,R,,,,,"Valid on 3P4W, 1P2W; reads 0 otherwise"
+Phase 3 power,Power,input,16,float32,,,,W,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 1 volt amps,Power,input,18,float32,,,,VA,R,,,,,"Valid on 3P4W, 1P2W; reads 0 otherwise"
+Phase 2 volt amps,Power,input,20,float32,,,,VA,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 3 volt amps,Power,input,22,float32,,,,VA,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 1 reactive power,Power,input,24,float32,,,,var,R,,,,,"Valid on 3P4W, 1P2W; reads 0 otherwise"
+Phase 2 reactive power,Power,input,26,float32,,,,var,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 3 reactive power,Power,input,28,float32,,,,var,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 1 power factor,Power factor,input,30,float32,,,,,R,,,,,"Sign follows the direction of the current: positive = forward, negative = reverse; Valid on 3P4W, 1P2W; reads 0 otherwise"
+Phase 2 power factor,Power factor,input,32,float32,,,,,R,,,,,"Sign follows the direction of the current: positive = forward, negative = reverse; Valid on 3P4W; reads 0 otherwise"
+Phase 3 power factor,Power factor,input,34,float32,,,,,R,,,,,"Sign follows the direction of the current: positive = forward, negative = reverse; Valid on 3P4W; reads 0 otherwise"
+Phase 1 phase angle,Power factor,input,36,float32,,,,°,R,,,,,"Valid on 3P4W, 1P2W; reads 0 otherwise"
+Phase 2 phase angle,Power factor,input,38,float32,,,,°,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 3 phase angle,Power factor,input,40,float32,,,,°,R,,,,,Valid on 3P4W; reads 0 otherwise
+Average line to neutral volts,Volts,input,42,float32,,,,V,R,,,,,Valid on 3P4W; reads 0 otherwise
+Average line current,Current,input,46,float32,,,,A,R
+Sum of line currents,Current,input,48,float32,,,,A,R
+Total system power,Power,input,52,float32,,,,W,R
+Total system volt amps,Power,input,56,float32,,,,VA,R
+Total system reactive power,Power,input,60,float32,,,,var,R
+Total system power factor,Power factor,input,62,float32,,,,,R,,,,,"Sign follows the direction of the current: positive = forward, negative = reverse"
+Total system phase angle,Power factor,input,66,float32,,,,°,R
+Frequency,System,input,70,float32,,,,Hz,R
+Total import kWh,Energy,input,72,float32,,,,kWh,R
+Total export kWh,Energy,input,74,float32,,,,kWh,R
+Total import kvarh,Energy,input,76,float32,,,,kvarh,R
+Total export kvarh,Energy,input,78,float32,,,,kvarh,R
+Total VAh,Energy,input,80,float32,,,,kVAh,R
+Ah,Energy,input,82,float32,,,,Ah,R
+Total system power demand,Demand,input,84,float32,,,,W,R,,,,,Import minus export
+Maximum total system power demand,Demand,input,86,float32,,,,W,R,,,,,Import minus export. The protocol table gives the unit as VA
+Total system VA demand,Demand,input,100,float32,,,,VA,R
+Maximum total system VA demand,Demand,input,102,float32,,,,VA,R
+Neutral current demand,Demand,input,104,float32,,,,A,R,,,,,Valid on 3P4W; reads 0 otherwise
+Maximum neutral current demand,Demand,input,106,float32,,,,A,R,,,,,Valid on 3P4W; reads 0 otherwise
+Line 1 to line 2 volts,Volts,input,200,float32,,,,V,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Line 2 to line 3 volts,Volts,input,202,float32,,,,V,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Line 3 to line 1 volts,Volts,input,204,float32,,,,V,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Average line to line volts,Volts,input,206,float32,,,,V,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Neutral current,Current,input,224,float32,,,,A,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 1 L/N volts THD,Harmonics,input,234,float32,,,,%,R,,,,,"Valid on 3P4W, 1P2W; reads 0 otherwise"
+Phase 2 L/N volts THD,Harmonics,input,236,float32,,,,%,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 3 L/N volts THD,Harmonics,input,238,float32,,,,%,R,,,,,Valid on 3P4W; reads 0 otherwise
+Phase 1 current THD,Harmonics,input,240,float32,,,,%,R
+Phase 2 current THD,Harmonics,input,242,float32,,,,%,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Phase 3 current THD,Harmonics,input,244,float32,,,,%,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Average line to neutral volts THD,Harmonics,input,248,float32,,,,%,R,,,,,"Valid on 3P4W, 1P2W; reads 0 otherwise"
+Average line current THD,Harmonics,input,250,float32,,,,%,R
+Phase 1 current demand,Demand,input,258,float32,,,,A,R
+Phase 2 current demand,Demand,input,260,float32,,,,A,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Phase 3 current demand,Demand,input,262,float32,,,,A,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Maximum phase 1 current demand,Demand,input,264,float32,,,,A,R
+Maximum phase 2 current demand,Demand,input,266,float32,,,,A,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Maximum phase 3 current demand,Demand,input,268,float32,,,,A,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Line 1 to line 2 volts THD,Harmonics,input,334,float32,,,,%,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Line 2 to line 3 volts THD,Harmonics,input,336,float32,,,,%,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Line 3 to line 1 volts THD,Harmonics,input,338,float32,,,,%,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Average line to line volts THD,Harmonics,input,340,float32,,,,%,R,,,,,"Valid on 3P4W, 3P3W; reads 0 otherwise"
+Total kWh,Energy,input,342,float32,,,,kWh,R,,,,,Import plus export
+Total kvarh,Energy,input,344,float32,,,,kvarh,R,,,,,Import plus export
+L1 import kWh,Energy by phase,input,346,float32,,,,kWh,R
+L2 import kWh,Energy by phase,input,348,float32,,,,kWh,R
+L3 import kWh,Energy by phase,input,350,float32,,,,kWh,R
+L1 export kWh,Energy by phase,input,352,float32,,,,kWh,R
+L2 export kWh,Energy by phase,input,354,float32,,,,kWh,R
+L3 export kWh,Energy by phase,input,356,float32,,,,kWh,R
+L1 total kWh,Energy by phase,input,358,float32,,,,kWh,R,,,,,Import plus export
+L2 total kWh,Energy by phase,input,360,float32,,,,kWh,R,,,,,Import plus export
+L3 total kWh,Energy by phase,input,362,float32,,,,kWh,R,,,,,Import plus export
+L1 import kvarh,Energy by phase,input,364,float32,,,,kvarh,R
+L2 import kvarh,Energy by phase,input,366,float32,,,,kvarh,R
+L3 import kvarh,Energy by phase,input,368,float32,,,,kvarh,R
+L1 export kvarh,Energy by phase,input,370,float32,,,,kvarh,R
+L2 export kvarh,Energy by phase,input,372,float32,,,,kvarh,R
+L3 export kvarh,Energy by phase,input,374,float32,,,,kvarh,R
+L1 total kvarh,Energy by phase,input,376,float32,,,,kvarh,R,,,,,Import plus export
+L2 total kvarh,Energy by phase,input,378,float32,,,,kvarh,R,,,,,Import plus export
+L3 total kvarh,Energy by phase,input,380,float32,,,,kvarh,R,,,,,Import plus export
+Demand period,Setup,holding,2,float32,,,,min,RW,,,,,"0, 5, 8, 10, 15, 20, 30 or 60 minutes, default 60. 0 makes demand show the present value and max demand the maximum since the last reset"
+System type,Setup,holding,10,float32,,,,,RW,,,,,"3 = 3P4W, 2 = 3P3W, 1 = 1P2W. Needs the password"
+Pulse 1 width,Setup,holding,12,float32,,,,ms,RW,,,,,"60, 100 or 200 ms, default 100"
+Password lock,Setup,holding,14,float32,,,,,RW,,,,,"Reads 0 = locked, 1 = unlocked; writing any value locks. Reading also restarts the one-minute password timeout"
+Network parity and stop bits,Setup,holding,18,float32,,,,,RW,,,,,"0 = no parity, 1 stop bit (default); 1 = even, 1 stop; 2 = odd, 1 stop; 3 = no parity, 2 stop. Takes effect after a restart"
+Network node,Setup,holding,20,float32,,,,,RW,,,,,"Modbus address 1 to 247, default 1. Takes effect after a restart"
+Pulse 1 divisor,Setup,holding,22,float32,,,,,RW,,,,,"0 = 0.0025, 1 = 0.01, 2 = 0.1, 3 = 1, 4 = 10, 5 = 100 kWh (kvarh) per pulse"
+Password,Setup,holding,24,float32,,,,,RW,,,,,Write the password (default 0000) to unlock protected registers for one minute
+Network baud rate,Setup,holding,28,float32,,,,,RW,,,,,"0 = 2400, 1 = 4800, 2 = 9600 (default), 3 = 19200, 4 = 38400. Takes effect after a restart"
+Pulse 1 energy type,Setup,holding,86,float32,,,,,RW,,,,,"1 = import active, 2 = total active, 4 = export active (default), 5 = import reactive, 6 = total reactive, 8 = export reactive"
+Reset maximum demand,Commands,holding,61456,uint32,,,,,W,,,,0=Reset,"The protocol writes 00 00 here; every Eastron write must cover an even number of registers, so this sends two zero registers with FC16"
+Serial number,Device,holding,64512,uint32,,,,,R

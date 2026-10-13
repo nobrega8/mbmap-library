@@ -1,0 +1,74 @@
+# Eastron SDM120-M single-phase energy meter (RS485).
+# Measurements are float32 input registers (FC04); the integer copies at 2710h-2849h carry the same values.
+@mbmap=1
+@vendor=Eastron
+@model=SDM120-M
+@vendor_website=eastroneurope.com
+@description=Single-phase multifunction DIN rail energy meter, 45 A direct connection, bidirectional
+@source=Zhejiang Eastron Electronic, "Eastron SDM120-M User Manual V1.0", Modbus register map; https://www.eastrongroup.com/eastrongroup/2025/03/22/eastronsdm120-musermanualv1.0.pdf
+@protocol=rtu
+@unit_id=1
+@baudrate=9600
+@parity=N
+@databits=8
+@stopbits=1
+@byte_order=ABCD
+@address_base=0
+
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,bits,enum,description
+Voltage,Measurements,input,0,float32,,,,V,R
+Current,Measurements,input,6,float32,,,,A,R
+Active power,Measurements,input,12,float32,,,,W,R
+Apparent power,Measurements,input,18,float32,,,,VA,R
+Reactive power,Measurements,input,24,float32,,,,var,R
+Power factor,Measurements,input,30,float32,,,,,R
+Frequency,Measurements,input,70,float32,,,,Hz,R
+Import active energy,Energy,input,72,float32,,,,kWh,R
+Export active energy,Energy,input,74,float32,,,,kWh,R
+Import reactive energy,Energy,input,76,float32,,,,kvarh,R
+Export reactive energy,Energy,input,78,float32,,,,kvarh,R
+VAh,Energy,input,80,float32,,,,kVAh,R
+Ah,Energy,input,82,float32,,,,Ah,R
+Total system power demand,Demand,input,84,float32,,,,W,R
+Maximum total system power demand,Demand,input,86,float32,,,,W,R
+Import system power demand,Demand,input,88,float32,,,,W,R
+Maximum import system power demand,Demand,input,90,float32,,,,W,R
+Export system power demand,Demand,input,92,float32,,,,W,R
+Maximum export system power demand,Demand,input,94,float32,,,,W,R
+Current demand,Demand,input,258,float32,,,,A,R
+Maximum current demand,Demand,input,264,float32,,,,A,R
+Total active energy,Energy,input,342,float32,,,,kWh,R
+Total reactive energy,Energy,input,344,float32,,,,kvarh,R
+CO2,Energy,input,20130,float32,,,,kg,R
+Total import active energy (int64),Energy (integer),input,10000,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+Total export active energy (int64),Energy (integer),input,10004,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+Total import reactive energy (int64),Energy (integer),input,10008,int64,,0.001,,kvarh,R,,,,,"Raw value in Wh, varh or VAh"
+Total export reactive energy (int64),Energy (integer),input,10012,int64,,0.001,,kvarh,R,,,,,"Raw value in Wh, varh or VAh"
+Total apparent energy (int64),Energy (integer),input,10016,int64,,0.001,,kVAh,R,,,,,"Raw value in Wh, varh or VAh"
+Total active energy (int64),Energy (integer),input,10020,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+Total reactive energy (int64),Energy (integer),input,10024,int64,,0.001,,kvarh,R,,,,,"Raw value in Wh, varh or VAh"
+Voltage (int32),Measurements (integer),input,10250,int32,,0.1,,V,R
+Current (int32),Measurements (integer),input,10256,int32,,0.001,,A,R
+Active power (int32),Measurements (integer),input,10262,int32,,0.1,,W,R
+Apparent power (int32),Measurements (integer),input,10268,int32,,0.1,,VA,R
+Reactive power (int32),Measurements (integer),input,10274,int32,,0.1,,var,R
+Power factor (int32),Measurements (integer),input,10280,int32,,0.01,,,R
+Frequency (int32),Measurements (integer),input,10308,int32,,0.01,,Hz,R
+CO2 (int64),Energy (integer),input,10310,int64,,0.001,,kg,R
+Demand period,Setup,holding,2,float32,,,,min,RW,,,,,"0 to 60 minutes, default 60. 0 makes demand show the present value and max demand the maximum since the last reset"
+Pulse 1 width,Setup,holding,12,float32,,,,ms,RW,,,,,"60, 100 or 200 ms, default 60"
+Network parity and stop bits,Setup,holding,18,float32,,,,,RW,,,,,"0 = no parity, 1 stop bit; 1 = even, 1 stop (the register table calls this the default; the specification says parity none); 2 = odd, 1 stop; 3 = no parity, 2 stop. Takes effect after a restart"
+Meter ID,Setup,holding,20,float32,,,,,RW,,,,,"Modbus address 1 to 247, default 1"
+Pulse 1 rate,Setup,holding,22,float32,,,,,RW,,,,,"0 = 0.001, 1 = 0.01, 2 = 0.1, 3 = 1 kWh per pulse"
+Baud rate,Setup,holding,28,float32,,,,,RW,,,,,"0 = 2400, 1 = 4800, 2 = 9600 (default), 3 = 19200, 4 = 38400"
+Scroll display time,Setup,holding,58,float32,,,,s,RW,,,,,0 to 255 s; 0 (default) = no automatic scrolling
+CO2 rate,Setup,holding,70,uint32,,0.0001,,kg/kWh,RW,,,,,"0 to 60 kg per kWh, default 0.5703"
+Pulse 1 output mode,Setup,holding,86,float32,,,,,RW,,,,,"1 = import active, 2 = total active (import + export), 4 = export active (default), 5 = import reactive, 6 = total reactive, 8 = export reactive"
+Reset historical data,Commands,holding,61456,uint16,,,,,W,,,,0=Reset demand,"The manual documents writes with FC16; Modbench writes a single register with FC06, which the meter may reject"
+Scroll display time (BCD),Setup,holding,63744,uint16,,,,,RW,,,,,"BCD, 0 to 30 s (0x0030 = 30 s); 0 = no automatic scrolling. The manual documents writes with FC16; Modbench writes a single register with FC06, which the meter may reject"
+Pulse 1 output,Setup,holding,63760,uint16,,,,,RW,,,,0=0.001 kWh/imp|1=0.01 kWh/imp|2=0.1 kWh/imp|3=1 kWh/imp,"The manual documents writes with FC16; Modbench writes a single register with FC06, which the meter may reject"
+Measurement mode,Setup,holding,63776,uint16,,,,,RW,,,,1=Total = import|2=Total = import + export|3=Total = import - export,"Default 2. The manual documents writes with FC16; Modbench writes a single register with FC06, which the meter may reject"
+Serial number,Device,holding,64512,uint32,,,,,R
+Meter code,Device,holding,64514,uint16,,,,,R,,,,,0020h
+Software version major,Device,holding,64644,uint16,,,,,R,,8,8
+Software version minor,Device,holding,64644,uint16,,,,,R,,0,8
