@@ -54,6 +54,7 @@ Keys are lowercase (`a-z`, `0-9`, `_`). A key **MUST NOT** appear twice in the s
 | `mbmap` | yes | `1` | | Format version |
 | `vendor` | yes | text | | Manufacturer |
 | `model` | yes | text | | Model or model family |
+| `vendor_website` | no | domain or `http(s)://` URL | | Manufacturer's website, e.g. `se.com` or `https://www.se.com` |
 | `description` | no | text | | Short description |
 | `firmware` | no | text | | Firmware version(s) the map applies to |
 | `source` | no | text / URL | | Document the map was built from (manual name, version, URL) |

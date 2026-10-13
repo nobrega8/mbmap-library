@@ -73,8 +73,16 @@ def one_of(*values: str):
     return lambda v: v.lower() in allowed
 
 
+WEBSITE = re.compile(r"(https?://)?[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:[0-9]+)?(/\S*)?")
+
+
+def is_website(v: str) -> bool:
+    return WEBSITE.fullmatch(v) is not None
+
+
 META_RULES = {
     "mbmap": one_of("1"),
+    "vendor_website": is_website,
     "protocol": one_of("tcp", "rtu", "tcp+rtu"),
     "unit_id": int_in(0, 255),
     "port": int_in(1, 65535),
