@@ -43,7 +43,7 @@ REQUIRED_META = ("mbmap", "vendor", "model")
 REQUIRED_COLUMNS = ("name", "area", "address", "type")
 KNOWN_COLUMNS = {
     "name", "group", "area", "address", "type", "length", "scale", "offset",
-    "unit", "access", "byte_order", "bit", "enum", "description",
+    "unit", "access", "byte_order", "bit", "bits", "enum", "description",
 }
 META_KEY_RE = re.compile(r"^[a-z0-9_]+$")
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -238,7 +238,18 @@ def check_text(text: str) -> list[Diagnostic]:
             continue
 
         bit = row.get("bit", "")
-        if typ == "bool" and area not in BIT_AREAS:
+        bits = row.get("bits", "")
+        bitfield = False
+        if bits:
+            if not int_in(1, 16)(bits) or typ != "uint16" or area in BIT_AREAS or not bit:
+                error(lineno, "bad-bits", f"invalid bit field: bits={bits!r}")
+            elif not int_in(0, 15)(bit):
+                error(lineno, "bad-bit", f"invalid bit {bit!r}")
+            elif int(bit) + int(bits) > 16:
+                error(lineno, "bad-bits", f"bit {bit} + bits {bits} exceeds 16")
+            else:
+                bitfield = True
+        elif typ == "bool" and area not in BIT_AREAS:
             if not bit:
                 error(lineno, "missing-bit", "bool in a register area needs a 'bit' (0-15)")
             elif not int_in(0, 15)(bit):
@@ -288,7 +299,7 @@ def check_text(text: str) -> list[Diagnostic]:
         # Rows with errors are left out of the overlap check. Bits of the same
         # register (bool + bit) are meant to share it.
         row_ok = sum(d.severity == "error" for d in out) == errors_before
-        if row_ok and not (typ == "bool" and area not in BIT_AREAS):
+        if row_ok and not (typ == "bool" and area not in BIT_AREAS) and not bitfield:
             spans.append((area, wire, wire + count, lineno, name))
 
     spans.sort()

@@ -90,7 +90,8 @@ The header names the columns. Order does not matter, and names are case-insensit
 | `unit` | text | | Engineering unit (`V`, `kWh`, `°C`…) |
 | `access` | `R`, `W`, `RW` | `R` | Allowed operations |
 | `byte_order` | `ABCD`, `CDAB`, `BADC`, `DCBA` | file `@byte_order` | Overrides the default for this register |
-| `bit` | `0`–`15` | | For `bool` in `input`/`holding`: which bit of the register, 0 = least significant |
+| `bit` | `0`–`15` | | For `bool` in `input`/`holding`: which bit of the register, 0 = least significant. For a `uint16` bit field: its lowest bit |
+| `bits` | `1`–`16` | | For `uint16` in `input`/`holding`: width of a bit field starting at `bit` (§4.3) |
 | `enum` | `value=label` pairs separated by `\|`, or `@name` | | Labels for integer or bool values (§4.1), e.g. `0=Off\|1=On\|2=Fault` or `@run_state` |
 | `description` | text | | Free text |
 
@@ -125,6 +126,18 @@ Some devices answer with a reserved raw value instead of a reading: one value me
 - Values are integers (decimal or `0x` hex) that fit the type, compared with the **raw** value before `scale` and `offset`.
 - When a reading matches, tools **SHOULD** show the label instead of a number and **SHOULD NOT** treat it as a measurement (in charts, limits or averages).
 - An `enum` label for the same raw value takes precedence over the sentinel.
+
+### 4.3 Bit fields
+
+Some devices pack several small values into one register, for example four 4-bit alarm codes. A `uint16` row with `bit` and `bits` reads one of them: raw value = (register >> `bit`) & (2^`bits` − 1). `bit` + `bits` **MUST NOT** exceed 16.
+
+```text
+name,area,address,type,bit,bits,enum
+Alarm A,holding,100,uint16,12,4,@alarm_condition
+Alarm B,holding,100,uint16,8,4,@alarm_condition
+```
+
+Rows that read different fields of the same register do not overlap. Writing a field **SHOULD** read the register, change only the field's bits and write it back.
 
 Engineering value = raw × `scale` + `offset`. When writing, a tool applies the inverse and rounds to the nearest integer for integer types.
 
@@ -193,12 +206,13 @@ Readers **SHOULD** report every problem with its line number and one of the code
 | `bad-number` | error | `scale` or `offset` is not a number |
 | `bad-enum` | error | An `enum` cell or an `@enum_<name>` table is not a list of `integer=label` pairs |
 | `bad-sentinel` | error | `@sentinel_<type>` names an unsupported type, is not a list of `integer=label` pairs, or has a value that does not fit the type |
+| `bad-bits` | error | `bits` is not an integer from 1 to 16, is used on a type other than `uint16` or outside `input`/`holding`, has no `bit`, or `bit` + `bits` exceeds 16 |
 | `unknown-enum` | error | An `enum` cell references `@name`, but no `@enum_<name>` table defines it |
 | `no-rows` | warning | The file has a header but no registers |
 | `duplicate-name` | warning | A `name` is used more than once |
-| `overlap` | warning | Two values share registers in the same area. This can be intentional, for example a register read as a whole word and as single bits; bits of the same register (`bool` + `bit`) never count as overlap |
+| `overlap` | warning | Two values share registers in the same area. This can be intentional, for example a register read as a whole word and as single bits; bits and bit fields of the same register (`bool` + `bit`, `uint16` + `bit` + `bits`) never count as overlap |
 | `unknown-column` | warning | A column is not in this spec and does not start with `x_` (reported without a line) |
-| `unused-bit` | warning | `bit` is set on a row where it has no effect |
+| `unused-bit` | warning | `bit` is set on a row where it has no effect (any type but `bool`, unless `bits` is also set on a `uint16`) |
 
 A row with an error in `name`, `area`, `address` or `type` is not checked further. A row with any error is left out of the `overlap` check.
 
