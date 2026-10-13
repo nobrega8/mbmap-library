@@ -1,0 +1,88 @@
+# Socomec COUNTIS E24 (MID) three-phase direct 80 A energy meter with Modbus RTU over RS485.
+# The COUNTIS E23 (non-MID, ref. 4850 3050) shares the manual but has its own communication table, not checked here.
+# Addresses are the decimal addresses from Socomec's table, sent as-is. FC03 reads up to 128 words, FC06/FC16 write.
+# Values read 0xFFFF... when not available. The factory RS485 settings are not given in text form; check SETUP 2 on the display.
+@mbmap=1
+@vendor=Socomec
+@model=COUNTIS E24
+@vendor_website=socomec.com
+@description=Three-phase direct-connection (80 A) MID energy meter with Modbus RS485 (ref. 4850 3051)
+@source=Socomec, "MODBUS tables of Countis_E24", V103.8 (2017-08), apac.socomec.com communication table (archived 2024-04-23); instruction manual 545 877 A
+@protocol=rtu
+@unit_id=1
+@byte_order=ABCD
+@address_base=0
+@max_read_registers=125
+
+name,group,area,address,type,length,scale,unit,access,enum,description
+Product order ID,Info,holding,50004,uint16,,,,R,,100 = Countis
+Product ID,Info,holding,50005,uint16,,,,R,,
+Modbus table version,Info,holding,50006,uint16,,,,R,,e.g. 101 = 1.01
+Software version,Info,holding,50007,uint16,,,,R,,e.g. 100 = 1.00
+Vendor name,Info,holding,50042,string,8,,,R,,
+Product name,Info,holding,50050,string,8,,,R,,
+MID product,Info,holding,40545,uint16,,,,R,0=Non-MID|1=MID,
+Modbus address,Communication,holding,57344,uint16,,,,RW,,1-247
+Baud rate,Communication,holding,57345,uint16,,,,RW,0=1200|1=2400|2=4800|3=9600|4=19200|5=38400|6=57600|7=115200,
+Stop bits,Communication,holding,57346,uint16,,,,RW,0=1|1=2,
+Parity,Communication,holding,57347,uint16,,,,RW,0=None|1=Odd|2=Even,
+Voltage L1-L2,Voltage,holding,50514,uint32,,0.01,V,R,,
+Voltage L2-L3,Voltage,holding,50516,uint32,,0.01,V,R,,
+Voltage L3-L1,Voltage,holding,50518,uint32,,0.01,V,R,,
+Voltage L1-N,Voltage,holding,50520,uint32,,0.01,V,R,,
+Voltage L2-N,Voltage,holding,50522,uint32,,0.01,V,R,,
+Voltage L3-N,Voltage,holding,50524,uint32,,0.01,V,R,,
+Frequency,Voltage,holding,50526,uint32,,0.001,Hz,R,,
+Current L1,Current,holding,50528,uint32,,0.001,A,R,,
+Current L2,Current,holding,50530,uint32,,0.001,A,R,,
+Current L3,Current,holding,50532,uint32,,0.001,A,R,,
+Neutral current,Current,holding,50534,uint32,,0.001,A,R,,
+Total active power,Power,holding,50536,int32,,10,W,R,,Signed; 10 W resolution
+Total reactive power,Power,holding,50538,int32,,10,var,R,,
+Total apparent power,Power,holding,50540,uint32,,10,VA,R,,
+Total power factor,Power factor,holding,50542,int32,,0.001,,R,,"Negative = leading, positive = lagging"
+Active power L1,Power,holding,50544,int32,,10,W,R,,
+Active power L2,Power,holding,50546,int32,,10,W,R,,
+Active power L3,Power,holding,50548,int32,,10,W,R,,
+Reactive power L1,Power,holding,50550,int32,,10,var,R,,
+Reactive power L2,Power,holding,50552,int32,,10,var,R,,
+Reactive power L3,Power,holding,50554,int32,,10,var,R,,
+Apparent power L1,Power,holding,50556,uint32,,10,VA,R,,
+Apparent power L2,Power,holding,50558,uint32,,10,VA,R,,
+Apparent power L3,Power,holding,50560,uint32,,10,VA,R,,
+Power factor L1,Power factor,holding,50562,int32,,0.001,,R,,"Negative = leading, positive = lagging"
+Power factor L2,Power factor,holding,50564,int32,,0.001,,R,,"Negative = leading, positive = lagging"
+Power factor L3,Power factor,holding,50566,int32,,0.001,,R,,"Negative = leading, positive = lagging"
+Average current,Current,holding,50568,uint32,,0.001,A,R,,
+Average voltage L-L,Voltage,holding,50570,uint32,,0.01,V,R,,
+Average voltage L-N,Voltage,holding,50572,uint32,,0.01,V,R,,
+Phase sequence,Voltage,holding,51315,uint16,,,,R,0=123 (CW)|1=132 (CCW)|3=Undetermined,
+Total import active energy,Energy,holding,50770,uint32,,,kWh,R,,Whole units; totals cannot be reset
+Total import reactive energy,Energy,holding,50772,uint32,,,kvarh,R,,Whole units; totals cannot be reset
+Total apparent energy,Energy,holding,50774,uint32,,,kVAh,R,,Whole units; totals cannot be reset
+Total export active energy,Energy,holding,50776,uint32,,,kWh,R,,Whole units; totals cannot be reset
+Total export reactive energy,Energy,holding,50778,uint32,,,kvarh,R,,Whole units; totals cannot be reset
+Partial import active energy,Energy,holding,50780,uint32,,,kWh,R,,Whole units
+Partial import reactive energy,Energy,holding,50782,uint32,,,kvarh,R,,Whole units
+Partial apparent energy,Energy,holding,50784,uint32,,,kVAh,R,,Whole units
+Partial export active energy,Energy,holding,50786,uint32,,,kWh,R,,Whole units
+Partial export reactive energy,Energy,holding,50788,uint32,,,kvarh,R,,Whole units
+Total import active energy (0.01),Energy (fine),holding,50946,uint32,,0.01,kWh,R,,
+Total import reactive energy (0.01),Energy (fine),holding,50948,uint32,,0.01,kvarh,R,,
+Total apparent energy (0.01),Energy (fine),holding,50950,uint32,,0.01,kVAh,R,,
+Total export active energy (0.01),Energy (fine),holding,50952,uint32,,0.01,kWh,R,,
+Total export reactive energy (0.01),Energy (fine),holding,50954,uint32,,0.01,kvarh,R,,
+Partial import active energy (0.01),Energy (fine),holding,50956,uint32,,0.01,kWh,R,,
+Partial import reactive energy (0.01),Energy (fine),holding,50958,uint32,,0.01,kvarh,R,,
+Partial apparent energy (0.01),Energy (fine),holding,50960,uint32,,0.01,kVAh,R,,
+Partial export active energy (0.01),Energy (fine),holding,50962,uint32,,0.01,kWh,R,,
+Partial export reactive energy (0.01),Energy (fine),holding,50964,uint32,,0.01,kvarh,R,,
+Active tariff,Tariffs,holding,50849,uint16,,,,R,1=Tariff 1|2=Tariff 2,
+Import active energy tariff 1,Tariffs,holding,51202,uint32,,0.01,kWh,R,,
+Import active energy tariff 2,Tariffs,holding,51204,uint32,,0.01,kWh,R,,
+Import reactive energy tariff 1,Tariffs,holding,51218,uint32,,0.01,kvarh,R,,
+Import reactive energy tariff 2,Tariffs,holding,51220,uint32,,0.01,kvarh,R,,
+Hour counter tariff 1,Tariffs,holding,51234,uint32,,0.01,h,R,,
+Hour counter tariff 2,Tariffs,holding,51236,uint32,,0.01,h,R,,
+Set tariff,Commands,holding,40481,uint16,,,,W,1=Tariff 1|2=Tariff 2,Broadcast allowed
+Reset partial energies,Commands,holding,40512,uint16,,,,W,32=Reset,
