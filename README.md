@@ -21,7 +21,7 @@ Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap`.
 
 `.mbmap` is plain text based on CSV, so you can open a map in any text editor or spreadsheet. Tools that read the format:
 
-- Modbench: a lightweight Modbus TCP/RTU client (in development, coming soon)
+- [Modbench](https://github.com/nobrega8/modbench): a lightweight Modbus TCP/RTU client for Windows and Linux
 
 Building a tool that reads `.mbmap`? Open a pull request to add it here.
 
