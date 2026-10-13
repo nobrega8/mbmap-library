@@ -40,7 +40,7 @@ Serial number,Info,holding,1024,string,8,,,,R,,,,16 ASCII characters
   - **CSV**: everything else. The first CSV line is the **header**, and every line after it is a **register row**.
 - Every metadata line **MUST** come before the header.
 - The separator is `,` or `;`, chosen by whichever appears first in the header line. The rest of the file uses the same separator. `;` is allowed because spreadsheets in many locales export with it.
-- Fields follow [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180) quoting: a field that contains the separator or `"` is wrapped in `"`, and a `"` inside it is written as `""`. A quoted field **MUST NOT** span multiple lines.
+- Fields follow [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180) quoting: a field that contains the separator or `"` is wrapped in `"`, and a `"` inside it is written as `""`. A quoted field **MUST NOT** span multiple lines. A row whose first field starts with `#` or `@` **MUST** quote that field, or it would be read as a comment or as metadata.
 - Leading and trailing spaces are trimmed from every field (quoted or not) and every metadata value.
 - Column names and enumerated values, in metadata and in cells (`area`, `type`, `access`, `byte_order`, `protocol`, `parity`), are case-insensitive. Writers **SHOULD** use the spelling shown in this spec.
 
