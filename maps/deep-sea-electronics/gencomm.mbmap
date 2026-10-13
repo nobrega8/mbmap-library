@@ -1,0 +1,95 @@
+# Deep Sea Electronics generator controllers, GenComm protocol.
+# Address = page * 256 + offset (page numbers from the GenComm spec).
+# Monitoring map: read-only. Control registers (page 16, start/stop/mode)
+# are left out on purpose; writing them operates the generator.
+# Sentinels: 0xFFFF / 0x7FFF (16-bit) and 0xFFFFFFFF / 0x7FFFFFFF (32-bit) mean
+# unimplemented; values just below them mean over/under range, sensor fault,
+# bad data. RS485 is 8N2, except the 73xx family, which uses 8N1.
+@mbmap=1
+@vendor=Deep Sea Electronics
+@model=GenComm controllers
+@description=DSE generator controllers (72xx/73xx/74xx/8xxx families) over the GenComm Modbus protocol. 3xx transfer switches use another layout for pages 6 and 7
+@source=Deep Sea Electronics, "GenComm standard for use with generating set control equipment" v2.14 (2012-04-16); later revision reproduced in Winco SP-228 Rev A (https://www.wincogen.com/wp-content/uploads/PD/Spec_Sheets/Accessories/SP-228_%20DSE7310-GENCOMM.pdf)
+@protocol=tcp+rtu
+@parity=N
+@databits=8
+@stopbits=2
+@byte_order=ABCD
+@address_base=0
+@max_read_registers=125
+@enum_control_mode=0=Stop|1=Auto|2=Manual|3=Test on load|4=Auto, manual restore|5=User configuration|6=Test off load|7=Off
+@enum_phase_rotation=0=Indeterminate|1=L1-L2-L3|2=L3-L2-L1|3=Phase error
+
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,enum,description
+# Page 3 - generating set status (base 768)
+Manufacturer code,Status,holding,768,uint16,,,,,R,,,,
+Model number,Status,holding,769,uint16,,,,,R,,,,
+Serial number,Status,holding,770,uint32,,,,,R,,,,
+Control mode,Status,holding,772,uint16,,,,,R,,,@control_mode,Off (7) was added after GenComm 2.14
+Control unit not configured,Status,holding,774,bool,,,,,R,,15,,
+Control unit failure,Status,holding,774,bool,,,,,R,,13,,
+Shutdown alarm active,Status,holding,774,bool,,,,,R,,12,,
+Electrical trip alarm active,Status,holding,774,bool,,,,,R,,11,,
+Warning alarm active,Status,holding,774,bool,,,,,R,,10,,
+Telemetry alarm,Status,holding,774,bool,,,,,R,,9,,
+Controlled shutdown alarm active,Status,holding,774,bool,,,,,R,,6,,Added after GenComm 2.14
+# Page 4 - basic instrumentation (base 1024)
+Oil pressure,Engine,holding,1024,uint16,,,,kPa,R,,,,
+Coolant temperature,Engine,holding,1025,int16,,,,°C,R,,,,
+Oil temperature,Engine,holding,1026,int16,,,,°C,R,,,,
+Fuel level,Engine,holding,1027,uint16,,,,%,R,,,,
+Charge alternator voltage,Engine,holding,1028,uint16,,0.1,,V,R,,,,
+Engine battery voltage,Engine,holding,1029,uint16,,0.1,,V,R,,,,
+Engine speed,Engine,holding,1030,uint16,,,,RPM,R,,,,
+Generator frequency,Generator,holding,1031,uint16,,0.1,,Hz,R,,,,
+Generator L1-N voltage,Generator,holding,1032,uint32,,0.1,,V,R,,,,
+Generator L2-N voltage,Generator,holding,1034,uint32,,0.1,,V,R,,,,
+Generator L3-N voltage,Generator,holding,1036,uint32,,0.1,,V,R,,,,
+Generator L1-L2 voltage,Generator,holding,1038,uint32,,0.1,,V,R,,,,
+Generator L2-L3 voltage,Generator,holding,1040,uint32,,0.1,,V,R,,,,
+Generator L3-L1 voltage,Generator,holding,1042,uint32,,0.1,,V,R,,,,
+Generator L1 current,Generator,holding,1044,uint32,,0.1,,A,R,,,,
+Generator L2 current,Generator,holding,1046,uint32,,0.1,,A,R,,,,
+Generator L3 current,Generator,holding,1048,uint32,,0.1,,A,R,,,,
+Generator earth current,Generator,holding,1050,uint32,,0.1,,A,R,,,,
+Generator L1 power,Generator,holding,1052,int32,,,,W,R,,,,
+Generator L2 power,Generator,holding,1054,int32,,,,W,R,,,,
+Generator L3 power,Generator,holding,1056,int32,,,,W,R,,,,
+Generator current lag/lead,Generator,holding,1058,int16,,,,°,R,,,,
+Generator phase rotation,Generator,holding,1073,uint16,,,,,R,,,@phase_rotation,
+Mains frequency,Mains,holding,1059,uint16,,0.1,,Hz,R,,,,
+Mains L1-N voltage,Mains,holding,1060,uint32,,0.1,,V,R,,,,
+Mains L2-N voltage,Mains,holding,1062,uint32,,0.1,,V,R,,,,
+Mains L3-N voltage,Mains,holding,1064,uint32,,0.1,,V,R,,,,
+Mains L1-L2 voltage,Mains,holding,1066,uint32,,0.1,,V,R,,,,
+Mains L2-L3 voltage,Mains,holding,1068,uint32,,0.1,,V,R,,,,
+Mains L3-L1 voltage,Mains,holding,1070,uint32,,0.1,,V,R,,,,
+Mains voltage phase lag/lead,Mains,holding,1072,int16,,,,°,R,,,,
+Mains phase rotation,Mains,holding,1074,uint16,,,,,R,,,@phase_rotation,
+Mains current lag/lead,Mains,holding,1075,int16,,,,°,R,,,,
+Mains L1 current,Mains,holding,1076,uint32,,0.1,,A,R,,,,
+Mains L2 current,Mains,holding,1078,uint32,,0.1,,A,R,,,,
+Mains L3 current,Mains,holding,1080,uint32,,0.1,,A,R,,,,
+Mains earth current,Mains,holding,1082,uint32,,0.1,,A,R,,,,
+Mains L1 power,Mains,holding,1084,int32,,,,W,R,,,,
+Mains L2 power,Mains,holding,1086,int32,,,,W,R,,,,
+Mains L3 power,Mains,holding,1088,int32,,,,W,R,,,,
+# Page 6 - derived instrumentation (base 1536), 72xx/73xx/74xx/8xxx layout
+Generator total power,Power,holding,1536,int32,,,,W,R,,,,
+Generator total apparent power,Power,holding,1544,int32,,,,VA,R,,,,
+Generator total reactive power,Power,holding,1552,int32,,,,var,R,,,,
+Generator average power factor,Power,holding,1557,int16,,0.01,,,R,,,,
+Generator load,Power,holding,1558,int16,,0.1,,%,R,,,,Percentage of full power
+Mains total power,Power,holding,1560,int32,,,,W,R,,,,
+Mains average power factor,Power,holding,1581,int16,,0.01,,,R,,,,
+# Page 7 - accumulated instrumentation (base 1792), 72xx/73xx/74xx/8xxx layout
+Controller clock,Counters,holding,1792,uint32,,,,s,R,,,,Seconds since 1970-01-01
+Engine run time,Counters,holding,1798,uint32,,0.000277777778,,h,R,,,,Stored in seconds
+Generator positive energy,Counters,holding,1800,uint32,,0.1,,kWh,R,,,,
+Generator negative energy,Counters,holding,1802,uint32,,0.1,,kWh,R,,,,
+Generator apparent energy,Counters,holding,1804,uint32,,0.1,,kVAh,R,,,,
+Generator reactive energy,Counters,holding,1806,uint32,,0.1,,kvarh,R,,,,
+Number of starts,Counters,holding,1808,uint32,,,,,R,,,,
+Mains positive energy,Counters,holding,1810,uint32,,0.1,,kWh,R,,,,
+Mains negative energy,Counters,holding,1812,uint32,,0.1,,kWh,R,,,,
+Fuel used,Counters,holding,1826,uint32,,,,L,R,,,,
