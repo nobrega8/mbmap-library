@@ -42,7 +42,7 @@ SENTINEL_RANGES = {
 REQUIRED_META = ("mbmap", "vendor", "model")
 REQUIRED_COLUMNS = ("name", "area", "address", "type")
 KNOWN_COLUMNS = {
-    "name", "group", "area", "address", "type", "length", "scale", "offset",
+    "name", "group", "area", "address", "type", "length", "scale", "scale_factor", "offset",
     "unit", "access", "byte_order", "bit", "bits", "enum", "description",
 }
 META_KEY_RE = re.compile(r"^[a-z0-9_]+$")
@@ -216,6 +216,8 @@ def check_text(text: str) -> list[Diagnostic]:
     base = 1 if meta.get("address_base") == "1" else 0
     names: dict[str, int] = {}
     spans: list[tuple[str, int, int, int, str]] = []  # area, start, end, line, name
+    valid: dict[str, tuple[str, bool, str]] = {}  # name -> type, bit field, scale_factor
+    scaled: list[tuple[int, str, str]] = []  # line, type, scale_factor
 
     for lineno, row in rows:
         name, area, typ = row["name"], row["area"].lower(), row["type"].lower()
@@ -309,6 +311,25 @@ def check_text(text: str) -> list[Diagnostic]:
         row_ok = sum(d.severity == "error" for d in out) == errors_before
         if row_ok and not (typ == "bool" and area not in BIT_AREAS) and not bitfield:
             spans.append((area, wire, wire + count, lineno, name))
+        if row_ok:
+            sf = row.get("scale_factor", "")
+            valid.setdefault(name, (typ, bitfield, sf))
+            if sf:
+                scaled.append((lineno, typ, sf))
+
+    # A scale factor names an integer register of the file that does not
+    # itself depend on a scale factor.
+    for lineno, typ, sf in scaled:
+        if sf not in valid:
+            error(lineno, "unknown-scale-factor", f"no register named {sf!r} for the scale factor")
+            continue
+        sf_type, sf_bitfield, sf_sf = valid[sf]
+        if typ in ("bool", "string"):
+            error(lineno, "bad-scale-factor", f"{typ} values cannot have a scale factor")
+        elif sf_type in ("bool", "string", "float32", "float64") or sf_bitfield:
+            error(lineno, "bad-scale-factor", f"scale factor {sf!r} must be a whole integer register")
+        elif sf_sf:
+            error(lineno, "bad-scale-factor", f"scale factor {sf!r} has a scale factor itself")
 
     spans.sort()
     for i, (a2, s2, _e2, l2, n2) in enumerate(spans):

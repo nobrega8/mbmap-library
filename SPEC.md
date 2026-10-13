@@ -87,6 +87,7 @@ The header names the columns. Order does not matter, and names are case-insensit
 | `type` | see §6 | | Data type |
 | `length` | integer ≥ 1 | | Number of registers. Required for `string`, ignored otherwise |
 | `scale` | number | `1` | Multiplier |
+| `scale_factor` | register `name` | | Name of another register in the file whose integer value is a power-of-ten exponent for this one (§4.4) |
 | `offset` | number | `0` | Added after scaling |
 | `unit` | text | | Engineering unit (`V`, `kWh`, `°C`…) |
 | `access` | `R`, `W`, `RW` | `R` | Allowed operations |
@@ -140,7 +141,22 @@ Alarm B,holding,100,uint16,8,4,@alarm_condition
 
 Rows that read different fields of the same register do not overlap. Writing a field **SHOULD** read the register, change only the field's bits and write it back.
 
-Engineering value = raw × `scale` + `offset`. When writing, a tool applies the inverse and rounds to the nearest integer for integer types.
+### 4.4 Scale factors
+
+Some devices, notably SunSpec inverters and meters, send a separate exponent register for a value instead of a fixed scale: the value is raw × 10^exponent, and the exponent can change with the device's range. The `scale_factor` column names that exponent register:
+
+```text
+name,area,address,type,unit,scale_factor
+AC power,holding,40083,int16,W,W_SF
+W_SF,holding,40084,int16,,
+```
+
+- The named register **MUST** be a row of the same file with an integer type (`int16` … `uint64`) and no `bits`, and **MUST NOT** itself have a `scale_factor`. If several rows share the name, the first one counts.
+- Only numeric types can have a `scale_factor` (not `bool` or `string`).
+- A tool reads the exponent register together with the value, also when the user chose not to show it. If the exponent cannot be read, or is a sentinel (§4.2, e.g. SunSpec's `-32768` = not implemented), the value is not available.
+- When writing, a tool reads the exponent first and applies the inverse.
+
+Engineering value = raw × 10^`scale_factor` × `scale` + `offset` (without a `scale_factor`: raw × `scale` + `offset`). When writing, a tool applies the inverse and rounds to the nearest integer for integer types.
 
 ## 5. Areas and addresses
 
@@ -209,6 +225,8 @@ Readers **SHOULD** report every problem with its line number and one of the code
 | `bad-sentinel` | error | `@sentinel_<type>` names an unsupported type, is not a list of `integer=label` pairs, or has a value that does not fit the type |
 | `bad-bits` | error | `bits` is not an integer from 1 to 16, is used on a type other than `uint16` or outside `input`/`holding`, has no `bit`, or `bit` + `bits` exceeds 16 |
 | `unknown-enum` | error | An `enum` cell references `@name`, but no `@enum_<name>` table defines it |
+| `unknown-scale-factor` | error | `scale_factor` names no register of the file (rows with errors do not count) |
+| `bad-scale-factor` | error | `scale_factor` is set on a `bool` or `string`, or names a register that is not a whole integer (a float, `bool`, `string` or bit field) or that has a `scale_factor` itself |
 | `no-rows` | warning | The file has a header but no registers |
 | `duplicate-name` | warning | A `name` is used more than once |
 | `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Rows that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`) |
