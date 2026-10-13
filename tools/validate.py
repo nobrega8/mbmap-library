@@ -304,8 +304,10 @@ def check_text(text: str) -> list[Diagnostic]:
 
     spans.sort()
     for i, (a2, s2, _e2, l2, n2) in enumerate(spans):
-        for a1, _s1, e1, l1, n1 in reversed(spans[:i]):
-            if a1 == a2 and s2 < e1:
+        for a1, s1, e1, l1, n1 in reversed(spans[:i]):
+            # Rows that start at the same address are alternative readings
+            # of the same data, not an overlap.
+            if a1 == a2 and s1 != s2 and s2 < e1:
                 warn(l2, "overlap", f"{n2!r} overlaps {n1!r} (line {l1})")
                 break
 

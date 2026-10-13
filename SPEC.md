@@ -210,7 +210,7 @@ Readers **SHOULD** report every problem with its line number and one of the code
 | `unknown-enum` | error | An `enum` cell references `@name`, but no `@enum_<name>` table defines it |
 | `no-rows` | warning | The file has a header but no registers |
 | `duplicate-name` | warning | A `name` is used more than once |
-| `overlap` | warning | Two values share registers in the same area. This can be intentional, for example a register read as a whole word and as single bits; bits and bit fields of the same register (`bool` + `bit`, `uint16` + `bit` + `bits`) never count as overlap |
+| `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Rows that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`) |
 | `unknown-column` | warning | A column is not in this spec and does not start with `x_` (reported without a line) |
 | `unused-bit` | warning | `bit` is set on a row where it has no effect (any type but `bool`, unless `bits` is also set on a `uint16`) |
 
