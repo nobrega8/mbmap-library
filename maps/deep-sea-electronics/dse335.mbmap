@@ -1,14 +1,14 @@
 # DSE335 automatic transfer switch controller, GenComm protocol.
-# Address = page * 256 + offset. Pages 6 and 7 use the 3xx layout.
-# Monitoring map: read-only. Control registers (page 16) are left out on
-# purpose; writing them operates the transfer switch.
+# Address = page * 256 + offset. Pages 6, 7, 154, 170, 171, 180 and 190 use the
+# 3xx / 335 layouts. Expansion module rows read as unimplemented when no module
+# is fitted.
 # Checked on a real DSE335 (RS485, 9600 8N2) on 2026-10-13: status, battery,
 # S1 voltages and frequency, phase rotation and clock read correctly.
 @mbmap=1
 @vendor=Deep Sea Electronics
 @model=DSE335
 @description=Automatic transfer switch controller (3xx family), GenComm Modbus protocol. S1 and S2 are the two supplies; Load is the switched output
-@source=Deep Sea Electronics, "GenComm standard for use with generating set control equipment" v2.272 (2025-07-21): pages 3, 4, 6 and 7 (3xx register allocation); sentinel values from section 8.1
+@source=Deep Sea Electronics, "GenComm standard for use with generating set control equipment" v2.272 (2025-07-21): sections 8.1 (sentinels) and 10 (pages 3, 4, 6, 7, 16, 154, 170, 171, 180, 190)
 @protocol=rtu
 @parity=N
 @databits=8
@@ -22,83 +22,406 @@
 @sentinel_int32=0x7FFFFFFF=Unimplemented|0x7FFFFFFE=Over measurable range|0x7FFFFFFD=Under measurable range|0x7FFFFFFC=Transducer fault|0x7FFFFFFB=Bad data|0x7FFFFFFA=High digital input|0x7FFFFFF9=Low digital input
 @enum_control_mode=0=Stop|1=Auto|2=Manual|3=Test on load|4=Auto with manual restore|5=User configuration|6=Test off load|7=Off
 @enum_phase_rotation=0=Indeterminate|1=L1-L2-L3|2=L3-L2-L1|3=Phase error
+@enum_sm_status=0=Implemented, not changed|1=Implemented, changed|2=Reserved|3=Unimplemented
+@enum_alarm_condition=0=Disabled digital input|1=Not active|2=Warning|3=Shutdown|4=Electrical trip|8=Inactive indication|9=Inactive indication (displayed)|10=Active indication|15=Unimplemented
+@enum_sender_category=0=Unused|1=Pressure|2=Temperature|3=Level|4=Digital
+@enum_system_control=0x8B74748B=Select Stop mode|0x8B75748A=Select Auto mode|0x8B767489=Select Manual mode|0x8B777488=Select Test on load mode|0x8B787487=Select Auto with manual restore mode|0x8B797486=Start engine if in manual or test modes|0x8B7A7485=Mute alarm|0x8B7B7484=Reset alarms|0x8B7C7483=Transfer to generator|0x8B7D7482=Transfer to mains|0x8B7E7481=Reset mains failure|0x8B7F7480=Close Bus (Bus Tie Controller)|0x8B80747F=Open Bus (Bus Tie Controller)|0x8B81747E=Toggle Bus Open/Closed (Bus Tie Controller)|0x8B82747D=Scroll through mode selections (mode button on 330/331/334/335)|0x8B83747C=Enable selected mode (scroll button on 330/331/334/335)|0x8B84747B=Mimic Mode Button Action (G8600 only)|0x8B94746B=Telemetry start if in auto mode|0x8B95746A=Cancel telemetry start in auto mode|0x8B967469=Reset alarms|0x8B977468=Clear telemetry alarm flag|0x8B987467=Lock the user controls|0x8B997466=Unlock the user controls|0x8B9A7465=Reset the maintenance alarm 1 due times|0x8B9B7464=MSC alarm inhibit on|0x8B9C7463=MSC alarm inhibit off|0x8B9D7462=Reset the maintenance alarm 2 due times|0x8B9E7461=Reset the maintenance alarm 3 due times|0x8BA2745D=Start data logging (temporarily overrides the module state)|0x8BA3745C=Stop data logging (temporarily overrides the module state)|0x8BA4745B=Erase all data log files internal to the module (NOT on USB)|0x8BA5745A=Force USB drive to stop logging, ready to eject|0x8BB67449=Reset battery maintenance alarm 1|0x8BB77448=Reset battery maintenance alarm 2|0x8BB87447=Reset battery maintenance alarm 3|0x8BB97446=Auto DPF regeneration inhibit on|0x8BBA7445=Auto DPF regeneration inhibit off|0x8BBB7444=Start manual DPF regeneration|0x8BBC7443=Battery Charger Boost Mode|0x8BBD7442=Battery Charger Stop Charging|0x8BBE7441=Battery Charger Battery Test|0x8BBF7440=Battery Charger Select Alternative Charging Voltage|0x8BC0743F=Select Off Mode|0x8BC1743E=Throttle Down|0x8BC2743D=Throttle Up|0x8BC3743C=Wake ECU|0x8BC4743B=Lamp Test|0x8BC5743A=Battery Charger Auxiliary Boost Mode|0x8BC67439=Battery Charger Auxiliary Stop Charging|0x8BC77438=Battery Charger Auxiliary Battery Test|0x8BC87437=Battery Charger Auxiliary Select Alternative Charging Voltage|0x8BC97436=Stop manual DPF regeneration|0x8BCA7435=DSE Proprietary|0x8BCB7434=Battery Charger Max Current Mode Timed|0x8BCC7433=Battery Charger max Current Mode Manual|0x8BCD7432=AVR Droop Enable|0x8BCE7431=AVR Droop Disable|0x8BCF7430=Governor Droop Enable|0x8BD0742F=Governor Droop Disable|0x8BD1742E=Remote Mains Fail Enable|0x8BD2742D=Remote Mains Fail Disable|0x8BD3742C=Remote Mains Fail Toggle (on then off, leaving the alarm latched but able to be reset)|0x8BD4742B=Enable signal injection|0x8BD5742A=Disable signal injection|0x8BD77428=Reset maintenance alarm 4 due times|0x8BD87427=Reset maintenance alarm 5 due times|0x8BD97426=Battery Charger Stop Charging Out 1|0x8BDA7425=Battery Charger Stop Charging Out 2|0x8BDB7424=Battery Charger Stop Charging Out 1 and Out 2|0x8BDC7423=Reset maintenance alarm 6 due times|0x8BDD7422=Reset maintenance alarm 7 due times|0x8BDE7421=Reset maintenance alarm 8 due times|0x8BDF7420=Reset maintenance alarm 9 due times|0x8BE0741F=Reset maintenance alarm 10 due times|0x8BE1741E=Switch to Multi Set platform (G8600 only)|0x8BE2741D=Switch to Single Set platform (G8600 only)|0x8BE3741C=Switch to Mains Parallel platform (G8600 or G8660)|0x8BE4741B=Switch to Group Controller platform (G8600 or G8660)
 
-name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,enum,description
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,bits,enum,description
 # Page 3 - status (base 768)
-Manufacturer code,Status,holding,768,uint16,,,,,R,,,,
-Model number,Status,holding,769,uint16,,,,,R,,,,
-Serial number,Status,holding,770,uint32,,,,,R,,,,
-Control mode,Status,holding,772,uint16,,,,,R,,,@control_mode,
-Control mode selection,Status,holding,773,uint16,,,,,R,,,@control_mode,Mode chosen with the single mode button (330/331/334/335)
-Control unit not configured,Status,holding,774,bool,,,,,R,,15,,
-Control unit failure,Status,holding,774,bool,,,,,R,,13,,
-Shutdown alarm active,Status,holding,774,bool,,,,,R,,12,,
-Electrical trip alarm active,Status,holding,774,bool,,,,,R,,11,,
-Warning alarm active,Status,holding,774,bool,,,,,R,,10,,
-Telemetry alarm,Status,holding,774,bool,,,,,R,,9,,
-Controlled shutdown alarm active,Status,holding,774,bool,,,,,R,,6,,
+Manufacturer code,Status,holding,768,uint16,,,,,R
+Model number,Status,holding,769,uint16,,,,,R
+Serial number,Status,holding,770,uint32,,,,,R
+Control mode,Status,holding,772,uint16,,,,,R,,,,@control_mode
+Control mode selection,Status,holding,773,uint16,,,,,R,,,,@control_mode,Mode chosen with the single mode button (330/331/334/335)
+Control unit not configured,Status,holding,774,bool,,,,,R,,15
+Control unit failure,Status,holding,774,bool,,,,,R,,13
+Shutdown alarm active,Status,holding,774,bool,,,,,R,,12
+Electrical trip alarm active,Status,holding,774,bool,,,,,R,,11
+Warning alarm active,Status,holding,774,bool,,,,,R,,10
+Telemetry alarm,Status,holding,774,bool,,,,,R,,9
+Satellite telemetry alarm,Status,holding,774,bool,,,,,R,,8
+No font file,Status,holding,774,bool,,,,,R,,7
+Controlled shutdown alarm active,Status,holding,774,bool,,,,,R,,6
+State machine 1 status,State machines,holding,775,uint16,,,,,R,,14,2,@sm_status
+State machine 2 status,State machines,holding,775,uint16,,,,,R,,12,2,@sm_status
+State machine 3 status,State machines,holding,775,uint16,,,,,R,,10,2,@sm_status
+State machine 4 status,State machines,holding,775,uint16,,,,,R,,8,2,@sm_status
+State machine 5 status,State machines,holding,775,uint16,,,,,R,,6,2,@sm_status
+State machine 6 status,State machines,holding,775,uint16,,,,,R,,4,2,@sm_status
+State machine 7 status,State machines,holding,775,uint16,,,,,R,,2,2,@sm_status
+State machine 8 status,State machines,holding,775,uint16,,,,,R,,0,2,@sm_status
+String checksum,Status,holding,776,uint32,,,,,R
+State machine 1 timer,State machines,holding,778,uint16,,,,s,R
+State machine 2 timer,State machines,holding,779,uint16,,,,s,R
+State machine 3 timer,State machines,holding,780,uint16,,,,s,R
+State machine 4 timer,State machines,holding,781,uint16,,,,s,R
+State machine 5 timer,State machines,holding,782,uint16,,,,s,R
+State machine 6 timer,State machines,holding,783,uint16,,,,s,R
+State machine 7 timer,State machines,holding,784,uint16,,,,s,R
+State machine 8 timer,State machines,holding,785,uint16,,,,s,R
+State machine 1 state,State machines,holding,786,uint16,,,,,R,,,,,Model specific state code
+State machine 2 state,State machines,holding,787,uint16,,,,,R,,,,,Model specific state code
+State machine 3 state,State machines,holding,788,uint16,,,,,R,,,,,Model specific state code
+State machine 4 state,State machines,holding,789,uint16,,,,,R,,,,,Model specific state code
+State machine 5 state,State machines,holding,790,uint16,,,,,R,,,,,Model specific state code
+State machine 6 state,State machines,holding,791,uint16,,,,,R,,,,,Model specific state code
+State machine 7 state,State machines,holding,792,uint16,,,,,R,,,,,Model specific state code
+State machine 8 state,State machines,holding,793,uint16,,,,,R,,,,,Model specific state code
+Change in event log contents,Status,holding,794,uint16,,,,,R,,,,0=No|1=Yes
+External panel lock active,Status,holding,806,bool,,,,,R,,15
+Stop and panel lock active,Status,holding,806,bool,,,,,R,,14
+Lock user controls active,Status,holding,806,bool,,,,,R,,13
+Telemetry panel lock active,Status,holding,806,bool,,,,,R,,12
+Telemetry start in auto,Status,holding,806,bool,,,,,R,,11
+Transducer supply,Status,holding,807,uint16,,,,,R
 # Page 4 - basic instrumentation (base 1024)
-Battery voltage,Supply,holding,1029,uint16,,0.1,,V,R,,,,Engine battery voltage register
-S1 frequency,S1,holding,1148,uint16,,0.1,,Hz,R,,,,
-S1 L1-N voltage,S1,holding,1149,uint32,,0.1,,V,R,,,,
-S1 L2-N voltage,S1,holding,1151,uint32,,0.1,,V,R,,,,
-S1 L3-N voltage,S1,holding,1153,uint32,,0.1,,V,R,,,,
-S1 L1-L2 voltage,S1,holding,1155,uint32,,0.1,,V,R,,,,
-S1 L2-L3 voltage,S1,holding,1157,uint32,,0.1,,V,R,,,,
-S1 L3-L1 voltage,S1,holding,1159,uint32,,0.1,,V,R,,,,
-S1 L1 current,S1,holding,1161,uint32,,0.1,,A,R,,,,
-S1 L2 current,S1,holding,1163,uint32,,0.1,,A,R,,,,
-S1 L3 current,S1,holding,1165,uint32,,0.1,,A,R,,,,
-S1 earth current,S1,holding,1167,uint32,,0.1,,A,R,,,,
-S1 L1 power,S1,holding,1169,int32,,,,W,R,,,,
-S1 L2 power,S1,holding,1171,int32,,,,W,R,,,,
-S1 L3 power,S1,holding,1173,int32,,,,W,R,,,,
-S1 current lag/lead,S1,holding,1175,int16,,,,°,R,,,,
-S1 phase rotation,S1,holding,1217,uint16,,,,,R,,,@phase_rotation,
-S2 frequency,S2,holding,1176,uint16,,0.1,,Hz,R,,,,
-S2 L1-N voltage,S2,holding,1177,uint32,,0.1,,V,R,,,,
-S2 L2-N voltage,S2,holding,1179,uint32,,0.1,,V,R,,,,
-S2 L3-N voltage,S2,holding,1181,uint32,,0.1,,V,R,,,,
-S2 L1-L2 voltage,S2,holding,1183,uint32,,0.1,,V,R,,,,
-S2 L2-L3 voltage,S2,holding,1185,uint32,,0.1,,V,R,,,,
-S2 L3-L1 voltage,S2,holding,1187,uint32,,0.1,,V,R,,,,
-S2 L1 current,S2,holding,1189,uint32,,0.1,,A,R,,,,
-S2 L2 current,S2,holding,1191,uint32,,0.1,,A,R,,,,
-S2 L3 current,S2,holding,1193,uint32,,0.1,,A,R,,,,
-S2 earth current,S2,holding,1195,uint32,,0.1,,A,R,,,,
-S2 L1 power,S2,holding,1197,int32,,,,W,R,,,,
-S2 L2 power,S2,holding,1199,int32,,,,W,R,,,,
-S2 L3 power,S2,holding,1201,int32,,,,W,R,,,,
-S2 current lag/lead,S2,holding,1203,int16,,,,°,R,,,,
-S2 phase rotation,S2,holding,1218,uint16,,,,,R,,,@phase_rotation,
-Load L1 current,Load,holding,1204,uint32,,0.1,,A,R,,,,
-Load L2 current,Load,holding,1206,uint32,,0.1,,A,R,,,,
-Load L3 current,Load,holding,1208,uint32,,0.1,,A,R,,,,
-Load L1 power,Load,holding,1210,int32,,,,W,R,,,,
-Load L2 power,Load,holding,1212,int32,,,,W,R,,,,
-Load L3 power,Load,holding,1214,int32,,,,W,R,,,,
-Load current lag/lead,Load,holding,1216,int16,,,,°,R,,,,
+Battery voltage,Supply,holding,1029,uint16,,0.1,,V,R,,,,,Engine battery voltage register
+S1 frequency,S1,holding,1148,uint16,,0.1,,Hz,R
+S1 L1-N voltage,S1,holding,1149,uint32,,0.1,,V,R
+S1 L2-N voltage,S1,holding,1151,uint32,,0.1,,V,R
+S1 L3-N voltage,S1,holding,1153,uint32,,0.1,,V,R
+S1 L1-L2 voltage,S1,holding,1155,uint32,,0.1,,V,R
+S1 L2-L3 voltage,S1,holding,1157,uint32,,0.1,,V,R
+S1 L3-L1 voltage,S1,holding,1159,uint32,,0.1,,V,R
+S1 L1 current,S1,holding,1161,uint32,,0.1,,A,R
+S1 L2 current,S1,holding,1163,uint32,,0.1,,A,R
+S1 L3 current,S1,holding,1165,uint32,,0.1,,A,R
+S1 earth current,S1,holding,1167,uint32,,0.1,,A,R
+S1 L1 power,S1,holding,1169,int32,,,,W,R
+S1 L2 power,S1,holding,1171,int32,,,,W,R
+S1 L3 power,S1,holding,1173,int32,,,,W,R
+S1 current lag/lead,S1,holding,1175,int16,,,,°,R
+S1 phase rotation,S1,holding,1217,uint16,,,,,R,,,,@phase_rotation
+S2 frequency,S2,holding,1176,uint16,,0.1,,Hz,R
+S2 L1-N voltage,S2,holding,1177,uint32,,0.1,,V,R
+S2 L2-N voltage,S2,holding,1179,uint32,,0.1,,V,R
+S2 L3-N voltage,S2,holding,1181,uint32,,0.1,,V,R
+S2 L1-L2 voltage,S2,holding,1183,uint32,,0.1,,V,R
+S2 L2-L3 voltage,S2,holding,1185,uint32,,0.1,,V,R
+S2 L3-L1 voltage,S2,holding,1187,uint32,,0.1,,V,R
+S2 L1 current,S2,holding,1189,uint32,,0.1,,A,R
+S2 L2 current,S2,holding,1191,uint32,,0.1,,A,R
+S2 L3 current,S2,holding,1193,uint32,,0.1,,A,R
+S2 earth current,S2,holding,1195,uint32,,0.1,,A,R
+S2 L1 power,S2,holding,1197,int32,,,,W,R
+S2 L2 power,S2,holding,1199,int32,,,,W,R
+S2 L3 power,S2,holding,1201,int32,,,,W,R
+S2 current lag/lead,S2,holding,1203,int16,,,,°,R
+S2 phase rotation,S2,holding,1218,uint16,,,,,R,,,,@phase_rotation
+Load L1 current,Load,holding,1204,uint32,,0.1,,A,R
+Load L2 current,Load,holding,1206,uint32,,0.1,,A,R
+Load L3 current,Load,holding,1208,uint32,,0.1,,A,R
+Load L1 power,Load,holding,1210,int32,,,,W,R
+Load L2 power,Load,holding,1212,int32,,,,W,R
+Load L3 power,Load,holding,1214,int32,,,,W,R
+Load current lag/lead,Load,holding,1216,int16,,,,°,R
 # Page 6 - derived instrumentation, 3xx layout (base 1536)
-S2 total power,S2,holding,1536,int32,,,,W,R,,,,
-S2 total apparent power,S2,holding,1544,uint32,,,,VA,R,,,,
-S2 total reactive power,S2,holding,1552,uint32,,,,var,R,,,,
-S2 average power factor,S2,holding,1557,int16,,0.01,,,R,,,,
-S2 percentage of full power,S2,holding,1558,int16,,0.1,,%,R,,,,
-S2 total lead/lag,S2,holding,1617,uint16,,,,,R,,,,Lead/lag code; values not defined for 3xx in GenComm
-S1 total power,S1,holding,1560,int32,,,,W,R,,,,
-S1 total apparent power,S1,holding,1568,uint32,,,,VA,R,,,,
-S1 total reactive power,S1,holding,1576,uint32,,,,var,R,,,,
-S1 average power factor,S1,holding,1581,int16,,0.01,,,R,,,,
-S1 percentage of full power,S1,holding,1582,int16,,0.1,,%,R,,,,
-S1 total lead/lag,S1,holding,1648,uint16,,,,,R,,,,Lead/lag code; values not defined for 3xx in GenComm
-335 misc status register 1,Status,holding,1649,uint16,,,,,R,,,,Bit meanings are not defined in GenComm
-335 misc status register 2,Status,holding,1650,uint16,,,,,R,,,,Bit meanings are not defined in GenComm
-335 misc status register 3,Status,holding,1651,uint16,,,,,R,,,,Bit meanings are not defined in GenComm
-# Page 7 - accumulated instrumentation, 3xx layout (base 1792)
-Controller clock,Counters,holding,1792,uint32,,,,s,R,,,,Seconds since 1970-01-01
-S2 positive energy,Counters,holding,1800,uint32,,0.1,,kWh,R,,,,
-S2 apparent energy,Counters,holding,1804,uint32,,0.1,,kVAh,R,,,,
-S2 reactive energy,Counters,holding,1806,uint32,,0.1,,kvarh,R,,,,
-S1 positive energy,Counters,holding,1810,uint32,,0.1,,kWh,R,,,,
-S1 apparent energy,Counters,holding,1814,uint32,,0.1,,kVAh,R,,,,
-S1 reactive energy,Counters,holding,1816,uint32,,0.1,,kvarh,R,,,,
+S2 total power,S2,holding,1536,int32,,,,W,R
+S2 L1 apparent power,S2,holding,1538,uint32,,,,VA,R
+S2 L2 apparent power,S2,holding,1540,uint32,,,,VA,R
+S2 L3 apparent power,S2,holding,1542,uint32,,,,VA,R
+S2 total apparent power,S2,holding,1544,uint32,,,,VA,R
+S2 L1 reactive power,S2,holding,1546,uint32,,,,var,R
+S2 L2 reactive power,S2,holding,1548,uint32,,,,var,R
+S2 L3 reactive power,S2,holding,1550,uint32,,,,var,R
+S2 total reactive power,S2,holding,1552,uint32,,,,var,R
+S2 L1 power factor,S2,holding,1554,int16,,0.01,,,R
+S2 L2 power factor,S2,holding,1555,int16,,0.01,,,R
+S2 L3 power factor,S2,holding,1556,int16,,0.01,,,R
+S2 average power factor,S2,holding,1557,int16,,0.01,,,R
+S2 percentage of full power,S2,holding,1558,int16,,0.1,,%,R
+S2 percentage of full reactive power,S2,holding,1559,int16,,0.1,,%,R
+S1 total power,S1,holding,1560,int32,,,,W,R
+S1 L1 apparent power,S1,holding,1562,uint32,,,,VA,R
+S1 L2 apparent power,S1,holding,1564,uint32,,,,VA,R
+S1 L3 apparent power,S1,holding,1566,uint32,,,,VA,R
+S1 total apparent power,S1,holding,1568,uint32,,,,VA,R
+S1 L1 reactive power,S1,holding,1570,uint32,,,,var,R
+S1 L2 reactive power,S1,holding,1572,uint32,,,,var,R
+S1 L3 reactive power,S1,holding,1574,uint32,,,,var,R
+S1 total reactive power,S1,holding,1576,uint32,,,,var,R
+S1 L1 power factor,S1,holding,1578,int16,,0.01,,,R
+S1 L2 power factor,S1,holding,1579,int16,,0.01,,,R
+S1 L3 power factor,S1,holding,1580,int16,,0.01,,,R
+S1 average power factor,S1,holding,1581,int16,,0.01,,,R
+S1 percentage of full power,S1,holding,1582,int16,,0.1,,%,R
+S1 percentage of full reactive power,S1,holding,1583,int16,,0.1,,%,R
+S2 L1 lead/lag,S2,holding,1614,uint16,,,,,R,,,,,Lead/lag code; values not defined for 3xx in GenComm
+S2 L2 lead/lag,S2,holding,1615,uint16,,,,,R,,,,,Lead/lag code; values not defined for 3xx in GenComm
+S2 L3 lead/lag,S2,holding,1616,uint16,,,,,R,,,,,Lead/lag code; values not defined for 3xx in GenComm
+S2 total lead/lag,S2,holding,1617,uint16,,,,,R,,,,,Lead/lag code; values not defined for 3xx in GenComm
+S1 L1 lead/lag,S1,holding,1645,uint16,,,,,R,,,,,Lead/lag code; values not defined for 3xx in GenComm
+S1 L2 lead/lag,S1,holding,1646,uint16,,,,,R,,,,,Lead/lag code; values not defined for 3xx in GenComm
+S1 L3 lead/lag,S1,holding,1647,uint16,,,,,R,,,,,Lead/lag code; values not defined for 3xx in GenComm
+S1 total lead/lag,S1,holding,1648,uint16,,,,,R,,,,,Lead/lag code; values not defined for 3xx in GenComm
+S2 L1 percentage of full power,S2,holding,1618,int16,,0.1,,%,R
+S2 L2 percentage of full power,S2,holding,1619,int16,,0.1,,%,R
+S2 L3 percentage of full power,S2,holding,1620,int16,,0.1,,%,R
+335 misc status register 1,Status,holding,1649,uint16,,,,,R,,,,,Bit meanings are not defined in GenComm
+335 misc status register 2,Status,holding,1650,uint16,,,,,R,,,,,Bit meanings are not defined in GenComm
+335 misc status register 3,Status,holding,1651,uint16,,,,,R,,,,,Bit meanings are not defined in GenComm
+# Page 7 - accumulated instrumentation, 3xx layout (base 1792). Read/write; some
+# systems may not support writing to some registers
+Controller clock,Counters,holding,1792,uint32,,,,s,RW,,,,,Seconds since 1970-01-01
+S2 positive energy,Counters,holding,1800,uint32,,0.1,,kWh,RW
+S2 apparent energy,Counters,holding,1804,uint32,,0.1,,kVAh,RW
+S2 reactive energy,Counters,holding,1806,uint32,,0.1,,kvarh,RW
+S1 positive energy,Counters,holding,1810,uint32,,0.1,,kWh,RW
+S1 apparent energy,Counters,holding,1814,uint32,,0.1,,kVAh,RW
+S1 reactive energy,Counters,holding,1816,uint32,,0.1,,kvarh,RW
+# Page 16 - control (base 4096). Writing System control operates the controller
+System control function 0 supported,Control,holding,4096,bool,,,,,R,,15
+System control function 1 supported,Control,holding,4096,bool,,,,,R,,14
+System control function 2 supported,Control,holding,4096,bool,,,,,R,,13
+System control function 3 supported,Control,holding,4096,bool,,,,,R,,12
+System control function 4 supported,Control,holding,4096,bool,,,,,R,,11
+System control function 5 supported,Control,holding,4096,bool,,,,,R,,10
+System control function 6 supported,Control,holding,4096,bool,,,,,R,,9
+System control function 7 supported,Control,holding,4096,bool,,,,,R,,8
+System control function 8 supported,Control,holding,4096,bool,,,,,R,,7
+System control function 9 supported,Control,holding,4096,bool,,,,,R,,6
+System control function 10 supported,Control,holding,4096,bool,,,,,R,,5
+System control function 11 supported,Control,holding,4096,bool,,,,,R,,4
+System control function 12 supported,Control,holding,4096,bool,,,,,R,,3
+System control function 13 supported,Control,holding,4096,bool,,,,,R,,2
+System control function 14 supported,Control,holding,4096,bool,,,,,R,,1
+System control function 15 supported,Control,holding,4096,bool,,,,,R,,0
+System control functions 16-31 supported,Control,holding,4097,uint16,,,,,R,,,,,"One flag per function, same bit order as functions 0-15"
+System control functions 32-47 supported,Control,holding,4098,uint16,,,,,R,,,,,"One flag per function, same bit order as functions 0-15"
+System control functions 48-63 supported,Control,holding,4099,uint16,,,,,R,,,,,"One flag per function, same bit order as functions 0-15"
+System control functions 64-79 supported,Control,holding,4100,uint16,,,,,R,,,,,"One flag per function, same bit order as functions 0-15"
+System control functions 80-95 supported,Control,holding,4101,uint16,,,,,R,,,,,"One flag per function, same bit order as functions 0-15"
+System control functions 96-111 supported,Control,holding,4102,uint16,,,,,R,,,,,"One flag per function, same bit order as functions 0-15"
+System control functions 112-127 supported,Control,holding,4103,uint16,,,,,R,,,,,"One flag per function, same bit order as functions 0-15"
+System control,Control,holding,4104,uint32,,,,,W,,,,@system_control,Writes the key and its ones' complement in a single FC16
+Signal injection,Control,holding,4128,uint32,,,,,W,,,,,"High word: channel (0 none, 4 all L-N in 0.001 PU, 8 all L-L in 0.001 PU, 9 frequency in 0.01 Hz); low word: value. Enable with system control 96; repeat at least every second"
+# Page 154 - named alarm conditions, 330/331/334/335 layout (base 39424)
+Number of named alarms,Alarms,holding,39424,uint16,,,,,R
+Battery high voltage,Alarms,holding,39425,uint16,,,,,R,,12,4,@alarm_condition
+Battery low voltage,Alarms,holding,39425,uint16,,,,,R,,8,4,@alarm_condition
+S2 failure latched,Alarms,holding,39425,uint16,,,,,R,,4,4,@alarm_condition
+S2 failure unlatched,Alarms,holding,39425,uint16,,,,,R,,0,4,@alarm_condition
+S1 failure latched,Alarms,holding,39426,uint16,,,,,R,,12,4,@alarm_condition
+S1 failure unlatched,Alarms,holding,39426,uint16,,,,,R,,8,4,@alarm_condition
+Fail to start,Alarms,holding,39426,uint16,,,,,R,,4,4,@alarm_condition
+Fail to stop,Alarms,holding,39426,uint16,,,,,R,,0,4,@alarm_condition
+Failed to reach loading voltage,Alarms,holding,39427,uint16,,,,,R,,12,4,@alarm_condition
+Failed to reach loading frequency,Alarms,holding,39427,uint16,,,,,R,,8,4,@alarm_condition
+Calibration lost,Alarms,holding,39427,uint16,,,,,R,,0,4,@alarm_condition
+S2 gen under frequency,Alarms,holding,39428,uint16,,,,,R,,12,4,@alarm_condition
+S2 gen over frequency,Alarms,holding,39428,uint16,,,,,R,,8,4,@alarm_condition
+S2 gen low voltage,Alarms,holding,39428,uint16,,,,,R,,4,4,@alarm_condition
+S2 gen high voltage,Alarms,holding,39428,uint16,,,,,R,,0,4,@alarm_condition
+S2 mains under frequency,Alarms,holding,39429,uint16,,,,,R,,12,4,@alarm_condition
+S2 mains over frequency,Alarms,holding,39429,uint16,,,,,R,,8,4,@alarm_condition
+S2 mains low voltage,Alarms,holding,39429,uint16,,,,,R,,4,4,@alarm_condition
+S2 mains voltage,Alarms,holding,39429,uint16,,,,,R,,0,4,@alarm_condition
+S1 mains under frequency,Alarms,holding,39430,uint16,,,,,R,,12,4,@alarm_condition
+S1 mains over frequency,Alarms,holding,39430,uint16,,,,,R,,8,4,@alarm_condition
+S1 mains low voltage,Alarms,holding,39430,uint16,,,,,R,,4,4,@alarm_condition
+S1 mains high voltage,Alarms,holding,39430,uint16,,,,,R,,0,4,@alarm_condition
+Load shedding,Alarms,holding,39431,uint16,,,,,R,,12,4,@alarm_condition
+Load return,Alarms,holding,39431,uint16,,,,,R,,8,4,@alarm_condition
+S1 phase rotation alarm,Alarms,holding,39431,uint16,,,,,R,,4,4,@alarm_condition
+S2 phase rotation alarm,Alarms,holding,39431,uint16,,,,,R,,0,4,@alarm_condition
+S1 breaker aux fail,Alarms,holding,39432,uint16,,,,,R,,12,4,@alarm_condition
+S2 breaker aux fail,Alarms,holding,39432,uint16,,,,,R,,8,4,@alarm_condition
+S1 failed to open,Alarms,holding,39432,uint16,,,,,R,,4,4,@alarm_condition
+S1 failed to close,Alarms,holding,39432,uint16,,,,,R,,0,4,@alarm_condition
+S2 failed to open,Alarms,holding,39433,uint16,,,,,R,,12,4,@alarm_condition
+S2 failed to close,Alarms,holding,39433,uint16,,,,,R,,8,4,@alarm_condition
+S1 and S2 open,Alarms,holding,39433,uint16,,,,,R,,4,4,@alarm_condition
+S1 and S2 closed,Alarms,holding,39433,uint16,,,,,R,,0,4,@alarm_condition
+# Page 170 - input status, 3xx layout (base 43520)
+Digital input A raw status,Inputs,holding,43520,uint16,,,,,R
+Digital input A processed status,Inputs,holding,43521,uint16,,,,,R
+Digital input B raw status,Inputs,holding,43522,uint16,,,,,R
+Digital input B processed status,Inputs,holding,43523,uint16,,,,,R
+Digital input C raw status,Inputs,holding,43524,uint16,,,,,R
+Digital input C processed status,Inputs,holding,43525,uint16,,,,,R
+Digital input D raw status,Inputs,holding,43526,uint16,,,,,R
+Digital input D processed status,Inputs,holding,43527,uint16,,,,,R
+Digital input E raw status,Inputs,holding,43528,uint16,,,,,R
+Digital input E processed status,Inputs,holding,43529,uint16,,,,,R
+Digital input F raw status,Inputs,holding,43530,uint16,,,,,R
+Digital input F processed status,Inputs,holding,43531,uint16,,,,,R
+Digital input G raw status,Inputs,holding,43532,uint16,,,,,R
+Digital input G processed status,Inputs,holding,43533,uint16,,,,,R
+Digital input H raw status,Inputs,holding,43534,uint16,,,,,R
+Digital input H processed status,Inputs,holding,43535,uint16,,,,,R
+Digital input I raw status,Inputs,holding,43536,uint16,,,,,R
+Digital input I processed status,Inputs,holding,43537,uint16,,,,,R
+Digital input J raw status,Inputs,holding,43538,uint16,,,,,R
+Digital input J processed status,Inputs,holding,43539,uint16,,,,,R
+Digital input K raw status,Inputs,holding,43540,uint16,,,,,R
+Digital input K processed status,Inputs,holding,43541,uint16,,,,,R
+Digital input L raw status,Inputs,holding,43542,uint16,,,,,R
+Digital input L processed status,Inputs,holding,43543,uint16,,,,,R
+2130 module 0 input A raw status,Expansion,holding,43552,uint16,,,,,R
+2130 module 0 input A processed status,Expansion,holding,43553,uint16,,,,,R
+2130 module 0 input B raw status,Expansion,holding,43554,uint16,,,,,R
+2130 module 0 input B processed status,Expansion,holding,43555,uint16,,,,,R
+2130 module 0 input C raw status,Expansion,holding,43556,uint16,,,,,R
+2130 module 0 input C processed status,Expansion,holding,43557,uint16,,,,,R
+2130 module 0 input D raw status,Expansion,holding,43558,uint16,,,,,R
+2130 module 0 input D processed status,Expansion,holding,43559,uint16,,,,,R
+2130 module 0 input E raw status,Expansion,holding,43560,uint16,,,,,R
+2130 module 0 input E processed status,Expansion,holding,43561,uint16,,,,,R
+2130 module 0 input F raw status,Expansion,holding,43562,uint16,,,,,R
+2130 module 0 input F processed status,Expansion,holding,43563,uint16,,,,,R
+2130 module 0 input G raw status,Expansion,holding,43564,uint16,,,,,R
+2130 module 0 input G processed status,Expansion,holding,43565,uint16,,,,,R
+2130 module 0 input H raw status,Expansion,holding,43566,uint16,,,,,R
+2130 module 0 input H processed status,Expansion,holding,43567,uint16,,,,,R
+2130 module 1 input A raw status,Expansion,holding,43568,uint16,,,,,R
+2130 module 1 input A processed status,Expansion,holding,43569,uint16,,,,,R
+2130 module 1 input B raw status,Expansion,holding,43570,uint16,,,,,R
+2130 module 1 input B processed status,Expansion,holding,43571,uint16,,,,,R
+2130 module 1 input C raw status,Expansion,holding,43572,uint16,,,,,R
+2130 module 1 input C processed status,Expansion,holding,43573,uint16,,,,,R
+2130 module 1 input D raw status,Expansion,holding,43574,uint16,,,,,R
+2130 module 1 input D processed status,Expansion,holding,43575,uint16,,,,,R
+2130 module 1 input E raw status,Expansion,holding,43576,uint16,,,,,R
+2130 module 1 input E processed status,Expansion,holding,43577,uint16,,,,,R
+2130 module 1 input F raw status,Expansion,holding,43578,uint16,,,,,R
+2130 module 1 input F processed status,Expansion,holding,43579,uint16,,,,,R
+2130 module 1 input G raw status,Expansion,holding,43580,uint16,,,,,R
+2130 module 1 input G processed status,Expansion,holding,43581,uint16,,,,,R
+2130 module 1 input H raw status,Expansion,holding,43582,uint16,,,,,R
+2130 module 1 input H processed status,Expansion,holding,43583,uint16,,,,,R
+2130 module 0 analogue E sender category,Expansion,holding,43712,uint16,,,,,R,,,,@sender_category
+2130 module 0 analogue E reading,Expansion,holding,43713,int16,,,,,R,,,,,"Units follow the sender category (kPa, °C, %)"
+2130 module 0 analogue F sender category,Expansion,holding,43716,uint16,,,,,R,,,,@sender_category
+2130 module 0 analogue F reading,Expansion,holding,43717,int16,,,,,R,,,,,"Units follow the sender category (kPa, °C, %)"
+2130 module 0 analogue G sender category,Expansion,holding,43720,uint16,,,,,R,,,,@sender_category
+2130 module 0 analogue G reading,Expansion,holding,43721,int16,,,,,R,,,,,"Units follow the sender category (kPa, °C, %)"
+2130 module 0 analogue H sender category,Expansion,holding,43724,uint16,,,,,R,,,,@sender_category
+2130 module 0 analogue H reading,Expansion,holding,43725,int16,,,,,R,,,,,"Units follow the sender category (kPa, °C, %)"
+2130 module 1 analogue E sender category,Expansion,holding,43728,uint16,,,,,R,,,,@sender_category
+2130 module 1 analogue E reading,Expansion,holding,43729,int16,,,,,R,,,,,"Units follow the sender category (kPa, °C, %)"
+2130 module 1 analogue F sender category,Expansion,holding,43732,uint16,,,,,R,,,,@sender_category
+2130 module 1 analogue F reading,Expansion,holding,43733,int16,,,,,R,,,,,"Units follow the sender category (kPa, °C, %)"
+2130 module 1 analogue G sender category,Expansion,holding,43736,uint16,,,,,R,,,,@sender_category
+2130 module 1 analogue G reading,Expansion,holding,43737,int16,,,,,R,,,,,"Units follow the sender category (kPa, °C, %)"
+2130 module 1 analogue H sender category,Expansion,holding,43740,uint16,,,,,R,,,,@sender_category
+2130 module 1 analogue H reading,Expansion,holding,43741,int16,,,,,R,,,,,"Units follow the sender category (kPa, °C, %)"
+# Page 171 - PLC alarms, 3xx layout (base 43776)
+PLC alarm 1 trigger,PLC,holding,43872,uint16,,,,,R
+PLC alarm 1 condition,PLC,holding,43873,uint16,,,,,R
+PLC alarm 2 trigger,PLC,holding,43874,uint16,,,,,R
+PLC alarm 2 condition,PLC,holding,43875,uint16,,,,,R
+PLC alarm 3 trigger,PLC,holding,43876,uint16,,,,,R
+PLC alarm 3 condition,PLC,holding,43877,uint16,,,,,R
+PLC alarm 4 trigger,PLC,holding,43878,uint16,,,,,R
+PLC alarm 4 condition,PLC,holding,43879,uint16,,,,,R
+PLC alarm 5 trigger,PLC,holding,43880,uint16,,,,,R
+PLC alarm 5 condition,PLC,holding,43881,uint16,,,,,R
+PLC alarm 6 trigger,PLC,holding,43882,uint16,,,,,R
+PLC alarm 6 condition,PLC,holding,43883,uint16,,,,,R
+PLC alarm 7 trigger,PLC,holding,43884,uint16,,,,,R
+PLC alarm 7 condition,PLC,holding,43885,uint16,,,,,R
+PLC alarm 8 trigger,PLC,holding,43886,uint16,,,,,R
+PLC alarm 8 condition,PLC,holding,43887,uint16,,,,,R
+PLC alarm 9 trigger,PLC,holding,43888,uint16,,,,,R
+PLC alarm 9 condition,PLC,holding,43889,uint16,,,,,R
+PLC alarm 10 trigger,PLC,holding,43890,uint16,,,,,R
+PLC alarm 10 condition,PLC,holding,43891,uint16,,,,,R
+PLC alarm 11 trigger,PLC,holding,43892,uint16,,,,,R
+PLC alarm 11 condition,PLC,holding,43893,uint16,,,,,R
+PLC alarm 12 trigger,PLC,holding,43894,uint16,,,,,R
+PLC alarm 12 condition,PLC,holding,43895,uint16,,,,,R
+PLC alarm 13 trigger,PLC,holding,43896,uint16,,,,,R
+PLC alarm 13 condition,PLC,holding,43897,uint16,,,,,R
+PLC alarm 14 trigger,PLC,holding,43898,uint16,,,,,R
+PLC alarm 14 condition,PLC,holding,43899,uint16,,,,,R
+PLC alarm 15 trigger,PLC,holding,43900,uint16,,,,,R
+PLC alarm 15 condition,PLC,holding,43901,uint16,,,,,R
+PLC alarm 16 trigger,PLC,holding,43902,uint16,,,,,R
+PLC alarm 16 condition,PLC,holding,43903,uint16,,,,,R
+PLC alarm 17 trigger,PLC,holding,43904,uint16,,,,,R
+PLC alarm 17 condition,PLC,holding,43905,uint16,,,,,R
+PLC alarm 18 trigger,PLC,holding,43906,uint16,,,,,R
+PLC alarm 18 condition,PLC,holding,43907,uint16,,,,,R
+PLC alarm 19 trigger,PLC,holding,43908,uint16,,,,,R
+PLC alarm 19 condition,PLC,holding,43909,uint16,,,,,R
+PLC alarm 20 trigger,PLC,holding,43910,uint16,,,,,R
+PLC alarm 20 condition,PLC,holding,43911,uint16,,,,,R
+# Page 180 - output sources and polarities, 335 layout (base 46080)
+Digital output A source,Output config,holding,46080,uint16,,,,,R
+Digital output A polarity,Output config,holding,46081,uint16,,,,,R
+Digital output B source,Output config,holding,46082,uint16,,,,,R
+Digital output B polarity,Output config,holding,46083,uint16,,,,,R
+Digital output C source,Output config,holding,46084,uint16,,,,,R
+Digital output C polarity,Output config,holding,46085,uint16,,,,,R
+Digital output D source,Output config,holding,46086,uint16,,,,,R
+Digital output D polarity,Output config,holding,46087,uint16,,,,,R
+Digital output E source,Output config,holding,46088,uint16,,,,,R
+Digital output E polarity,Output config,holding,46089,uint16,,,,,R
+Digital output F source,Output config,holding,46090,uint16,,,,,R
+Digital output F polarity,Output config,holding,46091,uint16,,,,,R
+Digital output G source,Output config,holding,46092,uint16,,,,,R
+Digital output G polarity,Output config,holding,46093,uint16,,,,,R
+Digital output H source,Output config,holding,46094,uint16,,,,,R
+Digital output H polarity,Output config,holding,46095,uint16,,,,,R
+Digital output I source,Output config,holding,46096,uint16,,,,,R
+Digital output I polarity,Output config,holding,46097,uint16,,,,,R
+Digital output J source,Output config,holding,46098,uint16,,,,,R
+Digital output J polarity,Output config,holding,46099,uint16,,,,,R
+Digital output K source,Output config,holding,46100,uint16,,,,,R
+Digital output K polarity,Output config,holding,46101,uint16,,,,,R
+Digital output L source,Output config,holding,46102,uint16,,,,,R
+Digital output L polarity,Output config,holding,46103,uint16,,,,,R
+Stop LED source,Output config,holding,46104,uint16,,,,,R
+Stop LED polarity,Output config,holding,46105,uint16,,,,,R
+Manual LED source,Output config,holding,46106,uint16,,,,,R
+Manual LED polarity,Output config,holding,46107,uint16,,,,,R
+Mode LED source,Output config,holding,46108,uint16,,,,,R
+Mode LED polarity,Output config,holding,46109,uint16,,,,,R
+Auto LED source,Output config,holding,46110,uint16,,,,,R
+Auto LED polarity,Output config,holding,46111,uint16,,,,,R
+S2 breaker LED source,Output config,holding,46112,uint16,,,,,R
+S2 breaker LED polarity,Output config,holding,46113,uint16,,,,,R
+S1 breaker LED source,Output config,holding,46114,uint16,,,,,R
+S1 breaker LED polarity,Output config,holding,46115,uint16,,,,,R
+S2 available LED source,Output config,holding,46116,uint16,,,,,R
+S2 available LED polarity,Output config,holding,46117,uint16,,,,,R
+S1 available LED source,Output config,holding,46118,uint16,,,,,R
+S1 available LED polarity,Output config,holding,46119,uint16,,,,,R
+User LED 1 source,Output config,holding,46120,uint16,,,,,R
+User LED 1 polarity,Output config,holding,46121,uint16,,,,,R
+User LED 2 source,Output config,holding,46122,uint16,,,,,R
+User LED 2 polarity,Output config,holding,46123,uint16,,,,,R
+User LED 3 source,Output config,holding,46124,uint16,,,,,R
+User LED 3 polarity,Output config,holding,46125,uint16,,,,,R
+User LED 4 source,Output config,holding,46126,uint16,,,,,R
+User LED 4 polarity,Output config,holding,46127,uint16,,,,,R
+User LED 1 colour,Output config,holding,46128,uint16,,,,,R
+User LED 2 colour,Output config,holding,46129,uint16,,,,,R
+User LED 3 colour,Output config,holding,46130,uint16,,,,,R
+User LED 4 colour,Output config,holding,46131,uint16,,,,,R
+# Page 190 - output status, 335 layout (base 48640)
+Digital output A status,Outputs,holding,48640,uint16,,,,,R
+Digital output B status,Outputs,holding,48641,uint16,,,,,R
+Digital output C status,Outputs,holding,48642,uint16,,,,,R
+Digital output D status,Outputs,holding,48643,uint16,,,,,R
+Digital output E status,Outputs,holding,48644,uint16,,,,,R
+Digital output F status,Outputs,holding,48645,uint16,,,,,R
+Digital output G status,Outputs,holding,48646,uint16,,,,,R
+Digital output H status,Outputs,holding,48647,uint16,,,,,R
+Digital output I status,Outputs,holding,48648,uint16,,,,,R
+Digital output J status,Outputs,holding,48649,uint16,,,,,R
+Digital output K status,Outputs,holding,48650,uint16,,,,,R
+Digital output L status,Outputs,holding,48651,uint16,,,,,R
+Stop LED,Outputs,holding,48656,uint16,,,,,R
+Manual LED,Outputs,holding,48657,uint16,,,,,R
+Mode LED,Outputs,holding,48658,uint16,,,,,R
+Auto LED,Outputs,holding,48659,uint16,,,,,R
+S2 breaker LED,Outputs,holding,48660,uint16,,,,,R
+S1 breaker LED,Outputs,holding,48661,uint16,,,,,R
+S2 available LED,Outputs,holding,48662,uint16,,,,,R
+S1 available LED,Outputs,holding,48663,uint16,,,,,R
+User LED 1,Outputs,holding,48664,uint16,,,,,R
+User LED 2,Outputs,holding,48665,uint16,,,,,R
+User LED 3,Outputs,holding,48666,uint16,,,,,R
+User LED 4,Outputs,holding,48667,uint16,,,,,R
