@@ -1,0 +1,286 @@
+# Carlo Gavazzi EM530 and EM540 energy analysers (RS485).
+# FC03 and FC04 return the same values; this map reads everything as holding registers.
+# Tables 4.1 and 4.2 of the protocol hold the same values at two addresses; the second copy is in the group "By phase (copy)".
+@mbmap=1
+@vendor=Carlo Gavazzi
+@model=EM530 / EM540
+@vendor_website=gavazziautomation.com
+@description=Three-phase energy analysers with RS485 (EM530 and EM540, standard and MID PFA/PFB/PFC). Some setup registers are read-only or missing on MID and AV2 models
+@source=Carlo Gavazzi, "EM530/EM540 Modbus communication protocol", public version 1.3 (2024-02-13), tables 4.1-4.24; https://www.gavazziautomation.com/fileadmin/images/PIM/OTHERSTUFF/COMPRO/EM500_CPP_Mod_V1.3_13022024.pdf
+@protocol=rtu
+@unit_id=1
+@baudrate=9600
+@parity=N
+@databits=8
+@stopbits=1
+@byte_order=CDAB
+@address_base=0
+@max_read_registers=20
+@enum_phase_sequence=-1=L1-L3-L2|1=L1-L2-L3
+@enum_load_type=-1=C (capacitive)|1=L (inductive)
+@enum_model_code=1744=EM530 X|1745=EM530 PFA|1746=EM530 PFB|1747=EM530 PFC|1760=EM540 X|1761=EM540 PFA|1762=EM540 PFB|1763=EM540 PFC
+@enum_page_filter=0=No filter|1=Filter|2=Screen saver
+
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,bits,enum,description
+V L1-N,Voltage,holding,0,int32,,0.1,,V,R
+V L2-N,Voltage,holding,2,int32,,0.1,,V,R
+V L3-N,Voltage,holding,4,int32,,0.1,,V,R
+V L1-L2,Voltage,holding,6,int32,,0.1,,V,R
+V L2-L3,Voltage,holding,8,int32,,0.1,,V,R
+V L3-L1,Voltage,holding,10,int32,,0.1,,V,R
+A L1,Current,holding,12,int32,,0.001,,A,R
+A L2,Current,holding,14,int32,,0.001,,A,R
+A L3,Current,holding,16,int32,,0.001,,A,R
+W L1,Power,holding,18,int32,,0.1,,W,R
+W L2,Power,holding,20,int32,,0.1,,W,R
+W L3,Power,holding,22,int32,,0.1,,W,R
+VA L1,Power,holding,24,int32,,0.1,,VA,R
+VA L2,Power,holding,26,int32,,0.1,,VA,R
+VA L3,Power,holding,28,int32,,0.1,,VA,R
+var L1,Power,holding,30,int32,,0.1,,var,R
+var L2,Power,holding,32,int32,,0.1,,var,R
+var L3,Power,holding,34,int32,,0.1,,var,R
+V L-N sys,Voltage,holding,36,int32,,0.1,,V,R
+V L-L sys,Voltage,holding,38,int32,,0.1,,V,R
+W sys,Power,holding,40,int32,,0.1,,W,R
+VA sys,Power,holding,42,int32,,0.1,,VA,R
+var sys,Power,holding,44,int32,,0.1,,var,R
+PF L1,Power factor,holding,46,int16,,0.001,,,R,,,,,"Negative = exported active power, positive = imported. See the L/C rows for inductive or capacitive load"
+PF L2,Power factor,holding,47,int16,,0.001,,,R,,,,,"Negative = exported active power, positive = imported. See the L/C rows for inductive or capacitive load"
+PF L3,Power factor,holding,48,int16,,0.001,,,R,,,,,"Negative = exported active power, positive = imported. See the L/C rows for inductive or capacitive load"
+PF sys,Power factor,holding,49,int16,,0.001,,,R,,,,,"Negative = exported active power, positive = imported. See the L/C rows for inductive or capacitive load"
+Phase sequence,System,holding,50,int16,,,,,R,,,,@phase_sequence,Meaningful only in a 3-phase system
+Hz,System,holding,51,int16,,0.1,,Hz,R
+kWh (+) TOT,Energy,holding,52,int32,,0.1,,kWh,R
+kvarh (+) TOT,Energy,holding,54,int32,,0.1,,kvarh,R
+W sys DMD,Demand,holding,56,int32,,0.1,,W,R
+W sys DMD MAX,Demand,holding,58,int32,,0.1,,W,R
+kWh (+) PARTIAL,Energy,holding,60,int32,,0.1,,kWh,R
+kvarh (+) PARTIAL,Energy,holding,62,int32,,0.1,,kvarh,R
+kWh (+) L1,Energy,holding,64,int32,,0.1,,kWh,R
+kWh (+) L2,Energy,holding,66,int32,,0.1,,kWh,R
+kWh (+) L3,Energy,holding,68,int32,,0.1,,kWh,R
+kWh (+) t1,Energy,holding,70,int32,,0.1,,kWh,R
+kWh (+) t2,Energy,holding,72,int32,,0.1,,kWh,R
+kWh (-) TOT,Energy,holding,78,int32,,0.1,,kWh,R
+kvarh (-) TOT,Energy,holding,80,int32,,0.1,,kvarh,R
+kWh (-) PARTIAL,Energy,holding,82,int32,,0.1,,kWh,R
+kvarh (-) PARTIAL,Energy,holding,84,int32,,0.1,,kvarh,R
+kVAh TOT,Energy,holding,86,int32,,0.1,,kVAh,R
+kVAh PARTIAL,Energy,holding,88,int32,,0.1,,kVAh,R
+Run hour meter,Run hours,holding,90,int32,,0.01,,h,R
+Run hour meter kWh (-),Run hours,holding,92,int32,,0.01,,h,R
+Run hour meter PARTIAL,Run hours,holding,110,int32,,0.01,,h,R
+Run hour meter kWh (-) PARTIAL,Run hours,holding,112,int32,,0.01,,h,R
+PF L1 (lead/lag),Power factor,holding,114,int16,,0.001,,,R,,,,,"Negative = lead (C), positive = lag (L)"
+PF L2 (lead/lag),Power factor,holding,115,int16,,0.001,,,R,,,,,"Negative = lead (C), positive = lag (L)"
+PF L3 (lead/lag),Power factor,holding,116,int16,,0.001,,,R,,,,,"Negative = lead (C), positive = lag (L)"
+PF sys (lead/lag),Power factor,holding,117,int16,,0.001,,,R,,,,,"Negative = lead (C), positive = lag (L)"
+Load type L1,Power factor,holding,118,int16,,,,,R,,,,@load_type
+Load type L2,Power factor,holding,119,int16,,,,,R,,,,@load_type
+Load type L3,Power factor,holding,120,int16,,,,,R,,,,@load_type
+Load type sys,Power factor,holding,121,int16,,,,,R,,,,@load_type
+THD A L1,Harmonics,holding,130,int32,,0.01,,%,R
+THD A L2,Harmonics,holding,132,int32,,0.01,,%,R
+THD A L3,Harmonics,holding,134,int32,,0.01,,%,R
+THD V L1-N,Harmonics,holding,138,int32,,0.01,,%,R
+THD V L2-N,Harmonics,holding,140,int32,,0.01,,%,R
+THD V L3-N,Harmonics,holding,142,int32,,0.01,,%,R
+THD V L1-L2,Harmonics,holding,146,int32,,0.01,,%,R
+THD V L2-L3,Harmonics,holding,148,int32,,0.01,,%,R
+THD V L3-L1,Harmonics,holding,150,int32,,0.01,,%,R
+A neutral,Current,holding,152,int32,,0.001,,A,R
+I1 DMD,Demand,holding,154,int32,,0.001,,A,R
+I2 DMD,Demand,holding,156,int32,,0.001,,A,R
+I3 DMD,Demand,holding,158,int32,,0.001,,A,R
+I1 DMDMAX,Demand,holding,160,int32,,0.001,,A,R
+I2 DMDMAX,Demand,holding,162,int32,,0.001,,A,R
+I3 DMDMAX,Demand,holding,164,int32,,0.001,,A,R
+W1 DMD,Demand,holding,172,int32,,0.1,,W,R
+W2 DMD,Demand,holding,174,int32,,0.1,,W,R
+W3 DMD,Demand,holding,176,int32,,0.1,,W,R
+W1 DMDMAX,Demand,holding,178,int32,,0.1,,W,R
+W2 DMDMAX,Demand,holding,180,int32,,0.1,,W,R
+W3 DMDMAX,Demand,holding,182,int32,,0.1,,W,R
+W sys DMD (copy),Demand,holding,190,int32,,0.1,,W,R,,,,,Same value as 0038h
+W sys DMD MAX (copy),Demand,holding,192,int32,,0.1,,W,R,,,,,Same value as 003Ah
+VA DMD,Demand,holding,214,int32,,0.1,,VA,R
+VA DMD MAX,Demand,holding,216,int32,,0.1,,VA,R
+Run hour meter kWh (-) (by phase),By phase (copy),holding,246,int32,,0.01,,h,R
+A neutral (by phase),By phase (copy),holding,248,int32,,0.001,,A,R
+Run hour meter (by phase),By phase (copy),holding,254,int32,,0.01,,h,R
+V L-N sys (by phase),By phase (copy),holding,258,int32,,0.1,,V,R
+V L-L sys (by phase),By phase (copy),holding,260,int32,,0.1,,V,R
+W sys (by phase),By phase (copy),holding,262,int32,,0.1,,W,R
+VA sys (by phase),By phase (copy),holding,264,int32,,0.1,,VA,R
+var sys (by phase),By phase (copy),holding,266,int32,,0.1,,var,R
+PF sys (by phase),By phase (copy),holding,268,int32,,0.001,,,R
+Phase sequence (by phase),By phase (copy),holding,270,int32,,,,,R,,,,@phase_sequence
+Hz (by phase),By phase (copy),holding,272,int32,,0.1,,Hz,R
+kWh (+) TOT (by phase),By phase (copy),holding,274,int32,,0.1,,kWh,R
+kvarh (+) TOT (by phase),By phase (copy),holding,276,int32,,0.1,,kvarh,R
+kWh (-) TOT (by phase),By phase (copy),holding,278,int32,,0.1,,kWh,R
+kvarh (-) TOT (by phase),By phase (copy),holding,280,int32,,0.1,,kvarh,R
+W sys DMD (by phase),By phase (copy),holding,282,int32,,0.1,,W,R
+W sys DMD MAX (by phase),By phase (copy),holding,284,int32,,0.1,,W,R
+V L1-L2 (by phase),By phase (copy),holding,286,int32,,0.1,,V,R
+V L1-N (by phase),By phase (copy),holding,288,int32,,0.1,,V,R
+A L1 (by phase),By phase (copy),holding,290,int32,,0.001,,A,R
+W L1 (by phase),By phase (copy),holding,292,int32,,0.1,,W,R
+VA L1 (by phase),By phase (copy),holding,294,int32,,0.1,,VA,R
+var L1 (by phase),By phase (copy),holding,296,int32,,0.1,,var,R
+PF L1 (by phase),By phase (copy),holding,298,int32,,0.001,,,R
+V L2-L3 (by phase),By phase (copy),holding,300,int32,,0.1,,V,R
+V L2-N (by phase),By phase (copy),holding,302,int32,,0.1,,V,R
+A L2 (by phase),By phase (copy),holding,304,int32,,0.001,,A,R
+W L2 (by phase),By phase (copy),holding,306,int32,,0.1,,W,R
+VA L2 (by phase),By phase (copy),holding,308,int32,,0.1,,VA,R
+var L2 (by phase),By phase (copy),holding,310,int32,,0.1,,var,R
+PF L2 (by phase),By phase (copy),holding,312,int32,,0.001,,,R
+V L3-L1 (by phase),By phase (copy),holding,314,int32,,0.1,,V,R
+V L3-N (by phase),By phase (copy),holding,316,int32,,0.1,,V,R
+A L3 (by phase),By phase (copy),holding,318,int32,,0.001,,A,R
+W L3 (by phase),By phase (copy),holding,320,int32,,0.1,,W,R
+VA L3 (by phase),By phase (copy),holding,322,int32,,0.1,,VA,R
+var L3 (by phase),By phase (copy),holding,324,int32,,0.1,,var,R
+PF L3 (by phase),By phase (copy),holding,326,int32,,0.001,,,R
+kWh (+) PARTIAL (by phase),By phase (copy),holding,328,int32,,0.1,,kWh,R
+kvarh (+) PARTIAL (by phase),By phase (copy),holding,330,int32,,0.1,,kvarh,R
+kWh (+) L1 (by phase),By phase (copy),holding,332,int32,,0.1,,kWh,R
+kWh (+) L2 (by phase),By phase (copy),holding,334,int32,,0.1,,kWh,R
+kWh (+) L3 (by phase),By phase (copy),holding,336,int32,,0.1,,kWh,R
+kWh (+) t1 (by phase),By phase (copy),holding,338,int32,,0.1,,kWh,R
+kWh (+) t2 (by phase),By phase (copy),holding,340,int32,,0.1,,kWh,R
+kWh (-) PARTIAL (by phase),By phase (copy),holding,346,int32,,0.1,,kWh,R
+kvarh (-) PARTIAL (by phase),By phase (copy),holding,348,int32,,0.1,,kvarh,R
+kVAh TOT (by phase),By phase (copy),holding,350,int32,,0.1,,kVAh,R
+kVAh PARTIAL (by phase),By phase (copy),holding,352,int32,,0.1,,kVAh,R
+THD A L1 (by phase),By phase (copy),holding,384,int32,,0.01,,%,R
+THD V L1-N (by phase),By phase (copy),holding,386,int32,,0.01,,%,R
+THD V L1-L2 (by phase),By phase (copy),holding,388,int32,,0.01,,%,R
+I1 DMD (by phase),By phase (copy),holding,390,int32,,0.001,,A,R
+I1 DMDMAX (by phase),By phase (copy),holding,392,int32,,0.001,,A,R
+W1 DMD (by phase),By phase (copy),holding,396,int32,,0.1,,W,R
+W1 DMDMAX (by phase),By phase (copy),holding,398,int32,,0.1,,W,R
+THD A L2 (by phase),By phase (copy),holding,402,int32,,0.01,,%,R
+THD V L2-N (by phase),By phase (copy),holding,404,int32,,0.01,,%,R
+THD V L2-L3 (by phase),By phase (copy),holding,406,int32,,0.01,,%,R
+I2 DMD (by phase),By phase (copy),holding,408,int32,,0.001,,A,R
+I2 DMDMAX (by phase),By phase (copy),holding,410,int32,,0.001,,A,R
+W2 DMD (by phase),By phase (copy),holding,414,int32,,0.1,,W,R
+W2 DMDMAX (by phase),By phase (copy),holding,416,int32,,0.1,,W,R
+THD A L3 (by phase),By phase (copy),holding,420,int32,,0.01,,%,R
+THD V L3-N (by phase),By phase (copy),holding,422,int32,,0.01,,%,R
+THD V L3-L1 (by phase),By phase (copy),holding,424,int32,,0.01,,%,R
+I3 DMD (by phase),By phase (copy),holding,426,int32,,0.001,,A,R
+I3 DMDMAX (by phase),By phase (copy),holding,428,int32,,0.001,,A,R
+W3 DMD (by phase),By phase (copy),holding,432,int32,,0.1,,W,R
+W3 DMDMAX (by phase),By phase (copy),holding,434,int32,,0.1,,W,R
+Digital input status,Status,holding,768,int16,,,,,R,,,,0=Open|1=Closed
+Active tariff,Status,holding,769,int16,,,,,R,,,,0=None|1=Tariff 1|2=Tariff 2
+Alarm status,Status,holding,774,int16,,,,,R,,,,0=Not active|1=Active,Not active includes waiting for the delay to elapse
+kWh (+) TOT (Wh),Energy (Wh resolution),holding,1280,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+kvarh (+) TOT (Wh),Energy (Wh resolution),holding,1284,int64,,0.001,,kvarh,R,,,,,"Raw value in Wh, varh or VAh"
+kWh (+) PARTIAL (Wh),Energy (Wh resolution),holding,1288,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+kvarh (+) PARTIAL (Wh),Energy (Wh resolution),holding,1292,int64,,0.001,,kvarh,R,,,,,"Raw value in Wh, varh or VAh"
+kWh (+) L1 (Wh),Energy (Wh resolution),holding,1296,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+kWh (+) L2 (Wh),Energy (Wh resolution),holding,1300,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+kWh (+) L3 (Wh),Energy (Wh resolution),holding,1304,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+kWh (-) TOT (Wh),Energy (Wh resolution),holding,1308,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+kWh (-) PARTIAL (Wh),Energy (Wh resolution),holding,1312,int64,,0.001,,kWh,R,,,,,"Raw value in Wh, varh or VAh"
+kvarh (-) TOT (Wh),Energy (Wh resolution),holding,1316,int64,,0.001,,kvarh,R,,,,,"Raw value in Wh, varh or VAh"
+kvarh (-) PARTIAL (Wh),Energy (Wh resolution),holding,1320,int64,,0.001,,kvarh,R,,,,,"Raw value in Wh, varh or VAh"
+kVAh TOT (Wh),Energy (Wh resolution),holding,1324,int64,,0.001,,kVAh,R,,,,,"Raw value in Wh, varh or VAh"
+kVAh PARTIAL (Wh),Energy (Wh resolution),holding,1328,int64,,0.001,,kVAh,R,,,,,"Raw value in Wh, varh or VAh"
+Run hour meter (copy),Run hours,holding,1332,int32,,0.01,,h,R
+Run hour meter kWh (-) (copy),Run hours,holding,1334,int32,,0.01,,h,R
+Run hour meter PARTIAL (copy),Run hours,holding,1336,int32,,0.01,,h,R
+Run hour meter kWh (-) PARTIAL (copy),Run hours,holding,1338,int32,,0.01,,h,R
+Hz (fine),System,holding,1340,int32,,0.001,,Hz,R
+Run hour life counter,Run hours,holding,1342,int32,,0.01,,h,R
+Firmware major,Device,holding,770,uint16,,,,,R,,12,4
+Firmware minor,Device,holding,770,uint16,,,,,R,,8,4
+Firmware revision,Device,holding,770,uint16,,,,,R,,0,8
+Identification code,Device,holding,11,uint16,,,,,R,,,,@model_code,"Read this word on its own (quantity 1). Inside a longer read, 000Bh is the high word of V L3-L1"
+Serial number,Device,holding,20480,string,7,,,,R,,,,,13 characters
+Production year,Device,holding,20487,uint16,,,,,R
+Name,Device,holding,20488,string,8,,,,RW,,,,,"Configurable name, 16 characters"
+Device state,Device,holding,20498,uint16,,,,,R,,,,0=Run|1=Fault|2=Configuration error,Fault prevails over configuration error (see terminal block configuration)
+Password,Setup,holding,4096,uint16,,,,,RW,,,,,"0 = no password, up to 9999"
+Measuring system,Setup,holding,4098,uint16,,,,,RW,,,,0=3Pn|1=3P|2=2P,"3Pn = 3-phase with neutral, 3P = without neutral, 2P = 2-phase with neutral. MID models accept only 0 and 1"
+CT ratio,Setup,holding,4099,uint32,,0.1,,,RW,,,,,1.0 to 2000.0. Not available on AV2 models; read-only on MID models
+DMD integration time,Setup,holding,4112,uint32,,,,,RW,,,,0=1 min|1=5 min|2=10 min|3=15 min|4=20 min|5=30 min|6=60 min
+Alarm enable,Alarm,holding,4116,uint16,,,,,RW,,,,0=Disabled|1=Enabled
+Alarm linked to,Alarm,holding,4117,uint16,,,,,RW,,,,1=System active power|2=System apparent power|3=System reactive power|4=System power factor|5=Phase currents|6=Phase voltages|7=Line voltages
+Alarm set point on,Alarm,holding,4118,int32,,0.01,,,RW,,,,,"-15000.00 to 15000.00, in the unit of the linked variable"
+Alarm set point off,Alarm,holding,4120,int32,,0.01,,,RW,,,,,"-15000.00 to 15000.00, in the unit of the linked variable"
+Alarm delay,Alarm,holding,4122,uint16,,,,s,RW,,,,,0 to 3600 s
+Tariff management,Tariff,holding,4353,uint16,,,,,RW,,,,0=Off|1=On,Ignored when the digital input selector is 0
+Measure mode,Setup,holding,4355,uint16,,,,,R,,,,0=A (absolute)|1=B (by phase)|2=C (bidirectional),"Set by the part number: A for PFA, B for PFB, C for PFC"
+Wrong connection detection,Setup,holding,4356,uint16,,,,,RW,,,,0=Disabled|1=Enabled
+Wrong connection status,Status,holding,4357,uint16,,,,,R,,,,0=Correct|1=Connection error
+Quick setup at power on,Setup,holding,4361,uint16,,,,,RW,,,,0=Disabled|1=Enabled
+Run hour counter start current,Setup,holding,4363,uint32,,0.001,,A,RW,,,,,"Primary current that starts the run hour counter, 0.010 to 12000 A"
+Input 1 voltage terminal,Wiring,holding,4432,uint16,,,,,RW,,,,0=Terminal block 1 (default)|1=Terminal block 1|2=Terminal block 2|3=Terminal block 3,Not available on MID models
+Input 2 voltage terminal,Wiring,holding,4433,uint16,,,,,RW,,,,0=Terminal block 2 (default)|1=Terminal block 1|2=Terminal block 2|3=Terminal block 3,Not available on MID models
+Input 3 voltage terminal,Wiring,holding,4434,uint16,,,,,RW,,,,0=Terminal block 3 (default)|1=Terminal block 1|2=Terminal block 2|3=Terminal block 3,Not available on MID models
+Input 1 current terminal,Wiring,holding,4435,uint16,,,,,RW,,,,0=TB 1-4 / 13-14 (default)|1=TB 1-4 / 13-14|2=TB 2-5 / 15-16|3=TB 3-6 / 17-18,Terminal blocks for AV2 / AV5 models. Not available on MID models
+Input 2 current terminal,Wiring,holding,4436,uint16,,,,,RW,,,,0=TB 2-5 / 15-16 (default)|1=TB 1-4 / 13-14|2=TB 2-5 / 15-16|3=TB 3-6 / 17-18,Terminal blocks for AV2 / AV5 models. Not available on MID models
+Input 3 current terminal,Wiring,holding,4437,uint16,,,,,RW,,,,0=TB 3-6 / 17-18 (default)|1=TB 1-4 / 13-14|2=TB 2-5 / 15-16|3=TB 3-6 / 17-18,Terminal blocks for AV2 / AV5 models. Not available on MID models
+Input 1 current direction,Wiring,holding,4438,uint16,,,,,RW,,,,0=Direct|1=Inverse,Not available on MID models
+Input 2 current direction,Wiring,holding,4439,uint16,,,,,RW,,,,0=Direct|1=Inverse,Not available on MID models
+Input 3 current direction,Wiring,holding,4440,uint16,,,,,RW,,,,0=Direct|1=Inverse,Not available on MID models
+Digital input function,Tariff,holding,4608,uint16,,,,,RW,,,,0=Tariff via digital input|1=Remote status only|2=Partial meter enabled|3=Reset partial counter
+Tariff via serial,Tariff,holding,4609,uint16,,,,,RW,,,,1=Tariff 1|2=Tariff 2,Ignored when the digital input function is 0
+Pages filter,Display,holding,5632,uint16,,,,,RW,,,,0=Disabled|1=Enabled
+Inactivity action,Display,holding,5633,uint16,,,,,RW,,,,0=Disabled|1=Home|2=Slide,Home: back to the home page; Slide: back home and scroll pages. Read-only on MID models
+Screen saver time,Display,holding,5634,uint16,,,,s,RW,,,,,"0 = disabled, up to 20 s. Read-only on MID models"
+Home page,Display,holding,5635,uint16,,,,,RW,,,,,Page 1 to 27. Read-only on MID models
+Backlight time,Display,holding,5636,uint16,,,,,RW,,,,0=Always on|1=1 min|2=2 min|3=5 min|4=10 min|5=20 min|6=30 min|7=60 min|8=Always off
+Page 1 filter,Display,holding,5648,uint16,,,,,RW,,,,@page_filter
+Page 2 filter,Display,holding,5649,uint16,,,,,RW,,,,@page_filter
+Page 3 filter,Display,holding,5650,uint16,,,,,RW,,,,@page_filter
+Page 4 filter,Display,holding,5651,uint16,,,,,RW,,,,@page_filter
+Page 5 filter,Display,holding,5652,uint16,,,,,RW,,,,@page_filter
+Page 6 filter,Display,holding,5653,uint16,,,,,RW,,,,@page_filter
+Page 7 filter,Display,holding,5654,uint16,,,,,RW,,,,@page_filter
+Page 8 filter,Display,holding,5655,uint16,,,,,RW,,,,@page_filter
+Page 9 filter,Display,holding,5656,uint16,,,,,RW,,,,@page_filter
+Page 10 filter,Display,holding,5657,uint16,,,,,RW,,,,@page_filter
+Page 11 filter,Display,holding,5658,uint16,,,,,RW,,,,@page_filter
+Page 12 filter,Display,holding,5659,uint16,,,,,RW,,,,@page_filter
+Page 13 filter,Display,holding,5660,uint16,,,,,RW,,,,@page_filter
+Page 14 filter,Display,holding,5661,uint16,,,,,RW,,,,@page_filter
+Page 15 filter,Display,holding,5662,uint16,,,,,RW,,,,@page_filter
+Page 16 filter,Display,holding,5663,uint16,,,,,RW,,,,@page_filter
+Page 17 filter,Display,holding,5664,uint16,,,,,RW,,,,@page_filter
+Page 18 filter,Display,holding,5665,uint16,,,,,RW,,,,@page_filter
+Page 19 filter,Display,holding,5666,uint16,,,,,RW,,,,@page_filter
+Page 20 filter,Display,holding,5667,uint16,,,,,RW,,,,@page_filter
+Page 21 filter,Display,holding,5668,uint16,,,,,RW,,,,@page_filter
+Page 22 filter,Display,holding,5669,uint16,,,,,RW,,,,@page_filter
+Page 23 filter,Display,holding,5670,uint16,,,,,RW,,,,@page_filter
+Page 24 filter,Display,holding,5671,uint16,,,,,RW,,,,@page_filter
+Page 25 filter,Display,holding,5672,uint16,,,,,RW,,,,@page_filter
+Page 26 filter,Display,holding,5673,uint16,,,,,RW,,,,@page_filter
+Page 27 filter,Display,holding,5674,uint16,,,,,RW,,,,@page_filter
+RS485 address,Serial port,holding,8192,uint16,,,,,RW,,,,,1 to 247
+RS485 baud rate,Serial port,holding,8193,uint16,,,,,RW,,,,1=9600|2=19200|3=38400|4=57600|5=115200
+RS485 parity,Serial port,holding,8194,uint16,,,,,RW,,,,1=None|2=Even
+RS485 stop bits,Serial port,holding,8195,uint16,,,,,RW,,,,0=1 stop bit|1=2 stop bits,Always 1 with even parity
+RS485 reply delay,Serial port,holding,8196,uint16,,,,ms,RW,,,,,0 to 1000 ms
+Reset total counters,Commands,holding,16387,uint16,,,,,W,,,,1=Reset,Total energy and run hour counters (not the lifetime counter) and offsets. Not on MID models
+Reset partial counters,Commands,holding,16388,uint16,,,,,W,,,,1=Reset,Partial energy and partial run hour counters
+Reset DMD,Commands,holding,16389,uint16,,,,,W,,,,1=Reset,DMD and DMD max values
+Reset tariff counters,Commands,holding,16390,uint16,,,,,W,,,,1=Reset
+Restore factory settings,Commands,holding,16416,uint16,,,,,W,,,,2570=Step 1 (0A0Ah)|49568=Step 2 (C1A0h),"Write step 1, then step 2 within one second. Restores all parameters and the wizard, not the counters"
+Enable offset kWh (+) TOT,Offsets,holding,16640,uint16,,,,,RW,,,,0=No|1=Enable,"Reads as 0. Write 1, then the offset within 3 s"
+Enable offset kWh (-) TOT,Offsets,holding,16641,uint16,,,,,RW,,,,0=No|1=Enable,"Reads as 0. Write 1, then the offset within 3 s"
+Enable offset kvarh (+) TOT,Offsets,holding,16642,uint16,,,,,RW,,,,0=No|1=Enable,"Reads as 0. Write 1, then the offset within 3 s"
+Enable offset kvarh (-) TOT,Offsets,holding,16643,uint16,,,,,RW,,,,0=No|1=Enable,"Reads as 0. Write 1, then the offset within 3 s"
+Enable offset kVAh TOT,Offsets,holding,16644,uint16,,,,,RW,,,,0=No|1=Enable,"Reads as 0. Write 1, then the offset within 3 s"
+Offset kWh (+) TOT,Offsets,holding,16896,uint64,,0.001,,kWh,RW,,,,,0 to 99999999.999. Write after enabling it (FC16 only)
+Offset kWh (-) TOT,Offsets,holding,16900,uint64,,0.001,,kWh,RW,,,,,0 to 99999999.999. Write after enabling it (FC16 only)
+Offset kvarh (+) TOT,Offsets,holding,16904,uint64,,0.001,,kvarh,RW,,,,,0 to 99999999.999. Write after enabling it (FC16 only)
+Offset kvarh (-) TOT,Offsets,holding,16908,uint64,,0.001,,kvarh,RW,,,,,0 to 99999999.999. Write after enabling it (FC16 only)
+Offset kVAh TOT,Offsets,holding,16912,uint64,,0.001,,kVAh,RW,,,,,0 to 99999999.999. Write after enabling it (FC16 only)
