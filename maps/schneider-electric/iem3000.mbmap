@@ -1,0 +1,105 @@
+# Schneider Electric Acti9 iEM3000 energy meters with Modbus RS-485 (iEM3150/3155, iEM3250/3255, iEM3350/3355).
+# Addresses are the manual's register numbers (address on the wire = register - 1).
+# The meter only supports FC03 (read) and FC16 (write). Settings marked WC in the manual are changed
+# through the command interface (registers 5250+), so they are listed here as read-only.
+# Rows marked "not on iEM3x50" only exist on the iEM3155 / iEM3255 / iEM3355.
+@mbmap=1
+@vendor=Schneider Electric
+@model=Acti9 iEM3000 (iEM3150 / iEM3155 / iEM3250 / iEM3255 / iEM3350 / iEM3355)
+@vendor_website=se.com
+@description=DIN rail three-phase energy meters with Modbus RS-485: iEM3150/3155 (63 A direct), iEM3250/3255 (CT), iEM3350/3355 (125 A direct)
+@source=Schneider Electric, "iEM3100 / iEM3200 / iEM3300 series User Manual", DOCA0005EN-16; https://www.productinfo.schneider-electric.com/iem3100_iem3200_iem3300/
+@protocol=rtu
+@unit_id=1
+@baudrate=19200
+@parity=E
+@databits=8
+@stopbits=1
+@byte_order=ABCD
+@address_base=1
+@enum_power_system=0=1PH2W L-N|1=1PH2W L-L|2=1PH3W L-L with N|3=3PH3W|11=3PH4W|13=1PH4W multi L with N
+@enum_baud=0=9600|1=19200|2=38400
+@enum_parity=0=Even|1=Odd|2=None
+
+name,group,area,address,type,length,unit,access,bit,enum,description
+Meter name,Info,holding,30,string,20,,R,,,
+Meter model,Info,holding,50,string,20,,R,,,
+Manufacturer,Info,holding,70,string,20,,R,,,
+Serial number,Info,holding,130,uint32,,,R,,,
+Hardware revision,Info,holding,136,string,5,,R,,,
+Firmware version,Info,holding,1637,uint16,,,R,,,DLF format X.Y.ZTT
+Diagnostic code 101,Diagnostics,holding,45000,bool,,,R,0,,
+Diagnostic code 102,Diagnostics,holding,45000,bool,,,R,1,,
+Diagnostic code 201,Diagnostics,holding,45000,bool,,,R,2,,
+Diagnostic code 202,Diagnostics,holding,45000,bool,,,R,3,,
+Diagnostic code 203,Diagnostics,holding,45000,bool,,,R,4,,
+Diagnostic code 204,Diagnostics,holding,45000,bool,,,R,5,,
+Diagnostic code 205,Diagnostics,holding,45000,bool,,,R,6,,
+Diagnostic code 206,Diagnostics,holding,45000,bool,,,R,7,,
+Diagnostic code 207,Diagnostics,holding,45000,bool,,,R,8,,
+Number of phases,Setup,holding,2014,uint16,,,R,,,
+Number of wires,Setup,holding,2015,uint16,,,R,,,
+Power system,Setup,holding,2016,uint16,,,R,,@power_system,Set with the command interface
+Nominal frequency,Setup,holding,2017,uint16,,Hz,R,,,Set with the command interface
+CT primary,Setup,holding,2030,uint16,,A,R,,,iEM3250/3255 only
+CT secondary,Setup,holding,2031,uint16,,A,R,,,iEM3250/3255 only
+Modbus address,Communication,holding,6501,uint16,,,R,,,Set with the command interface
+Baud rate,Communication,holding,6502,uint16,,,R,,@baud,Set with the command interface
+Parity,Communication,holding,6503,uint16,,,R,,@parity,One stop bit
+I1 current,Current,holding,3000,float32,,A,R,,,
+I2 current,Current,holding,3002,float32,,A,R,,,
+I3 current,Current,holding,3004,float32,,A,R,,,
+Average current,Current,holding,3010,float32,,A,R,,,
+Voltage L1-L2,Voltage,holding,3020,float32,,V,R,,,
+Voltage L2-L3,Voltage,holding,3022,float32,,V,R,,,
+Voltage L3-L1,Voltage,holding,3024,float32,,V,R,,,
+Average voltage L-L,Voltage,holding,3026,float32,,V,R,,,
+Voltage L1-N,Voltage,holding,3028,float32,,V,R,,,
+Voltage L2-N,Voltage,holding,3030,float32,,V,R,,,
+Voltage L3-N,Voltage,holding,3032,float32,,V,R,,,
+Average voltage L-N,Voltage,holding,3036,float32,,V,R,,,
+Active power phase 1,Power,holding,3054,float32,,kW,R,,,
+Active power phase 2,Power,holding,3056,float32,,kW,R,,,
+Active power phase 3,Power,holding,3058,float32,,kW,R,,,
+Total active power,Power,holding,3060,float32,,kW,R,,,
+Total reactive power,Power,holding,3068,float32,,kvar,R,,,Not on iEM3x50
+Total apparent power,Power,holding,3076,float32,,kVA,R,,,Not on iEM3x50
+Total power factor,Power,holding,3084,float32,,,R,,,"Four-quadrant encoding: 0..1 Q1, 1..2 Q4, -1..0 Q2, -2..-1 Q3"
+Total power factor (IEC),Power,holding,3192,float32,,,R,,,Plain -1..+1 value; recent firmware of iEM3x55 only
+Total power factor (lead/lag),Power,holding,3194,float32,,,R,,,Recent firmware of iEM3x55 only
+Frequency,Power,holding,3110,float32,,Hz,R,,,
+Active tariff,Energy,holding,4191,uint16,,,R,,0=Multi tariff disabled|1=Rate A|2=Rate B|3=Rate C|4=Rate D,Not on iEM3x50
+Total active energy import,Energy,holding,3204,int64,,Wh,R,,,Cannot be reset
+Total active energy export,Energy,holding,3208,int64,,Wh,R,,,Not on iEM3x50
+Total reactive energy import,Energy,holding,3220,int64,,varh,R,,,Not on iEM3x50
+Total reactive energy export,Energy,holding,3224,int64,,varh,R,,,Not on iEM3x50
+Partial active energy import,Energy,holding,3256,int64,,Wh,R,,,
+Partial reactive energy import,Energy,holding,3272,int64,,varh,R,,,Not on iEM3x50
+Active energy import phase 1,Energy,holding,3518,int64,,Wh,R,,,
+Active energy import phase 2,Energy,holding,3522,int64,,Wh,R,,,
+Active energy import phase 3,Energy,holding,3526,int64,,Wh,R,,,
+Input metering accumulation,Energy,holding,3558,int64,,,R,,,Not on iEM3x50
+Rate A active energy import,Tariffs,holding,4196,int64,,Wh,R,,,Not on iEM3x50
+Rate B active energy import,Tariffs,holding,4200,int64,,Wh,R,,,Not on iEM3x50
+Rate C active energy import,Tariffs,holding,4204,int64,,Wh,R,,,Not on iEM3x50
+Rate D active energy import,Tariffs,holding,4208,int64,,Wh,R,,,Not on iEM3x50
+Total active energy import (float),Energy float,holding,45100,float32,,kWh,R,,,Same counter as 3204
+Total active energy export (float),Energy float,holding,45102,float32,,kWh,R,,,Not on iEM3x50
+Total reactive energy import (float),Energy float,holding,45104,float32,,kvarh,R,,,Not on iEM3x50
+Total reactive energy export (float),Energy float,holding,45106,float32,,kvarh,R,,,Not on iEM3x50
+Partial active energy import (float),Energy float,holding,45108,float32,,kWh,R,,,
+Partial reactive energy import (float),Energy float,holding,45110,float32,,kvarh,R,,,Not on iEM3x50
+Active energy import phase 1 (float),Energy float,holding,45112,float32,,kWh,R,,,
+Active energy import phase 2 (float),Energy float,holding,45114,float32,,kWh,R,,,
+Active energy import phase 3 (float),Energy float,holding,45116,float32,,kWh,R,,,
+Input metering accumulation (float),Energy float,holding,45118,float32,,,R,,,Not on iEM3x50
+Rate A active energy import (float),Energy float,holding,45120,float32,,kWh,R,,,Not on iEM3x50
+Rate B active energy import (float),Energy float,holding,45122,float32,,kWh,R,,,Not on iEM3x50
+Rate C active energy import (float),Energy float,holding,45124,float32,,kWh,R,,,Not on iEM3x50
+Rate D active energy import (float),Energy float,holding,45126,float32,,kWh,R,,,Not on iEM3x50
+Reactive energy import phase 1 (float),Energy float,holding,45128,float32,,kvarh,R,,,iEM3x55 with 1PH4W multi L-N firmware
+Reactive energy import phase 2 (float),Energy float,holding,45130,float32,,kvarh,R,,,iEM3x55 with 1PH4W multi L-N firmware
+Reactive energy import phase 3 (float),Energy float,holding,45132,float32,,kvarh,R,,,iEM3x55 with 1PH4W multi L-N firmware
+Digital input status,I/O,holding,8906,uint32,,,R,,,"Bit 1: 0 = open, 1 = closed. iEM3x55 only"
+Overload alarm active,Alarms,holding,45005,uint16,,,R,,0=Inactive|256=Active,iEM3x55 only
+Last overload alarm value,Alarms,holding,45011,float32,,kW,R,,,iEM3x55 only
