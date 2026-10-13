@@ -1,0 +1,580 @@
+# Lovato Electric DCRG8 digital power factor controller.
+# Addresses are as in the protocol tables; the wire address is one less.
+# FC06 and FC16 work only on addresses above 1000H.
+@mbmap=1
+@vendor=Lovato Electric
+@model=DCRG8
+@description=Digital power factor controller (DCRG8 series). Values marked single/three phase depend on how the controller is wired and programmed
+@source=Lovato Electric, "DCRG8 Series Modbus Communication Protocol", doc. I432IGB05_20 (2020-05-20), tables 2-9; from firmware revision 4
+@protocol=tcp+rtu
+@unit_id=1
+@port=1001
+@baudrate=9600
+@parity=N
+@databits=8
+@stopbits=1
+@byte_order=ABCD
+@address_base=1
+@max_read_registers=80
+@enum_step_status=0=Not inserted|1=Inserted|2=Not configured|3=Moving
+@enum_cap_ind=0=Capacitive|1=Inductive
+@enum_command=1=Reset partial energy|2=Reset external counter|3=Reset limits|4=Reset max temperature|5=Reset capacitor overload|6=Reset step insertion time|7=Reset step insertion count|8=Reset step trimming|9=Reset total energy|10=Restore test mode|11=Reset events log|12=Setup to default|13=Backup parameters|14=Restore parameters|15=Reset week TPF|16=Reset maintenance 1|17=Reset maintenance 2|18=Reset maintenance 3
+
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,bits,enum,description
+# Table 2 - measures (read with FC03 or FC04)
+Total cos phi,Measures,holding,1,int16,,0.001,,,R,,,,,"Signed long at 0000H whose high word is at the wrapped address FFFFH; this row reads the low word, exact for -1..1"
+Sin phi (single phase),Measures,holding,2,int32,,0.001,,,R
+Tan phi (single phase),Measures,holding,4,int32,,0.001,,,R
+Voltage / equivalent voltage,Measures,holding,6,int32,,0.1,,V,R
+Current / equivalent current,Measures,holding,8,int32,,0.001,,A,R
+Reactive power (single phase),Measures,holding,10,int32,,,,var,R
+Reactive power 1 (three phase),Measures,holding,12,int32,,,,var,R
+Reactive power 2 (three phase),Measures,holding,14,int32,,,,var,R
+Reactive power 3 (three phase),Measures,holding,16,int32,,,,var,R
+Delta var,Measures,holding,18,int32,,,,var,R
+Total imported active energy,Energy,holding,22,uint32,,0.1,,kWh,R
+Total inductive reactive energy,Energy,holding,24,uint32,,0.1,,kvarh,R
+Total apparent energy,Energy,holding,26,uint32,,0.1,,kVAh,R
+Total exported active energy,Energy,holding,28,uint32,,0.1,,kWh,R
+Total capacitive reactive energy,Energy,holding,30,uint32,,0.1,,kvarh,R
+L1 voltage,Phases,holding,64,int32,,0.1,,V,R
+L2 voltage,Phases,holding,66,int32,,0.1,,V,R
+L3 voltage,Phases,holding,68,int32,,0.1,,V,R
+L1 current,Phases,holding,70,int32,,0.001,,A,R
+L2 current,Phases,holding,72,int32,,0.001,,A,R
+L3 current,Phases,holding,74,int32,,0.001,,A,R
+L1-L2 voltage,Phases,holding,76,int32,,0.1,,V,R
+L2-L3 voltage,Phases,holding,78,int32,,0.1,,V,R
+L3-L1 voltage,Phases,holding,80,int32,,0.1,,V,R
+Cos phi 1,Phases,holding,82,int32,,0.001,,,R
+Cos phi 2,Phases,holding,84,int32,,0.001,,,R
+Cos phi 3,Phases,holding,86,int32,,0.001,,,R
+Sin phi 1,Phases,holding,88,int32,,0.001,,,R
+Sin phi 2,Phases,holding,90,int32,,0.001,,,R
+Sin phi 3,Phases,holding,92,int32,,0.001,,,R
+Tan phi 1,Phases,holding,94,int32,,0.001,,,R
+Tan phi 2,Phases,holding,96,int32,,0.001,,,R
+Tan phi 3,Phases,holding,98,int32,,0.001,,,R
+Active power (single phase),Power,holding,5376,uint32,,,,W,R
+Active power 1 (three phase),Power,holding,5378,uint32,,,,W,R
+Active power 2 (three phase),Power,holding,5380,uint32,,,,W,R
+Active power 3 (three phase),Power,holding,5382,uint32,,,,W,R
+Apparent power (single phase),Power,holding,5384,uint32,,,,VA,R
+Apparent power 1 (three phase),Power,holding,5386,uint32,,,,VA,R
+Apparent power 2 (three phase),Power,holding,5388,uint32,,,,VA,R
+Apparent power 3 (three phase),Power,holding,5390,uint32,,,,VA,R
+# Steps (i = 0..31 -> step 1..32)
+Step 1 reactive power,Steps,holding,4864,uint32,,0.01,,kvar,R
+Step 2 reactive power,Steps,holding,4866,uint32,,0.01,,kvar,R
+Step 3 reactive power,Steps,holding,4868,uint32,,0.01,,kvar,R
+Step 4 reactive power,Steps,holding,4870,uint32,,0.01,,kvar,R
+Step 5 reactive power,Steps,holding,4872,uint32,,0.01,,kvar,R
+Step 6 reactive power,Steps,holding,4874,uint32,,0.01,,kvar,R
+Step 7 reactive power,Steps,holding,4876,uint32,,0.01,,kvar,R
+Step 8 reactive power,Steps,holding,4878,uint32,,0.01,,kvar,R
+Step 9 reactive power,Steps,holding,4880,uint32,,0.01,,kvar,R
+Step 10 reactive power,Steps,holding,4882,uint32,,0.01,,kvar,R
+Step 11 reactive power,Steps,holding,4884,uint32,,0.01,,kvar,R
+Step 12 reactive power,Steps,holding,4886,uint32,,0.01,,kvar,R
+Step 13 reactive power,Steps,holding,4888,uint32,,0.01,,kvar,R
+Step 14 reactive power,Steps,holding,4890,uint32,,0.01,,kvar,R
+Step 15 reactive power,Steps,holding,4892,uint32,,0.01,,kvar,R
+Step 16 reactive power,Steps,holding,4894,uint32,,0.01,,kvar,R
+Step 17 reactive power,Steps,holding,4896,uint32,,0.01,,kvar,R
+Step 18 reactive power,Steps,holding,4898,uint32,,0.01,,kvar,R
+Step 19 reactive power,Steps,holding,4900,uint32,,0.01,,kvar,R
+Step 20 reactive power,Steps,holding,4902,uint32,,0.01,,kvar,R
+Step 21 reactive power,Steps,holding,4904,uint32,,0.01,,kvar,R
+Step 22 reactive power,Steps,holding,4906,uint32,,0.01,,kvar,R
+Step 23 reactive power,Steps,holding,4908,uint32,,0.01,,kvar,R
+Step 24 reactive power,Steps,holding,4910,uint32,,0.01,,kvar,R
+Step 25 reactive power,Steps,holding,4912,uint32,,0.01,,kvar,R
+Step 26 reactive power,Steps,holding,4914,uint32,,0.01,,kvar,R
+Step 27 reactive power,Steps,holding,4916,uint32,,0.01,,kvar,R
+Step 28 reactive power,Steps,holding,4918,uint32,,0.01,,kvar,R
+Step 29 reactive power,Steps,holding,4920,uint32,,0.01,,kvar,R
+Step 30 reactive power,Steps,holding,4922,uint32,,0.01,,kvar,R
+Step 31 reactive power,Steps,holding,4924,uint32,,0.01,,kvar,R
+Step 32 reactive power,Steps,holding,4926,uint32,,0.01,,kvar,R
+Step 1 insertion time,Steps,holding,4608,uint32,,,,s,R
+Step 2 insertion time,Steps,holding,4610,uint32,,,,s,R
+Step 3 insertion time,Steps,holding,4612,uint32,,,,s,R
+Step 4 insertion time,Steps,holding,4614,uint32,,,,s,R
+Step 5 insertion time,Steps,holding,4616,uint32,,,,s,R
+Step 6 insertion time,Steps,holding,4618,uint32,,,,s,R
+Step 7 insertion time,Steps,holding,4620,uint32,,,,s,R
+Step 8 insertion time,Steps,holding,4622,uint32,,,,s,R
+Step 9 insertion time,Steps,holding,4624,uint32,,,,s,R
+Step 10 insertion time,Steps,holding,4626,uint32,,,,s,R
+Step 11 insertion time,Steps,holding,4628,uint32,,,,s,R
+Step 12 insertion time,Steps,holding,4630,uint32,,,,s,R
+Step 13 insertion time,Steps,holding,4632,uint32,,,,s,R
+Step 14 insertion time,Steps,holding,4634,uint32,,,,s,R
+Step 15 insertion time,Steps,holding,4636,uint32,,,,s,R
+Step 16 insertion time,Steps,holding,4638,uint32,,,,s,R
+Step 17 insertion time,Steps,holding,4640,uint32,,,,s,R
+Step 18 insertion time,Steps,holding,4642,uint32,,,,s,R
+Step 19 insertion time,Steps,holding,4644,uint32,,,,s,R
+Step 20 insertion time,Steps,holding,4646,uint32,,,,s,R
+Step 21 insertion time,Steps,holding,4648,uint32,,,,s,R
+Step 22 insertion time,Steps,holding,4650,uint32,,,,s,R
+Step 23 insertion time,Steps,holding,4652,uint32,,,,s,R
+Step 24 insertion time,Steps,holding,4654,uint32,,,,s,R
+Step 25 insertion time,Steps,holding,4656,uint32,,,,s,R
+Step 26 insertion time,Steps,holding,4658,uint32,,,,s,R
+Step 27 insertion time,Steps,holding,4660,uint32,,,,s,R
+Step 28 insertion time,Steps,holding,4662,uint32,,,,s,R
+Step 29 insertion time,Steps,holding,4664,uint32,,,,s,R
+Step 30 insertion time,Steps,holding,4666,uint32,,,,s,R
+Step 31 insertion time,Steps,holding,4668,uint32,,,,s,R
+Step 32 insertion time,Steps,holding,4670,uint32,,,,s,R
+Step 1 insertion count,Steps,holding,4352,uint32,,,,,R
+Step 2 insertion count,Steps,holding,4354,uint32,,,,,R
+Step 3 insertion count,Steps,holding,4356,uint32,,,,,R
+Step 4 insertion count,Steps,holding,4358,uint32,,,,,R
+Step 5 insertion count,Steps,holding,4360,uint32,,,,,R
+Step 6 insertion count,Steps,holding,4362,uint32,,,,,R
+Step 7 insertion count,Steps,holding,4364,uint32,,,,,R
+Step 8 insertion count,Steps,holding,4366,uint32,,,,,R
+Step 9 insertion count,Steps,holding,4368,uint32,,,,,R
+Step 10 insertion count,Steps,holding,4370,uint32,,,,,R
+Step 11 insertion count,Steps,holding,4372,uint32,,,,,R
+Step 12 insertion count,Steps,holding,4374,uint32,,,,,R
+Step 13 insertion count,Steps,holding,4376,uint32,,,,,R
+Step 14 insertion count,Steps,holding,4378,uint32,,,,,R
+Step 15 insertion count,Steps,holding,4380,uint32,,,,,R
+Step 16 insertion count,Steps,holding,4382,uint32,,,,,R
+Step 17 insertion count,Steps,holding,4384,uint32,,,,,R
+Step 18 insertion count,Steps,holding,4386,uint32,,,,,R
+Step 19 insertion count,Steps,holding,4388,uint32,,,,,R
+Step 20 insertion count,Steps,holding,4390,uint32,,,,,R
+Step 21 insertion count,Steps,holding,4392,uint32,,,,,R
+Step 22 insertion count,Steps,holding,4394,uint32,,,,,R
+Step 23 insertion count,Steps,holding,4396,uint32,,,,,R
+Step 24 insertion count,Steps,holding,4398,uint32,,,,,R
+Step 25 insertion count,Steps,holding,4400,uint32,,,,,R
+Step 26 insertion count,Steps,holding,4402,uint32,,,,,R
+Step 27 insertion count,Steps,holding,4404,uint32,,,,,R
+Step 28 insertion count,Steps,holding,4406,uint32,,,,,R
+Step 29 insertion count,Steps,holding,4408,uint32,,,,,R
+Step 30 insertion count,Steps,holding,4410,uint32,,,,,R
+Step 31 insertion count,Steps,holding,4412,uint32,,,,,R
+Step 32 insertion count,Steps,holding,4414,uint32,,,,,R
+Step 1 status,Steps,holding,8464,uint16,,,,,R,,,,@step_status
+Step 2 status,Steps,holding,8465,uint16,,,,,R,,,,@step_status
+Step 3 status,Steps,holding,8466,uint16,,,,,R,,,,@step_status
+Step 4 status,Steps,holding,8467,uint16,,,,,R,,,,@step_status
+Step 5 status,Steps,holding,8468,uint16,,,,,R,,,,@step_status
+Step 6 status,Steps,holding,8469,uint16,,,,,R,,,,@step_status
+Step 7 status,Steps,holding,8470,uint16,,,,,R,,,,@step_status
+Step 8 status,Steps,holding,8471,uint16,,,,,R,,,,@step_status
+Step 9 status,Steps,holding,8472,uint16,,,,,R,,,,@step_status
+Step 10 status,Steps,holding,8473,uint16,,,,,R,,,,@step_status
+Step 11 status,Steps,holding,8474,uint16,,,,,R,,,,@step_status
+Step 12 status,Steps,holding,8475,uint16,,,,,R,,,,@step_status
+Step 13 status,Steps,holding,8476,uint16,,,,,R,,,,@step_status
+Step 14 status,Steps,holding,8477,uint16,,,,,R,,,,@step_status
+Step 15 status,Steps,holding,8478,uint16,,,,,R,,,,@step_status
+Step 16 status,Steps,holding,8479,uint16,,,,,R,,,,@step_status
+Step 17 status,Steps,holding,8480,uint16,,,,,R,,,,@step_status
+Step 18 status,Steps,holding,8481,uint16,,,,,R,,,,@step_status
+Step 19 status,Steps,holding,8482,uint16,,,,,R,,,,@step_status
+Step 20 status,Steps,holding,8483,uint16,,,,,R,,,,@step_status
+Step 21 status,Steps,holding,8484,uint16,,,,,R,,,,@step_status
+Step 22 status,Steps,holding,8485,uint16,,,,,R,,,,@step_status
+Step 23 status,Steps,holding,8486,uint16,,,,,R,,,,@step_status
+Step 24 status,Steps,holding,8487,uint16,,,,,R,,,,@step_status
+Step 25 status,Steps,holding,8488,uint16,,,,,R,,,,@step_status
+Step 26 status,Steps,holding,8489,uint16,,,,,R,,,,@step_status
+Step 27 status,Steps,holding,8490,uint16,,,,,R,,,,@step_status
+Step 28 status,Steps,holding,8491,uint16,,,,,R,,,,@step_status
+Step 29 status,Steps,holding,8492,uint16,,,,,R,,,,@step_status
+Step 30 status,Steps,holding,8493,uint16,,,,,R,,,,@step_status
+Step 31 status,Steps,holding,8494,uint16,,,,,R,,,,@step_status
+Step 32 status,Steps,holding,8495,uint16,,,,,R,,,,@step_status
+Current CAP-IND flag (single phase),Measures,holding,8193,uint16,,,,,R,,,,@cap_ind
+Current 1 CAP-IND flag (three phase),Measures,holding,8194,uint16,,,,,R,,,,@cap_ind
+Current 2 CAP-IND flag (three phase),Measures,holding,8195,uint16,,,,,R,,,,@cap_ind
+Current 3 CAP-IND flag (three phase),Measures,holding,8196,uint16,,,,,R,,,,@cap_ind
+Average weekly PF,Measures,holding,8197,uint16,,0.001,,,R
+Temperature,Measures,holding,8234,int16,,0.1,,,R,,,,,"°C or °F, as set on the device"
+Max temperature,Measures,holding,8235,int16,,0.1,,,R,,,,,"°C or °F, as set on the device"
+# Harmonics (orders 2..31) and THD
+L1 voltage harmonic 2,Harmonics,holding,11264,uint16,,0.1,,,R
+L1 voltage harmonic 3,Harmonics,holding,11265,uint16,,0.1,,,R
+L1 voltage harmonic 4,Harmonics,holding,11266,uint16,,0.1,,,R
+L1 voltage harmonic 5,Harmonics,holding,11267,uint16,,0.1,,,R
+L1 voltage harmonic 6,Harmonics,holding,11268,uint16,,0.1,,,R
+L1 voltage harmonic 7,Harmonics,holding,11269,uint16,,0.1,,,R
+L1 voltage harmonic 8,Harmonics,holding,11270,uint16,,0.1,,,R
+L1 voltage harmonic 9,Harmonics,holding,11271,uint16,,0.1,,,R
+L1 voltage harmonic 10,Harmonics,holding,11272,uint16,,0.1,,,R
+L1 voltage harmonic 11,Harmonics,holding,11273,uint16,,0.1,,,R
+L1 voltage harmonic 12,Harmonics,holding,11274,uint16,,0.1,,,R
+L1 voltage harmonic 13,Harmonics,holding,11275,uint16,,0.1,,,R
+L1 voltage harmonic 14,Harmonics,holding,11276,uint16,,0.1,,,R
+L1 voltage harmonic 15,Harmonics,holding,11277,uint16,,0.1,,,R
+L1 voltage harmonic 16,Harmonics,holding,11278,uint16,,0.1,,,R
+L1 voltage harmonic 17,Harmonics,holding,11279,uint16,,0.1,,,R
+L1 voltage harmonic 18,Harmonics,holding,11280,uint16,,0.1,,,R
+L1 voltage harmonic 19,Harmonics,holding,11281,uint16,,0.1,,,R
+L1 voltage harmonic 20,Harmonics,holding,11282,uint16,,0.1,,,R
+L1 voltage harmonic 21,Harmonics,holding,11283,uint16,,0.1,,,R
+L1 voltage harmonic 22,Harmonics,holding,11284,uint16,,0.1,,,R
+L1 voltage harmonic 23,Harmonics,holding,11285,uint16,,0.1,,,R
+L1 voltage harmonic 24,Harmonics,holding,11286,uint16,,0.1,,,R
+L1 voltage harmonic 25,Harmonics,holding,11287,uint16,,0.1,,,R
+L1 voltage harmonic 26,Harmonics,holding,11288,uint16,,0.1,,,R
+L1 voltage harmonic 27,Harmonics,holding,11289,uint16,,0.1,,,R
+L1 voltage harmonic 28,Harmonics,holding,11290,uint16,,0.1,,,R
+L1 voltage harmonic 29,Harmonics,holding,11291,uint16,,0.1,,,R
+L1 voltage harmonic 30,Harmonics,holding,11292,uint16,,0.1,,,R
+L1 voltage harmonic 31,Harmonics,holding,11293,uint16,,0.1,,,R
+L1 voltage THD,Harmonics,holding,11296,uint16,,0.1,,,R
+L2 voltage harmonic 2,Harmonics,holding,11312,uint16,,0.1,,,R
+L2 voltage harmonic 3,Harmonics,holding,11313,uint16,,0.1,,,R
+L2 voltage harmonic 4,Harmonics,holding,11314,uint16,,0.1,,,R
+L2 voltage harmonic 5,Harmonics,holding,11315,uint16,,0.1,,,R
+L2 voltage harmonic 6,Harmonics,holding,11316,uint16,,0.1,,,R
+L2 voltage harmonic 7,Harmonics,holding,11317,uint16,,0.1,,,R
+L2 voltage harmonic 8,Harmonics,holding,11318,uint16,,0.1,,,R
+L2 voltage harmonic 9,Harmonics,holding,11319,uint16,,0.1,,,R
+L2 voltage harmonic 10,Harmonics,holding,11320,uint16,,0.1,,,R
+L2 voltage harmonic 11,Harmonics,holding,11321,uint16,,0.1,,,R
+L2 voltage harmonic 12,Harmonics,holding,11322,uint16,,0.1,,,R
+L2 voltage harmonic 13,Harmonics,holding,11323,uint16,,0.1,,,R
+L2 voltage harmonic 14,Harmonics,holding,11324,uint16,,0.1,,,R
+L2 voltage harmonic 15,Harmonics,holding,11325,uint16,,0.1,,,R
+L2 voltage harmonic 16,Harmonics,holding,11326,uint16,,0.1,,,R
+L2 voltage harmonic 17,Harmonics,holding,11327,uint16,,0.1,,,R
+L2 voltage harmonic 18,Harmonics,holding,11328,uint16,,0.1,,,R
+L2 voltage harmonic 19,Harmonics,holding,11329,uint16,,0.1,,,R
+L2 voltage harmonic 20,Harmonics,holding,11330,uint16,,0.1,,,R
+L2 voltage harmonic 21,Harmonics,holding,11331,uint16,,0.1,,,R
+L2 voltage harmonic 22,Harmonics,holding,11332,uint16,,0.1,,,R
+L2 voltage harmonic 23,Harmonics,holding,11333,uint16,,0.1,,,R
+L2 voltage harmonic 24,Harmonics,holding,11334,uint16,,0.1,,,R
+L2 voltage harmonic 25,Harmonics,holding,11335,uint16,,0.1,,,R
+L2 voltage harmonic 26,Harmonics,holding,11336,uint16,,0.1,,,R
+L2 voltage harmonic 27,Harmonics,holding,11337,uint16,,0.1,,,R
+L2 voltage harmonic 28,Harmonics,holding,11338,uint16,,0.1,,,R
+L2 voltage harmonic 29,Harmonics,holding,11339,uint16,,0.1,,,R
+L2 voltage harmonic 30,Harmonics,holding,11340,uint16,,0.1,,,R
+L2 voltage harmonic 31,Harmonics,holding,11341,uint16,,0.1,,,R
+L2 voltage THD,Harmonics,holding,11344,uint16,,0.1,,,R
+L3 voltage harmonic 2,Harmonics,holding,11360,uint16,,0.1,,,R
+L3 voltage harmonic 3,Harmonics,holding,11361,uint16,,0.1,,,R
+L3 voltage harmonic 4,Harmonics,holding,11362,uint16,,0.1,,,R
+L3 voltage harmonic 5,Harmonics,holding,11363,uint16,,0.1,,,R
+L3 voltage harmonic 6,Harmonics,holding,11364,uint16,,0.1,,,R
+L3 voltage harmonic 7,Harmonics,holding,11365,uint16,,0.1,,,R
+L3 voltage harmonic 8,Harmonics,holding,11366,uint16,,0.1,,,R
+L3 voltage harmonic 9,Harmonics,holding,11367,uint16,,0.1,,,R
+L3 voltage harmonic 10,Harmonics,holding,11368,uint16,,0.1,,,R
+L3 voltage harmonic 11,Harmonics,holding,11369,uint16,,0.1,,,R
+L3 voltage harmonic 12,Harmonics,holding,11370,uint16,,0.1,,,R
+L3 voltage harmonic 13,Harmonics,holding,11371,uint16,,0.1,,,R
+L3 voltage harmonic 14,Harmonics,holding,11372,uint16,,0.1,,,R
+L3 voltage harmonic 15,Harmonics,holding,11373,uint16,,0.1,,,R
+L3 voltage harmonic 16,Harmonics,holding,11374,uint16,,0.1,,,R
+L3 voltage harmonic 17,Harmonics,holding,11375,uint16,,0.1,,,R
+L3 voltage harmonic 18,Harmonics,holding,11376,uint16,,0.1,,,R
+L3 voltage harmonic 19,Harmonics,holding,11377,uint16,,0.1,,,R
+L3 voltage harmonic 20,Harmonics,holding,11378,uint16,,0.1,,,R
+L3 voltage harmonic 21,Harmonics,holding,11379,uint16,,0.1,,,R
+L3 voltage harmonic 22,Harmonics,holding,11380,uint16,,0.1,,,R
+L3 voltage harmonic 23,Harmonics,holding,11381,uint16,,0.1,,,R
+L3 voltage harmonic 24,Harmonics,holding,11382,uint16,,0.1,,,R
+L3 voltage harmonic 25,Harmonics,holding,11383,uint16,,0.1,,,R
+L3 voltage harmonic 26,Harmonics,holding,11384,uint16,,0.1,,,R
+L3 voltage harmonic 27,Harmonics,holding,11385,uint16,,0.1,,,R
+L3 voltage harmonic 28,Harmonics,holding,11386,uint16,,0.1,,,R
+L3 voltage harmonic 29,Harmonics,holding,11387,uint16,,0.1,,,R
+L3 voltage harmonic 30,Harmonics,holding,11388,uint16,,0.1,,,R
+L3 voltage harmonic 31,Harmonics,holding,11389,uint16,,0.1,,,R
+L3 voltage THD,Harmonics,holding,11392,uint16,,0.1,,,R
+L1 current harmonic 2,Harmonics,holding,11408,uint16,,0.1,,,R
+L1 current harmonic 3,Harmonics,holding,11409,uint16,,0.1,,,R
+L1 current harmonic 4,Harmonics,holding,11410,uint16,,0.1,,,R
+L1 current harmonic 5,Harmonics,holding,11411,uint16,,0.1,,,R
+L1 current harmonic 6,Harmonics,holding,11412,uint16,,0.1,,,R
+L1 current harmonic 7,Harmonics,holding,11413,uint16,,0.1,,,R
+L1 current harmonic 8,Harmonics,holding,11414,uint16,,0.1,,,R
+L1 current harmonic 9,Harmonics,holding,11415,uint16,,0.1,,,R
+L1 current harmonic 10,Harmonics,holding,11416,uint16,,0.1,,,R
+L1 current harmonic 11,Harmonics,holding,11417,uint16,,0.1,,,R
+L1 current harmonic 12,Harmonics,holding,11418,uint16,,0.1,,,R
+L1 current harmonic 13,Harmonics,holding,11419,uint16,,0.1,,,R
+L1 current harmonic 14,Harmonics,holding,11420,uint16,,0.1,,,R
+L1 current harmonic 15,Harmonics,holding,11421,uint16,,0.1,,,R
+L1 current harmonic 16,Harmonics,holding,11422,uint16,,0.1,,,R
+L1 current harmonic 17,Harmonics,holding,11423,uint16,,0.1,,,R
+L1 current harmonic 18,Harmonics,holding,11424,uint16,,0.1,,,R
+L1 current harmonic 19,Harmonics,holding,11425,uint16,,0.1,,,R
+L1 current harmonic 20,Harmonics,holding,11426,uint16,,0.1,,,R
+L1 current harmonic 21,Harmonics,holding,11427,uint16,,0.1,,,R
+L1 current harmonic 22,Harmonics,holding,11428,uint16,,0.1,,,R
+L1 current harmonic 23,Harmonics,holding,11429,uint16,,0.1,,,R
+L1 current harmonic 24,Harmonics,holding,11430,uint16,,0.1,,,R
+L1 current harmonic 25,Harmonics,holding,11431,uint16,,0.1,,,R
+L1 current harmonic 26,Harmonics,holding,11432,uint16,,0.1,,,R
+L1 current harmonic 27,Harmonics,holding,11433,uint16,,0.1,,,R
+L1 current harmonic 28,Harmonics,holding,11434,uint16,,0.1,,,R
+L1 current harmonic 29,Harmonics,holding,11435,uint16,,0.1,,,R
+L1 current harmonic 30,Harmonics,holding,11436,uint16,,0.1,,,R
+L1 current harmonic 31,Harmonics,holding,11437,uint16,,0.1,,,R
+L1 current THD,Harmonics,holding,11440,uint16,,0.1,,,R
+L2 current harmonic 2,Harmonics,holding,11456,uint16,,0.1,,,R
+L2 current harmonic 3,Harmonics,holding,11457,uint16,,0.1,,,R
+L2 current harmonic 4,Harmonics,holding,11458,uint16,,0.1,,,R
+L2 current harmonic 5,Harmonics,holding,11459,uint16,,0.1,,,R
+L2 current harmonic 6,Harmonics,holding,11460,uint16,,0.1,,,R
+L2 current harmonic 7,Harmonics,holding,11461,uint16,,0.1,,,R
+L2 current harmonic 8,Harmonics,holding,11462,uint16,,0.1,,,R
+L2 current harmonic 9,Harmonics,holding,11463,uint16,,0.1,,,R
+L2 current harmonic 10,Harmonics,holding,11464,uint16,,0.1,,,R
+L2 current harmonic 11,Harmonics,holding,11465,uint16,,0.1,,,R
+L2 current harmonic 12,Harmonics,holding,11466,uint16,,0.1,,,R
+L2 current harmonic 13,Harmonics,holding,11467,uint16,,0.1,,,R
+L2 current harmonic 14,Harmonics,holding,11468,uint16,,0.1,,,R
+L2 current harmonic 15,Harmonics,holding,11469,uint16,,0.1,,,R
+L2 current harmonic 16,Harmonics,holding,11470,uint16,,0.1,,,R
+L2 current harmonic 17,Harmonics,holding,11471,uint16,,0.1,,,R
+L2 current harmonic 18,Harmonics,holding,11472,uint16,,0.1,,,R
+L2 current harmonic 19,Harmonics,holding,11473,uint16,,0.1,,,R
+L2 current harmonic 20,Harmonics,holding,11474,uint16,,0.1,,,R
+L2 current harmonic 21,Harmonics,holding,11475,uint16,,0.1,,,R
+L2 current harmonic 22,Harmonics,holding,11476,uint16,,0.1,,,R
+L2 current harmonic 23,Harmonics,holding,11477,uint16,,0.1,,,R
+L2 current harmonic 24,Harmonics,holding,11478,uint16,,0.1,,,R
+L2 current harmonic 25,Harmonics,holding,11479,uint16,,0.1,,,R
+L2 current harmonic 26,Harmonics,holding,11480,uint16,,0.1,,,R
+L2 current harmonic 27,Harmonics,holding,11481,uint16,,0.1,,,R
+L2 current harmonic 28,Harmonics,holding,11482,uint16,,0.1,,,R
+L2 current harmonic 29,Harmonics,holding,11483,uint16,,0.1,,,R
+L2 current harmonic 30,Harmonics,holding,11484,uint16,,0.1,,,R
+L2 current harmonic 31,Harmonics,holding,11485,uint16,,0.1,,,R
+L2 current THD,Harmonics,holding,11488,uint16,,0.1,,,R
+L3 current harmonic 2,Harmonics,holding,11504,uint16,,0.1,,,R
+L3 current harmonic 3,Harmonics,holding,11505,uint16,,0.1,,,R
+L3 current harmonic 4,Harmonics,holding,11506,uint16,,0.1,,,R
+L3 current harmonic 5,Harmonics,holding,11507,uint16,,0.1,,,R
+L3 current harmonic 6,Harmonics,holding,11508,uint16,,0.1,,,R
+L3 current harmonic 7,Harmonics,holding,11509,uint16,,0.1,,,R
+L3 current harmonic 8,Harmonics,holding,11510,uint16,,0.1,,,R
+L3 current harmonic 9,Harmonics,holding,11511,uint16,,0.1,,,R
+L3 current harmonic 10,Harmonics,holding,11512,uint16,,0.1,,,R
+L3 current harmonic 11,Harmonics,holding,11513,uint16,,0.1,,,R
+L3 current harmonic 12,Harmonics,holding,11514,uint16,,0.1,,,R
+L3 current harmonic 13,Harmonics,holding,11515,uint16,,0.1,,,R
+L3 current harmonic 14,Harmonics,holding,11516,uint16,,0.1,,,R
+L3 current harmonic 15,Harmonics,holding,11517,uint16,,0.1,,,R
+L3 current harmonic 16,Harmonics,holding,11518,uint16,,0.1,,,R
+L3 current harmonic 17,Harmonics,holding,11519,uint16,,0.1,,,R
+L3 current harmonic 18,Harmonics,holding,11520,uint16,,0.1,,,R
+L3 current harmonic 19,Harmonics,holding,11521,uint16,,0.1,,,R
+L3 current harmonic 20,Harmonics,holding,11522,uint16,,0.1,,,R
+L3 current harmonic 21,Harmonics,holding,11523,uint16,,0.1,,,R
+L3 current harmonic 22,Harmonics,holding,11524,uint16,,0.1,,,R
+L3 current harmonic 23,Harmonics,holding,11525,uint16,,0.1,,,R
+L3 current harmonic 24,Harmonics,holding,11526,uint16,,0.1,,,R
+L3 current harmonic 25,Harmonics,holding,11527,uint16,,0.1,,,R
+L3 current harmonic 26,Harmonics,holding,11528,uint16,,0.1,,,R
+L3 current harmonic 27,Harmonics,holding,11529,uint16,,0.1,,,R
+L3 current harmonic 28,Harmonics,holding,11530,uint16,,0.1,,,R
+L3 current harmonic 29,Harmonics,holding,11531,uint16,,0.1,,,R
+L3 current harmonic 30,Harmonics,holding,11532,uint16,,0.1,,,R
+L3 current harmonic 31,Harmonics,holding,11533,uint16,,0.1,,,R
+L3 current THD,Harmonics,holding,11536,uint16,,0.1,,,R
+L1-L2 voltage harmonic 2,Harmonics,holding,11552,uint16,,0.1,,,R
+L1-L2 voltage harmonic 3,Harmonics,holding,11553,uint16,,0.1,,,R
+L1-L2 voltage harmonic 4,Harmonics,holding,11554,uint16,,0.1,,,R
+L1-L2 voltage harmonic 5,Harmonics,holding,11555,uint16,,0.1,,,R
+L1-L2 voltage harmonic 6,Harmonics,holding,11556,uint16,,0.1,,,R
+L1-L2 voltage harmonic 7,Harmonics,holding,11557,uint16,,0.1,,,R
+L1-L2 voltage harmonic 8,Harmonics,holding,11558,uint16,,0.1,,,R
+L1-L2 voltage harmonic 9,Harmonics,holding,11559,uint16,,0.1,,,R
+L1-L2 voltage harmonic 10,Harmonics,holding,11560,uint16,,0.1,,,R
+L1-L2 voltage harmonic 11,Harmonics,holding,11561,uint16,,0.1,,,R
+L1-L2 voltage harmonic 12,Harmonics,holding,11562,uint16,,0.1,,,R
+L1-L2 voltage harmonic 13,Harmonics,holding,11563,uint16,,0.1,,,R
+L1-L2 voltage harmonic 14,Harmonics,holding,11564,uint16,,0.1,,,R
+L1-L2 voltage harmonic 15,Harmonics,holding,11565,uint16,,0.1,,,R
+L1-L2 voltage harmonic 16,Harmonics,holding,11566,uint16,,0.1,,,R
+L1-L2 voltage harmonic 17,Harmonics,holding,11567,uint16,,0.1,,,R
+L1-L2 voltage harmonic 18,Harmonics,holding,11568,uint16,,0.1,,,R
+L1-L2 voltage harmonic 19,Harmonics,holding,11569,uint16,,0.1,,,R
+L1-L2 voltage harmonic 20,Harmonics,holding,11570,uint16,,0.1,,,R
+L1-L2 voltage harmonic 21,Harmonics,holding,11571,uint16,,0.1,,,R
+L1-L2 voltage harmonic 22,Harmonics,holding,11572,uint16,,0.1,,,R
+L1-L2 voltage harmonic 23,Harmonics,holding,11573,uint16,,0.1,,,R
+L1-L2 voltage harmonic 24,Harmonics,holding,11574,uint16,,0.1,,,R
+L1-L2 voltage harmonic 25,Harmonics,holding,11575,uint16,,0.1,,,R
+L1-L2 voltage harmonic 26,Harmonics,holding,11576,uint16,,0.1,,,R
+L1-L2 voltage harmonic 27,Harmonics,holding,11577,uint16,,0.1,,,R
+L1-L2 voltage harmonic 28,Harmonics,holding,11578,uint16,,0.1,,,R
+L1-L2 voltage harmonic 29,Harmonics,holding,11579,uint16,,0.1,,,R
+L1-L2 voltage harmonic 30,Harmonics,holding,11580,uint16,,0.1,,,R
+L1-L2 voltage harmonic 31,Harmonics,holding,11581,uint16,,0.1,,,R
+L1-L2 voltage THD,Harmonics,holding,11584,uint16,,0.1,,,R
+L2-L3 voltage harmonic 2,Harmonics,holding,11600,uint16,,0.1,,,R
+L2-L3 voltage harmonic 3,Harmonics,holding,11601,uint16,,0.1,,,R
+L2-L3 voltage harmonic 4,Harmonics,holding,11602,uint16,,0.1,,,R
+L2-L3 voltage harmonic 5,Harmonics,holding,11603,uint16,,0.1,,,R
+L2-L3 voltage harmonic 6,Harmonics,holding,11604,uint16,,0.1,,,R
+L2-L3 voltage harmonic 7,Harmonics,holding,11605,uint16,,0.1,,,R
+L2-L3 voltage harmonic 8,Harmonics,holding,11606,uint16,,0.1,,,R
+L2-L3 voltage harmonic 9,Harmonics,holding,11607,uint16,,0.1,,,R
+L2-L3 voltage harmonic 10,Harmonics,holding,11608,uint16,,0.1,,,R
+L2-L3 voltage harmonic 11,Harmonics,holding,11609,uint16,,0.1,,,R
+L2-L3 voltage harmonic 12,Harmonics,holding,11610,uint16,,0.1,,,R
+L2-L3 voltage harmonic 13,Harmonics,holding,11611,uint16,,0.1,,,R
+L2-L3 voltage harmonic 14,Harmonics,holding,11612,uint16,,0.1,,,R
+L2-L3 voltage harmonic 15,Harmonics,holding,11613,uint16,,0.1,,,R
+L2-L3 voltage harmonic 16,Harmonics,holding,11614,uint16,,0.1,,,R
+L2-L3 voltage harmonic 17,Harmonics,holding,11615,uint16,,0.1,,,R
+L2-L3 voltage harmonic 18,Harmonics,holding,11616,uint16,,0.1,,,R
+L2-L3 voltage harmonic 19,Harmonics,holding,11617,uint16,,0.1,,,R
+L2-L3 voltage harmonic 20,Harmonics,holding,11618,uint16,,0.1,,,R
+L2-L3 voltage harmonic 21,Harmonics,holding,11619,uint16,,0.1,,,R
+L2-L3 voltage harmonic 22,Harmonics,holding,11620,uint16,,0.1,,,R
+L2-L3 voltage harmonic 23,Harmonics,holding,11621,uint16,,0.1,,,R
+L2-L3 voltage harmonic 24,Harmonics,holding,11622,uint16,,0.1,,,R
+L2-L3 voltage harmonic 25,Harmonics,holding,11623,uint16,,0.1,,,R
+L2-L3 voltage harmonic 26,Harmonics,holding,11624,uint16,,0.1,,,R
+L2-L3 voltage harmonic 27,Harmonics,holding,11625,uint16,,0.1,,,R
+L2-L3 voltage harmonic 28,Harmonics,holding,11626,uint16,,0.1,,,R
+L2-L3 voltage harmonic 29,Harmonics,holding,11627,uint16,,0.1,,,R
+L2-L3 voltage harmonic 30,Harmonics,holding,11628,uint16,,0.1,,,R
+L2-L3 voltage harmonic 31,Harmonics,holding,11629,uint16,,0.1,,,R
+L2-L3 voltage THD,Harmonics,holding,11632,uint16,,0.1,,,R
+L3-L1 voltage harmonic 2,Harmonics,holding,11648,uint16,,0.1,,,R
+L3-L1 voltage harmonic 3,Harmonics,holding,11649,uint16,,0.1,,,R
+L3-L1 voltage harmonic 4,Harmonics,holding,11650,uint16,,0.1,,,R
+L3-L1 voltage harmonic 5,Harmonics,holding,11651,uint16,,0.1,,,R
+L3-L1 voltage harmonic 6,Harmonics,holding,11652,uint16,,0.1,,,R
+L3-L1 voltage harmonic 7,Harmonics,holding,11653,uint16,,0.1,,,R
+L3-L1 voltage harmonic 8,Harmonics,holding,11654,uint16,,0.1,,,R
+L3-L1 voltage harmonic 9,Harmonics,holding,11655,uint16,,0.1,,,R
+L3-L1 voltage harmonic 10,Harmonics,holding,11656,uint16,,0.1,,,R
+L3-L1 voltage harmonic 11,Harmonics,holding,11657,uint16,,0.1,,,R
+L3-L1 voltage harmonic 12,Harmonics,holding,11658,uint16,,0.1,,,R
+L3-L1 voltage harmonic 13,Harmonics,holding,11659,uint16,,0.1,,,R
+L3-L1 voltage harmonic 14,Harmonics,holding,11660,uint16,,0.1,,,R
+L3-L1 voltage harmonic 15,Harmonics,holding,11661,uint16,,0.1,,,R
+L3-L1 voltage harmonic 16,Harmonics,holding,11662,uint16,,0.1,,,R
+L3-L1 voltage harmonic 17,Harmonics,holding,11663,uint16,,0.1,,,R
+L3-L1 voltage harmonic 18,Harmonics,holding,11664,uint16,,0.1,,,R
+L3-L1 voltage harmonic 19,Harmonics,holding,11665,uint16,,0.1,,,R
+L3-L1 voltage harmonic 20,Harmonics,holding,11666,uint16,,0.1,,,R
+L3-L1 voltage harmonic 21,Harmonics,holding,11667,uint16,,0.1,,,R
+L3-L1 voltage harmonic 22,Harmonics,holding,11668,uint16,,0.1,,,R
+L3-L1 voltage harmonic 23,Harmonics,holding,11669,uint16,,0.1,,,R
+L3-L1 voltage harmonic 24,Harmonics,holding,11670,uint16,,0.1,,,R
+L3-L1 voltage harmonic 25,Harmonics,holding,11671,uint16,,0.1,,,R
+L3-L1 voltage harmonic 26,Harmonics,holding,11672,uint16,,0.1,,,R
+L3-L1 voltage harmonic 27,Harmonics,holding,11673,uint16,,0.1,,,R
+L3-L1 voltage harmonic 28,Harmonics,holding,11674,uint16,,0.1,,,R
+L3-L1 voltage harmonic 29,Harmonics,holding,11675,uint16,,0.1,,,R
+L3-L1 voltage harmonic 30,Harmonics,holding,11676,uint16,,0.1,,,R
+L3-L1 voltage harmonic 31,Harmonics,holding,11677,uint16,,0.1,,,R
+L3-L1 voltage THD,Harmonics,holding,11680,uint16,,0.1,,,R
+Counter 1,Counters,holding,6784,uint32,,,,,R
+Counter 2,Counters,holding,6786,uint32,,,,,R
+Counter 3,Counters,holding,6788,uint32,,,,,R
+Counter 4,Counters,holding,6790,uint32,,,,,R
+Counter 5,Counters,holding,6792,uint32,,,,,R
+Counter 6,Counters,holding,6794,uint32,,,,,R
+Counter 7,Counters,holding,6796,uint32,,,,,R
+Counter 8,Counters,holding,6798,uint32,,,,,R
+Limit 1,I/O,holding,11712,uint16,,,,,R
+Limit 2,I/O,holding,11713,uint16,,,,,R
+Limit 3,I/O,holding,11714,uint16,,,,,R
+Limit 4,I/O,holding,11715,uint16,,,,,R
+Limit 5,I/O,holding,11716,uint16,,,,,R
+Limit 6,I/O,holding,11717,uint16,,,,,R
+Limit 7,I/O,holding,11718,uint16,,,,,R
+Limit 8,I/O,holding,11719,uint16,,,,,R
+Limit 9,I/O,holding,11720,uint16,,,,,R
+Limit 10,I/O,holding,11721,uint16,,,,,R
+Limit 11,I/O,holding,11722,uint16,,,,,R
+Limit 12,I/O,holding,11723,uint16,,,,,R
+Limit 13,I/O,holding,11724,uint16,,,,,R
+Limit 14,I/O,holding,11725,uint16,,,,,R
+Limit 15,I/O,holding,11726,uint16,,,,,R
+Limit 16,I/O,holding,11727,uint16,,,,,R
+Input 1,I/O,holding,11744,uint16,,,,,R
+Input 2,I/O,holding,11745,uint16,,,,,R
+Input 3,I/O,holding,11746,uint16,,,,,R
+Input 4,I/O,holding,11747,uint16,,,,,R
+Input 5,I/O,holding,11748,uint16,,,,,R
+Input 6,I/O,holding,11749,uint16,,,,,R
+Input 7,I/O,holding,11750,uint16,,,,,R
+Input 8,I/O,holding,11751,uint16,,,,,R
+Output 1,I/O,holding,11760,uint16,,,,,R,,,,,The protocol lists outputs from 2DF0H to 2DF7H; numbered here in order
+Output 2,I/O,holding,11761,uint16,,,,,R,,,,,The protocol lists outputs from 2DF0H to 2DF7H; numbered here in order
+Output 3,I/O,holding,11762,uint16,,,,,R,,,,,The protocol lists outputs from 2DF0H to 2DF7H; numbered here in order
+Output 4,I/O,holding,11763,uint16,,,,,R,,,,,The protocol lists outputs from 2DF0H to 2DF7H; numbered here in order
+Output 5,I/O,holding,11764,uint16,,,,,R,,,,,The protocol lists outputs from 2DF0H to 2DF7H; numbered here in order
+Output 6,I/O,holding,11765,uint16,,,,,R,,,,,The protocol lists outputs from 2DF0H to 2DF7H; numbered here in order
+Output 7,I/O,holding,11766,uint16,,,,,R,,,,,The protocol lists outputs from 2DF0H to 2DF7H; numbered here in order
+Output 8,I/O,holding,11767,uint16,,,,,R,,,,,The protocol lists outputs from 2DF0H to 2DF7H; numbered here in order
+# Table 6/7 - alarm status (unsigned long at 1400H: high word 1400H, low word 1401H)
+Alarm status,Alarms,holding,5120,uint32,,,,,R
+A01 Under compensation,Alarms,holding,5121,bool,,,,,R,,0
+A02 Over compensation,Alarms,holding,5121,bool,,,,,R,,1
+A03 Low current,Alarms,holding,5121,bool,,,,,R,,2
+A04 High current,Alarms,holding,5121,bool,,,,,R,,3
+A05 Low voltage,Alarms,holding,5121,bool,,,,,R,,4
+A06 High voltage,Alarms,holding,5121,bool,,,,,R,,5
+A07 Overtemperature,Alarms,holding,5121,bool,,,,,R,,6
+A08 Capacitor overload,Alarms,holding,5121,bool,,,,,R,,7
+A09 No-voltage release,Alarms,holding,5121,bool,,,,,R,,8
+A10 Step failure,Alarms,holding,5121,bool,,,,,R,,9
+A11 Harmonic event: high current,Alarms,holding,5121,bool,,,,,R,,10
+A12 Harmonic event: high THD,Alarms,holding,5121,bool,,,,,R,,11
+A13 Harmonic event: 5th harmonic,Alarms,holding,5121,bool,,,,,R,,12
+A14 Harmonic event: 7th harmonic,Alarms,holding,5121,bool,,,,,R,,13
+A15 Harmonic event: 11th harmonic,Alarms,holding,5121,bool,,,,,R,,14
+A16 Harmonic event: 13th harmonic,Alarms,holding,5121,bool,,,,,R,,15
+A17 Protection 1 high temperature,Alarms,holding,5120,bool,,,,,R,,0
+A18 Protection 2 high temperature,Alarms,holding,5120,bool,,,,,R,,1
+A19 Link error,Alarms,holding,5120,bool,,,,,R,,2
+UA1 User alarm 1,Alarms,holding,5120,bool,,,,,R,,3
+UA2 User alarm 2,Alarms,holding,5120,bool,,,,,R,,4
+UA3 User alarm 3,Alarms,holding,5120,bool,,,,,R,,5
+UA4 User alarm 4,Alarms,holding,5120,bool,,,,,R,,6
+UA5 User alarm 5,Alarms,holding,5120,bool,,,,,R,,7
+UA6 User alarm 6,Alarms,holding,5120,bool,,,,,R,,8
+UA7 User alarm 7,Alarms,holding,5120,bool,,,,,R,,9
+UA8 User alarm 8,Alarms,holding,5120,bool,,,,,R,,10
+Service 1 expired,Alarms,holding,5120,bool,,,,,R,,11
+Service 2 expired,Alarms,holding,5120,bool,,,,,R,,12
+Service 3 expired,Alarms,holding,5120,bool,,,,,R,,13
+# Table 4 - events
+Event pointer,Events,holding,20528,uint16,,,,,RW,,0,8,,Last event stored; write an event number (FC06) to select the record read at 5032H
+Event counter,Events,holding,20528,uint16,,,,,R,,8,8,,Total events stored (max 250)
+Event record,Events,holding,20530,string,43,,,,R,,,,,"86 bytes: date (10), separator, time (12-19), separator, event text from byte 21"
+# Table 3 - commands (FC06)
+Command,Commands,holding,12272,uint16,,,,,W,,,,@command,"After Setup to default or Restore parameters, send the reboot command (2F03H = 04)"
+Step activation,Commands,holding,12293,uint16,,,,,W,,,,,Write the number of the step to activate; ignored during its reconnection time
+Step de-activation,Commands,holding,12294,uint16,,,,,W,,,,,Write the number of the step to de-activate
+# Table 8 - real time clock
+Clock year,Clock,holding,10480,uint16,,,,,RW
+Clock month,Clock,holding,10481,uint16,,,,,RW
+Clock day,Clock,holding,10482,uint16,,,,,RW
+Clock hours,Clock,holding,10483,uint16,,,,h,RW
+Clock minutes,Clock,holding,10484,uint16,,,,min,RW
+Clock seconds,Clock,holding,10485,uint16,,,,s,RW
+Save clock setting,Clock,holding,10490,uint16,,,,,W,,,,1=Save real time clock setting
+# Table 9 - status and save
+Operating mode change,Commands,holding,12032,uint16,,,,,W,,,,1=Manual mode|2=Automatic mode
+Save,Commands,holding,12035,uint16,,,,,W,,,,1=EEPROM save|2=FRAM save|4=FRAM save and reboot|8=EEPROM and FRAM save,Write 01 then 04 to store setup changes made over Modbus
+Reset device,Commands,holding,12039,uint16,,,,,W,,,,0=Reset device|1=Reset device and save FRAM
+# Parameter access (menu, submenu, parameter, then value at 5004H)
+Parameter menu,Parameters,holding,20480,uint16,,,,,RW,,,,,Step 1: menu number (e.g. 2 for M02)
+Parameter submenu,Parameters,holding,20481,uint16,,,,,RW,,,,,"Step 2: submenu, if the menu has one"
+Parameter number,Parameters,holding,20482,uint16,,,,,RW,,,,,Step 3: parameter number
+Parameter value (numeric < 32768),Parameters,holding,20484,uint16,,,,,RW,,,,,1 register
+Parameter value (numeric >= 32768),Parameters,holding,20484,uint32,,,,,RW,,,,,2 registers
+"Parameter value (text, 20 characters)",Parameters,holding,20484,string,10,,,,RW,,,,,"Text parameters use 3, 8 or 10 registers (6, 16 or 20 characters)"

@@ -1,0 +1,119 @@
+# Active Power (Piller Power Systems) CleanSource CS XT and CS HD flywheel UPS.
+# Read-only (FC03). 32-bit values: the lower register holds bits 15-0, so the
+# word order is low word first (CDAB); read both registers in one request.
+@mbmap=1
+@vendor=Active Power (Piller Power Systems)
+@model=CS XT / CS HD
+@description=CleanSource CS XT and CS HD flywheel UPS
+@source=Active Power, a Division of Piller Power Systems Inc., "CS XT / CS HD Modbus Register Map", 6090618-1 Rev. E (2019)
+@protocol=tcp+rtu
+@byte_order=CDAB
+@address_base=0
+@enum_output_source=0=Unknown|1=Flywheel discharging|2=No output|3=Online mode|4=Bypass mode|5=Battery discharge mode
+
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,bits,enum,description
+# Identity
+ACPW fixed ID,Identity,holding,0,uint16,,,,,R,,,,16720=AP,"Always reads 16720 (0x4150, ASCII ""AP"")"
+Published register map version,Identity,holding,1,uint16,,,,,R
+CIO firmware version,Identity,holding,5,uint16,,,,,R,,,,,"Major revision in the high byte, minor in the low byte"
+UPS PPC firmware version,Identity,holding,7,uint16,,,,,R,,,,,"Major revision in the high byte, minor in the low byte"
+UPS FPGA firmware version,Identity,holding,9,uint16,,0.01,,,R
+UPS system serial number,Identity,holding,11,uint32,,,,,R
+UPS discharge counter,Counters,holding,19,uint32,,,,,R
+UPS bearing replacement date,Counters,holding,27,int32,,,,s,R,,,,,Unix time: seconds since 1970-01-01
+# Measurements
+UPS Bypass voltage AB,Bypass,holding,701,int16,,0.1,,V,R
+UPS Bypass voltage BC,Bypass,holding,702,int16,,0.1,,V,R
+UPS Bypass voltage CA,Bypass,holding,703,int16,,0.1,,V,R
+UPS External source voltage AB,External source,holding,704,int16,,0.1,,V,R
+UPS External source voltage BC,External source,holding,705,int16,,0.1,,V,R
+UPS External source voltage CA,External source,holding,706,int16,,0.1,,V,R
+UPS Input voltage AB,Input,holding,707,int16,,0.1,,V,R
+UPS Input voltage BC,Input,holding,708,int16,,0.1,,V,R
+UPS Input voltage CA,Input,holding,709,int16,,0.1,,V,R
+UPS Output voltage AB,Output,holding,710,int16,,0.1,,V,R
+UPS Output voltage BC,Output,holding,711,int16,,0.1,,V,R
+UPS Output voltage CA,Output,holding,712,int16,,0.1,,V,R
+UPS Input current A,Input,holding,713,int16,,0.1,,A,R
+UPS Input current B,Input,holding,714,int16,,0.1,,A,R
+UPS Input current C,Input,holding,715,int16,,0.1,,A,R
+UPS Output current A,Output,holding,716,int16,,0.1,,A,R
+UPS Output current B,Output,holding,717,int16,,0.1,,A,R
+UPS Output current C,Output,holding,718,int16,,0.1,,A,R
+UPS Line inductor temperature,Temperatures,holding,732,int16,,0.1,,°C,R
+UPS Filter inductor temperature,Temperatures,holding,733,int16,,0.1,,°C,R
+UPS Neutral inductor 1 temperature,Temperatures,holding,734,int16,,0.1,,°C,R
+UPS Neutral inductor 2 temperature,Temperatures,holding,735,int16,,0.1,,°C,R
+UPS Flywheel coil temperature 1,Temperatures,holding,736,int16,,0.1,,°C,R,,,,,CS HD: lower armature; CS XT: armature
+UPS Flywheel coil temperature 2,Temperatures,holding,737,int16,,0.1,,°C,R,,,,,CS HD: upper armature; CS XT: upper field coil
+UPS Lower bearing temperature,Temperatures,holding,738,int16,,0.1,,°C,R
+UPS Upper bearing temperature,Temperatures,holding,739,int16,,0.1,,°C,R
+UPS Flywheel coil temperature 3,Temperatures,holding,740,int16,,0.1,,°C,R,,,,,CS HD: excitation coil; CS XT: lower field coil
+UPS Air inlet temperature,Temperatures,holding,743,int16,,0.1,,°C,R
+UPS Cabinet ambient temperature,Temperatures,holding,744,int16,,0.1,,°C,R
+UPS Bypass frequency,Bypass,holding,745,int16,,0.1,,Hz,R
+UPS Input frequency,Input,holding,746,int16,,0.1,,Hz,R
+UPS Output frequency,Output,holding,747,int16,,0.1,,Hz,R
+UPS Input real power,Input,holding,749,int16,,0.1,,kW,R
+UPS Input apparent power,Input,holding,750,int16,,0.1,,kVA,R
+UPS Input power factor,Input,holding,751,int16,,0.001,,,R
+UPS Output power,Output,holding,752,int16,,0.1,,kW,R
+UPS Output apparent power,Output,holding,753,int16,,0.1,,kVA,R
+UPS Output power factor,Output,holding,754,int16,,0.001,,,R
+UPS Flywheel percent energy,Flywheel,holding,755,int16,,0.01,,%,R
+UPS Vacuum gauge,Flywheel,holding,756,int16,,0.1,,mTorr,R
+UPS Flywheel tach,Flywheel,holding,757,int16,,,,RPM,R
+UPS Percent load,Output,holding,758,int16,,0.01,,%,R
+UPS Rated output power,Ratings,holding,759,int16,,0.1,,kW,R
+UPS Rated output current,Ratings,holding,760,int16,,0.1,,A,R
+UPS Nominal voltage,Ratings,holding,761,int16,,0.1,,V,R
+UPS Parallel output power,Parallel,holding,762,int16,,0.1,,kW,R
+UPS External source frequency,External source,holding,763,int16,,0.1,,Hz,R
+UPS Bypass voltage AN,Bypass,holding,764,int16,,0.1,,V,R
+UPS Bypass voltage BN,Bypass,holding,765,int16,,0.1,,V,R
+UPS Bypass voltage CN,Bypass,holding,766,int16,,0.1,,V,R
+UPS Input voltage AN,Input,holding,767,int16,,0.1,,V,R
+UPS Input voltage BN,Input,holding,768,int16,,0.1,,V,R
+UPS Input voltage CN,Input,holding,769,int16,,0.1,,V,R
+UPS Output voltage AN,Output,holding,770,int16,,0.1,,V,R
+UPS Output voltage BN,Output,holding,771,int16,,0.1,,V,R
+UPS Output voltage CN,Output,holding,772,int16,,0.1,,V,R
+UPS Parallel input power,Parallel,holding,773,int16,,0.1,,kW,R
+UPS Parallel input current A,Parallel,holding,774,int16,,0.1,,A,R
+UPS Parallel input current B,Parallel,holding,775,int16,,0.1,,A,R
+UPS Parallel input current C,Parallel,holding,776,int16,,0.1,,A,R
+UPS Parallel output current A,Parallel,holding,777,int16,,0.1,,A,R
+UPS Parallel output current B,Parallel,holding,778,int16,,0.1,,A,R
+UPS Parallel output current C,Parallel,holding,779,int16,,0.1,,A,R
+UPS Load cell output,Flywheel,holding,780,int16,,0.1,,lb,R
+# Status (901-903 latch: non-zero for at least five seconds after a condition)
+UPS notice active,Status,holding,901,uint16,,,,,R,,,,0=No|1=Yes
+UPS alarm active,Status,holding,902,uint16,,,,,R,,,,0=No|1=Yes
+UPS buzzer state,Status,holding,903,uint16,,,,,R,,,,0=Off|1=On
+UPS output source,Status,holding,913,uint16,,,,,R,,,,@output_source
+UPS customer IO reg 01,Customer I/O,holding,964,uint16,,,,,R
+Customer input contact 1 closed,Customer I/O,holding,964,bool,,,,,R,,0
+Customer input contact 2 closed,Customer I/O,holding,964,bool,,,,,R,,1
+Customer input contact 3 closed,Customer I/O,holding,964,bool,,,,,R,,2
+Customer input contact 4 closed,Customer I/O,holding,964,bool,,,,,R,,3
+Customer input contact 5 closed,Customer I/O,holding,964,bool,,,,,R,,4
+Customer input contact 6 closed,Customer I/O,holding,964,bool,,,,,R,,5
+Customer input contact 7 closed,Customer I/O,holding,964,bool,,,,,R,,6
+Customer input contact 8 closed,Customer I/O,holding,964,bool,,,,,R,,7
+UPS customer IO reg 02,Customer I/O,holding,965,uint16,,,,,R
+Customer output contact 1 closed,Customer I/O,holding,965,bool,,,,,R,,0
+Customer output contact 2 closed,Customer I/O,holding,965,bool,,,,,R,,1
+Customer output contact 3 closed,Customer I/O,holding,965,bool,,,,,R,,2
+Customer output contact 4 closed,Customer I/O,holding,965,bool,,,,,R,,3
+Customer output contact 5 closed,Customer I/O,holding,965,bool,,,,,R,,4
+Customer output contact 6 closed,Customer I/O,holding,965,bool,,,,,R,,5
+Customer output contact 7 closed,Customer I/O,holding,965,bool,,,,,R,,6
+Customer output contact 8 closed,Customer I/O,holding,965,bool,,,,,R,,7
+# ExRC (CS HD only)
+ExRC PPC firmware version,ExRC,holding,1000,uint16,,,,,R,,,,,"CS HD only; major in the high byte, minor in the low byte"
+ExRC FPGA firmware version,ExRC,holding,1001,uint16,,0.01,,,R,,,,,CS HD only
+ExRC serial number,ExRC,holding,1002,uint32,,,,,R,,,,,CS HD only
+ExRC energy storage DC volts,ExRC,holding,1004,int16,,0.1,,V,R,,,,,CS HD only
+ExRC UPS DC volts,ExRC,holding,1005,int16,,0.1,,V,R,,,,,CS HD only
+ExRC energy storage amps,ExRC,holding,1006,int16,,0.1,,A,R,,,,,CS HD only
+ExRC DC bus power,ExRC,holding,1007,int16,,0.1,,kW,R,,,,,CS HD only
