@@ -1,0 +1,22 @@
+# Fictional device. It shows the format and is not a real product.
+@mbmap=1
+@vendor=Example Corp
+@model=EM-100
+@description=Single-phase energy meter (fictional example)
+@protocol=rtu
+@unit_id=1
+@baudrate=9600
+@parity=E
+@stopbits=1
+@byte_order=ABCD
+@address_base=0
+
+name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,enum,description
+Voltage,Measurements,input,0,float32,,1,0,V,R,,,,RMS voltage
+Current,Measurements,input,6,float32,,1,0,A,R,,,,RMS current
+Frequency,Measurements,input,70,uint16,,0.01,0,Hz,R,,,,
+Active energy,Energy,holding,256,uint32,,0.01,0,kWh,R,CDAB,,,Low word first
+Relay state,Status,holding,512,bool,,,,,R,,3,0=Open|1=Closed,Bit 3 of the status word
+Alarm active,Status,holding,512,bool,,,,,R,,4,,Bit 4 of the status word
+Reset energy,Commands,coil,0,bool,,,,,W,,,,Write 1 to reset counters
+Serial number,Info,holding,1024,string,8,,,,R,,,,16 ASCII characters
