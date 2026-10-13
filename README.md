@@ -11,6 +11,8 @@ SPEC.md                         the .mbmap format specification
 maps/<vendor>/<model>.mbmap     the shared maps
 examples/                       fictional maps that show the format
 tools/validate.py               validator (also runs in CI)
+tests/                          sample files and the diagnostics each must produce,
+                                for checking any .mbmap reader against the spec
 ```
 
 Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap`.

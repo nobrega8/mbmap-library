@@ -41,7 +41,8 @@ Serial number,Info,holding,1024,string,8,,,,R,,,,16 ASCII characters
 - Every metadata line **MUST** come before the header.
 - The separator is `,` or `;`, chosen by whichever appears first in the header line. The rest of the file uses the same separator. `;` is allowed because spreadsheets in many locales export with it.
 - Fields follow [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180) quoting: a field that contains the separator or `"` is wrapped in `"`, and a `"` inside it is written as `""`. A quoted field **MUST NOT** span multiple lines.
-- Leading and trailing spaces around unquoted fields and metadata values are trimmed.
+- Leading and trailing spaces are trimmed from every field (quoted or not) and every metadata value.
+- Column names and enumerated values, in metadata and in cells (`area`, `type`, `access`, `byte_order`, `protocol`, `parity`), are case-insensitive. Writers **SHOULD** use the spelling shown in this spec.
 
 ## 3. Metadata
 
@@ -128,20 +129,43 @@ The same two choices apply to 64-bit types. For 16-bit types only the byte part 
 
 ## 7. Validation
 
-A file is **invalid**, and readers **SHOULD** reject it with the line number, when:
+Readers **SHOULD** report every problem with its line number and one of the codes below, so tools agree on what is wrong. An **error** makes the file invalid. A **warning** is reported, but the file is still usable.
 
-- `@mbmap`, `@vendor` or `@model` is missing, or `@mbmap` is not `1`;
-- a metadata key is repeated, or a known key has a value outside its allowed range;
-- metadata appears after the header;
-- the header lacks `name`, `area`, `address` or `type`, or repeats a column;
-- a row has more fields than the header;
-- a required cell is empty, or a cell has a value outside its allowed set;
-- `address` plus the register count goes beyond the 65536-address space;
-- `access` is not allowed for the `area`;
-- `bool` in `input`/`holding` has no `bit`, or `string` has no `length`;
-- `enum` is malformed.
+| Code | Severity | When |
+|---|---|---|
+| `not-utf8` | error | The file is not valid UTF-8 |
+| `no-header` | error | There is no header line |
+| `missing-meta` | error | `@mbmap`, `@vendor` or `@model` is missing (reported without a line) |
+| `malformed-meta` | error | A line starts with `@` but is not `@key=value` with a valid key |
+| `duplicate-meta` | error | A metadata key appears twice |
+| `bad-meta-value` | error | A known key has a value outside its allowed set or range, including `@mbmap` other than `1` |
+| `meta-after-header` | error | Metadata appears after the header |
+| `missing-column` | error | The header lacks `name`, `area`, `address` or `type` |
+| `duplicate-column` | error | The header repeats a column |
+| `too-many-fields` | error | A row has more fields than the header |
+| `empty-cell` | error | `name`, `area`, `address` or `type` is empty in a row |
+| `bad-area` | error | Unknown `area` |
+| `bad-type` | error | Unknown `type` |
+| `type-area` | error | A type other than `bool` in `coil` or `discrete` |
+| `bad-address` | error | `address` is not an integer |
+| `address-range` | error | The address is below `@address_base`, or the value goes beyond address 65535 |
+| `missing-bit` | error | `bool` in `input`/`holding` without `bit` |
+| `bad-bit` | error | `bit` outside `0`–`15` |
+| `missing-length` | error | `string` without `length` |
+| `bad-length` | error | `length` is not an integer ≥ 1 |
+| `bad-access` | error | Unknown `access`, or not allowed for the `area` |
+| `bad-byte-order` | error | Unknown `byte_order` in a row |
+| `bad-number` | error | `scale` or `offset` is not a number |
+| `bad-enum` | error | `enum` is not a list of `integer=label` pairs |
+| `no-rows` | warning | The file has a header but no registers |
+| `duplicate-name` | warning | A `name` is used more than once |
+| `overlap` | warning | Two values share registers in the same area. This can be intentional, for example a register read as a whole word and as single bits; bits of the same register (`bool` + `bit`) never count as overlap |
+| `unknown-column` | warning | A column is not in this spec and does not start with `x_` (reported without a line) |
+| `unused-bit` | warning | `bit` is set on a row where it has no effect |
 
-Readers **SHOULD** warn, without rejecting, when names are repeated or registers overlap. Overlap can be intentional, for example the same register read as a whole word and as single bits.
+A row with an error in `name`, `area`, `address` or `type` is not checked further. A row with any error is left out of the `overlap` check.
+
+The [`tests/`](tests/) folder holds sample files with the diagnostics each one must produce, so any implementation can check itself against them.
 
 ## 8. Compatibility
 
