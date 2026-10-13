@@ -10,7 +10,9 @@ Each file describes one device model: the manufacturer, how to connect to it and
 SPEC.md                         the .mbmap format specification
 maps/<vendor>/<model>.mbmap     the shared maps
 examples/                       fictional maps that show the format
+index.json                      list of the maps, for apps that browse the library
 tools/validate.py               validator (also runs in CI)
+tools/build_index.py            rebuilds index.json
 tests/                          sample files and the diagnostics each must produce,
                                 for checking any .mbmap reader against the spec
 ```
@@ -21,7 +23,7 @@ Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap`.
 
 `.mbmap` is plain text based on CSV, so you can open a map in any text editor or spreadsheet. Tools that read the format:
 
-- [Modbench](https://github.com/nobrega8/modbench): a lightweight Modbus TCP/RTU client for Windows and Linux
+- [Modbench](https://github.com/nobrega8/modbench): a lightweight Modbus TCP/RTU client for Windows and Linux. It can browse and download the maps in this repository directly.
 
 Building a tool that reads `.mbmap`? Open a pull request to add it here.
 

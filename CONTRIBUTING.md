@@ -13,7 +13,13 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
    python tools/validate.py maps/<vendor>/<model>.mbmap
    ```
 
-5. Open a pull request. In the description, say whether you tested the map on a real device, and with which firmware.
+5. Add the map to the index:
+
+   ```sh
+   python tools/build_index.py
+   ```
+
+6. Open a pull request. In the description, say whether you tested the map on a real device, and with which firmware.
 
 ## Rules
 
