@@ -40,6 +40,14 @@ Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING
 
 Building a tool that reads `.mbmap`? Open a pull request to add it here.
 
+### Format version 2
+
+The format is defined in [SPEC-v2.md](SPEC-v2.md) (JSON). Version 1 ([SPEC.md](SPEC.md), CSV) is deprecated; the reasons are in [docs/json-evaluation.md](docs/json-evaluation.md). To convert a version 1 map:
+
+```sh
+python tools/migrate.py path/to/model.mbmap        # writes path/to/model.mbmap.json
+```
+
 ## Contributing
 
 New maps and fixes are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then check your file:
