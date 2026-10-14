@@ -13,12 +13,14 @@
 @address_base=0
 @enum_relay=0=Open|1=Closed
 
-name,group,area,address,type,length,scale,offset,unit,access,byte_order,bit,enum,description
-Voltage,Measurements,input,0,float32,,1,0,V,R,,,,RMS voltage
-Current,Measurements,input,6,float32,,1,0,A,R,,,,RMS current
-Frequency,Measurements,input,70,uint16,,0.01,0,Hz,R,,,,
-Active energy,Energy,holding,256,uint32,,0.01,0,kWh,R,CDAB,,,Low word first
-Relay state,Status,holding,512,bool,,,,,R,,3,@relay,Bit 3 of the status word
-Alarm active,Status,holding,512,bool,,,,,R,,4,,Bit 4 of the status word
-Reset energy,Commands,coil,0,bool,,,,,W,,,,Write 1 to reset counters
-Serial number,Info,holding,1024,string,8,,,,R,,,,16 ASCII characters
+name,group,area,address,type,length,scale,offset,unit,access,write_min,write_max,byte_order,bit,enum,reference,description
+Voltage,Measurements,input,0,float32,,1,0,V,R,,,,,,,RMS voltage
+Current,Measurements,input,6,float32,,1,0,A,R,,,,,,,RMS current
+Frequency,Measurements,input,70,uint16,,0.01,0,Hz,R,,,,,,,
+Active energy,Energy,holding,256,uint32,,0.01,0,kWh,R,,,CDAB,,,,Low word first
+Relay state,Status,holding,512,bool,,,,,R,,,,3,@relay,,Bit 3 of the status word
+Alarm active,Status,holding,512,bool,,,,,R,,,,4,,,Bit 4 of the status word
+Reset energy,Commands,coil,0,bool,,,,,W,,,,,,,Write 1 to reset counters
+Serial number,Info,holding,1024,string,8,,,,R,,,,,,,16 ASCII characters
+Update interval,Settings,holding,300,uint16,,0.5,0,s,RW,1,60,,,,,Seconds between measurements
+Protocol version,Info,holding,1040,uint16,,,,,R,,,,,,0x0102,Fixed by the firmware; a quick check of address and byte order

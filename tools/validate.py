@@ -43,6 +43,7 @@ REQUIRED_META = ("mbmap", "vendor", "model")
 REQUIRED_COLUMNS = ("name", "area", "address", "type")
 KNOWN_COLUMNS = {
     "name", "group", "area", "address", "type", "length", "scale", "scale_factor", "offset",
+    "write_min", "write_max", "reference",
     "unit", "access", "byte_order", "bit", "bits", "enum", "description",
 }
 META_KEY_RE = re.compile(r"^[a-z0-9_]+$")
@@ -112,6 +113,24 @@ def valid_sentinels(type_name: str, text: str) -> bool:
     return all(lo <= parse_int(pair.partition("=")[0].strip()) <= hi for pair in text.split("|"))
 
 
+def valid_reference(typ: str, bits: int | None, text: str, length: int | None) -> bool:
+    """Whether `text` is a raw value that a row of this type can hold."""
+    if bits is not None:
+        n = parse_int(text)
+        return n is not None and 0 <= n < (1 << bits)
+    if typ == "bool":
+        return text.lower() in {"0", "1", "true", "false"}
+    if typ in SENTINEL_RANGES:
+        n = parse_int(text)
+        lo, hi = SENTINEL_RANGES[typ]
+        return n is not None and lo <= n <= hi
+    if typ in ("float32", "float64"):
+        return is_number(text)
+    if typ == "string":
+        return length is None or len(text) <= 2 * length
+    return False
+
+
 def valid_enum(text: str) -> bool:
     for pair in text.split("|"):
         value, sep, label = pair.partition("=")
@@ -175,8 +194,9 @@ def check_text(text: str) -> list[Diagnostic]:
             continue
 
         if header is None:
-            comma, semi = line.find(","), line.find(";")
-            sep = ";" if semi != -1 and (comma == -1 or semi < comma) else ","
+            sep = ","
+            # A file saved with ';' is not valid; say so instead of a bare missing-column.
+            semicolon_hint = ";" in line and "," not in line
             header = [c.strip().lower() for c in next(csv.reader([line], delimiter=sep))]
             seen: set[str] = set()
             for col in header:
@@ -185,7 +205,8 @@ def check_text(text: str) -> list[Diagnostic]:
                 seen.add(col)
             for col in REQUIRED_COLUMNS:
                 if col not in header:
-                    error(lineno, "missing-column", f"header is missing required column {col!r}")
+                    hint = " (fields are separated by commas; this line uses ';')" if semicolon_hint else ""
+                    error(lineno, "missing-column", f"header is missing required column {col!r}{hint}")
             continue
 
         fields = [f.strip() for f in next(csv.reader([line], delimiter=sep))]
@@ -295,9 +316,22 @@ def check_text(text: str) -> list[Diagnostic]:
         if order and order not in BYTE_ORDERS:
             error(lineno, "bad-byte-order", f"invalid byte_order {row['byte_order']!r}")
 
-        for col in ("scale", "offset"):
+        for col in ("scale", "offset", "write_min", "write_max"):
             if row.get(col) and not is_number(row[col]):
                 error(lineno, "bad-number", f"{col} is not a number: {row[col]!r}")
+
+        lo, hi = row.get("write_min", ""), row.get("write_max", "")
+        if lo and hi and is_number(lo) and is_number(hi) and float(lo) > float(hi):
+            error(lineno, "bad-write-limit", f"write_min {lo} is greater than write_max {hi}")
+        if (lo or hi) and (typ in ("bool", "string") or access == "R"):
+            warn(lineno, "unused-write-limit", "write_min/write_max have no effect on this row")
+
+        ref = row.get("reference", "")
+        if ref:
+            if access == "W":
+                error(lineno, "bad-reference", "reference on a row that cannot be read")
+            elif not valid_reference(typ, int(bits) if bitfield else None, ref, int(length) if typ == "string" and length_ok and length else None):
+                error(lineno, "bad-reference", f"invalid reference {ref!r} for type {typ}")
 
         enum = row.get("enum", "")
         if enum.startswith("@"):

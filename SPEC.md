@@ -40,8 +40,8 @@ Serial number,Info,holding,1024,string,8,,,,R,,,,16 ASCII characters
   - **metadata**: starts with `@`, in the form `@key=value`.
   - **CSV**: everything else. The first CSV line is the **header**, and every line after it is a **register row**.
 - Every metadata line **MUST** come before the header.
-- The separator is `,` or `;`, chosen by whichever appears first in the header line. The rest of the file uses the same separator. `;` is allowed because spreadsheets in many locales export with it.
-- Fields follow [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180) quoting: a field that contains the separator or `"` is wrapped in `"`, and a `"` inside it is written as `""`. A quoted field **MUST NOT** span multiple lines. A row whose first field starts with `#` or `@` **MUST** quote that field, or it would be read as a comment or as metadata.
+- The field separator is the comma (`,`) and nothing else. Readers **MUST NOT** detect or accept other separators, so a file is parsed the same way from its first line to its last. A file written with `;` (some spreadsheets in some locales export that way) is not a valid `.mbmap`: export it as comma-separated CSV (UTF-8) instead, see §8.
+- Fields follow [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180) quoting: a field that contains the separator or `"` is wrapped in `"`, and a `"` inside it is written as `""`. A `;` inside a field needs no quoting. A quoted field **MUST NOT** span multiple lines. A row whose first field starts with `#` or `@` **MUST** quote that field, or it would be read as a comment or as metadata.
 - Leading and trailing spaces are trimmed from every field (quoted or not) and every metadata value.
 - Column names and enumerated values, in metadata and in cells (`area`, `type`, `access`, `byte_order`, `protocol`, `parity`), are case-insensitive. Writers **SHOULD** use the spelling shown in this spec.
 
@@ -88,6 +88,9 @@ The header names the columns. Order does not matter, and names are case-insensit
 | `length` | integer ≥ 1 | | Number of registers. Required for `string`, ignored otherwise |
 | `scale` | number | `1` | Multiplier |
 | `scale_factor` | register `name` | | Name of another register in the file whose integer value is a power-of-ten exponent for this one (§4.4) |
+| `write_min` | number | | Smallest value accepted when writing, in engineering units (§4.5) |
+| `write_max` | number | | Largest value accepted when writing, in engineering units (§4.5) |
+| `reference` | value | | Raw value this register is expected to hold on a healthy device, used to check the map (§4.6) |
 | `offset` | number | `0` | Added after scaling |
 | `unit` | text | | Engineering unit (`V`, `kWh`, `°C`…) |
 | `access` | `R`, `W`, `RW` | `R` | Allowed operations |
@@ -158,6 +161,41 @@ W_SF,holding,40084,int16,,
 
 Engineering value = raw × 10^`scale_factor` × `scale` + `offset` (without a `scale_factor`: raw × `scale` + `offset`). When writing, a tool applies the inverse and rounds to the nearest integer for integer types.
 
+### 4.5 Write limits
+
+`write_min` and `write_max` declare which values a register accepts when written, so a tool can reject a bad value before it reaches the device.
+
+- Both are numbers (decimal, `.` as the decimal mark, optional exponent) in **engineering units**: the value the user sees, after `scale_factor`, `scale` and `offset` are applied. A limit of `0.5` on a register with `scale` `0.1` means a raw value of 5.
+- Either may be omitted: an omitted limit leaves that side open. With both omitted a register has no declared limit (the device decides).
+- `write_min` **MUST NOT** be greater than `write_max`. The limits are inclusive.
+- A tool **MUST NOT** send a write whose engineering value is below `write_min` or above `write_max`, and **SHOULD** tell the user which limit was exceeded.
+- They apply to the value the user asks for, before it is converted to a raw value and rounded. A value inside the limits that still does not fit the register's type is refused by the normal type checks.
+- They have no meaning for `bool` and `string` rows or for rows that cannot be written (`access` `R`), and are ignored there.
+
+```text
+name,area,address,type,scale,unit,access,write_min,write_max
+Setpoint,holding,100,uint16,0.1,°C,RW,5,30
+Delay,holding,101,uint16,,s,RW,0,
+```
+
+### 4.6 Reference values
+
+`reference` gives a value that a healthy device is known to hold in this register (a model number, a fixed protocol identifier, a manufacturer code). A tool can read the register and compare it with the reference to detect a wrong address, base, byte order or data type before the user trusts the other values. Not every device has such a register, so the column is optional and most rows leave it empty.
+
+- The value is the **raw** value, before `scale_factor`, `scale` and `offset`, written the way a raw value of the row's `type` is written: an integer (decimal or `0x` hex) for the integer types and for bit fields, a number for `float32` and `float64`, `0` or `1` (or `true` / `false`) for `bool`, and text for `string`.
+- The check is the row itself: it reads the row's `area` and `address` (already adjusted for `@address_base`) and decodes the row's `type` with the row's byte order.
+- A map can have any number of rows with a `reference`.
+- Outcome of each check: **match** (the decoded raw value equals the reference), **mismatch** (it differs), **failed** (the read returned an error or timed out, so nothing is known), **not checked** (the row was not read). A tool **SHOULD** report them separately: a mismatch points to a wrong map or settings, a failed read to a connection or addressing problem.
+- Floats are compared at the type's own precision (a `float32` reference is compared as a 32-bit float). Strings are compared after trimming trailing NUL and space characters.
+- A reference only supports a diagnosis. Several byte or word orders can decode the same bytes to the same value (a small number or a palindrome reads the same in more than one order), so a match does not prove the whole map is correct. Maps **SHOULD** use a distinctive value and **SHOULD** give more than one where the device has them.
+- A `reference` on a row that cannot be read (`access` `W`) is an error.
+
+```text
+name,area,address,type,byte_order,reference,description
+Manufacturer code,holding,768,uint16,,0x016A,Fixed by the manufacturer
+Serial prefix,holding,770,uint32,CDAB,0x00010002,Distinctive in CDAB order only
+```
+
 ## 5. Areas and addresses
 
 | `area` | Unit | Read | Write | Allowed `access` |
@@ -220,17 +258,20 @@ Readers **SHOULD** report every problem with its line number and one of the code
 | `bad-length` | error | `length` is not an integer ≥ 1 |
 | `bad-access` | error | Unknown `access`, or not allowed for the `area` |
 | `bad-byte-order` | error | Unknown `byte_order` in a row |
-| `bad-number` | error | `scale` or `offset` is not a number |
+| `bad-number` | error | `scale`, `offset`, `write_min` or `write_max` is not a number |
 | `bad-enum` | error | An `enum` cell or an `@enum_<name>` table is not a list of `integer=label` pairs |
 | `bad-sentinel` | error | `@sentinel_<type>` names an unsupported type, is not a list of `integer=label` pairs, or has a value that does not fit the type |
 | `bad-bits` | error | `bits` is not an integer from 1 to 16, is used on a type other than `uint16` or outside `input`/`holding`, has no `bit`, or `bit` + `bits` exceeds 16 |
 | `unknown-enum` | error | An `enum` cell references `@name`, but no `@enum_<name>` table defines it |
+| `bad-write-limit` | error | `write_min` is greater than `write_max` (a limit that is not a number is `bad-number`) |
+| `bad-reference` | error | `reference` is not a valid raw value for the row's `type` (not an integer, outside the type's range, wider than the bit field, not `0`/`1` for `bool`, not a finite number for floats), or is set on a row that cannot be read |
 | `unknown-scale-factor` | error | `scale_factor` names no register of the file (rows with errors do not count) |
 | `bad-scale-factor` | error | `scale_factor` is set on a `bool` or `string`, or names a register that is not a whole integer (a float, `bool`, `string` or bit field) or that has a `scale_factor` itself |
 | `no-rows` | warning | The file has a header but no registers |
 | `duplicate-name` | warning | A `name` is used more than once |
 | `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Rows that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`) |
 | `unknown-column` | warning | A column is not in this spec and does not start with `x_` (reported without a line) |
+| `unused-write-limit` | warning | `write_min` or `write_max` is set on a row where it has no effect (`bool`, `string`, or `access` `R`) |
 | `unused-bit` | warning | `bit` is set on a row where it has no effect (any type but `bool`, unless `bits` is also set on a `uint16`) |
 
 A row with an error in `name`, `area`, `address` or `type` is not checked further. A row with any error is left out of the `overlap` check.
@@ -242,3 +283,51 @@ The [`tests/`](tests/) folder holds sample files with the diagnostics each one m
 - Readers **MUST** ignore metadata keys and columns they do not know. This lets newer files open in older tools.
 - Vendor- or tool-specific additions **SHOULD** use an `x_` prefix (`@x_modbench_icon=…`, column `x_alarm_high`) so they never clash with future versions of this spec.
 - A change that older readers cannot safely ignore requires a new `@mbmap` version.
+- **Delimiter.** Version 1 used to allow `;` as the separator, detected from the header line. That is no longer part of the format. Impact: none of the maps in this repository use `;` (the only file that did was a test fixture), and the tools listed in the README write `,`. A map saved with `;` fails with `missing-column` on its header line. To migrate such a file, export it from a spreadsheet as "CSV UTF-8" with the comma as the separator, or replace the `;` that separate fields with `,` and quote every field that contains a comma.
+- `scale_factor`, `write_min`, `write_max` and `reference` are additions: a reader that does not know them ignores them (first rule) and reads the map as before. Readers that do know them **MUST** apply the rules above.
+
+## 9. Direction for a future version: byte order and word order
+
+This section is not part of version 1. It records where the format is going so that today's `byte_order` values have a defined migration path. Version 1 files and readers keep the semantics of §6 unchanged.
+
+### 9.1 Two independent choices
+
+The four `byte_order` names of version 1 combine two settings:
+
+- **Byte order**, within each 16-bit register: which byte is sent first, `big` (high byte first, the Modbus standard) or `little` (low byte first).
+- **Word order**, across the 16-bit registers of a 32-bit or 64-bit value: which register holds the most significant part, `big` (most significant register first, at the lowest address) or `little` (least significant register first).
+
+A future version would name them as two columns, and two metadata keys for the file default, for example `byte_order` and `word_order`, each `big` or `little`.
+
+### 9.2 Behavior by type
+
+| Type | Byte order | Word order |
+|---|---|---|
+| `bool` | not used | not used |
+| `int16`, `uint16` | swaps the two bytes of the register | not used (one register) |
+| `int32`, `uint32`, `float32` | swaps the two bytes of each register | decides which of the 2 registers is the high word |
+| `int64`, `uint64`, `float64` | swaps the two bytes of each register | reverses the 4 registers as a whole |
+| `string` | decides which character of each register comes first | not used (characters are in address order) |
+
+For 64-bit values, little word order reverses the whole sequence of four registers; it does not swap two 32-bit halves separately. This is how version 1 treats `CDAB` and `DCBA` ("The same two choices apply to 64-bit types", §6).
+
+### 9.3 Migration from version 1
+
+| Version 1 `byte_order` | Byte order | Word order | Wire order of the 32-bit value `0x0A0B0C0D` |
+|---|---|---|---|
+| `ABCD` | big | big | `0A 0B 0C 0D` |
+| `BADC` | little | big | `0B 0A 0D 0C` |
+| `CDAB` | big | little | `0C 0D 0A 0B` |
+| `DCBA` | little | little | `0D 0C 0B 0A` |
+
+The conversion is exact in both directions, so a tool can read version 1 files under the new model and write them back without loss. Rows that do not set `byte_order` keep using the file default.
+
+### 9.4 Examples
+
+| Device behavior | Version 1 | Future (byte / word) |
+|---|---|---|
+| Standard Modbus, most significant register first | `ABCD` | big / big |
+| "Word swap": 32-bit values with the low register first (many meters and PLCs) | `CDAB` | big / little |
+| 32-bit floats with the low register first, as in the Carlo Gavazzi EM530/EM540 map | `CDAB` | big / little |
+| Fully little-endian values | `DCBA` | little / little |
+| Byte-swapped registers with standard word order (rare) | `BADC` | little / big |
