@@ -1,0 +1,58 @@
+name: Test report
+description: Tell us you read a device with a map, and whether it worked
+title: "Test report: <vendor> <model>"
+labels: [test-report]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing. You do not need to be the author of the map.
+        If you can, open a pull request instead that sets `"x_status": "verified"` (see CONTRIBUTING.md, "Reporting a test").
+  - type: input
+    id: map
+    attributes:
+      label: Map file
+      placeholder: maps/acme-meters/pm-200.mbmap.json
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device model and firmware
+      placeholder: PM-200, firmware 2.14
+    validations:
+      required: true
+  - type: input
+    id: connection
+    attributes:
+      label: Connection
+      description: Modbus RTU or TCP, gateway if any, unit ID
+      placeholder: RTU 9600 8N1 through a USR-TCP232 gateway, unit 1
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options:
+        - All registers I checked read correctly
+        - Some registers are wrong (details below)
+        - The map does not work with this device
+    validations:
+      required: true
+  - type: textarea
+    id: checked
+    attributes:
+      label: What you checked
+      description: Which registers or groups you compared, and against what (the device's display, the vendor's software, a calibrated meter). Include a 32-bit value so the byte and word order are covered.
+      placeholder: |
+        Voltages L1-L3 and frequency against the display: OK
+        Total active energy (float32) against the vendor app: OK
+        Power factor: sign is inverted
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed serial numbers, IP addresses and other private installation data
+          required: true

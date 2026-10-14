@@ -28,9 +28,15 @@ legacy/v1/                        the deprecated CSV-based format, and how to co
 
 Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap.json`.
 
-## Verified and unverified maps
+## Map status
 
-The maps written from a manufacturer's manual name that document in `source`. A large part of the library was **converted from other open catalogues** of Modbus tables to get everyone started. Those files contain `"x_status": "unverified"`: nobody has checked them against the manufacturer's documentation yet, and some details (byte order, which register area, scaling) may be wrong. Read them as a draft and check a value on the real device before you rely on the rest.
+The maps in this library say how far they can be trusted in `x_status`. It is not part of the mbmap format, just an optional key that this library and Modbench read:
+
+- **`verified`**: tested on a real device.
+- **`unverified`**: written from the manufacturer's documentation (named in `source`), but not tested on a device yet.
+- **`unofficial`**: copied from an unofficial source and not tested. A large part of the library was **converted from other open catalogues** of Modbus tables to get everyone started. Nobody has checked these against the manufacturer's documentation yet, and some details (byte order, which register area, scaling) may be wrong. Read them as a draft and check a value on the real device before you rely on the rest.
+
+Tested a map on your device? Tell us in a pull request or a [test report](https://github.com/nobrega8/mbmap-library/issues/new?template=test-report.yml), even if you did not write the map.
 
 Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING.md).
 

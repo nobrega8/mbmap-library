@@ -30,7 +30,7 @@ CASES = [
     ("unchanged", doc(1), doc(1), 0),
     ("free text only", doc(1), doc(1, description="Better words", reg_description="x", reg_comment="c",
                                    notes=["n"], source="s", sources=[{"title": "t"}], revised="2026-10-14",
-                                   x_status="unverified"), 0),
+                                   x_status="verified"), 0),
     ("register changed, revision bumped", doc(1), doc(2, reg_address=2), 0),
     ("register changed, same revision", doc(1), doc(1, reg_address=2), 1),
     ("connection default changed", doc(1), doc(1, unit_id=5), 1),

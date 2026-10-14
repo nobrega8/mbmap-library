@@ -6,7 +6,7 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 
 1. Create `maps/<vendor>/<model>.mbmap.json`. Use lowercase slugs with `-` (`schneider-electric`, `pm5560`). If one map covers a model family, name the file after the family.
 2. Start from [`examples/example-corp/em-100.mbmap.json`](examples/example-corp/em-100.mbmap.json) and follow [SPEC.md](SPEC.md). Editors that support JSON Schema (VS Code and others) check the file as you type through its `$schema` key.
-3. Record the documents you used in `sources` (title, version, date and a public URL if there is one; SPEC.md section 3.3), and set `"revision": 1`.
+3. Record the documents you used in `sources` (title, version, date and a public URL if there is one; SPEC.md section 3.3), set `"revision": 1` and, if you can, `x_status` (see [Status](#status)).
 4. If the device reports its model or firmware in a register, give that register a `role` (SPEC.md section 4.7). If the map only fits some firmware versions, say so with `firmware_min` / `firmware_max`; leave them out when it fits every version or you do not know (SPEC.md section 3.2).
 5. Run the validator and fix every error:
 
@@ -28,16 +28,40 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 - A newer firmware that adds or moves a few registers: add those registers with `firmware_min` (and give the old ones `firmware_max`) instead of making a new file. When most of the map changes, make a separate file per firmware range.
 - Add the document you checked against to `sources`.
 
-## Checking and correcting a converted map
+## Status
 
-Files with `"x_status": "unverified"` were converted from other catalogues. To verify one:
+`x_status` is not part of the mbmap format: it is an optional key that this library and Modbench use to show how far a map can be trusted. The maps in this repository set it to one of:
+
+| `x_status` | Meaning |
+|---|---|
+| `verified` | Tested on a real device. |
+| `unverified` | Written from an official source (the manufacturer's manual or protocol document) but not tested on a device. |
+| `unofficial` | Copied from an unofficial source (another catalogue, a forum, a third-party integration) and not tested. |
+
+`x_status` is a tool-specific key, so changing it does not need a new `revision`.
+
+## Reporting a test
+
+Anyone who reads a device with a map can mark it as tested. You do not need to be the author of the map.
+
+1. Read the device with the map and compare the values with the device's display or its own software. Check at least one value per register group, and the byte and word order of a 32-bit value.
+2. Fix what is wrong (with a new `revision`, see above).
+3. Set `"x_status": "verified"` and add a line to `notes`: `"Tested on <model>, firmware <version>, <month year>."`
+4. Open a pull request and fill in the **Test report** part of the template: device, firmware, connection and the registers you checked.
+
+If you do not want to make a pull request, open a [test report issue](https://github.com/nobrega8/mbmap-library/issues/new?template=test-report.yml) instead and someone will update the map.
+
+A test that finds problems you cannot fix is useful too: report it in an issue so the map is not marked as verified.
+
+## Checking and correcting an unofficial map
+
+Files with `"x_status": "unofficial"` were converted from other catalogues. To check one against the manufacturer's documentation:
 
 1. Compare it with the manufacturer's manual: addresses, types, scaling, units, which register area (`holding` or `input`) and the byte and word order.
 2. Fix what is wrong. If the device has a register with a fixed value, add it as a `reference` (SPEC.md section 4.6) so tools can check the map.
-3. Change `source` to the document you used (title, version, public URL) and **delete the `x_status` key**.
-4. In the pull request, say whether you also tested it on a real device.
+3. Change `source` to the document you used (title, version, public URL), remove the notes that say the map was converted, and set `x_status` to `unverified` (or `verified` if you also tested it on a device).
 
-If a map cannot be fixed (the model is not documented anywhere you can reach), correct what you can and leave `x_status` in place.
+If a map cannot be checked (the model is not documented anywhere you can reach), correct what you can and leave it `unofficial`.
 
 ## Rules
 

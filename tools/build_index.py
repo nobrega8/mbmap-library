@@ -13,6 +13,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / "index.json"
+# verified: tested on a device; unverified: official source, not tested;
+# unofficial: unofficial source, not tested (CONTRIBUTING.md, "Status").
+STATUSES = ("verified", "unverified", "unofficial")
 
 
 def entry(path: Path) -> dict:
@@ -71,7 +74,23 @@ def build() -> str:
     return json.dumps({"mbmap_index": 1, "maps": entries}, indent=2, ensure_ascii=False) + "\n"
 
 
+def status_errors() -> list[str]:
+    """Maps in maps/ whose x_status is set but not one of STATUSES (it is optional)."""
+    errors = []
+    for path in sorted((ROOT / "maps").glob("*/*.mbmap.json")):
+        status = json.loads(path.read_bytes().decode("utf-8-sig")).get("x_status")
+        if status is not None and status not in STATUSES:
+            errors.append(f"{path.relative_to(ROOT).as_posix()}: x_status is {status!r}, "
+                          f"expected one of {', '.join(STATUSES)}")
+    return errors
+
+
 def main() -> int:
+    errors = status_errors()
+    for error in errors:
+        print(error)
+    if errors:
+        return 1
     text = build()
     if "--check" in sys.argv[1:]:
         current = INDEX.read_text(encoding="utf-8") if INDEX.exists() else ""
