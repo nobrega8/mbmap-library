@@ -24,7 +24,7 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 
 ## Changing a map
 
-- Increase `revision` by one, and set `revised` to today's date, when the change affects how a device is read or written: a register, a connection default, a table, a firmware range or a model. Fixing a description or a note does not need a new revision.
+- Increase `revision` by one, and set `revised` to today's date, when the change affects how a device is read or written: a register, a connection default, a table, a firmware range or a model. Fixing a description or a note does not need a new revision. CI checks this on every pull request (`python tools/check_revisions.py origin/main` runs the same check locally).
 - A newer firmware that adds or moves a few registers: add those registers with `firmware_min` (and give the old ones `firmware_max`) instead of making a new file. When most of the map changes, make a separate file per firmware range.
 - Add the document you checked against to `sources`.
 
