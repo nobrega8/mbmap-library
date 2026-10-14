@@ -21,6 +21,17 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 
 6. Open a pull request. In the description, say whether you tested the map on a real device, and with which firmware.
 
+## Checking and correcting a converted map
+
+Files with `@x_status=unverified` were converted from other catalogues. To verify one:
+
+1. Compare it with the manufacturer's manual: addresses, types, scaling, units, which register area (`holding` or `input`) and the byte order.
+2. Fix what is wrong. If the device has a register with a fixed value, add it as a `reference` (SPEC section 4.6) so tools can check the map.
+3. Change `@source` to the document you used (title, version, public URL) and **delete the `@x_status` line**.
+4. In the pull request, say whether you also tested it on a real device.
+
+If a map cannot be fixed (the model is not documented anywhere you can reach), correct what you can and leave `@x_status` in place.
+
 ## Rules
 
 - **Only public information.** Build maps from publicly available manuals or from your own testing. Do not submit anything from documents under NDA or marked confidential.

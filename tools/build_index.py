@@ -37,6 +37,7 @@ def entry(path: Path) -> dict:
         "model": meta.get("model", ""),
         "description": meta.get("description"),
         "vendor_website": meta.get("vendor_website"),
+        "status": meta.get("x_status"),
         "registers": registers,
     }
 

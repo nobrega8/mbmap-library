@@ -11,6 +11,7 @@ SPEC.md                         the .mbmap format specification
 maps/<vendor>/<model>.mbmap     the shared maps
 examples/                       fictional maps that show the format
 index.json                      list of the maps, for apps that browse the library
+ATTRIBUTION.md                  where converted maps come from, and their licences
 tools/validate.py               validator (also runs in CI)
 tools/build_index.py            rebuilds index.json
 tests/                          sample files and the diagnostics each must produce,
@@ -18,6 +19,12 @@ tests/                          sample files and the diagnostics each must produ
 ```
 
 Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap`.
+
+## Verified and unverified maps
+
+The maps written from a manufacturer's manual name that document in `@source`. A large part of the library was **converted from other open catalogues** of Modbus tables to get everyone started. Those files contain `@x_status=unverified`: nobody has checked them against the manufacturer's documentation yet, and some details (byte order, which register area, scaling) may be wrong. Read them as a draft and check a value on the real device before you rely on the rest.
+
+Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING.md). Where the maps come from, and under which licences, is in [ATTRIBUTION.md](ATTRIBUTION.md).
 
 ## Using the maps
 
