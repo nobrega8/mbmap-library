@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The base commit is needed to compare map revisions.
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -21,3 +24,7 @@ jobs:
       - run: python tools/build_index.py --check
       - run: pip install jsonschema
       - run: python tools/test_migrate.py
+      - run: python tools/test_check_revisions.py
+      - name: Changed maps have a new revision
+        if: github.event_name == 'pull_request'
+        run: python tools/check_revisions.py ${{ github.event.pull_request.base.sha }}
