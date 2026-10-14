@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Example Corp",
+  "model": "EM-100",
+  "vendor_website": "example.com",
+  "description": "Single-phase energy meter (fictional example)",
+  "notes": [
+    "Fictional device. It shows the format and is not a real product."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "E",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "enums": {
+    "relay": {"0": "Open", "1": "Closed"}
+  },
+  "registers": [
+    {"name": "Voltage", "group": "Measurements", "area": "input", "address": 0, "type": "float32", "scale": 1, "offset": 0, "unit": "V", "access": "R", "description": "RMS voltage"},
+    {"name": "Current", "group": "Measurements", "area": "input", "address": 6, "type": "float32", "scale": 1, "offset": 0, "unit": "A", "access": "R", "description": "RMS current"},
+    {"name": "Frequency", "group": "Measurements", "area": "input", "address": 70, "type": "uint16", "scale": 0.01, "offset": 0, "unit": "Hz", "access": "R"},
+    {"name": "Active energy", "group": "Energy", "area": "holding", "address": 256, "type": "uint32", "scale": 0.01, "offset": 0, "unit": "kWh", "access": "R", "byte_order": "big", "word_order": "little", "description": "Low word first"},
+    {"name": "Relay state", "group": "Status", "area": "holding", "address": 512, "type": "bool", "bit": 3, "access": "R", "enum": "relay", "description": "Bit 3 of the status word"},
+    {"name": "Alarm active", "group": "Status", "area": "holding", "address": 512, "type": "bool", "bit": 4, "access": "R", "description": "Bit 4 of the status word"},
+    {"name": "Reset energy", "group": "Commands", "area": "coil", "address": 0, "type": "bool", "access": "W", "description": "Write 1 to reset counters"},
+    {"name": "Serial number", "group": "Info", "area": "holding", "address": 1024, "type": "string", "length": 8, "access": "R", "description": "16 ASCII characters"},
+    {"name": "Update interval", "group": "Settings", "area": "holding", "address": 300, "type": "uint16", "scale": 0.5, "offset": 0, "unit": "s", "access": "RW", "write_min": 1, "write_max": 60, "description": "Seconds between measurements"},
+    {"name": "Protocol version", "group": "Info", "area": "holding", "address": 1040, "type": "uint16", "access": "R", "reference": "0x0102", "description": "Fixed by the firmware; a quick check of address and byte order"}
+  ]
+}

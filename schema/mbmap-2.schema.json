@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "title": ".mbmap version 2",
+  "description": "Modbus register map of one device model, format version 2 (JSON). See SPEC-v2.md. The schema checks structure and value ranges; rules that span several fields (references between registers, overlap, address range) are checked by tools/validate.py-style readers, as listed in SPEC-v2.md section 7.",
+  "type": "object",
+  "required": ["mbmap", "vendor", "model", "registers"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "mbmap": { "const": 2 },
+    "vendor": { "$ref": "#/$defs/text" },
+    "model": { "$ref": "#/$defs/text" },
+    "vendor_website": {
+      "type": "string",
+      "pattern": "^(https?://)?[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+(:[0-9]+)?(/\\S*)?$"
+    },
+    "description": { "type": "string" },
+    "firmware": { "type": "string" },
+    "source": { "type": "string" },
+    "notes": { "type": "array", "items": { "type": "string" } },
+    "protocol": { "enum": ["tcp", "rtu", "tcp+rtu"] },
+    "unit_id": { "type": "integer", "minimum": 0, "maximum": 255 },
+    "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+    "baudrate": { "type": "integer", "minimum": 1, "maximum": 10000000 },
+    "parity": { "enum": ["N", "E", "O"] },
+    "databits": { "enum": [7, 8] },
+    "stopbits": { "enum": [1, 2] },
+    "byte_order": { "$ref": "#/$defs/order" },
+    "word_order": { "$ref": "#/$defs/order" },
+    "address_base": { "enum": [0, 1] },
+    "max_read_registers": { "type": "integer", "minimum": 1, "maximum": 125 },
+    "max_read_bits": { "type": "integer", "minimum": 1, "maximum": 2000 },
+    "enums": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z0-9_]+$" },
+      "additionalProperties": { "$ref": "#/$defs/table" }
+    },
+    "sentinels": {
+      "type": "object",
+      "propertyNames": { "enum": ["int16", "uint16", "int32", "uint32", "int64", "uint64"] },
+      "additionalProperties": { "$ref": "#/$defs/table" }
+    },
+    "registers": { "type": "array", "items": { "$ref": "#/$defs/register" } }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "order": { "enum": ["big", "little"] },
+    "integer": {
+      "description": "A JSON integer, or a string holding a decimal or 0x hex integer (for hex spellings and for values beyond 2^53).",
+      "oneOf": [
+        { "type": "integer" },
+        { "type": "string", "pattern": "^([+-]?[0-9]+|0[xX][0-9A-Fa-f]+)$" }
+      ]
+    },
+    "table": {
+      "description": "Raw value -> label. Keys are decimal or 0x hex integers.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^([+-]?[0-9]+|0[xX][0-9A-Fa-f]+)$" },
+      "additionalProperties": { "type": "string", "minLength": 1, "pattern": "\\S" }
+    },
+    "register": {
+      "type": "object",
+      "required": ["name", "area", "address", "type"],
+      "properties": {
+        "name": { "$ref": "#/$defs/text" },
+        "group": { "type": "string" },
+        "area": { "enum": ["coil", "discrete", "input", "holding"] },
+        "address": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0, "maximum": 65536 },
+            { "type": "string", "pattern": "^0[xX][0-9A-Fa-f]{1,5}$" }
+          ]
+        },
+        "type": {
+          "enum": ["bool", "int16", "uint16", "int32", "uint32", "float32", "int64", "uint64", "float64", "string"]
+        },
+        "length": { "type": "integer", "minimum": 1, "maximum": 65536 },
+        "bit": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "bits": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "scale": { "type": "number" },
+        "scale_factor": { "$ref": "#/$defs/text" },
+        "offset": { "type": "number" },
+        "unit": { "type": "string" },
+        "access": { "enum": ["R", "W", "RW"] },
+        "byte_order": { "$ref": "#/$defs/order" },
+        "word_order": { "$ref": "#/$defs/order" },
+        "write_min": { "type": "number" },
+        "write_max": { "type": "number" },
+        "enum": {
+          "oneOf": [
+            { "type": "string", "pattern": "^[a-z0-9_]+$" },
+            { "$ref": "#/$defs/table" }
+          ]
+        },
+        "reference": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "boolean" },
+            { "type": "string" }
+          ]
+        },
+        "description": { "type": "string" },
+        "comment": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "string" } } },
+          "then": { "required": ["length"] }
+        },
+        {
+          "if": { "properties": { "area": { "enum": ["coil", "discrete"] } } },
+          "then": { "properties": { "type": { "const": "bool" } } }
+        },
+        {
+          "if": { "properties": { "area": { "enum": ["discrete", "input"] } } },
+          "then": { "properties": { "access": { "const": "R" } } }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "bool" }, "area": { "enum": ["input", "holding"] } },
+            "required": ["type", "area"]
+          },
+          "then": { "required": ["bit"] }
+        },
+        {
+          "if": { "required": ["bits"] },
+          "then": {
+            "required": ["bit"],
+            "properties": { "type": { "const": "uint16" }, "area": { "enum": ["input", "holding"] } }
+          }
+        }
+      ]
+    }
+  }
+}

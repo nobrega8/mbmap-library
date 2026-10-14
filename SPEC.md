@@ -290,6 +290,8 @@ The [`tests/`](tests/) folder holds sample files with the diagnostics each one m
 
 This section is not part of version 1. It records where the format is going so that today's `byte_order` values have a defined migration path. Version 1 files and readers keep the semantics of §6 unchanged.
 
+The draft of version 2 ([SPEC-v2.md](SPEC-v2.md)) adopts this model, and `tools/migrate.py` converts version 1 files to it.
+
 ### 9.1 Two independent choices
 
 The four `byte_order` names of version 1 combine two settings:
