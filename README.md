@@ -2,29 +2,28 @@
 
 [![Validate maps](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml/badge.svg)](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml)
 [![Maps](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnobrega8%2Fmbmap-library%2Fmain%2Findex.json&query=%24.maps.length&label=maps&color=blue)](index.json)
-[![Format](https://img.shields.io/badge/format-.mbmap%20v2-informational)](SPEC-v2.md)
+[![Format](https://img.shields.io/badge/format-.mbmap%20v2-informational)](SPEC.md)
 [![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
-An open library of Modbus register maps in the [`.mbmap` format](SPEC-v2.md) (version 2, JSON).
+An open library of Modbus register maps in the [`.mbmap` format](SPEC.md), a JSON format with a [JSON Schema](schema/mbmap-2.schema.json).
 
 Each file describes one device model: the manufacturer, how to connect to it and what every register means. Load a map into a compatible tool and you get the device's variables, already named, scaled and typed, without typing addresses from a PDF manual.
 
 ## Layout
 
 ```text
-SPEC-v2.md                        the .mbmap format specification (version 2)
-SPEC.md                           version 1, deprecated (CSV)
-schema/mbmap-2.schema.json        JSON Schema of version 2
+SPEC.md                           the .mbmap format specification
+schema/mbmap-2.schema.json        its JSON Schema
 maps/<vendor>/<model>.mbmap.json  the shared maps
 examples/                         fictional maps that show the format
 index.json                        list of the maps, for apps that browse the library
 ATTRIBUTION.md                    where converted maps come from, and their licences
-tools/validate.py                 validator for both versions (also runs in CI)
+tools/validate.py                 validator (also runs in CI)
 tools/build_index.py              rebuilds index.json
-tools/migrate.py                  converts version 1 maps to version 2
 tests/                            sample files and the diagnostics each must produce,
                                   for checking any .mbmap reader against the spec
+legacy/v1/                        the deprecated CSV-based format, and how to convert it
 ```
 
 Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap.json`.
@@ -41,17 +40,9 @@ A map is a JSON file with one register per line, so it reads well in any text ed
 
 - [Modbench](https://github.com/nobrega8/modbench): a lightweight Modbus TCP/RTU client for Windows and Linux. It can browse and download the maps in this repository directly.
 
-Building a tool that reads `.mbmap`? Open a pull request to add it here.
+Building a tool that reads `.mbmap`? Follow [SPEC.md](SPEC.md), check it against the samples in [`tests/`](tests/), and open a pull request to add it here.
 
-### Format version 2
-
-The format is defined in [SPEC-v2.md](SPEC-v2.md) (JSON). Version 1 ([SPEC.md](SPEC.md), CSV) is deprecated; the reasons are in [docs/json-evaluation.md](docs/json-evaluation.md). To convert a version 1 map:
-
-```sh
-python tools/migrate.py path/to/model.mbmap        # writes path/to/model.mbmap.json
-```
-
-This also works for a map you keep in a spreadsheet: export it as a version 1 CSV `.mbmap` (SPEC.md) and convert it.
+Have an older CSV-based `.mbmap` file? See [legacy/v1](legacy/v1/) to convert it.
 
 ## Contributing
 

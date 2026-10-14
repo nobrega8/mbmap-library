@@ -8,7 +8,7 @@ Usage:
 
 A directory is searched for *.mbmap files. A file with validation errors
 (tools/validate.py) is not converted. The conversion keeps every value and
-its meaning (see SPEC-v2.md, section 9): only blank lines, the spelling of
+its meaning (see legacy/v1/README.md): only blank lines, the spelling of
 case-insensitive values and the column order are not kept.
 
 Standard library only.
@@ -28,7 +28,7 @@ from validate import check_text, parse_int  # noqa: E402
 
 SCHEMA_URL = "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json"
 
-# Version 1 byte_order -> version 2 (byte_order, word_order), SPEC.md §9.3.
+# Version 1 byte_order -> version 2 (byte_order, word_order), legacy/v1/SPEC.md §9.3.
 SPLIT_ORDER = {
     "ABCD": ("big", "big"),
     "BADC": ("little", "big"),
