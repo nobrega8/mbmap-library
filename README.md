@@ -42,8 +42,6 @@ A map is a JSON file with one register per line, so it reads well in any text ed
 
 Building a tool that reads `.mbmap`? Follow [SPEC.md](SPEC.md), check it against the samples in [`tests/`](tests/), and open a pull request to add it here.
 
-Have an older CSV-based `.mbmap` file? See [legacy/v1](legacy/v1/) to convert it.
-
 ## Contributing
 
 New maps and fixes are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then check your file:
