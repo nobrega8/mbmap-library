@@ -5,6 +5,7 @@
 [![Format](https://img.shields.io/badge/format-.mbmap%20v2-informational)](SPEC.md)
 [![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-support-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/nobrega)
 
 An open library of Modbus register maps in the [`.mbmap` format](SPEC.md), a JSON format with a [JSON Schema](schema/mbmap-2.schema.json).
 
@@ -63,3 +64,9 @@ Thanks to everyone who has added or corrected a map.
 The maps, the spec and the tools are dedicated to the public domain under [CC0 1.0](LICENSE). You can use them for anything, including commercial products, without asking or giving credit.
 
 The maps are provided as is. Always check a map against the manufacturer's documentation before you write to a live device.
+
+## Funding
+
+The library is free and in the public domain. If it saves you time, you can support its development on Ko-fi:
+
+<a href="https://ko-fi.com/nobrega"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support mbmap-library on Ko-fi" height="36"></a>
