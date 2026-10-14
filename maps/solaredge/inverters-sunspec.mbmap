@@ -1,0 +1,70 @@
+# SolarEdge inverters, SunSpec monitoring data (models 101, 102 and 103).
+# Values are integers with scale factor registers; values a model does not use read 0xFFFF or 0x8000.
+# Modbus TCP is off by default: enable it in the inverter's LAN or communication menu.
+@mbmap=1
+@vendor=SolarEdge
+@model=Inverters (SunSpec 101-103)
+@vendor_website=solaredge.com
+@description=SolarEdge single, split and three phase inverters with SetApp or LCD firmware 3.xxxx+, monitoring data through SunSpec. Multi-MPPT model 160 (Synergy) and the energy meters are separate maps
+@source=SolarEdge, "SolarEdge Inverters - SunSpec Logging - Technical Note" v2.6 (December 2023), register mapping; SunSpec Alliance information model definitions (github.com/sunspec/models), models 1 and 103
+@protocol=tcp+rtu
+@unit_id=1
+@port=502
+@baudrate=115200
+@parity=N
+@databits=8
+@stopbits=1
+@byte_order=ABCD
+@address_base=0
+@enum_inverter_state=1=Off|2=Sleeping|3=Starting|4=MPPT|5=Throttled|6=Shutting down|7=Fault|8=Standby
+@sentinel_int16=-32768=Not implemented
+@sentinel_uint16=0xFFFF=Not implemented
+@sentinel_int32=-2147483648=Not implemented
+@sentinel_uint32=0xFFFFFFFF=Not implemented
+
+name,group,area,address,type,length,scale,scale_factor,offset,unit,access,byte_order,bit,bits,enum,description
+SunSpec marker,Device,holding,40000,string,2,,,,,R,,,,,"Reads "SunS" on a SunSpec device"
+Common block ID,Device,holding,40002,uint16,,,,,,R,,,,,SunSpec ID
+Common block length,Device,holding,40003,uint16,,,,,,R,,,,,SunSpec L
+Manufacturer,Device,holding,40004,string,16,,,,,R,,,,,SunSpec Mn
+Model,Device,holding,40020,string,16,,,,,R,,,,,SunSpec Md
+Options,Device,holding,40036,string,8,,,,,R,,,,,SunSpec Opt
+Version,Device,holding,40044,string,8,,,,,R,,,,,SunSpec Vr
+Serial number,Device,holding,40052,string,16,,,,,R,,,,,SunSpec SN
+Modbus address,Device,holding,40068,uint16,,,,,,R,,,,,"SunSpec DA. This point is mandatory for all SunSpec RTU devices and, for those devices, they must support values from 1-247."
+Inverter model ID,Model header,holding,40069,uint16,,,,,,R,,,,,"SunSpec ID. 101 = single phase, 102 = split phase, 103 = three phase"
+Inverter model length,Model header,holding,40070,uint16,,,,,,R,,,,,SunSpec L
+AC Current,AC side,holding,40071,uint16,,,A_SF,,A,R,,,,,SunSpec A. Sum of active phases
+Phase A Current,AC side,holding,40072,uint16,,,A_SF,,A,R,,,,,SunSpec AphA. Connected Phase
+Phase B Current,AC side,holding,40073,uint16,,,A_SF,,A,R,,,,,SunSpec AphB. Connected Phase
+Phase C Current,AC side,holding,40074,uint16,,,A_SF,,A,R,,,,,SunSpec AphC. Connected Phase
+A_SF,Scale factors,holding,40075,int16,,,,,,R,,,,,SunSpec A_SF
+Phase Voltage AB,AC side,holding,40076,uint16,,,V_SF,,V,R,,,,,SunSpec PPVphAB
+Phase Voltage BC,AC side,holding,40077,uint16,,,V_SF,,V,R,,,,,SunSpec PPVphBC
+Phase Voltage CA,AC side,holding,40078,uint16,,,V_SF,,V,R,,,,,SunSpec PPVphCA
+Phase Voltage AN,AC side,holding,40079,uint16,,,V_SF,,V,R,,,,,"SunSpec PhVphA. Split-phase configurations only (Japanese grid, 240 V North America)"
+Phase Voltage BN,AC side,holding,40080,uint16,,,V_SF,,V,R,,,,,"SunSpec PhVphB. Split-phase configurations only (Japanese grid, 240 V North America)"
+Phase Voltage CN,AC side,holding,40081,uint16,,,V_SF,,V,R,,,,,"SunSpec PhVphC. Split-phase configurations only (Japanese grid, 240 V North America)"
+V_SF,Scale factors,holding,40082,int16,,,,,,R,,,,,SunSpec V_SF
+AC Power,AC side,holding,40083,int16,,,W_SF,,W,R,,,,,SunSpec W
+W_SF,Scale factors,holding,40084,int16,,,,,,R,,,,,SunSpec W_SF
+Line Frequency,AC side,holding,40085,uint16,,,Hz_SF,,Hz,R,,,,,SunSpec Hz
+Hz_SF,Scale factors,holding,40086,int16,,,,,,R,,,,,SunSpec Hz_SF
+AC Apparent Power,AC side,holding,40087,int16,,,VA_SF,,VA,R,,,,,SunSpec VA
+VA_SF,Scale factors,holding,40088,int16,,,,,,R,,,,,SunSpec VA_SF
+AC Reactive Power,AC side,holding,40089,int16,,,VAr_SF,,var,R,,,,,SunSpec VAr
+VAr_SF,Scale factors,holding,40090,int16,,,,,,R,,,,,SunSpec VAr_SF
+AC Power Factor,AC side,holding,40091,int16,,,PF_SF,,%,R,,,,,SunSpec PF
+PF_SF,Scale factors,holding,40092,int16,,,,,,R,,,,,SunSpec PF_SF
+AC Energy,Energy,holding,40093,uint32,,,WH_SF,,Wh,R,,,,,SunSpec WH
+WH_SF,Scale factors,holding,40095,int16,,,,,,R,,,,,SunSpec WH_SF. The SolarEdge note lists this register as uint16; it is the signed SunSpec scale factor (int16)
+DC Current,DC side,holding,40096,uint16,,,DCA_SF,,A,R,,,,,SunSpec DCA
+DCA_SF,Scale factors,holding,40097,int16,,,,,,R,,,,,SunSpec DCA_SF
+DC Voltage,DC side,holding,40098,uint16,,,DCV_SF,,V,R,,,,,SunSpec DCV
+DCV_SF,Scale factors,holding,40099,int16,,,,,,R,,,,,SunSpec DCV_SF
+DC Power,DC side,holding,40100,int16,,,DCW_SF,,W,R,,,,,SunSpec DCW
+DCW_SF,Scale factors,holding,40101,int16,,,,,,R,,,,,SunSpec DCW_SF
+Heat Sink Temperature,Temperature,holding,40103,int16,,,Tmp_SF,,°C,R,,,,,SunSpec TmpSnk
+Tmp_SF,Scale factors,holding,40106,int16,,,,,,R,,,,,SunSpec Tmp_SF
+Operating state,Status,holding,40107,uint16,,,,,,R,,,,@inverter_state,SunSpec St
+Vendor specific operating state code,Status,holding,40108,uint16,,,,,,R,,,,,SunSpec StVnd. Vendor status and error codes: see the SolarEdge installation guide
