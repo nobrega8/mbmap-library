@@ -228,7 +228,7 @@ Byte order names the order in which the bytes of the value arrive, where `A` is 
 | `BADC` | most significant register first | low byte first ("byte swap") |
 | `DCBA` | least significant register first | low byte first (little-endian) |
 
-The same two choices apply to 64-bit types. For 16-bit types only the byte part applies: `BADC` and `DCBA` swap the two bytes. For `string`, the byte part decides which character of each register comes first.
+The same two choices apply to 64-bit types. For 16-bit types only the byte part applies: `BADC` and `DCBA` swap the two bytes. For `string`, each register holds two characters, and the byte part maps its two bytes to them in the order they are received: with `AB` (`ABCD`, `CDAB`) the first byte received is the first character, and with `BA` (`BADC`, `DCBA`) the second byte received is the first character. The word part does not apply to `string`: registers are read in address order.
 
 ## 7. Validation
 
@@ -307,7 +307,7 @@ A future version would name them as two columns, and two metadata keys for the f
 | `int16`, `uint16` | swaps the two bytes of the register | not used (one register) |
 | `int32`, `uint32`, `float32` | swaps the two bytes of each register | decides which of the 2 registers is the high word |
 | `int64`, `uint64`, `float64` | swaps the two bytes of each register | reverses the 4 registers as a whole |
-| `string` | decides which character of each register comes first | not used (characters are in address order) |
+| `string` | `big`: the first byte received is the first character; `little`: the second byte received is the first character | not used (registers are read in address order) |
 
 For 64-bit values, little word order reverses the whole sequence of four registers; it does not swap two 32-bit halves separately. This is how version 1 treats `CDAB` and `DCBA` ("The same two choices apply to 64-bit types", §6).
 
