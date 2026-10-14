@@ -4,13 +4,13 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 
 ## Adding a map
 
-1. Create `maps/<vendor>/<model>.mbmap`. Use lowercase slugs with `-` (`schneider-electric`, `pm5560`). If one map covers a model family, name the file after the family.
-2. Start from [`examples/example-corp/em-100.mbmap`](examples/example-corp/em-100.mbmap) and follow [SPEC.md](SPEC.md).
-3. Fill in `@source` with the document you used: manual title, version or date, and a public URL if there is one.
+1. Create `maps/<vendor>/<model>.mbmap.json`. Use lowercase slugs with `-` (`schneider-electric`, `pm5560`). If one map covers a model family, name the file after the family.
+2. Start from [`examples/example-corp/em-100.mbmap.json`](examples/example-corp/em-100.mbmap.json) and follow [SPEC-v2.md](SPEC-v2.md). If you prefer a spreadsheet, build the table as a version 1 CSV file ([SPEC.md](SPEC.md)) and convert it with `python tools/migrate.py <file>.mbmap`.
+3. Fill in `source` with the document you used: manual title, version or date, and a public URL if there is one.
 4. Run the validator and fix every error:
 
    ```sh
-   python tools/validate.py maps/<vendor>/<model>.mbmap
+   python tools/validate.py maps/<vendor>/<model>.mbmap.json
    ```
 
 5. Add the map to the index:
@@ -23,14 +23,14 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 
 ## Checking and correcting a converted map
 
-Files with `@x_status=unverified` were converted from other catalogues. To verify one:
+Files with `"x_status": "unverified"` were converted from other catalogues. To verify one:
 
 1. Compare it with the manufacturer's manual: addresses, types, scaling, units, which register area (`holding` or `input`) and the byte order.
 2. Fix what is wrong. If the device has a register with a fixed value, add it as a `reference` (SPEC section 4.6) so tools can check the map.
-3. Change `@source` to the document you used (title, version, public URL) and **delete the `@x_status` line**.
+3. Change `source` to the document you used (title, version, public URL) and **delete the `x_status` key**.
 4. In the pull request, say whether you also tested it on a real device.
 
-If a map cannot be fixed (the model is not documented anywhere you can reach), correct what you can and leave `@x_status` in place.
+If a map cannot be fixed (the model is not documented anywhere you can reach), correct what you can and leave `x_status` in place.
 
 ## Rules
 

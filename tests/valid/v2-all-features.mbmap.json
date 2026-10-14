@@ -1,0 +1,42 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Test",
+  "model": "T2",
+  "vendor_website": "example.com",
+  "notes": ["Every version 2 feature in one file."],
+  "protocol": "tcp+rtu",
+  "unit_id": 3,
+  "port": 502,
+  "baudrate": 19200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 1,
+  "max_read_registers": 60,
+  "max_read_bits": 800,
+  "enums": {
+    "state": {"0": "Stopped", "1": "Running", "0x10": "Fault"}
+  },
+  "sentinels": {
+    "uint16": {"0xFFFF": "Unimplemented"},
+    "int16": {"-32768": "Unimplemented"}
+  },
+  "x_tool": {"any": ["json", 1]},
+  "registers": [
+    {"name": "Energy", "group": "Energy", "area": "holding", "address": "0x0010", "type": "uint32", "scale": 0.01, "unit": "kWh", "comment": "Section: energy"},
+    {"name": "Swapped", "area": "holding", "address": 20, "type": "float32", "byte_order": "little"},
+    {"name": "State", "area": "holding", "address": 30, "type": "uint16", "enum": "state"},
+    {"name": "Mode", "area": "holding", "address": 31, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 3, "enum": {"0": "A|B", "1": "x=y"}},
+    {"name": "Alarm", "area": "holding", "address": 32, "type": "uint16", "bit": 4, "bits": 4},
+    {"name": "Run", "area": "holding", "address": 32, "type": "bool", "bit": 0, "reference": false},
+    {"name": "W", "area": "holding", "address": 40, "type": "int16", "unit": "W", "scale_factor": "W_SF"},
+    {"name": "W_SF", "area": "holding", "address": 41, "type": "int16"},
+    {"name": "Code", "area": "input", "address": 50, "type": "uint16", "reference": "0x016A"},
+    {"name": "Ratio", "area": "input", "address": 51, "type": "float64", "reference": 1.5},
+    {"name": "Serial", "area": "input", "address": 60, "type": "string", "length": 4, "reference": "SIM-1"},
+    {"name": "Reset", "area": "coil", "address": 1, "type": "bool", "access": "W", "x_confirm": true}
+  ]
+}

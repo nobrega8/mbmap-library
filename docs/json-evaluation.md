@@ -4,11 +4,11 @@ Evaluation for [issue #5](https://github.com/nobrega8/mbmap-library/issues/5): s
 
 ## Decision
 
-**JSON becomes format version 2. Version 1 stays valid and stays the format of this repository until readers support version 2.**
+**JSON becomes format version 2. Version 1 is deprecated but stays readable.** The maps of this repository are in version 2.
 
 - [SPEC-v2.md](../SPEC-v2.md) defines version 2 and [schema/mbmap-2.schema.json](../schema/mbmap-2.schema.json) is its JSON Schema.
 - [tools/migrate.py](../tools/migrate.py) converts version 1 files to version 2. [tools/test_migrate.py](../tools/test_migrate.py) runs it on every valid version 1 file in the repository (431 today) and checks that nothing changes meaning; CI runs it with the schema check.
-- No map is converted by this change, and SPEC.md is untouched: per the issue, nothing breaks before the decision is acted on. The plan for the switch is in [Rollout](#rollout).
+- The rollout below is complete: Modbench reads version 2, `validate.py` checks both versions, and the maps were converted with `migrate.py`.
 
 Not chosen:
 
@@ -74,7 +74,7 @@ This is where CSV is better, and the reason version 1 is not dropped in a hurry.
 ## Rollout
 
 1. *(this change)* Spec draft, schema, migration tool, lossless test and a prototype ([examples/example-corp/em-100.mbmap.json](../examples/example-corp/em-100.mbmap.json), generated from the version 1 example). Version 1 unchanged.
-2. Modbench reads version 2 (and keeps version 1).
-3. `validate.py` checks version 2 files with the same codes; `tests/` gains version 2 fixtures.
-4. The library is converted in one commit with `migrate.py`; `build_index.py` indexes `.mbmap.json`; CONTRIBUTING.md documents the spreadsheet → CSV → `migrate.py` path for new maps.
+2. Modbench reads version 2 (and keeps version 1) *(done)*.
+3. `validate.py` checks version 2 files with the same codes; `tests/` gains version 2 fixtures *(done)*.
+4. The library is converted in one commit with `migrate.py`; `build_index.py` indexes `.mbmap.json`; CONTRIBUTING.md documents the spreadsheet → CSV → `migrate.py` path for new maps *(done)*.
 5. SPEC-v2.md loses its draft status and SPEC.md is marked deprecated *(done)*.

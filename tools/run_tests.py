@@ -3,9 +3,10 @@
 
 Usage: python tools/run_tests.py
 
-Each entry in expected.json lists the (line, code) pairs a reader must report
-for that file, as errors and as warnings. Order does not matter; line is null
-for problems that belong to the whole file.
+Each entry in expected.json lists the (location, code) pairs a reader must
+report for that file, as errors and as warnings. Order does not matter. The
+location is a line number (version 1, and JSON syntax errors), a JSON Pointer
+(version 2), or null for problems that belong to the whole file.
 """
 
 from __future__ import annotations
@@ -23,7 +24,8 @@ ROOT = Path(__file__).resolve().parent.parent / "tests"
 
 def main() -> int:
     expected = json.loads((ROOT / "expected.json").read_text(encoding="utf-8"))
-    on_disk = {p.relative_to(ROOT).as_posix() for p in ROOT.rglob("*.mbmap")}
+    on_disk = {p.relative_to(ROOT).as_posix() for p in ROOT.rglob("*")
+               if p.name.endswith((".mbmap", ".mbmap.json"))}
     failures = 0
 
     for name in sorted(on_disk - expected.keys()):

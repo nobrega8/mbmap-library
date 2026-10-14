@@ -2,39 +2,42 @@
 
 [![Validate maps](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml/badge.svg)](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml)
 [![Maps](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnobrega8%2Fmbmap-library%2Fmain%2Findex.json&query=%24.maps.length&label=maps&color=blue)](index.json)
-[![Format](https://img.shields.io/badge/format-.mbmap%20v1-informational)](SPEC.md)
+[![Format](https://img.shields.io/badge/format-.mbmap%20v2-informational)](SPEC-v2.md)
 [![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
-An open library of Modbus register maps in the [`.mbmap` format](SPEC.md).
+An open library of Modbus register maps in the [`.mbmap` format](SPEC-v2.md) (version 2, JSON).
 
 Each file describes one device model: the manufacturer, how to connect to it and what every register means. Load a map into a compatible tool and you get the device's variables, already named, scaled and typed, without typing addresses from a PDF manual.
 
 ## Layout
 
 ```text
-SPEC.md                         the .mbmap format specification
-maps/<vendor>/<model>.mbmap     the shared maps
-examples/                       fictional maps that show the format
-index.json                      list of the maps, for apps that browse the library
-ATTRIBUTION.md                  where converted maps come from, and their licences
-tools/validate.py               validator (also runs in CI)
-tools/build_index.py            rebuilds index.json
-tests/                          sample files and the diagnostics each must produce,
-                                for checking any .mbmap reader against the spec
+SPEC-v2.md                        the .mbmap format specification (version 2)
+SPEC.md                           version 1, deprecated (CSV)
+schema/mbmap-2.schema.json        JSON Schema of version 2
+maps/<vendor>/<model>.mbmap.json  the shared maps
+examples/                         fictional maps that show the format
+index.json                        list of the maps, for apps that browse the library
+ATTRIBUTION.md                    where converted maps come from, and their licences
+tools/validate.py                 validator for both versions (also runs in CI)
+tools/build_index.py              rebuilds index.json
+tools/migrate.py                  converts version 1 maps to version 2
+tests/                            sample files and the diagnostics each must produce,
+                                  for checking any .mbmap reader against the spec
 ```
 
-Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap`.
+Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap.json`.
 
 ## Verified and unverified maps
 
-The maps written from a manufacturer's manual name that document in `@source`. A large part of the library was **converted from other open catalogues** of Modbus tables to get everyone started. Those files contain `@x_status=unverified`: nobody has checked them against the manufacturer's documentation yet, and some details (byte order, which register area, scaling) may be wrong. Read them as a draft and check a value on the real device before you rely on the rest.
+The maps written from a manufacturer's manual name that document in `source`. A large part of the library was **converted from other open catalogues** of Modbus tables to get everyone started. Those files contain `"x_status": "unverified"`: nobody has checked them against the manufacturer's documentation yet, and some details (byte order, which register area, scaling) may be wrong. Read them as a draft and check a value on the real device before you rely on the rest.
 
 Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Using the maps
 
-`.mbmap` is plain text based on CSV, so you can open a map in any text editor or spreadsheet. Tools that read the format:
+A map is a JSON file with one register per line, so it reads well in any text editor and any language can load it with its JSON parser; editors that support JSON Schema check it as you type. Tools that read the format:
 
 - [Modbench](https://github.com/nobrega8/modbench): a lightweight Modbus TCP/RTU client for Windows and Linux. It can browse and download the maps in this repository directly.
 
@@ -48,12 +51,14 @@ The format is defined in [SPEC-v2.md](SPEC-v2.md) (JSON). Version 1 ([SPEC.md](S
 python tools/migrate.py path/to/model.mbmap        # writes path/to/model.mbmap.json
 ```
 
+This also works for a map you keep in a spreadsheet: export it as a version 1 CSV `.mbmap` (SPEC.md) and convert it.
+
 ## Contributing
 
 New maps and fixes are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then check your file:
 
 ```sh
-python tools/validate.py maps/your-vendor/your-model.mbmap
+python tools/validate.py maps/your-vendor/your-model.mbmap.json
 ```
 
 ## Contributors

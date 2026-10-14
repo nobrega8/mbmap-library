@@ -3,7 +3,7 @@
 
 Usage: python tools/test_migrate.py
 
-For every valid version 1 file (maps/, examples/, tests/valid, tests/warnings)
+For every valid version 1 file (examples/, tests/valid, tests/warnings)
 it migrates the file and compares, field by field, what a reader would get
 from the original and from the result: metadata with its defaults, enum and
 sentinel tables, and every register with byte order, enum and reference
@@ -188,7 +188,18 @@ def main() -> int:
         failures += 1
         print(f"FAIL {prototype.relative_to(ROOT).as_posix()}: out of date, run python tools/migrate.py {example.relative_to(ROOT).as_posix()}")
 
-    schema_note ="checked against the schema" if validator else "schema not checked (pip install jsonschema)"
+    # Every valid version 2 file of the repository follows the schema.
+    if validator is not None:
+        v2_files = [f for s in SOURCES for f in sorted(s.rglob("*.mbmap.json"))]
+        for path in v2_files:
+            doc = json.loads(path.read_text(encoding="utf-8"))
+            for err in list(validator.iter_errors(doc))[:1]:
+                failures += 1
+                where = "/".join(map(str, err.absolute_path))
+                print(f"FAIL {path.relative_to(ROOT).as_posix()}: schema: /{where}: {err.message}")
+        print(f"{len(v2_files)} version 2 file(s) checked against the schema")
+
+    schema_note = "checked against the schema" if validator else "schema not checked (pip install jsonschema)"
     print(f"\n{len(files)} file(s) migrated, {failures} failure(s), {schema_note}")
     return 1 if failures else 0
 

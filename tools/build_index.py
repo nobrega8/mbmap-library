@@ -16,6 +16,21 @@ INDEX = ROOT / "index.json"
 
 
 def entry(path: Path) -> dict:
+    """Index entry for a version 2 map."""
+    doc = json.loads(path.read_bytes().decode("utf-8-sig"))
+    return {
+        "path": path.relative_to(ROOT).as_posix(),
+        "vendor": doc.get("vendor", ""),
+        "model": doc.get("model", ""),
+        "description": doc.get("description"),
+        "vendor_website": doc.get("vendor_website"),
+        "status": doc.get("x_status"),
+        "registers": len(doc.get("registers", [])),
+    }
+
+
+def entry_v1(path: Path) -> dict:
+    """Index entry for a deprecated version 1 map."""
     text = path.read_bytes().decode("utf-8-sig")
     meta: dict[str, str] = {}
     registers = 0
@@ -43,9 +58,11 @@ def entry(path: Path) -> dict:
 
 
 def build() -> str:
-    maps = sorted((ROOT / "maps").glob("*/*.mbmap"))
+    maps = sorted((ROOT / "maps").glob("*/*.mbmap.json"))
+    legacy = sorted((ROOT / "maps").glob("*/*.mbmap"))
     entries = sorted(
-        (entry(p) for p in maps), key=lambda e: (e["vendor"].lower(), e["model"].lower())
+        [entry(p) for p in maps] + [entry_v1(p) for p in legacy],
+        key=lambda e: (e["vendor"].lower(), e["model"].lower()),
     )
     return json.dumps({"mbmap_index": 1, "maps": entries}, indent=2, ensure_ascii=False) + "\n"
 
