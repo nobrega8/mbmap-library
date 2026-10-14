@@ -1,5 +1,11 @@
 # mbmap-library
 
+[![Validate maps](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml/badge.svg)](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml)
+[![Maps](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnobrega8%2Fmbmap-library%2Fmain%2Findex.json&query=%24.maps.length&label=maps&color=blue)](index.json)
+[![Format](https://img.shields.io/badge/format-.mbmap%20v1-informational)](SPEC.md)
+[![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+
 An open library of Modbus register maps in the [`.mbmap` format](SPEC.md).
 
 Each file describes one device model: the manufacturer, how to connect to it and what every register means. Load a map into a compatible tool and you get the device's variables, already named, scaled and typed, without typing addresses from a PDF manual.
@@ -41,6 +47,12 @@ New maps and fixes are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then ch
 ```sh
 python tools/validate.py maps/your-vendor/your-model.mbmap
 ```
+
+## Contributors
+
+Thanks to everyone who has added or corrected a map.
+
+[![Contributors](https://contrib.rocks/image?repo=nobrega8/mbmap-library)](https://github.com/nobrega8/mbmap-library/graphs/contributors)
 
 ## License
 
