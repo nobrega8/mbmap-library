@@ -24,7 +24,7 @@ Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap`.
 
 The maps written from a manufacturer's manual name that document in `@source`. A large part of the library was **converted from other open catalogues** of Modbus tables to get everyone started. Those files contain `@x_status=unverified`: nobody has checked them against the manufacturer's documentation yet, and some details (byte order, which register area, scaling) may be wrong. Read them as a draft and check a value on the real device before you rely on the rest.
 
-Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING.md). Where the maps come from, and under which licences, is in [ATTRIBUTION.md](ATTRIBUTION.md).
+Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Using the maps
 
