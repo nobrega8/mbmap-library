@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Validate map files: version 2 (.mbmap.json, SPEC-v2.md) and the
-deprecated version 1 (.mbmap, SPEC.md).
+"""Validate .mbmap.json maps against SPEC.md.
+
+Files of the deprecated version 1 (.mbmap, legacy/v1/SPEC.md) are also
+read, so they can be checked before tools/migrate.py converts them.
 
 Usage: python tools/validate.py [PATH ...]   (defaults to maps/ and examples/)
 
@@ -14,7 +16,7 @@ import csv
 import json
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 AREAS = {"coil", "discrete", "input", "holding"}
@@ -179,11 +181,17 @@ def check_text(text: str) -> list[Diagnostic]:
     if text.startswith("﻿"):
         text = text[1:]
     # A version 2 file is a JSON object; a version 1 line never starts with '{'.
-    read = read_v2 if text.lstrip().startswith("{") else read_v1
-    parsed = read(text, ck)
+    v2 = text.lstrip().startswith("{")
+    parsed = (read_v2 if v2 else read_v1)(text, ck)
     if parsed is not None:
         check_rows(ck, *parsed)
+    if v2:
+        # Version 2 names these codes after keys, not CSV cells.
+        return [replace(d, code=V2_CODES.get(d.code, d.code)) for d in ck.out]
     return ck.out
+
+
+V2_CODES = {"empty-cell": "missing-key", "missing-meta": "missing-key", "unknown-column": "unknown-key"}
 
 
 def read_v1(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
@@ -260,7 +268,7 @@ def read_v1(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
     return meta, rows
 
 
-# ---- version 2 (JSON, SPEC-v2.md)
+# ---- version 2 (JSON, SPEC.md)
 
 V2_ORDERS = {"big", "little"}
 V2_TEXT_META = {"vendor", "model", "vendor_website", "description", "firmware", "source"}
@@ -277,7 +285,7 @@ ENUM_NAME_RE = re.compile(r"^[a-z0-9_]+$")
 
 
 class DuplicateKey(ValueError):
-    pass
+    """Input Python's json module accepts but a map cannot hold: a repeated key, NaN or Infinity."""
 
 
 def no_duplicates(pairs: list[tuple[str, object]]) -> dict:
@@ -287,6 +295,11 @@ def no_duplicates(pairs: list[tuple[str, object]]) -> dict:
             raise DuplicateKey(f"duplicate key {key!r}")
         out[key] = value
     return out
+
+
+def not_json_constant(name: str) -> None:
+    """NaN and Infinity are accepted by Python's json module but are not JSON."""
+    raise DuplicateKey(f"{name} is not a JSON number")
 
 
 def child(pointer: str, key: object) -> str:
@@ -328,7 +341,7 @@ def v2_table(ck: Checker, at: str, value: object, code: str, lo: int | None = No
 
 def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
     try:
-        doc = json.loads(text, object_pairs_hook=no_duplicates)
+        doc = json.loads(text, object_pairs_hook=no_duplicates, parse_constant=not_json_constant)
     except DuplicateKey as exc:
         ck.error(None, "not-json", f"not a valid JSON document: {exc}")
         return None
@@ -501,7 +514,7 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row]) -> None:
         empty = [c for c in REQUIRED_COLUMNS if not get(c)]
         if empty:
             for col in empty:
-                ck.error(lineno, "empty-cell", f"empty required cell {col!r}")
+                ck.error(lineno, "empty-cell", f"missing or empty required field {col!r}")
             continue
 
         if name in names:

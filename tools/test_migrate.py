@@ -3,7 +3,7 @@
 
 Usage: python tools/test_migrate.py
 
-For every valid version 1 file (examples/, tests/valid, tests/warnings)
+For every valid version 1 file (legacy/v1: examples, tests/valid, tests/warnings)
 it migrates the file and compares, field by field, what a reader would get
 from the original and from the result: metadata with its defaults, enum and
 sentinel tables, and every register with byte order, enum and reference
@@ -22,7 +22,10 @@ from migrate import SPLIT_ORDER, dumps, migrate_text, read_v1  # noqa: E402
 from validate import parse_int  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCES = [ROOT / "maps", ROOT / "examples", ROOT / "tests" / "valid", ROOT / "tests" / "warnings"]
+LEGACY = ROOT / "legacy" / "v1"
+# Version 1 files to migrate, and version 2 files to check against the schema.
+SOURCES = [LEGACY / "examples", LEGACY / "tests" / "valid", LEGACY / "tests" / "warnings",
+           ROOT / "maps", ROOT / "examples", ROOT / "tests" / "valid", ROOT / "tests" / "warnings"]
 META_DEFAULTS = {
     "protocol": "tcp+rtu", "unit_id": 1, "port": 502, "baudrate": 9600, "parity": "E",
     "databits": 8, "stopbits": 1, "address_base": 0, "max_read_registers": 125, "max_read_bits": 2000,
@@ -181,9 +184,9 @@ def main() -> int:
             for p in problems[:10]:
                 print(f"    {p}")
 
-    # The version 2 prototype in examples/ is the tool's output for the v1 example.
-    example = ROOT / "examples" / "example-corp" / "em-100.mbmap"
-    prototype = example.with_name(example.name + ".json")
+    # The version 2 example is the tool's output for the version 1 example.
+    example = LEGACY / "examples" / "example-corp" / "em-100.mbmap"
+    prototype = ROOT / "examples" / "example-corp" / "em-100.mbmap.json"
     if prototype.read_text(encoding="utf-8") != dumps(migrate_text(example.read_text(encoding="utf-8"))):
         failures += 1
         print(f"FAIL {prototype.relative_to(ROOT).as_posix()}: out of date, run python tools/migrate.py {example.relative_to(ROOT).as_posix()}")
@@ -192,7 +195,7 @@ def main() -> int:
     if validator is not None:
         v2_files = [f for s in SOURCES for f in sorted(s.rglob("*.mbmap.json"))]
         for path in v2_files:
-            doc = json.loads(path.read_text(encoding="utf-8"))
+            doc = json.loads(path.read_text(encoding="utf-8-sig"))
             for err in list(validator.iter_errors(doc))[:1]:
                 failures += 1
                 where = "/".join(map(str, err.absolute_path))
