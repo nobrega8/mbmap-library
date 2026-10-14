@@ -13,6 +13,7 @@ Standard library only.
 from __future__ import annotations
 
 import csv
+import datetime
 import json
 import re
 import sys
@@ -184,7 +185,7 @@ def check_text(text: str) -> list[Diagnostic]:
     v2 = text.lstrip().startswith("{")
     parsed = (read_v2 if v2 else read_v1)(text, ck)
     if parsed is not None:
-        check_rows(ck, *parsed)
+        check_rows(ck, *parsed, v2=v2)
     if v2:
         # Version 2 names these codes after keys, not CSV cells.
         return [replace(d, code=V2_CODES.get(d.code, d.code)) for d in ck.out]
@@ -272,6 +273,50 @@ def read_v1(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
 
 V2_ORDERS = {"big", "little"}
 V2_TEXT_META = {"vendor", "model", "vendor_website", "description", "firmware", "source"}
+V2_VERSION_KEYS = ("firmware_min", "firmware_max")
+ROLES = {"model", "firmware", "serial"}
+VERSION_RE = re.compile(r"^[0-9]+(\.[0-9]+)*$")
+DATE_RE = re.compile(r"^[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?$")
+URL_RE = re.compile(r"^https?://\S+$")
+
+
+def parse_version(text: str) -> tuple[int, ...] | None:
+    """A version string (SPEC.md 3.2) as numbers, or None."""
+    return tuple(int(p) for p in text.split(".")) if VERSION_RE.match(text) else None
+
+
+def max_before_min(hi: tuple[int, ...], lo: tuple[int, ...]) -> bool:
+    """Whether every version up to `hi` is older than `lo`. A bound covers
+    every version that starts with it, so max "2" still reaches 2.9."""
+    for i, h in enumerate(hi):
+        low = lo[i] if i < len(lo) else 0
+        if h != low:
+            return h < low
+    return False
+
+
+# A firmware range: (min, max), either side None when open.
+FwRange = tuple[tuple[int, ...] | None, tuple[int, ...] | None]
+
+
+def ranges_meet(a: FwRange, b: FwRange) -> bool:
+    """Whether two firmware ranges have a version in common."""
+    if a[1] is not None and b[0] is not None and max_before_min(a[1], b[0]):
+        return False
+    if b[1] is not None and a[0] is not None and max_before_min(b[1], a[0]):
+        return False
+    return True
+
+
+def valid_date(text: str) -> bool:
+    if not DATE_RE.match(text):
+        return False
+    parts = [int(p) for p in text.split("-")] + [1, 1]
+    try:
+        datetime.date(parts[0], parts[1], parts[2])
+    except ValueError:
+        return False
+    return True
 V2_INT_META = {"unit_id", "port", "baudrate", "databits", "stopbits", "address_base",
                "max_read_registers", "max_read_bits"}
 V2_EXACT = {"protocol": {"tcp", "rtu", "tcp+rtu"}, "parity": {"N", "E", "O"}}
@@ -411,12 +456,50 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
         elif key == "notes":
             if not isinstance(value, list) or not all(isinstance(n, str) for n in value):
                 wrong_type(at, "an array of strings", value)
+        elif key == "models":
+            if not isinstance(value, list):
+                wrong_type(at, "an array of strings", value)
+                continue
+            for i, item in enumerate(value):
+                if not isinstance(item, str):
+                    wrong_type(child(at, i), "a string", item)
+                elif not item.strip():
+                    ck.error(child(at, i), "bad-meta-value", "a model name cannot be empty")
+            if not value:
+                ck.error(at, "bad-meta-value", "models cannot be empty; leave it out to use model")
+        elif key == "revision":
+            if not is_json_number(value):
+                wrong_type(at, "an integer", value)
+            elif not isinstance(value, int) or value < 1:
+                ck.error(at, "bad-meta-value", f"revision must be a whole number from 1, not {value!r}")
+        elif key == "revised":
+            if not isinstance(value, str):
+                wrong_type(at, "a string", value)
+            elif len(value) != 10 or not valid_date(value):
+                ck.error(at, "bad-meta-value", f"revised must be a date YYYY-MM-DD, not {value!r}")
+        elif key in V2_VERSION_KEYS:
+            if not isinstance(value, str):
+                wrong_type(at, "a version string", value)
+            elif parse_version(value) is None:
+                ck.error(at, "bad-version", f"{key} {value!r} is not a version like 2.1")
+            else:
+                meta[key] = value
+        elif key == "sources":
+            if not isinstance(value, list):
+                wrong_type(at, "an array of objects", value)
+                continue
+            for i, source in enumerate(value):
+                check_source(ck, child(at, i), source)
         elif key == "registers":
             if not isinstance(value, list):
                 wrong_type(at, "an array", value)
         else:
             meta[key] = as_text(value)  # x_ and unknown keys
     meta["byte_order"] = JOIN_ORDER[order["byte_order"], order["word_order"]]
+    lo, hi = (parse_version(meta.get(k, "")) for k in V2_VERSION_KEYS)
+    if lo and hi and max_before_min(hi, lo):
+        ck.error("/firmware_min", "bad-firmware-range",
+                 f"firmware_min {meta['firmware_min']} is after firmware_max {meta['firmware_max']}")
 
     for key in ("mbmap", "vendor", "model", "registers"):
         if key not in doc:
@@ -472,6 +555,11 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
                     ck.error(here, "bad-byte-order", f'{key} must be "big" or "little", not {value!r}')
                 else:
                     reg_order[key] = value
+            elif key in V2_VERSION_KEYS or key == "role":
+                if isinstance(value, str):
+                    row[key] = value
+                else:
+                    wrong_type(here, "a string", value)
             elif key == "enum":
                 if isinstance(value, str):
                     row[key] = f"@{value}"
@@ -493,15 +581,39 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
     return meta, rows
 
 
+def check_source(ck: Checker, at: str, source: object) -> None:
+    """One item of `sources` (SPEC.md 3.3)."""
+    if not isinstance(source, dict):
+        ck.error(at, "bad-source", "a source must be an object with a title")
+        return
+    title = source.get("title")
+    if not isinstance(title, str) or not title.strip():
+        ck.error(child(at, "title"), "bad-source", "a source needs a non-empty title")
+    for key in ("version", "note"):
+        if key in source and not isinstance(source[key], str):
+            ck.error(child(at, key), "bad-source", f"{key} must be a string")
+    date = source.get("date")
+    if date is not None and not (isinstance(date, str) and valid_date(date)):
+        ck.error(child(at, "date"), "bad-source", f"date must be YYYY, YYYY-MM or YYYY-MM-DD, not {date!r}")
+    url = source.get("url")
+    if url is not None and not (isinstance(url, str) and URL_RE.match(url)):
+        ck.error(child(at, "url"), "bad-source", f"url must be an http(s):// URL, not {url!r}")
+
+
 # ---- rules shared by both versions
 
-def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row]) -> None:
+def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row], v2: bool = False) -> None:
     if not rows:
         ck.warn(None, "no-rows", "no register rows")
 
     base = 1 if meta.get("address_base") == "1" else 0
-    names: dict[str, int | str] = {}
+    names: dict[str, list[tuple[int | str, FwRange]]] = {}
     spans: list[tuple[str, int, int, int, str]] = []  # area, start, end, row index, name
+    ranges: dict[int, FwRange] = {}  # row index -> its firmware range (version 2)
+    file_range: FwRange = (
+        (parse_version(meta.get("firmware_min", "")), parse_version(meta.get("firmware_max", "")))
+        if v2 else (None, None))
+    roles_seen: set[str] = set()
     locs: list[int | str] = [loc for loc, _ in rows]
     valid: dict[str, tuple[str, bool, str]] = {}  # name -> type, bit field, scale_factor
     scaled: list[tuple[int | str, str, str]] = []  # location, type, scale_factor
@@ -517,9 +629,16 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row]) -> None:
                 ck.error(lineno, "empty-cell", f"missing or empty required field {col!r}")
             continue
 
-        if name in names:
-            ck.warn(lineno, "duplicate-name", f"name {name!r} already used at {describe(names[name])}")
-        names.setdefault(name, lineno)
+        fw: FwRange = (None, None)
+        if v2:
+            fw = check_firmware(ck, lineno, row, file_range)
+            ranges[index] = fw
+
+        # Registers of different firmware versions may share a name.
+        same = next((loc for loc, other in names.get(name, []) if ranges_meet(fw, other)), None)
+        if same is not None:
+            ck.warn(lineno, "duplicate-name", f"name {name!r} already used at {describe(same)}")
+        names.setdefault(name, []).append((lineno, fw))
 
         if area not in AREAS:
             ck.error(lineno, "bad-area", f"unknown area {row['area']!r}")
@@ -600,6 +719,16 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row]) -> None:
             elif not valid_reference(typ, int(bits) if bitfield else None, ref, int(length) if typ == "string" and length_ok and length else None):
                 ck.error(lineno, "bad-reference", f"invalid reference {ref!r} for type {typ}")
 
+        role = get("role") if v2 else ""
+        if role:
+            if role not in ROLES:
+                ck.error(lineno, "bad-role", f'role must be "model", "firmware" or "serial", not {role!r}')
+            elif access == "W":
+                ck.error(lineno, "bad-role", "a register with a role must be readable")
+            elif role in roles_seen and role != "firmware":
+                ck.error(lineno, "bad-role", f'only one register can have the role "{role}"')
+            roles_seen.add(role)
+
         enum = get("enum")
         if enum.startswith("@"):
             if f"enum_{enum[1:]}" not in meta:
@@ -637,9 +766,28 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row]) -> None:
         for a1, s1, e1, i1, n1 in reversed(spans[:i]):
             # Rows that start at the same address are alternative readings
             # of the same data, not an overlap.
-            if a1 == a2 and s1 != s2 and s2 < e1:
+            if (a1 == a2 and s1 != s2 and s2 < e1
+                    and ranges_meet(ranges.get(i1, (None, None)), ranges.get(i2, (None, None)))):
                 ck.warn(locs[i2], "overlap", f"{n2!r} overlaps {n1!r} ({describe(locs[i1])})")
                 break
+
+
+def check_firmware(ck: Checker, loc: int | str, row: dict[str, str], file_range: FwRange) -> FwRange:
+    """A register's firmware range (SPEC.md 3.2); an invalid one counts as open."""
+    bounds = []
+    for key in V2_VERSION_KEYS:
+        text = row.get(key, "")
+        version = parse_version(text) if text else None
+        if text and version is None:
+            ck.error(loc, "bad-version", f"{key} {text!r} is not a version like 2.1")
+        bounds.append(version)
+    lo, hi = bounds
+    if lo and hi and max_before_min(hi, lo):
+        ck.error(loc, "bad-firmware-range", f"firmware_min {row['firmware_min']} is after firmware_max {row['firmware_max']}")
+        return (None, None)
+    if (lo or hi) and not ranges_meet((lo, hi), file_range):
+        ck.warn(loc, "firmware-outside-map", "this register's firmware range is outside the map's, so it never applies")
+    return (lo, hi)
 
 
 def check_file(path: Path) -> list[Diagnostic]:

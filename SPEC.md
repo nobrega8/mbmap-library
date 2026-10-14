@@ -62,13 +62,19 @@ A **table** maps raw values to labels: an object whose keys are integers written
 
 | Key | JSON type | Default | Meaning |
 |---|---|---|---|
-| `mbmap` | integer `2` | | Format version (§8) |
+| `mbmap` | integer `2` | | Format version (§3.1, §8) |
 | `vendor` | non-empty string | | Manufacturer |
-| `model` | non-empty string | | Model or model family |
+| `model` | non-empty string | | Model or model family, as shown to people |
+| `models` | array of non-empty strings | `[model]` | Every model name or code the map applies to (§3.2) |
 | `vendor_website` | string: a domain or an `http(s)://` URL | | Manufacturer's website, e.g. `se.com` or `https://www.se.com` |
 | `description` | string | | Short description |
-| `firmware` | string | | Firmware version(s) the map applies to |
-| `source` | string | | Document the map was built from (manual name, version, URL) |
+| `revision` | integer ≥ 1 | | Revision of this map's content (§3.1) |
+| `revised` | string `YYYY-MM-DD` | | Date of that revision |
+| `firmware` | string | | Free text about the firmware the map applies to |
+| `firmware_min` | version string (§3.2) | | Oldest firmware the map applies to |
+| `firmware_max` | version string (§3.2) | | Newest firmware the map applies to |
+| `source` | string | | Free-text summary of where the map comes from |
+| `sources` | array of source objects | | Documents the map was built or checked from (§3.3) |
 | `notes` | array of strings | | Free notes about the file |
 | `protocol` | `"tcp"`, `"rtu"`, `"tcp+rtu"` | `"tcp+rtu"` | Transports the device supports |
 | `unit_id` | integer `0`–`255` | `1` | Default unit / slave id |
@@ -87,6 +93,71 @@ A **table** maps raw values to labels: an object whose keys are integers written
 | `registers` | array of register objects | | The registers (§4) |
 
 Connection values are **defaults**: the user can still change them when connecting.
+
+### 3.1 Format version and map revision
+
+Two numbers describe a map, and they change for different reasons:
+
+- **`mbmap`, the format version**, says which version of this specification the file follows, so a reader knows whether it can read it (§8). It is the same for every map written to this specification and changes only when the format changes.
+- **`revision`, the map revision**, says which edition of this map's content the file is. It starts at `1` and **SHOULD** increase by one with every published change that affects how a device is read or written: a register, a connection default, a table, a firmware range or a model. It **MAY** stay the same for changes to free text only (`description`, `notes`, `comment`, `source`). `revised` gives the date of that change.
+
+A tool that has two copies of the same map (the same `vendor` and `model`) **SHOULD** treat the higher `revision` as the newer one, and **MAY** offer the newer one to the user. A map without `revision` cannot be compared this way. The revision is not the firmware version of the device: firmware belongs in §3.2.
+
+### 3.2 Models and firmware
+
+A map applies to the models in `models`, or to `model` alone when `models` is missing. `model` is the name shown to people (`"EKMBPP1 / EKMBPP1A"`); `models` lists each name or code a device can report, so a tool can compare it with the connected device (§9):
+
+```json
+"model": "EKMBPP1 / EKMBPP1A",
+"models": ["EKMBPP1", "EKMBPP1A"]
+```
+
+`firmware_min` and `firmware_max` say which firmware versions the map applies to. Both are optional: without them the map applies to every firmware, which is also the right choice when the version is unknown. `firmware` stays available for anything a range cannot say ("2.x, except 2.3 beta").
+
+A **version string** is one or more whole numbers separated by dots: `"2"`, `"2.1"`, `"1.02.7"`. Components are compared as numbers from the left (`"1.10"` is newer than `"1.9"`, and `"1.02"` is the same as `"1.2"`), so write versions the way the device reports them. A bound covers every version that starts with it:
+
+- `firmware_min` `"2.1"` includes `2.1`, `2.1.4` and `3.0`, but not `2.0.9`;
+- `firmware_max` `"2"` includes every `2.x` and `2.x.y`, but not `3.0`; `firmware_max` `"2.3"` includes `2.3.7` but not `2.4`.
+
+So `"firmware_min": "1", "firmware_max": "2"` reads "firmware 1.x and 2.x". `firmware_min` **MUST NOT** be after `firmware_max`.
+
+**Registers that depend on the firmware.** A register can carry its own `firmware_min` and `firmware_max`, with the same meaning, when it exists only in some firmware versions. This keeps one file for firmware revisions that differ in a few registers. A register without them applies wherever the map applies. Two registers may share a `name` (and an address) when their firmware ranges do not overlap: the tool uses the one that matches the device.
+
+Example: firmware 2.1 moved the energy counter and added a power factor register:
+
+```json
+"firmware_min": "1",
+"firmware_max": "2",
+"registers": [
+  {"name": "Firmware version", "area": "holding", "address": 0, "type": "string", "length": 4, "role": "firmware"},
+  {"name": "Voltage", "area": "input", "address": 10, "type": "float32", "unit": "V"},
+  {"name": "Active energy", "area": "input", "address": 20, "type": "uint32", "unit": "Wh", "firmware_max": "2.0"},
+  {"name": "Active energy", "area": "input", "address": 40, "type": "uint64", "unit": "Wh", "firmware_min": "2.1"},
+  {"name": "Power factor", "area": "input", "address": 30, "type": "int16", "scale": 0.001, "firmware_min": "2.1"}
+]
+```
+
+When the differences are large (most addresses change, or the connection settings do), separate files are clearer: one map per firmware range, each with its own `firmware_min` and `firmware_max`.
+
+### 3.3 Sources
+
+`sources` records the documents a map was built from or checked against, so a reader can find them and tell which edition was used. Each item is an object:
+
+| Key | JSON type | Meaning |
+|---|---|---|
+| `title` | non-empty string, required | Document title, e.g. `"EM530/EM540 Modbus communication protocol"` |
+| `version` | string | Edition or revision of the document, as printed on it |
+| `date` | string `YYYY`, `YYYY-MM` or `YYYY-MM-DD` | Publication date of that edition |
+| `url` | `http(s)://` URL | Where the document can be found |
+| `note` | string | Which part was used, or how the map was checked (e.g. `"tables 4.1-4.24"`, `"tested on a device with firmware 2.1"`) |
+
+```json
+"sources": [
+  {"title": "EM530/EM540 Modbus communication protocol", "version": "1.3", "date": "2024-02-13", "url": "https://www.gavazziautomation.com/...", "note": "tables 4.1-4.24"}
+]
+```
+
+`source` remains a one-line, free-text summary for people and for maps whose sources are not known in this detail. A map **MAY** have both.
 
 ## 4. Registers
 
@@ -113,6 +184,9 @@ Each item of `registers` is an object. `name`, `area`, `address` and `type` are 
 | `write_max` | number | | Largest value accepted when writing, in engineering units (§4.5) |
 | `enum` | string (a name in `enums`) or table | | Labels for integer or bool values (§4.1) |
 | `reference` | see §4.6 | | Raw value this register is expected to hold on a healthy device |
+| `firmware_min` | version string (§3.2) | | Oldest firmware that has this register |
+| `firmware_max` | version string (§3.2) | | Newest firmware that has this register |
+| `role` | `"model"`, `"firmware"`, `"serial"` | | This register identifies the device (§4.7) |
 | `description` | string | | Free text |
 | `comment` | string | | Free note about the register, for people editing the map |
 
@@ -211,6 +285,16 @@ Some devices, notably SunSpec inverters and meters, send a separate exponent reg
 {"name": "Serial prefix", "area": "holding", "address": 770, "type": "uint32", "word_order": "little", "reference": "0x00010002"}
 ```
 
+### 4.7 Identity registers
+
+`role` marks the registers that tell which device is connected, so a tool can check the map against it (§9):
+
+- **`"model"`**: the device's model name or code. Its value, or its `enum` label when it has one, is compared with `models`. A numeric model code is best given a label: `"enum": {"0x016A": "EM-100"}`.
+- **`"firmware"`**: the firmware version. A string register is read as text, and the first version string in it is used (`"V2.01b"` gives `2.01`). A number gives its engineering value (`102` with `scale` `0.01` gives `1.02`). When several registers have this role, their values are joined with dots in the order of the file, which fits devices that keep the major and minor versions apart, for example as two bit fields of one register (`"bit": 8, "bits": 8` and `"bit": 0, "bits": 8`).
+- **`"serial"`**: the serial number. Tools **MAY** show it; it is never compared.
+
+At most one register **MAY** have the role `"model"` and at most one `"serial"`. A register with a role **MUST** be readable. Registers with a role are ordinary registers otherwise: they are read and shown like the others, and can also have a `reference`.
+
 ## 5. Areas and addresses
 
 | `area` | Unit | Read | Write | Allowed `access` |
@@ -290,9 +374,14 @@ Readers **SHOULD** report every problem with one of the codes below and a [JSON 
 | `bad-reference` | error | `reference` is not a valid raw value for the register's `type` (not an integer, outside the type's range, wider than the bit field, not a boolean for `bool`, not a finite number for floats, longer than the string), or is set on a register that cannot be read |
 | `unknown-scale-factor` | error | `scale_factor` names no register of the file (registers with errors do not count) |
 | `bad-scale-factor` | error | `scale_factor` is set on a `bool` or `string`, or names a register that is not a whole integer (a float, `bool`, `string` or bit field) or that has a `scale_factor` itself |
+| `bad-version` | error | `firmware_min` or `firmware_max`, in the file or a register, is not a version string (§3.2) |
+| `bad-firmware-range` | error | `firmware_min` is after `firmware_max`, in the file or a register |
+| `bad-source` | error | An item of `sources` is not an object with a non-empty `title`, or has a `version`, `date`, `url` or `note` of the wrong form |
+| `bad-role` | error | `role` is not `"model"`, `"firmware"` or `"serial"`, is set on a register that cannot be read, or `"model"` or `"serial"` is used more than once |
 | `no-rows` | warning | `registers` is empty |
-| `duplicate-name` | warning | A `name` is used more than once |
-| `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Registers that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`) |
+| `duplicate-name` | warning | A `name` is used more than once by registers whose firmware ranges overlap (§3.2) |
+| `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Registers that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`), nor registers whose firmware ranges do not overlap |
+| `firmware-outside-map` | warning | A register's firmware range has no version in common with the file's, so it never applies |
 | `unknown-key` | warning | A register has a key that is not in this spec and does not start with `x_` |
 | `unused-write-limit` | warning | `write_min` or `write_max` is set on a register where it has no effect (`bool`, `string`, or `access` `"R"`) |
 | `unused-bit` | warning | `bit` is set on a register where it has no effect (any type but `bool`, unless `bits` is also set on a `uint16`) |
@@ -308,5 +397,32 @@ The [JSON Schema](schema/mbmap-2.schema.json) checks the structure, the JSON typ
 - `mbmap` is the **major** version. A reader **MUST** refuse a file whose `mbmap` it does not support, and **SHOULD** say which version it found.
 - New optional keys that older readers can safely ignore are added without changing `mbmap`. A key whose meaning an older reader would get wrong if it ignored it needs a new major version.
 - The schema file is named after the major version (`mbmap-2.schema.json`) and only gains optional keys within it.
+
+## 9. Checking a map against the connected device
+
+A tool that reads the identity registers (§4.7) of the connected device **SHOULD** compare them with the map, so the user does not trust values from a map written for another model or firmware. It can also let the user state the model or firmware by hand when the device does not report them.
+
+Each check has one of three outcomes:
+
+| Outcome | Model | Firmware |
+|---|---|---|
+| **match** | The device's model, compared without case and surrounding spaces, is one of `models` (or `model`) | The device's version is within `firmware_min` … `firmware_max` |
+| **mismatch** | It is not | It is outside the range |
+| **unknown** | The map has no `"model"` register, it could not be read, or it gave no value | The map has no `"firmware"` register, it could not be read, no version string could be found in it, or the map declares no range |
+
+What a tool does with each:
+
+- **match**: nothing to report; the tool **MAY** show that the device was recognised.
+- **mismatch**: the tool **SHOULD** warn clearly, saying what the map expects and what the device reported, and **SHOULD** ask for confirmation before the first write to the device. It **MUST NOT** stop reading because of it: reading is harmless, and the user may know better (a rebranded device, a newer firmware that kept the same registers).
+- **unknown**: not a problem. Most devices do not report a model or firmware, and most maps apply to every firmware. The tool **MUST NOT** treat it as a mismatch, and **MAY** mention that the map declares a firmware range that could not be checked.
+
+Registers with their own firmware range (§3.2):
+
+- When the firmware is **known**, a tool **SHOULD** use only the registers whose range includes it: the others do not exist on this device, and a register name shared by several firmware ranges then means one register.
+- When the firmware is **unknown**, a tool **SHOULD** read every register and **SHOULD** show which ones depend on the firmware (for example "firmware 2.1 and later"), and **MAY** let the user choose the version.
+
+A map without `models`, `firmware_min`, `firmware_max` and identity registers is checked against nothing, which is correct for a map that applies to every device of its model.
+
+## 10. Older files
 
 Version 1 of the format, based on CSV, is deprecated. New readers do not need to support it; files in that format can be converted with [`tools/migrate.py`](tools/migrate.py) (see [legacy/v1](legacy/v1/)).
