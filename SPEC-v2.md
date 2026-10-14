@@ -140,7 +140,7 @@ Readers **SHOULD** report problems with the codes of SPEC.md §7, so that tools 
 
 | Code | Severity | When |
 |---|---|---|
-| `not-json` | error | The file is not one valid JSON object, or repeats a key in an object |
+| `not-json` | error | The file is not one valid JSON object, or repeats a key in an object. Reported for the whole file: parsers place syntax errors at different lines, so the position goes in the message |
 | `bad-json-type` | error | A known key holds the wrong JSON type (a string where a number is expected, `null`, …) |
 
 - `missing-meta` covers a missing `mbmap`, `vendor`, `model` or `registers`; `empty-cell` a missing or empty `name`, `area`, `address` or `type` in a register; `bad-byte-order` a `byte_order` or `word_order` that is not `"big"` or `"little"`; `unknown-column` an unknown key that does not start with `x_` (warning). All other codes keep their meaning.
