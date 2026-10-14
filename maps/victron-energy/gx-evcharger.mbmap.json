@@ -1,0 +1,55 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Victron Energy",
+  "model": "GX EV charger",
+  "vendor_website": "victronenergy.com",
+  "description": "EV charging stations (EVCS), read through a GX device",
+  "revision": 1,
+  "revised": "2026-10-14",
+  "firmware": "Venus OS; register list 3.81",
+  "source": "Victron Energy, CCGX Modbus TCP register list 3.81",
+  "sources": [
+    {
+      "title": "CCGX Modbus TCP register list",
+      "version": "3.81",
+      "url": "https://www.victronenergy.com/upload/documents/CCGX-Modbus-TCP-register-list-3.81.xlsx",
+      "note": "Field list, service com.victronenergy.evcharger"
+    }
+  ],
+  "notes": [
+    "Registers of the com.victronenergy.evcharger service of the GX Modbus TCP server (Settings > Integrations > Modbus TCP server).",
+    "Each device on the GX has its own unit ID. Since Venus OS 2.60 they are assigned dynamically: see the list of available services on the GX device.",
+    "All registers are holding registers (FC03; FC06/FC16 for the writable ones)."
+  ],
+  "protocol": "tcp",
+  "port": 502,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "registers": [
+    {"name": "Product ID", "area": "holding", "address": 3800, "type": "uint16", "description": "D-Bus /ProductId"},
+    {"name": "Firmware version", "area": "holding", "address": 3802, "type": "uint32", "description": "D-Bus /FirmwareVersion"},
+    {"name": "Serial", "area": "holding", "address": 3804, "type": "string", "length": 6, "description": "D-Bus /Serial", "role": "serial"},
+    {"name": "Model", "area": "holding", "address": 3810, "type": "string", "length": 4, "description": "D-Bus /Model"},
+    {"name": "Maximum charge current", "area": "holding", "address": 3814, "type": "uint16", "unit": "A", "access": "RW", "description": "D-Bus /MaxCurrent"},
+    {"name": "Mode", "area": "holding", "address": 3815, "type": "uint16", "enum": {"0": "Manual", "1": "Auto"}, "access": "RW", "description": "D-Bus /Mode"},
+    {"name": "Session Energy", "area": "holding", "address": 3816, "type": "uint32", "scale": 0.01, "unit": "kWh", "description": "D-Bus /Session/Energy"},
+    {"name": "L1 Power", "area": "holding", "address": 3818, "type": "uint16", "unit": "W", "description": "D-Bus /Ac/L1/Power"},
+    {"name": "L2 Power", "area": "holding", "address": 3819, "type": "uint16", "unit": "W", "description": "D-Bus /Ac/L2/Power"},
+    {"name": "L3 Power", "area": "holding", "address": 3820, "type": "uint16", "unit": "W", "description": "D-Bus /Ac/L3/Power"},
+    {"name": "Total power", "area": "holding", "address": 3821, "type": "uint16", "unit": "W", "description": "D-Bus /Ac/Power"},
+    {"name": "Charging time", "area": "holding", "address": 3822, "type": "uint16", "scale": 100, "unit": "s", "description": "D-Bus /ChargingTime"},
+    {"name": "Charge current", "area": "holding", "address": 3823, "type": "uint16", "unit": "A", "description": "D-Bus /Current"},
+    {"name": "Status", "area": "holding", "address": 3824, "type": "uint16", "enum": {"0": "Disconnected", "1": "Connected", "2": "Charging", "3": "Charged", "4": "Waiting for sun", "5": "Waiting for RFID", "6": "Waiting for start", "7": "Low SOC", "8": "Ground test error", "9": "Welded contacts test error", "10": "CP input test error (shorted)", "11": "Residual current detected", "12": "Undervoltage detected", "13": "Overvoltage detected", "14": "Overheating detected", "15": "Reserved", "16": "Reserved", "17": "Reserved", "18": "Reserved", "19": "Reserved", "20": "Charging limit", "21": "Start charging", "22": "Switching to 3 phase", "23": "Switching to 1 phase", "24": "Stop charging"}, "description": "D-Bus /Status"},
+    {"name": "Set charge current (manual mode)", "area": "holding", "address": 3825, "type": "uint16", "unit": "A", "access": "RW", "description": "D-Bus /SetCurrent"},
+    {"name": "Start/stop charging (manual mode)", "area": "holding", "address": 3826, "type": "uint16", "enum": {"0": "Stop", "1": "Start"}, "access": "RW", "description": "D-Bus /StartStop"},
+    {"name": "Position", "area": "holding", "address": 3827, "type": "uint16", "enum": {"0": "AC input 1", "1": "AC output", "2": "AC input 2"}, "access": "RW", "description": "D-Bus /Position"},
+    {"name": "Session Time", "area": "holding", "address": 3828, "type": "uint32", "unit": "s", "description": "D-Bus /Session/Time"},
+    {"name": "Session Energy (3830)", "area": "holding", "address": 3830, "type": "uint32", "scale": 0.01, "unit": "W", "description": "D-Bus /Session/Energy"},
+    {"name": "Session Cost", "area": "holding", "address": 3832, "type": "int32", "scale": 0.01, "description": "D-Bus /Session/Cost"},
+    {"name": "Session Saved Cost", "area": "holding", "address": 3834, "type": "int32", "scale": 0.01, "description": "D-Bus /Session/SavedCost"},
+    {"name": "Total energy consumed by charger", "area": "holding", "address": 3836, "type": "uint32", "scale": 0.01, "unit": "kWh", "description": "D-Bus /Ac/Energy/Forward"},
+    {"name": "Custom Name", "area": "holding", "address": 3840, "type": "string", "length": 8, "access": "RW", "description": "D-Bus /CustomName"}
+  ]
+}

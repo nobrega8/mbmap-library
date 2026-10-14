@@ -1,0 +1,57 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Victron Energy",
+  "model": "GX PV inverter",
+  "vendor_website": "victronenergy.com",
+  "description": "AC-coupled PV inverters (Fronius, SMA, ...), read through a GX device",
+  "revision": 1,
+  "revised": "2026-10-14",
+  "firmware": "Venus OS; register list 3.81",
+  "source": "Victron Energy, CCGX Modbus TCP register list 3.81",
+  "sources": [
+    {
+      "title": "CCGX Modbus TCP register list",
+      "version": "3.81",
+      "url": "https://www.victronenergy.com/upload/documents/CCGX-Modbus-TCP-register-list-3.81.xlsx",
+      "note": "Field list, service com.victronenergy.pvinverter"
+    }
+  ],
+  "notes": [
+    "Registers of the com.victronenergy.pvinverter service of the GX Modbus TCP server (Settings > Integrations > Modbus TCP server).",
+    "Each device on the GX has its own unit ID. Since Venus OS 2.60 they are assigned dynamically: see the list of available services on the GX device.",
+    "All registers are holding registers (FC03; FC06/FC16 for the writable ones)."
+  ],
+  "protocol": "tcp",
+  "port": 502,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "registers": [
+    {"name": "Position", "area": "holding", "address": 1026, "type": "uint16", "enum": {"0": "AC input 1", "1": "AC output", "2": "AC input 2"}, "description": "D-Bus /Position"},
+    {"name": "L1 Voltage", "area": "holding", "address": 1027, "type": "uint16", "scale": 0.1, "unit": "V", "description": "D-Bus /Ac/L1/Voltage"},
+    {"name": "L1 Current", "area": "holding", "address": 1028, "type": "int16", "scale": 0.1, "unit": "A", "description": "D-Bus /Ac/L1/Current"},
+    {"name": "L1 Power", "area": "holding", "address": 1029, "type": "uint16", "unit": "W", "description": "D-Bus /Ac/L1/Power"},
+    {"name": "L1 Energy", "area": "holding", "address": 1030, "type": "uint16", "scale": 0.01, "unit": "kWh", "description": "D-Bus /Ac/L1/Energy/Forward; Deprecated. Use 1046 instead"},
+    {"name": "L2 Voltage", "area": "holding", "address": 1031, "type": "uint16", "scale": 0.1, "unit": "V", "description": "D-Bus /Ac/L2/Voltage"},
+    {"name": "L2 Current", "area": "holding", "address": 1032, "type": "int16", "scale": 0.1, "unit": "A", "description": "D-Bus /Ac/L2/Current"},
+    {"name": "L2 Power", "area": "holding", "address": 1033, "type": "uint16", "unit": "W", "description": "D-Bus /Ac/L2/Power"},
+    {"name": "L2 Energy", "area": "holding", "address": 1034, "type": "uint16", "scale": 0.01, "unit": "kWh", "description": "D-Bus /Ac/L2/Energy/Forward; Deprecated. Use 1048 instead"},
+    {"name": "L3 Voltage", "area": "holding", "address": 1035, "type": "uint16", "scale": 0.1, "unit": "V", "description": "D-Bus /Ac/L3/Voltage"},
+    {"name": "L3 Current", "area": "holding", "address": 1036, "type": "int16", "scale": 0.1, "unit": "A", "description": "D-Bus /Ac/L3/Current"},
+    {"name": "L3 Power", "area": "holding", "address": 1037, "type": "uint16", "unit": "W", "description": "D-Bus /Ac/L3/Power"},
+    {"name": "L3 Energy", "area": "holding", "address": 1038, "type": "uint16", "scale": 0.01, "unit": "kWh", "description": "D-Bus /Ac/L3/Energy/Forward; Deprecated. Use 1050 instead"},
+    {"name": "Serial", "area": "holding", "address": 1039, "type": "string", "length": 7, "description": "D-Bus /Serial; The system serial as string (MSB of first register: first character, LSB of last register: last character)", "role": "serial"},
+    {"name": "L1 Energy (1046)", "area": "holding", "address": 1046, "type": "uint32", "scale": 0.01, "unit": "kWh", "description": "D-Bus /Ac/L1/Energy/Forward"},
+    {"name": "L2 Energy (1048)", "area": "holding", "address": 1048, "type": "uint32", "scale": 0.01, "unit": "kWh", "description": "D-Bus /Ac/L2/Energy/Forward"},
+    {"name": "L3 Energy (1050)", "area": "holding", "address": 1050, "type": "uint32", "scale": 0.01, "unit": "kWh", "description": "D-Bus /Ac/L3/Energy/Forward"},
+    {"name": "Total Power", "area": "holding", "address": 1052, "type": "int32", "unit": "W", "description": "D-Bus /Ac/Power"},
+    {"name": "Maximum Power Capacity", "area": "holding", "address": 1054, "type": "uint32", "unit": "W", "description": "D-Bus /Ac/MaxPower"},
+    {"name": "Power limit", "area": "holding", "address": 1056, "type": "uint32", "unit": "W", "access": "RW", "description": "D-Bus /Ac/PowerLimit; For use in ESS mode 3"},
+    {"name": "L1 Power (1058)", "area": "holding", "address": 1058, "type": "uint32", "unit": "W", "description": "D-Bus /Ac/L1/Power"},
+    {"name": "L2 Power (1060)", "area": "holding", "address": 1060, "type": "uint32", "unit": "W", "description": "D-Bus /Ac/L2/Power"},
+    {"name": "L3 Power (1062)", "area": "holding", "address": 1062, "type": "uint32", "unit": "W", "description": "D-Bus /Ac/L3/Power"},
+    {"name": "AC Frequency", "area": "holding", "address": 1064, "type": "uint16", "scale": 0.01, "unit": "Hz", "description": "D-Bus /Ac/Frequency"},
+    {"name": "Custom Name", "area": "holding", "address": 1070, "type": "string", "length": 8, "access": "RW", "description": "D-Bus /CustomName"}
+  ]
+}
