@@ -19,7 +19,6 @@ schema/mbmap-2.schema.json        its JSON Schema
 maps/<vendor>/<model>.mbmap.json  the shared maps
 examples/                         fictional maps that show the format
 index.json                        list of the maps, for apps that browse the library
-ATTRIBUTION.md                    where converted maps come from, and their licences
 tools/validate.py                 validator (also runs in CI)
 tools/build_index.py              rebuilds index.json
 tests/                            sample files and the diagnostics each must produce,
