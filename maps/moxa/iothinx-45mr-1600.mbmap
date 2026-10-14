@@ -1,0 +1,47 @@
+# Moxa ioThinx 45MR-1600.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | Moxa ioThinx 45MR-1600 — 16-channel DI (PNP sink)
+# | 
+# | Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A
+# | Protocol: Modbus/TCP via ioThinx 4510 adapter, port 502
+# | 
+# | IMPORTANT: Addresses below are MODULE-RELATIVE. Actual PDU address = slot_base + relative_address.
+# | Slot base depends on which slot this module occupies in the ioThinx 4510 chassis.
+# | Only ch0-3 support event counter mode; ch4-15 are standard DI only.
+# | 
+# | FC01 (coil R/W): diCounterStatus ch0-3 (4 BOOL, 0=Pause 1=Run),
+# | diCounterOverflowFlagClear ch0-3 (4 BOOL, W=1 to clear)
+# | FC02 (discrete input R): diStatus ch0-15 (16 BOOL, 0=OFF 1=ON),
+# | diMode ch0-15 (16 BOOL, 0=DI 1=Counter), diCounterOverflowFlag ch0-3 (4 BOOL, 0=Normal 1=Overflow)
+# | FC03 (holding R/W): see [[registers]] below
+@mbmap=1
+@vendor=Moxa
+@model=ioThinx 45MR-1600
+@description=16-DI PNP sink input ioThinx 45MR slot module. Addresses are module-relative; actual PDU address = slot_base + relative_address (slot base assigned dynamically by ioThinx 4510 chassis). Only ch0-3 support event counter mode; ch4-15 are DI-only. FC01: diCounterStatus ch0-3 (0=Pause 1=Run), diCounterOverflowFlagClear ch0-3 (W=1 to clear). FC02: diStatus ch0-15, diMode ch0-15 (0=DI 1=Counter), diCounterOverflowFlag ch0-3. FC03: diCounterValue ch0-3 u64 4-words/ch (rel 0-15), diCounterStatusAll bitmask (rel 16), diCounterOverflowFlagClearAll (rel 17). FC04: diStatusAll (1 WORD), diCounterOverflowFlagAll (1 WORD), diModeAll (1 WORD).
+@source=Omni Console device library (OmniCoreST), modbus-library/moxa-iothinx-45mr-1600.toml; Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A. Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,access
+diCounterValue ch0 word[0] (u64 hi-DWORD hi-word; R),holding,0,uint16,R
+diCounterValue ch0 word[1] (u64 hi-DWORD lo-word),holding,1,uint16,R
+diCounterValue ch0 word[2] (u64 lo-DWORD hi-word),holding,2,uint16,R
+diCounterValue ch0 word[3] (u64 lo-DWORD lo-word),holding,3,uint16,R
+diCounterValue ch1 word[0] (u64 hi-DWORD hi-word),holding,4,uint16,R
+diCounterValue ch1 word[1],holding,5,uint16,R
+diCounterValue ch1 word[2],holding,6,uint16,R
+diCounterValue ch1 word[3],holding,7,uint16,R
+diCounterValue ch2 word[0] (u64 hi-DWORD hi-word),holding,8,uint16,R
+diCounterValue ch2 word[1],holding,9,uint16,R
+diCounterValue ch2 word[2],holding,10,uint16,R
+diCounterValue ch2 word[3],holding,11,uint16,R
+diCounterValue ch3 word[0] (u64 hi-DWORD hi-word),holding,12,uint16,R
+diCounterValue ch3 word[1],holding,13,uint16,R
+diCounterValue ch3 word[2],holding,14,uint16,R
+diCounterValue ch3 word[3] (u64 lo-DWORD lo-word),holding,15,uint16,R
+diCounterStatusAll (bitmask bit0-3=ch0-3; 0=Pause 1=Run; R/W),holding,16,uint16,R
+diCounterOverflowFlagClearAll (W=1 to clear all overflow flags; R/W),holding,17,uint16,R

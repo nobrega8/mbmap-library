@@ -1,0 +1,116 @@
+# eTactica EM-SC/EM-FC.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | eTactica EM-SC / EM-FC Power Meter (Modbus RTU RS-485)
+# | 
+# | Source: etactica-power-meter-em-modbus-register-map.pdf (v2.1, 2018-04-10)
+# | Models: EM-SC (split-core current sensors), EM-FC (flexible-coil current sensors)
+# | Protocol: Modbus RTU; FC03 read holding registers, FC16 write multiple registers
+# | Default RS-485: 19200 baud, 8 data bits, Even parity, 1 stop bit (firmware ≥3.2 configurable)
+# | Default Modbus slave ID: last byte of serial number (configurable via 0x2009)
+# | 
+# | ADDRESSING: All addresses in this file are native PDU addresses (0-based).
+# | Register 0x2000 = decimal 8192. Some tools show these as 48193 (Modicon holding register).
+# | DATA FORMAT: Big-Endian, MSB first. Unsigned 16-bit unless noted.
+# | Size-2 registers: u32 stored in 2 consecutive registers (MSB first).
+# | Size-4 registers: signed 64-bit stored in 4 consecutive registers (MSB first);
+# | represented here as two u32 entries: (high 32-bit) at base, (low 32-bit) at base+2.
+@mbmap=1
+@vendor=eTactica
+@model=EM-SC/EM-FC
+@description=3-phase power meter (split-core or flexible-coil CTs), Modbus RTU. Base address 0x2000 (=8192 decimal). Common: vendor/product/firmware IDs, command, comms settings at 8192-8206. EM-specific: frequency at 8207 (mHz); phase currents at 8208-8211 (mA, u32); phase voltages at 8214-8218 (mV, u32); per-phase PF at 8222-8224 (×100); status at 8225; CT full-scale at 8226; cumulative energy at 8232 (mWh, s64) and reactive at 8239 (mVArh, s64). EM2 extended (fw≥4.0): 1-sec and 60-sec RMS averages, per-phase energy counters (µWh/µVArh, s64) at 8449-8549; last-cycle values and per-phase PF signs at 8536-8553.
+@source=Omni Console device library (OmniCoreST), modbus-library/etactica-em-sc-fc.toml; Source: etactica-power-meter-em-modbus-register-map.pdf (v2.1, 2018-04-10). Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,access
+Vendor ID,holding,8192,uint16,R
+Product ID,holding,8193,uint16,R
+Firmware version,holding,8194,uint16,R
+Serial number bytes 0-1,holding,8195,uint16,R
+Serial number bytes 2-3,holding,8196,uint16,R
+Serial number bytes 4-5,holding,8197,uint16,R
+Command,holding,8198,uint16,R
+Total register count,holding,8199,uint16,R
+Serial communication settings,holding,8200,uint16,R
+Modbus slave ID,holding,8201,uint16,R
+CPU temperature,holding,8206,uint16,R
+Frequency,holding,8207,uint16,R
+Phase 1 current (1s avg),holding,8208,uint32,R
+Phase 2 current (1s avg),holding,8210,uint32,R
+Phase 3 current (1s avg),holding,8212,uint32,R
+Phase 1 voltage (1s avg),holding,8214,uint32,R
+Phase 2 voltage (1s avg),holding,8216,uint32,R
+Phase 3 voltage (1s avg),holding,8218,uint32,R
+Power factor phase 1 (×100),holding,8222,int16,R
+Power factor phase 2 (×100),holding,8223,int16,R
+Power factor phase 3 (×100),holding,8224,int16,R
+Status,holding,8225,uint16,R
+CT nominal full-scale amperage,holding,8226,uint16,R
+Cumulative active energy mWh (high 32-bit),holding,8232,uint32,R
+Cumulative active energy mWh (low 32-bit),holding,8234,uint32,R
+Cumulative reactive energy mVArh (high 32-bit),holding,8239,uint32,R
+Cumulative reactive energy mVArh (low 32-bit),holding,8241,uint32,R
+CPU temperature (EM2),holding,8448,uint16,R
+Cumulative active energy µWh (high 32-bit),holding,8449,uint32,R
+Cumulative active energy µWh (low 32-bit),holding,8451,uint32,R
+Cumulative reactive energy µVArh (high 32-bit),holding,8453,uint32,R
+Cumulative reactive energy µVArh (low 32-bit),holding,8455,uint32,R
+Phase 1 RMS voltage 1s avg (mV),holding,8457,uint32,R
+Phase 2 RMS voltage 1s avg (mV),holding,8459,uint32,R
+Phase 3 RMS voltage 1s avg (mV),holding,8461,uint32,R
+Phase 1 RMS current 1s avg (mA),holding,8463,uint32,R
+Phase 2 RMS current 1s avg (mA),holding,8465,uint32,R
+Phase 3 RMS current 1s avg (mA),holding,8467,uint32,R
+Power factor phase 1 1s avg (×10000),holding,8469,int16,R
+Power factor phase 2 1s avg (×10000),holding,8470,int16,R
+Power factor phase 3 1s avg (×10000),holding,8471,int16,R
+Frequency 1s avg (mHz),holding,8472,uint16,R
+Phase 1 active import µWh (high),holding,8473,uint32,R
+Phase 1 active import µWh (low),holding,8475,uint32,R
+Phase 2 active import µWh (high),holding,8477,uint32,R
+Phase 2 active import µWh (low),holding,8479,uint32,R
+Phase 3 active import µWh (high),holding,8481,uint32,R
+Phase 3 active import µWh (low),holding,8483,uint32,R
+Phase 1 active export µWh (high),holding,8485,uint32,R
+Phase 1 active export µWh (low),holding,8487,uint32,R
+Phase 2 active export µWh (high),holding,8489,uint32,R
+Phase 2 active export µWh (low),holding,8491,uint32,R
+Phase 3 active export µWh (high),holding,8493,uint32,R
+Phase 3 active export µWh (low),holding,8495,uint32,R
+Phase 1 reactive import µVArh (high),holding,8497,uint32,R
+Phase 1 reactive import µVArh (low),holding,8499,uint32,R
+Phase 2 reactive import µVArh (high),holding,8501,uint32,R
+Phase 2 reactive import µVArh (low),holding,8503,uint32,R
+Phase 3 reactive import µVArh (high),holding,8505,uint32,R
+Phase 3 reactive import µVArh (low),holding,8507,uint32,R
+Phase 1 reactive export µVArh (high),holding,8509,uint32,R
+Phase 1 reactive export µVArh (low),holding,8511,uint32,R
+Phase 2 reactive export µVArh (high),holding,8513,uint32,R
+Phase 2 reactive export µVArh (low),holding,8515,uint32,R
+Phase 3 reactive export µVArh (high),holding,8517,uint32,R
+Phase 3 reactive export µVArh (low),holding,8519,uint32,R
+Phase 1 RMS voltage 60s avg (mV),holding,8521,uint32,R
+Phase 2 RMS voltage 60s avg (mV),holding,8523,uint32,R
+Phase 3 RMS voltage 60s avg (mV),holding,8525,uint32,R
+Phase 1 RMS current 60s avg (mA),holding,8527,uint32,R
+Phase 2 RMS current 60s avg (mA),holding,8529,uint32,R
+Phase 3 RMS current 60s avg (mA),holding,8531,uint32,R
+Power factor phase 1 60s avg (×10000),holding,8533,int16,R
+Power factor phase 2 60s avg (×10000),holding,8534,int16,R
+Power factor phase 3 60s avg (×10000),holding,8535,int16,R
+Phase 1 RMS voltage last cycle (mV),holding,8536,uint32,R
+Phase 2 RMS voltage last cycle (mV),holding,8538,uint32,R
+Phase 3 RMS voltage last cycle (mV),holding,8540,uint32,R
+Phase 1 RMS current last cycle (mA),holding,8542,uint32,R
+Phase 2 RMS current last cycle (mA),holding,8544,uint32,R
+Phase 3 RMS current last cycle (mA),holding,8546,uint32,R
+Power factor phase 1 latest (×10000),holding,8548,int16,R
+Power factor phase 2 latest (×10000),holding,8549,int16,R
+Power factor phase 3 latest (×10000),holding,8550,int16,R
+Power factor sign phase 1,holding,8551,int16,R
+Power factor sign phase 2,holding,8552,int16,R
+Power factor sign phase 3,holding,8553,int16,R

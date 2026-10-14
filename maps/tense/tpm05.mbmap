@@ -1,0 +1,96 @@
+# Tense TPM05.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | Tense TPM05 Energy Analyser — Modbus register map for Omni Console
+# | 
+# | Source: TPM05_modbus_register_list_ing.pdf ("Basic Data Modbus Address").
+# | - Holding registers (FC03). Addresses are the raw register addresses in
+# | decimal: 4000 = 0x0FA0 … 4087 = 0x0FF7 (the manual's Dec and Hex columns are
+# | the same value). `area` defaults to "holding" and is omitted below.
+# | - Values are 16-bit (1 register) unless marked u32 (2 registers, Big-Endian
+# | word order — `word_order` defaults to "be" and is omitted).
+# | - `scale` bakes in the device's *fixed* multiplier only (×0.1, ×0.01, ×0.001).
+# | 
+# | CT/VT CAVEAT — voltage, current and power additionally scale by the configured
+# | transformer ratios, which a static map cannot read at runtime:
+# | voltage = raw × VT × 0.1     (manual: "Data * VT * 0.1")
+# | current = raw × CT × 0.001   (manual: "Data * CT * 0.001")
+@mbmap=1
+@vendor=Tense
+@model=TPM05
+@description=3-phase energy analyser — V/I/P/Q/S, frequency, energy totals, power factor and THD (scaled 16/32-bit integers).
+@source=Omni Console device library (OmniCoreST), modbus-library/tense-tpm05.toml; Source: TPM05_modbus_register_list_ing.pdf ("Basic Data Modbus Address").. Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,scale,unit,access
+Current transformer ratio,holding,4000,uint16,,,R
+Voltage transformer ratio,holding,4001,uint16,0.1,,R
+Voltage L1-N,holding,4002,uint16,0.1,V,R
+Voltage L2-N,holding,4003,uint16,0.1,V,R
+Voltage L3-N,holding,4004,uint16,0.1,V,R
+Voltage L1-L2,holding,4005,uint16,0.1,V,R
+Voltage L2-L3,holding,4006,uint16,0.1,V,R
+Voltage L3-L1,holding,4007,uint16,0.1,V,R
+Current L1,holding,4008,uint16,0.001,A,R
+Current L2,holding,4009,uint16,0.001,A,R
+Current L3,holding,4010,uint16,0.001,A,R
+Frequency L1,holding,4012,uint16,0.01,Hz,R
+Frequency L2,holding,4013,uint16,0.01,Hz,R
+Frequency L3,holding,4014,uint16,0.01,Hz,R
+Active power L1,holding,4015,uint16,,W,R
+Active power L2,holding,4016,uint16,,W,R
+Active power L3,holding,4017,uint16,,W,R
+Active power Σ,holding,4018,uint16,,W,R
+Reactive power L1,holding,4019,uint16,,var,R
+Reactive power L2,holding,4020,uint16,,var,R
+Reactive power L3,holding,4021,uint16,,var,R
+Reactive power Σ,holding,4022,uint16,,var,R
+Apparent power L1,holding,4023,uint16,,VA,R
+Apparent power L2,holding,4024,uint16,,VA,R
+Apparent power L3,holding,4025,uint16,,VA,R
+Apparent power Σ,holding,4026,uint16,,VA,R
+CosPhi L1,holding,4027,int16,0.001,,R
+CosPhi L2,holding,4028,int16,0.001,,R
+CosPhi L3,holding,4029,int16,0.001,,R
+Power factor L1,holding,4030,int16,0.001,,R
+Power factor L2,holding,4031,int16,0.001,,R
+Power factor L3,holding,4032,int16,0.001,,R
+Power factor Σ,holding,4033,int16,0.001,,R
+Hour,holding,4034,uint16,,,R
+Minute,holding,4035,uint16,,,R
+Second,holding,4036,uint16,,,R
+Day,holding,4037,uint16,,,R
+Month,holding,4038,uint16,,,R
+Year,holding,4039,uint16,,,R
+Active import energy L1,holding,4040,uint32,,Wh,R
+Active import energy L2,holding,4042,uint32,,Wh,R
+Active import energy L3,holding,4044,uint32,,Wh,R
+Active import energy Σ,holding,4046,uint32,,Wh,R
+Active export energy L1,holding,4048,uint32,,Wh,R
+Active export energy L2,holding,4050,uint32,,Wh,R
+Active export energy L3,holding,4052,uint32,,Wh,R
+Active export energy Σ,holding,4054,uint32,,Wh,R
+Inductive reactive energy L1,holding,4056,uint32,,varh,R
+Inductive reactive energy L2,holding,4058,uint32,,varh,R
+Inductive reactive energy L3,holding,4060,uint32,,varh,R
+Inductive reactive energy Σ,holding,4062,uint32,,varh,R
+Capacitive reactive energy L1,holding,4064,uint32,,varh,R
+Capacitive reactive energy L2,holding,4066,uint32,,varh,R
+Capacitive reactive energy L3,holding,4068,uint32,,varh,R
+Capacitive reactive energy Σ,holding,4070,uint32,,varh,R
+Apparent energy L1,holding,4072,uint32,,VAh,R
+Apparent energy L2,holding,4074,uint32,,VAh,R
+Apparent energy L3,holding,4076,uint32,,VAh,R
+Apparent energy Σ,holding,4078,uint32,,VAh,R
+THD voltage L1,holding,4080,uint16,0.1,%,R
+THD voltage L2,holding,4081,uint16,0.1,%,R
+THD voltage L3,holding,4082,uint16,0.1,%,R
+THD voltage 3-phase,holding,4083,uint16,0.1,%,R
+THD current L1,holding,4084,uint16,0.1,%,R
+THD current L2,holding,4085,uint16,0.1,%,R
+THD current L3,holding,4086,uint16,0.1,%,R
+THD current 3-phase,holding,4087,uint16,0.1,%,R

@@ -1,0 +1,51 @@
+# Schneider Electric iEM3155.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | Schneider Electric iEM3155 (iEM3100/3200/3300 series) — Modbus map for Omni Console
+# | 
+# | Source: Schneider "iEM3100/iEM3200/iEM3300 series" user manual (DOCA0005EN)
+# | Modbus register list, cross-checked against a working field configuration.
+# | - Instantaneous values are FLOAT32 (f32), 2 registers, Big-Endian — the
+# | default — so `word_order` is omitted. Energy totals are 64-bit integers
+# | (s64, 4 registers, Big-Endian) in Wh. Read with FC03 (holding).
+# | - IMPORTANT addressing: the manual prints 1-based "register" numbers; the
+# | on-the-wire (PDU) address is register - 1. Addresses below are the 0-based
+# | PDU addresses that match how Omni Console issues reads (e.g. manual reg 3060
+# | "Total active power" -> address 3059). Power is reported in kW / kvar / kVA.
+# | - Factory defaults: device address (slave) = 1, RTU = 19.2 kbps, 8E1.
+# | - Additional energy registers (reactive/apparent, per-direction) exist in
+# | DOCA0005EN around manual reg 3220+ and can be appended as needed.
+@mbmap=1
+@vendor=Schneider Electric
+@model=iEM3155
+@description=Energy meter — current, voltage L-L/L-N, total power, power factor, frequency (float) and 64-bit active energy import/export totals.
+@source=Omni Console device library (OmniCoreST), modbus-library/schneider-iem3155.toml; Source: Schneider "iEM3100/iEM3200/iEM3300 series" user manual (DOCA0005EN). Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,unit,access
+Current I1,holding,2999,float32,A,R
+Current I2,holding,3001,float32,A,R
+Current I3,holding,3003,float32,A,R
+Current average,holding,3009,float32,A,R
+Voltage L1-L2,holding,3019,float32,V,R
+Voltage L2-L3,holding,3021,float32,V,R
+Voltage L3-L1,holding,3023,float32,V,R
+Voltage L-L average,holding,3025,float32,V,R
+Voltage L1-N,holding,3027,float32,V,R
+Voltage L2-N,holding,3029,float32,V,R
+Voltage L3-N,holding,3031,float32,V,R
+Voltage L-N average,holding,3035,float32,V,R
+Active power L1,holding,3053,float32,kW,R
+Active power L2,holding,3055,float32,kW,R
+Active power L3,holding,3057,float32,kW,R
+Total active power,holding,3059,float32,kW,R
+Total reactive power,holding,3067,float32,kvar,R
+Total apparent power,holding,3075,float32,kVA,R
+Total power factor,holding,3083,float32,,R
+Frequency,holding,3109,float32,Hz,R
+Total active energy delivered (import),holding,3203,int64,Wh,R
+Total active energy received (export),holding,3207,int64,Wh,R

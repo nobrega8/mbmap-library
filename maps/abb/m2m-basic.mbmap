@@ -1,0 +1,90 @@
+# ABB M2M Basic.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | ABB M2M Basic — Modbus register map for Omni Console
+# | 
+# | Source: abb-m2m-basic-modbus-protocol.pdf (Technical specification V1.0, 2CSG445012D0201)
+# | - 3-phase energy and power quality meter, RS485 Modbus RTU.
+# | - Holding registers FC03 only.
+# | - All values are 2-word (32-bit); Big-Endian (MSW first).
+# | - Two register banks:
+# | - Integer 32-bit bank at 0x1000 (= 4096 decimal): scaled integer readings
+# | - Float 32-bit bank at 0x3000 (= 12288 decimal): IEEE 754 float, SI units (preferred)
+# | - This TOML covers the Float 32-bit bank (cleaner, no scaling needed).
+# | Energy accumulators at end of float bank are u32 (*100 scaled).
+# | - Factory defaults: slave=1, baud=4800–38400, 8N1/E1/O1.
+@mbmap=1
+@vendor=ABB
+@model=M2M Basic
+@description=3-phase energy and power quality meter — phase/line V/I, P/Q/S/PF, displacement factor, angles, frequency, THD, unbalance, demands, energy (IEEE 754 float32 + u32 energy, FC03, Big-Endian, 0x3000 bank).
+@source=Omni Console device library (OmniCoreST), modbus-library/abb-m2m-basic.toml; Source: abb-m2m-basic-modbus-protocol.pdf (Technical specification V1.0, 2CSG445012D0201). Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,scale,unit,access
+Voltage L1-N,holding,12288,float32,,V,R
+Voltage L2-N,holding,12290,float32,,V,R
+Voltage L3-N,holding,12292,float32,,V,R
+Voltage L1-L2,holding,12294,float32,,V,R
+Voltage L2-L3,holding,12296,float32,,V,R
+Voltage L3-L1,holding,12298,float32,,V,R
+System voltage,holding,12300,float32,,V,R
+Current L1,holding,12304,float32,,A,R
+Current L2,holding,12306,float32,,A,R
+Current L3,holding,12308,float32,,A,R
+Neutral current,holding,12310,float32,,A,R
+System current,holding,12312,float32,,A,R
+Active power L1,holding,12316,float32,,W,R
+Active power L2,holding,12318,float32,,W,R
+Active power L3,holding,12320,float32,,W,R
+Total active power,holding,12322,float32,,W,R
+Reactive power L1,holding,12324,float32,,var,R
+Reactive power L2,holding,12326,float32,,var,R
+Reactive power L3,holding,12328,float32,,var,R
+Total reactive power,holding,12330,float32,,var,R
+Apparent power L1,holding,12332,float32,,VA,R
+Apparent power L2,holding,12334,float32,,VA,R
+Apparent power L3,holding,12336,float32,,VA,R
+Total apparent power,holding,12338,float32,,VA,R
+Power factor L1,holding,12342,float32,,,R
+Power factor L2,holding,12344,float32,,,R
+Power factor L3,holding,12346,float32,,,R
+Total power factor,holding,12348,float32,,,R
+Displacement factor L1,holding,12350,float32,,,R
+Displacement factor L2,holding,12352,float32,,,R
+Displacement factor L3,holding,12354,float32,,,R
+Displacement factor total,holding,12356,float32,,,R
+Phase angle power L1,holding,12358,float32,,°,R
+Phase angle power L2,holding,12360,float32,,°,R
+Phase angle power L3,holding,12362,float32,,°,R
+Phase angle power total,holding,12364,float32,,°,R
+Frequency,holding,12366,float32,,Hz,R
+Current demand L1,holding,12368,float32,,A,R
+Current demand L2,holding,12370,float32,,A,R
+Current demand L3,holding,12372,float32,,A,R
+Active power demand,holding,12374,float32,,W,R
+Reactive power demand,holding,12376,float32,,var,R
+Apparent power demand,holding,12378,float32,,VA,R
+Voltage angle L1,holding,12380,float32,,°,R
+Voltage angle L2,holding,12382,float32,,°,R
+Voltage angle L3,holding,12384,float32,,°,R
+Current angle L1,holding,12386,float32,,°,R
+Current angle L2,holding,12388,float32,,°,R
+Current angle L3,holding,12390,float32,,°,R
+Voltage THD L1,holding,12392,float32,,%,R
+Voltage THD L2,holding,12394,float32,,%,R
+Voltage THD L3,holding,12396,float32,,%,R
+Current THD L1,holding,12398,float32,,%,R
+Current THD L2,holding,12400,float32,,%,R
+Current THD L3,holding,12402,float32,,%,R
+Phase voltage unbalance,holding,12404,float32,,%,R
+Line voltage unbalance,holding,12406,float32,,%,R
+Current unbalance,holding,12408,float32,,%,R
+Active energy import,holding,12410,uint32,0.01,kWh,R
+Active energy export,holding,12412,uint32,0.01,kWh,R
+Reactive energy import,holding,12414,uint32,0.01,kvarh,R
+Reactive energy export,holding,12416,uint32,0.01,kvarh,R
+Apparent energy,holding,12418,uint32,0.01,kVAh,R

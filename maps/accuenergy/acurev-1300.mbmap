@@ -1,0 +1,74 @@
+# Accuenergy AcuRev 1300.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | Accuenergy AcuRev 1300 — Modbus register map for Omni Console
+# | 
+# | Source: accuenergy-acurev-1300-modbus-manual.pdf (SunSpec-compatible interface)
+# | - 3-phase power meter with SunSpec AC Measurements block.
+# | - FC03 (Read Holding Registers) for all registers listed here.
+# | - All addresses are raw protocol addresses (0x1047 = 4167 decimal).
+# | - Real-time: int16 (s16, 1 register) SunSpec format; each group has a sunssf
+# | scale-factor register (also s16) whose value is a power-of-10 exponent;
+# | true value = register × 10^sunssf.  Scale=1 here — apply sunssf at runtime.
+# | - Energy accumulators (acc32, u32, 2 registers) — no sunssf, direct Wh / varh.
+# | - TOU energy bank at 0x0900H (2304 decimal): Dword u32, real = Rx/100 → scale=0.01 kWh.
+# | - Factory defaults: slave=1, baud=9600, 8N1.
+@mbmap=1
+@vendor=Accuenergy
+@model=AcuRev 1300
+@description=3-phase SunSpec power meter — V/I/P/Q/S/PF (s16 with sunssf scale factors at FC03 0x1047 block), energy acc32, TOU energy Dword Rx/100 kWh at 0x0900 (Big-Endian).
+@source=Omni Console device library (OmniCoreST), modbus-library/accuenergy-acurev-1300.toml; Source: accuenergy-acurev-1300-modbus-manual.pdf (SunSpec-compatible interface). Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,scale,unit,access
+Total active energy,holding,2304,uint32,0.01,kWh,R
+Net active energy,holding,2314,uint32,0.01,kWh,R
+Import active energy,holding,2324,uint32,0.01,kWh,R
+Export active energy,holding,2334,uint32,0.01,kWh,R
+Total reactive energy,holding,2344,uint32,0.01,kvarh,R
+Net reactive energy,holding,2354,uint32,0.01,kvarh,R
+Import reactive energy,holding,2364,uint32,0.01,kvarh,R
+Export reactive energy,holding,2374,uint32,0.01,kvarh,R
+Apparent energy,holding,2384,uint32,0.01,kVAh,R
+Total current,holding,4167,int16,,A,R
+Current L1,holding,4168,int16,,A,R
+Current L2,holding,4169,int16,,A,R
+Current L3,holding,4170,int16,,A,R
+Current scale factor (sunssf),holding,4171,int16,,,R
+Average phase voltage,holding,4172,int16,,V,R
+Voltage L1-N,holding,4173,int16,,V,R
+Voltage L2-N,holding,4174,int16,,V,R
+Voltage L3-N,holding,4175,int16,,V,R
+Average line voltage,holding,4176,int16,,V,R
+Voltage L1-L2,holding,4177,int16,,V,R
+Voltage L2-L3,holding,4178,int16,,V,R
+Voltage L3-L1,holding,4179,int16,,V,R
+Voltage scale factor (sunssf),holding,4180,int16,,,R
+Frequency,holding,4181,int16,,Hz,R
+Frequency scale factor (sunssf),holding,4182,int16,,,R
+Total active power,holding,4183,int16,,W,R
+Active power L1,holding,4184,int16,,W,R
+Active power L2,holding,4185,int16,,W,R
+Active power L3,holding,4186,int16,,W,R
+Active power scale factor (sunssf),holding,4187,int16,,,R
+Total apparent power,holding,4188,int16,,VA,R
+Apparent power L1,holding,4189,int16,,VA,R
+Apparent power L2,holding,4190,int16,,VA,R
+Apparent power L3,holding,4191,int16,,VA,R
+Apparent power scale factor (sunssf),holding,4192,int16,,,R
+Total reactive power,holding,4193,int16,,var,R
+Reactive power L1,holding,4194,int16,,var,R
+Reactive power L2,holding,4195,int16,,var,R
+Reactive power L3,holding,4196,int16,,var,R
+Reactive power scale factor (sunssf),holding,4197,int16,,,R
+Total power factor,holding,4198,int16,,,R
+Power factor L1,holding,4199,int16,,,R
+Power factor L2,holding,4200,int16,,,R
+Power factor L3,holding,4201,int16,,,R
+Power factor scale factor (sunssf),holding,4202,int16,,,R
+Active energy export,holding,4203,uint32,,Wh,R
+Active energy export L1,holding,4205,uint32,,Wh,R

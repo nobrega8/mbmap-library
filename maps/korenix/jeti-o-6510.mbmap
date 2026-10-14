@@ -1,0 +1,67 @@
+# Korenix JetI/O 6510.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | Korenix JetI/O 6510 Industrial Intelligent Ethernet I/O Server
+# | 
+# | Source: JetI/O 6510 User's Manual V0.1 (Jan. 2008)
+# | Protocol: Modbus/TCP (Ethernet port 502); FC03 read holding, FC04 read input, FC06 write single
+# | Module: 8-channel analog input, 16-bit, configurable range per-module (not per-channel):
+# | 08H=±10V, 09H=±5V, 0AH=±1V, 0BH=±500mV, 0CH=±150mV, 0DH=±20mA
+# | 
+# | IMPORTANT: Measured analog values live in the FC04 Input Register space (Modicon 30001-30008),
+# | addresses 0-7. Holding registers (FC03, Modicon 40001-40041) are configuration only.
+# | Input register values are signed 16-bit; units depend on selected range
+# | (e.g. ±10V range: -10000 ~ +10000 = mV; ±20mA range: -20000 ~ +20000 = µA).
+@mbmap=1
+@vendor=Korenix
+@model=JetI/O 6510
+@description=8-CH analog input Ethernet I/O server, Modbus/TCP. Range set globally at holding reg 10 (08=±10V,09=±5V,0A=±1V,0B=±500mV,0C=±150mV,0D=±20mA). Measured values in FC04 input registers addr 0-7 (s16, mV or µA). Holding regs: watchdog (0-2), firmware/name (3-4), calibration (6-12), per-channel low/high alarm thresholds ch0-7 (13-28), channel mask (29), alarm enable (30), SNMP trap config (31-40).
+@source=Omni Console device library (OmniCoreST), modbus-library/korenix-jetio-6510.toml; Source: JetI/O 6510 User's Manual V0.1 (Jan. 2008). Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,access
+Watchdog enable (0x0000=disable 0xFF00=enable),holding,0,uint16,R
+"Watchdog cycle count (0.1s per count, range 1-255)",holding,1,uint16,R
+Host-watchdog status (R: 0x0000=OK 0xFF00=fail; W: 0xFF00=reset),holding,2,uint16,R
+Firmware version,holding,3,uint16,R
+Module name (reads 0xF12A = 6510 hex),holding,4,uint16,R
+Reset status (0x0000 after read; 0x0001 after reset),holding,5,uint16,R
+AD offset calibration coefficients (bits 16-23),holding,6,uint16,R
+AD offset calibration coefficients (bits 0-15),holding,7,uint16,R
+AD span calibration coefficients (bits 16-23),holding,8,uint16,R
+AD span calibration coefficients (bits 0-15),holding,9,uint16,R
+Input range code (08=±10V 09=±5V 0A=±1V 0B=±500mV 0C=±150mV 0D=±20mA),holding,10,uint16,R
+Offset calibration trigger (write 0xFF00),holding,11,uint16,R
+Span calibration trigger (write 0xFF00),holding,12,uint16,R
+Channel 0 low alarm threshold,holding,13,int16,R
+Channel 0 high alarm threshold,holding,14,int16,R
+Channel 1 low alarm threshold,holding,15,int16,R
+Channel 1 high alarm threshold,holding,16,int16,R
+Channel 2 low alarm threshold,holding,17,int16,R
+Channel 2 high alarm threshold,holding,18,int16,R
+Channel 3 low alarm threshold,holding,19,int16,R
+Channel 3 high alarm threshold,holding,20,int16,R
+Channel 4 low alarm threshold,holding,21,int16,R
+Channel 4 high alarm threshold,holding,22,int16,R
+Channel 5 low alarm threshold,holding,23,int16,R
+Channel 5 high alarm threshold,holding,24,int16,R
+Channel 6 low alarm threshold,holding,25,int16,R
+Channel 6 high alarm threshold,holding,26,int16,R
+Channel 7 low alarm threshold,holding,27,int16,R
+Channel 7 high alarm threshold,holding,28,int16,R
+AD channel mask (bitmask byte BB; bit N=1 enable ch N),holding,29,uint16,R
+Alarm enable per channel (bitmask; bit N=1 enable alarm ch N),holding,30,uint16,R
+SNMP trap number (0=close 1-4=trap IP slot),holding,31,uint16,R
+SNMP trap IP1 low word (X.X.AA.BB),holding,32,uint16,R
+SNMP trap IP1 high word (AA.BB.X.X),holding,33,uint16,R
+SNMP trap IP2 low word,holding,34,uint16,R
+SNMP trap IP2 high word,holding,35,uint16,R
+SNMP trap IP3 high word,holding,36,uint16,R
+SNMP trap IP3 low word,holding,37,uint16,R
+SNMP trap IP4 high word,holding,38,uint16,R
+SNMP trap IP4 low word,holding,39,uint16,R
+SNMP trap repeat enable (write 0xFF00),holding,40,uint16,R

@@ -1,0 +1,231 @@
+# Continental Control Systems WattNode WND-WR-MB.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | Continental Control Systems WattNode WND-WR-MB — Wide-Range 3-Phase Energy Meter (Modbus RTU/TCP)
+# | 
+# | Source: continental-wattnode-wnd-wr-mb-reference-manual.pdf (sections 4.2.5-4.4, pp. 35-54)
+# | Models: WND-WR-MB (single model, wide-range 120-600 Vac line-to-neutral)
+# | Protocol: Modbus RTU or TCP; FC03/FC04 read (interchangeable), FC06/FC16 write
+# | Baud: configurable; default 9600 8N1; 1200-115200 via register 1652
+# | Register numbering: source uses 1-based numbers; TOML addresses are 0-based (source - 1).
+# | 32-bit values: low 16 bits at the listed address, high 16 bits at address+1 (little-endian words).
+# | Floating point: IEEE 754 f32, low word first.
+# | Integer energy (s32): units of 0.1 kWh, 0.1 kVARh, or 0.1 kVAh.
+# | Integer power (s16): units of PowerIntScale watts (reg 1608, default auto).
+# | Integer voltage (s16): units of 0.1 V. Integer frequency (s16): units of 0.1 Hz.
+# | Integer power factor (s16): units of 0.01.
+# | Integer current (s16): scaled by CtAmps/CurrentIntScale.
+@mbmap=1
+@vendor=Continental Control Systems
+@model=WattNode WND-WR-MB
+@description=Wide-range 3-phase energy meter, Modbus RTU/TCP. FC03/04 read, FC06/16 write. Basic FP (f32): energy kWh at 1000-1006, power W at 1008-1014, voltage V at 1016-1030, freq at 1032. PowerFast (10 Hz, f32 only) at 1034-1042. Advanced FP: per-element energy net/pos/neg at 1100-1120, reactive energy net/pos/neg at 1122-1196, apparent at 1130-1136, PF at 1138-1144, reactive/apparent power at 1146-1160, current at 1162-1166, demand at 1168-1180. Integer equivalents at 1200-1220 (basic) and 1300-1377 (advanced). Config at 1600-1685. Comms at 1650-1658. Diagnostics at 1700-1761.
+@source=Omni Console device library (OmniCoreST), modbus-library/continental-wattnode-wnd-wr-mb.toml; Source: continental-wattnode-wnd-wr-mb-reference-manual.pdf (sections 4.2.5-4.4, pp. 35-54). Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,access
+Dummy,holding,0,uint32,R
+EnergySum,holding,1000,float32,R
+EnergyPosSum,holding,1002,float32,R
+EnergySumNR,holding,1004,float32,R
+EnergyPosSumNR,holding,1006,float32,R
+PowerSum,holding,1008,float32,R
+Power1,holding,1010,float32,R
+Power2,holding,1012,float32,R
+Power3,holding,1014,float32,R
+VoltAvgLN,holding,1016,float32,R
+VoltAN,holding,1018,float32,R
+VoltBN,holding,1020,float32,R
+VoltCN,holding,1022,float32,R
+VoltAvgLL,holding,1024,float32,R
+VoltAB,holding,1026,float32,R
+VoltBC,holding,1028,float32,R
+VoltCA,holding,1030,float32,R
+Freq,holding,1032,float32,R
+SecondsFast,holding,1034,float32,R
+PowerFastSum,holding,1036,float32,R
+PowerFast1,holding,1038,float32,R
+PowerFast2,holding,1040,float32,R
+PowerFast3,holding,1042,float32,R
+Energy1,holding,1100,float32,R
+Energy2,holding,1102,float32,R
+Energy3,holding,1104,float32,R
+EnergyPos1,holding,1106,float32,R
+EnergyPos2,holding,1108,float32,R
+EnergyPos3,holding,1110,float32,R
+EnergyNegSum,holding,1112,float32,R
+EnergyNegSumNR,holding,1114,float32,R
+EnergyNeg1,holding,1116,float32,R
+EnergyNeg2,holding,1118,float32,R
+EnergyNeg3,holding,1120,float32,R
+EnergyReacSum,holding,1122,float32,R
+EnergyReac1,holding,1124,float32,R
+EnergyReac2,holding,1126,float32,R
+EnergyReac3,holding,1128,float32,R
+EnergyAppSum,holding,1130,float32,R
+EnergyApp1,holding,1132,float32,R
+EnergyApp2,holding,1134,float32,R
+EnergyApp3,holding,1136,float32,R
+PowerFactorAvg,holding,1138,float32,R
+PowerFactor1,holding,1140,float32,R
+PowerFactor2,holding,1142,float32,R
+PowerFactor3,holding,1144,float32,R
+PowerReacSum,holding,1146,float32,R
+PowerReac1,holding,1148,float32,R
+PowerReac2,holding,1150,float32,R
+PowerReac3,holding,1152,float32,R
+PowerAppSum,holding,1154,float32,R
+PowerApp1,holding,1156,float32,R
+PowerApp2,holding,1158,float32,R
+PowerApp3,holding,1160,float32,R
+Current1,holding,1162,float32,R
+Current2,holding,1164,float32,R
+Current3,holding,1166,float32,R
+DemandSum,holding,1168,float32,R
+DemandSumMin,holding,1170,float32,R
+DemandSumMax,holding,1172,float32,R
+DemandAppSum,holding,1174,float32,R
+Demand1,holding,1176,float32,R
+Demand2,holding,1178,float32,R
+Demand3,holding,1180,float32,R
+EnergyReacPos1,holding,1182,float32,R
+EnergyReacPos2,holding,1184,float32,R
+EnergyReacPos3,holding,1186,float32,R
+EnergyReacPosSum,holding,1188,float32,R
+EnergyReacNeg1,holding,1190,float32,R
+EnergyReacNeg2,holding,1192,float32,R
+EnergyReacNeg3,holding,1194,float32,R
+EnergyReacNegSum,holding,1196,float32,R
+EnergySum integer,holding,1200,int32,R
+EnergyPosSum integer,holding,1202,int32,R
+EnergySumNR integer,holding,1204,int32,R
+EnergyPosSumNR integer,holding,1206,int32,R
+PowerSum integer,holding,1208,int16,R
+Power1 integer,holding,1209,int16,R
+Power2 integer,holding,1210,int16,R
+Power3 integer,holding,1211,int16,R
+VoltAvgLN integer,holding,1212,int16,R
+VoltAN integer,holding,1213,int16,R
+VoltBN integer,holding,1214,int16,R
+VoltCN integer,holding,1215,int16,R
+VoltAvgLL integer,holding,1216,int16,R
+VoltAB integer,holding,1217,int16,R
+VoltBC integer,holding,1218,int16,R
+VoltCA integer,holding,1219,int16,R
+Freq integer,holding,1220,int16,R
+Energy1 integer,holding,1300,int32,R
+Energy2 integer,holding,1302,int32,R
+Energy3 integer,holding,1304,int32,R
+EnergyPos1 integer,holding,1306,int32,R
+EnergyPos2 integer,holding,1308,int32,R
+EnergyPos3 integer,holding,1310,int32,R
+EnergyNegSum integer,holding,1312,int32,R
+EnergyNegSumNR integer,holding,1314,int32,R
+EnergyNeg1 integer,holding,1316,int32,R
+EnergyNeg2 integer,holding,1318,int32,R
+EnergyNeg3 integer,holding,1320,int32,R
+EnergyReacSum integer,holding,1322,int32,R
+EnergyReac1 integer,holding,1324,int32,R
+EnergyReac2 integer,holding,1326,int32,R
+EnergyReac3 integer,holding,1328,int32,R
+EnergyAppSum integer,holding,1330,int32,R
+EnergyApp1 integer,holding,1332,int32,R
+EnergyApp2 integer,holding,1334,int32,R
+EnergyApp3 integer,holding,1336,int32,R
+PowerFactorAvg integer,holding,1338,int16,R
+PowerFactor1 integer,holding,1339,int16,R
+PowerFactor2 integer,holding,1340,int16,R
+PowerFactor3 integer,holding,1341,int16,R
+PowerReacSum integer,holding,1342,int16,R
+PowerReac1 integer,holding,1343,int16,R
+PowerReac2 integer,holding,1344,int16,R
+PowerReac3 integer,holding,1345,int16,R
+PowerAppSum integer,holding,1346,int16,R
+PowerApp1 integer,holding,1347,int16,R
+PowerApp2 integer,holding,1348,int16,R
+PowerApp3 integer,holding,1349,int16,R
+Current1 integer,holding,1350,int16,R
+Current2 integer,holding,1351,int16,R
+Current3 integer,holding,1352,int16,R
+DemandSum integer,holding,1353,int16,R
+DemandSumMin integer,holding,1354,int16,R
+DemandSumMax integer,holding,1355,int16,R
+DemandAppSum integer,holding,1356,int16,R
+Demand1 integer,holding,1357,int16,R
+Demand2 integer,holding,1358,int16,R
+Demand3 integer,holding,1359,int16,R
+EnergyReacPos1 integer,holding,1363,int32,R
+EnergyReacPos2 integer,holding,1365,int32,R
+EnergyReacPos3 integer,holding,1367,int32,R
+EnergyReacPosSum integer,holding,1369,int32,R
+EnergyReacNeg1 integer,holding,1371,int32,R
+EnergyReacNeg2 integer,holding,1373,int32,R
+EnergyReacNeg3 integer,holding,1375,int32,R
+EnergyReacNegSum integer,holding,1377,int32,R
+ConfigPasscode,holding,1600,uint32,R
+CtAmps,holding,1602,uint16,R
+CtAmps1,holding,1603,uint16,R
+CtAmps2,holding,1604,uint16,R
+CtAmps3,holding,1605,uint16,R
+CtDirections,holding,1606,uint16,R
+Averaging,holding,1607,uint16,R
+PowerIntScale,holding,1608,uint16,R
+DemPerMins,holding,1609,uint16,R
+DemSubints,holding,1610,uint16,R
+GainAdjust1,holding,1611,uint16,R
+GainAdjust2,holding,1612,uint16,R
+GainAdjust3,holding,1613,uint16,R
+PhaseAdjust1,holding,1614,int16,R
+PhaseAdjust2,holding,1615,int16,R
+PhaseAdjust3,holding,1616,int16,R
+CreepLimit,holding,1617,uint16,R
+ZeroEnergy,holding,1619,uint16,R
+ZeroDemand,holding,1620,uint16,R
+CurrentIntScale,holding,1621,uint16,R
+MeterConfig1,holding,1623,uint16,R
+MeterConfig2,holding,1624,uint16,R
+MeterConfig3,holding,1625,uint16,R
+ChangeCounter,holding,1627,uint16,R
+NominalCtVolts1,holding,1628,float32,R
+NominalCtVolts2,holding,1630,float32,R
+NominalCtVolts3,holding,1632,float32,R
+ConnectionType,holding,1635,uint16,R
+VoltsNoiseFloor,holding,1636,uint16,R
+CtMonitoring,holding,1637,uint16,R
+PtRatio,holding,1638,float32,R
+ApplyComConfig,holding,1650,uint16,R
+Address,holding,1651,uint16,R
+BaudRate,holding,1652,uint16,R
+ParityMode,holding,1653,uint16,R
+ModbusMode,holding,1654,uint16,R
+ReplyDelay,holding,1655,uint16,R
+SerialNumberKey,holding,1656,uint32,R
+NewAddress,holding,1658,uint16,R
+OptSignedCurrent,holding,1684,uint16,R
+OptEnergySumMethod,holding,1685,uint16,R
+SerialNumber,holding,1700,uint32,R
+UptimeSecs,holding,1702,uint32,R
+TotalSecs,holding,1704,uint32,R
+Model,holding,1706,uint16,R
+Version,holding,1707,uint16,R
+Options,holding,1708,uint16,R
+ErrorStatusQueue,holding,1709,uint16,R
+PowerFailCount,holding,1710,uint16,R
+CrcErrorCount,holding,1711,uint16,R
+FrameErrorCount,holding,1712,uint16,R
+PacketErrorCount,holding,1713,uint16,R
+OverrunCount,holding,1714,uint16,R
+ErrorStatus1,holding,1715,uint16,R
+ErrorStatus2,holding,1716,uint16,R
+ErrorStatus3,holding,1717,uint16,R
+ErrorStatus4,holding,1718,uint16,R
+ErrorStatus5,holding,1719,uint16,R
+ErrorStatus6,holding,1720,uint16,R
+ErrorStatus7,holding,1721,uint16,R
+ErrorStatus8,holding,1722,uint16,R
+CtStatus1,holding,1759,uint16,R
+CtStatus2,holding,1760,uint16,R
+CtStatus3,holding,1761,uint16,R

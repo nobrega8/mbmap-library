@@ -1,0 +1,147 @@
+# Deye Sunsynk Inverter.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | Deye / Sunsynk String & Hybrid Solar Inverter (Modbus RTU RS-485)
+# | 
+# | Source: deye-sunsynk-modbus-protocol.pdf
+# | Models: Deye/Sunsynk string inverters (3-phase and split-phase hybrid variants)
+# | Protocol: Modbus RTU, FC03 read, FC10 write
+# | Baud: configurable (register 38 readable); default 9600 8N1
+# | All addresses are decimal.
+# | Types: u16 default; s16 where signed; u32/s32 for 32-bit (low word first).
+# | Temperature registers use +1000 offset (e.g. 1150 = 115.0°C).
+# | Power factor register 39 uses +1000 offset (1000=0, 1982=0.982, 18=−0.982).
+@mbmap=1
+@vendor=Deye
+@model=Sunsynk Inverter
+@description=Deye/Sunsynk solar inverter, Modbus RTU RS-485. FC03 read, FC10 write. Identity/config at addr 0-57 (device type, S/N, rated power, grid limits, comms, PF/power regulation). Run state at 59. Day/total energy at 60-68. Grid voltages at 70-75; grid currents at 76-78; grid freq at 79. 3-phase output power at 80-89; temperatures at 90-95; PV history energy at 96-97. Fault/warning at 100-106. DC MPPT V/I at 109-116. Split-phase grid/inverter/load voltages at 150-158; currents at 160-165; powers at 167-178. Battery data at 182-191. PV input power at 186-189. Load/meter/grid energy at 198-210.
+@source=Omni Console device library (OmniCoreST), modbus-library/deye-sunsynk.toml; Source: deye-sunsynk-modbus-protocol.pdf. Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,access
+Device type,holding,0,uint16,R
+Modbus address,holding,1,uint16,R
+Comm protocol version,holding,2,uint16,R
+Serial number bytes 1-2,holding,3,uint16,R
+Serial number bytes 3-4,holding,4,uint16,R
+Serial number bytes 5-6,holding,5,uint16,R
+Serial number bytes 7-8,holding,6,uint16,R
+Serial number bytes 9-10,holding,7,uint16,R
+Rated power,holding,8,uint16,R
+Delivery date year month,holding,10,uint16,R
+Delivery date day hour,holding,11,uint16,R
+Delivery date minute second,holding,12,uint16,R
+Firmware version control board,holding,13,uint16,R
+Firmware version comm board,holding,14,uint16,R
+Safety type,holding,15,uint16,R
+Rated power precise,holding,16,uint32,R
+MPPT number and phases,holding,18,uint16,R
+Remote lock,holding,20,uint16,R
+Self-check time,holding,21,uint16,R
+System time year month,holding,22,uint16,R
+System time day hour,holding,23,uint16,R
+System time minute second,holding,24,uint16,R
+Minimum insulation impedance,holding,25,uint16,R
+DC voltage upper limit,holding,26,uint16,R
+Grid voltage upper limit,holding,27,uint16,R
+Grid voltage lower limit,holding,28,uint16,R
+Grid frequency upper limit,holding,29,uint16,R
+Grid frequency lower limit,holding,30,uint16,R
+Grid current upper limit,holding,31,uint16,R
+Starting voltage upper limit,holding,32,uint16,R
+Starting voltage lower limit,holding,33,uint16,R
+Communication address,holding,37,uint16,R
+Communication baud rate,holding,38,uint16,R
+Power factor regulation,holding,39,uint16,R
+Active power regulation,holding,40,uint16,R
+Reactive power regulation,holding,41,uint16,R
+Apparent power regulation,holding,42,uint16,R
+Switch on off enable,holding,43,uint16,R
+Factory reset enable,holding,44,uint16,R
+Grid standard,holding,51,uint16,R
+PowerWH factor,holding,57,uint16,R
+Run state,holding,59,uint16,R
+Day active energy,holding,60,int16,R
+Day reactive energy,holding,61,int16,R
+Day grid work time,holding,62,uint16,R
+Total active energy,holding,63,int32,R
+Total reactive energy,holding,65,int32,R
+Total work time,holding,67,uint32,R
+Inverter efficiency,holding,69,uint16,R
+Grid voltage AB,holding,70,uint16,R
+Grid voltage BC,holding,71,uint16,R
+Grid voltage AC,holding,72,uint16,R
+Grid voltage A,holding,73,uint16,R
+Grid voltage B,holding,74,uint16,R
+Grid voltage C,holding,75,uint16,R
+Grid current A,holding,76,int16,R
+Grid current B,holding,77,int16,R
+Grid current C,holding,78,int16,R
+Grid frequency,holding,79,uint16,R
+Output active power,holding,80,int32,R
+Input active power (82),holding,82,int32,R
+Output apparent power,holding,84,uint32,R
+Output active power detail,holding,86,int32,R
+Output reactive power,holding,88,int32,R
+DC radiator temperature,holding,90,int16,R
+IGBT temperature,holding,91,int16,R
+Power factor,holding,93,uint16,R
+Environment temperature,holding,95,int16,R
+PV history energy,holding,96,uint32,R
+Test flag bits,holding,100,uint16,R
+Warning message word 1,holding,101,uint16,R
+Warning message word 2,holding,102,uint16,R
+Fault information word 1,holding,103,uint16,R
+Fault information word 2,holding,104,uint16,R
+Fault information word 3,holding,105,uint16,R
+Fault information word 4,holding,106,uint16,R
+Corrected AH,holding,107,uint16,R
+Day PV energy,holding,108,uint16,R
+DC voltage 1,holding,109,uint16,R
+DC current 1,holding,110,int16,R
+DC voltage 2,holding,111,uint16,R
+DC current 2,holding,112,int16,R
+DC voltage 3,holding,113,uint16,R
+DC current 3,holding,114,int16,R
+DC voltage 4,holding,115,uint16,R
+DC current 4,holding,116,int16,R
+Grid side voltage L1-N,holding,150,uint16,R
+Grid side voltage L2-N,holding,151,uint16,R
+Grid side voltage L1-L2,holding,152,uint16,R
+Inverter output voltage L1-N,holding,154,uint16,R
+Inverter output voltage L2-N,holding,155,uint16,R
+Inverter output voltage L1-L2,holding,156,uint16,R
+Load voltage L1,holding,157,uint16,R
+Load voltage L2,holding,158,uint16,R
+Grid side current L1,holding,160,int16,R
+Grid side current L2,holding,161,int16,R
+Inverter output current L1,holding,164,int16,R
+Inverter output current L2,holding,165,int16,R
+Grid side L1 power,holding,167,int16,R
+Grid side L2 power,holding,168,int16,R
+Grid side total power,holding,169,int16,R
+Inverter output total power,holding,175,int16,R
+Load side total power,holding,178,int16,R
+Battery temperature,holding,182,int16,R
+Battery voltage,holding,183,uint16,R
+Battery capacity,holding,184,uint16,R
+PV1 input power,holding,186,uint16,R
+PV2 input power,holding,187,uint16,R
+PV3 input power,holding,188,uint16,R
+PV4 input power,holding,189,uint16,R
+Battery output power,holding,190,int16,R
+Battery output current,holding,191,int16,R
+Load frequency,holding,192,uint16,R
+Inverter output frequency,holding,193,uint16,R
+Input active power (198),holding,198,uint32,R
+Day load energy,holding,200,uint16,R
+History load energy,holding,201,uint32,R
+Meter active power,holding,203,int32,R
+Day grid sell energy,holding,205,uint16,R
+History grid sell energy,holding,206,uint32,R
+Day grid buy energy,holding,208,uint16,R
+History grid buy energy,holding,209,uint32,R

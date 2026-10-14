@@ -1,0 +1,583 @@
+# Klemsan KLEA.
+# Converted automatically from the Omni Console device library (OmniCoreST); see ATTRIBUTION.md.
+# Not verified against the manufacturer's documentation.
+# Corrections are welcome (CONTRIBUTING.md). Remove @x_status once this table has been checked against the manual.
+# | Klemsan KLEA Network Energy Analyzer (Modbus RTU RS-485)
+# | 
+# | Source: klemsan-klea-network-energy-analyzer-manual-en.pdf
+# | Protocol: Modbus RTU; FC03 read, FC06 write single, FC10 write multiple, FC14 read file record
+# | All registers 32-bit (2 Modbus words each); addresses increment by +2 per 32-bit register,
+# | +4 per 64-bit register. Big-endian word order (high word at lower address).
+# | Data types: f32 = IEEE 754 float; u32 = unsigned 32-bit int; s32 = signed 32-bit int.
+# | 64-bit double registers split into two u32 entries: (high 32-bit) at base, (low 32-bit) at base+2.
+# | Starting address for measured data: 0. Settings: 2000+. Clear: 1898+.
+# | To save settings to non-volatile memory: write 0x0000 to register 1998, then 0x0001 to 1999
+# | within 60 seconds of last setting change.
+# | Archive records via FC14 (Read File Record): hourly files 1-1920, daily 5001-5240, monthly 10001-10036.
+# | Each archive block has 68 parameters (32-bit each): timestamp, then L1/L2/L3 avg/min/max V/I/P/Q/S/cosΦ/PF,
+# | line voltages V12/V23/V31 avg/min/max, frequency avg/min/max, T1 energy import/export active+reactive.
+@mbmap=1
+@vendor=Klemsan
+@model=KLEA
+@description=3-phase energy analyzer, Modbus RTU RS-485. All 32-bit IEEE 754 float or 32-bit/64-bit int; each 32-bit value = 2 Modbus words (addr stride +2). FC03 read, FC06/FC10 write. Global at addr 0-26: V-avg, I-total, P/Q/S-total, cosΦ/PF-avg, VLL1/2/3/avg, IN, THDV/THDI-total. Per-phase at 28-150 (L1), 152-274 (L2), 276-398 (L3): V/I/P/Q/S/cosΦ/PF/F/THDV/THDI + voltage harmonics (1st-51st odd, 26 entries) + current harmonics (1st-51st odd, 26 entries). Alarm flags 400-402. Tariff meters T1/T1_1/T1_2/T1_3/T2 import/export active+reactive (32-bit float, kWh/kVArh) at 404-682. Demand peak (current month + 3 prior months) at 684-938. DI counters 940-958. Temp/battery/time 944-948. Alarm statuses (50 alarms) at 960-1358. Archive file numbers 1360-1364. Tariff indices (64-bit double) at 1366-1444. Phase energies (64-bit) at 1458-1694. Digital output logs 1698-1808. DI energy counters 1810-1836. Clear commands 1898-1916. Settings at 2000-2390: CTR/VTR, connection, demand period, energy tariff presets, digital outputs/inputs, baud rate, slave ID, alarm limits (V-LN/LL, I, P, Q, S, IN, PF, cosΦ, F, temp, V-THD, I-THD), device, optional DIO/AO.
+@source=Omni Console device library (OmniCoreST), modbus-library/klemsan-klea.toml; Source: klemsan-klea-network-energy-analyzer-manual-en.pdf. Not verified against the manufacturer's documentation
+@byte_order=ABCD
+@address_base=0
+@x_status=unverified
+@x_origin=omniconsole
+
+name,area,address,type,access
+Average voltage (V),holding,0,float32,R
+Total current (A),holding,2,float32,R
+Total active power (W),holding,4,float32,R
+Total reactive power (VAr),holding,6,float32,R
+Total apparent power (VA),holding,8,float32,R
+Average CosΦ,holding,10,float32,R
+Average power factor,holding,12,float32,R
+Voltage V1-2 (V),holding,14,float32,R
+Voltage V2-3 (V),holding,16,float32,R
+Voltage V3-1 (V),holding,18,float32,R
+Average line-to-line voltage (V),holding,20,float32,R
+Neutral current (A),holding,22,float32,R
+Total THDV (%),holding,24,float32,R
+Total THDI (%),holding,26,float32,R
+L1 voltage (V),holding,28,float32,R
+L1 current (A),holding,30,float32,R
+L1 active power (W),holding,32,float32,R
+L1 reactive power (VAr),holding,34,float32,R
+L1 apparent power (VA),holding,36,float32,R
+L1 CosΦ,holding,38,float32,R
+L1 power factor,holding,40,float32,R
+L1 frequency (Hz),holding,42,float32,R
+L1 THDV (%),holding,44,float32,R
+L1 THDI (%),holding,46,float32,R
+L1 voltage harmonic 1st (%),holding,48,float32,R
+L1 voltage harmonic 3rd (%),holding,50,float32,R
+L1 voltage harmonic 5th (%),holding,52,float32,R
+L1 voltage harmonic 7th (%),holding,54,float32,R
+L1 voltage harmonic 9th (%),holding,56,float32,R
+L1 voltage harmonic 11th (%),holding,58,float32,R
+L1 voltage harmonic 13th (%),holding,60,float32,R
+L1 voltage harmonic 15th (%),holding,62,float32,R
+L1 voltage harmonic 17th (%),holding,64,float32,R
+L1 voltage harmonic 19th (%),holding,66,float32,R
+L1 voltage harmonic 21st (%),holding,68,float32,R
+L1 voltage harmonic 23rd (%),holding,70,float32,R
+L1 voltage harmonic 25th (%),holding,72,float32,R
+L1 voltage harmonic 27th (%),holding,74,float32,R
+L1 voltage harmonic 29th (%),holding,76,float32,R
+L1 voltage harmonic 31st (%),holding,78,float32,R
+L1 voltage harmonic 33rd (%),holding,80,float32,R
+L1 voltage harmonic 35th (%),holding,82,float32,R
+L1 voltage harmonic 37th (%),holding,84,float32,R
+L1 voltage harmonic 39th (%),holding,86,float32,R
+L1 voltage harmonic 41st (%),holding,88,float32,R
+L1 voltage harmonic 43rd (%),holding,90,float32,R
+L1 voltage harmonic 45th (%),holding,92,float32,R
+L1 voltage harmonic 47th (%),holding,94,float32,R
+L1 voltage harmonic 49th (%),holding,96,float32,R
+L1 voltage harmonic 51st (%),holding,98,float32,R
+L1 current harmonic 1st (%),holding,100,float32,R
+L1 current harmonic 3rd (%),holding,102,float32,R
+L1 current harmonic 5th (%),holding,104,float32,R
+L1 current harmonic 7th (%),holding,106,float32,R
+L1 current harmonic 9th (%),holding,108,float32,R
+L1 current harmonic 11th (%),holding,110,float32,R
+L1 current harmonic 13th (%),holding,112,float32,R
+L1 current harmonic 15th (%),holding,114,float32,R
+L1 current harmonic 17th (%),holding,116,float32,R
+L1 current harmonic 19th (%),holding,118,float32,R
+L1 current harmonic 21st (%),holding,120,float32,R
+L1 current harmonic 23rd (%),holding,122,float32,R
+L1 current harmonic 25th (%),holding,124,float32,R
+L1 current harmonic 27th (%),holding,126,float32,R
+L1 current harmonic 29th (%),holding,128,float32,R
+L1 current harmonic 31st (%),holding,130,float32,R
+L1 current harmonic 33rd (%),holding,132,float32,R
+L1 current harmonic 35th (%),holding,134,float32,R
+L1 current harmonic 37th (%),holding,136,float32,R
+L1 current harmonic 39th (%),holding,138,float32,R
+L1 current harmonic 41st (%),holding,140,float32,R
+L1 current harmonic 43rd (%),holding,142,float32,R
+L1 current harmonic 45th (%),holding,144,float32,R
+L1 current harmonic 47th (%),holding,146,float32,R
+L1 current harmonic 49th (%),holding,148,float32,R
+L1 current harmonic 51st (%),holding,150,float32,R
+L2 voltage (V),holding,152,float32,R
+L2 current (A),holding,154,float32,R
+L2 active power (W),holding,156,float32,R
+L2 reactive power (VAr),holding,158,float32,R
+L2 apparent power (VA),holding,160,float32,R
+L2 CosΦ,holding,162,float32,R
+L2 power factor,holding,164,float32,R
+L2 frequency (Hz),holding,166,float32,R
+L2 THDV (%),holding,168,float32,R
+L2 THDI (%),holding,170,float32,R
+L2 voltage harmonic 1st (%),holding,172,float32,R
+L2 voltage harmonic 3rd (%),holding,174,float32,R
+L2 voltage harmonic 5th (%),holding,176,float32,R
+L2 voltage harmonic 7th (%),holding,178,float32,R
+L2 voltage harmonic 9th (%),holding,180,float32,R
+L2 voltage harmonic 11th (%),holding,182,float32,R
+L2 voltage harmonic 13th (%),holding,184,float32,R
+L2 voltage harmonic 15th (%),holding,186,float32,R
+L2 voltage harmonic 17th (%),holding,188,float32,R
+L2 voltage harmonic 19th (%),holding,190,float32,R
+L2 voltage harmonic 21st (%),holding,192,float32,R
+L2 voltage harmonic 23rd (%),holding,194,float32,R
+L2 voltage harmonic 25th (%),holding,196,float32,R
+L2 voltage harmonic 27th (%),holding,198,float32,R
+L2 voltage harmonic 29th (%),holding,200,float32,R
+L2 voltage harmonic 31st (%),holding,202,float32,R
+L2 voltage harmonic 33rd (%),holding,204,float32,R
+L2 voltage harmonic 35th (%),holding,206,float32,R
+L2 voltage harmonic 37th (%),holding,208,float32,R
+L2 voltage harmonic 39th (%),holding,210,float32,R
+L2 voltage harmonic 41st (%),holding,212,float32,R
+L2 voltage harmonic 43rd (%),holding,214,float32,R
+L2 voltage harmonic 45th (%),holding,216,float32,R
+L2 voltage harmonic 47th (%),holding,218,float32,R
+L2 voltage harmonic 49th (%),holding,220,float32,R
+L2 voltage harmonic 51st (%),holding,222,float32,R
+L2 current harmonic 1st (%),holding,224,float32,R
+L2 current harmonic 3rd (%),holding,226,float32,R
+L2 current harmonic 5th (%),holding,228,float32,R
+L2 current harmonic 7th (%),holding,230,float32,R
+L2 current harmonic 9th (%),holding,232,float32,R
+L2 current harmonic 11th (%),holding,234,float32,R
+L2 current harmonic 13th (%),holding,236,float32,R
+L2 current harmonic 15th (%),holding,238,float32,R
+L2 current harmonic 17th (%),holding,240,float32,R
+L2 current harmonic 19th (%),holding,242,float32,R
+L2 current harmonic 21st (%),holding,244,float32,R
+L2 current harmonic 23rd (%),holding,246,float32,R
+L2 current harmonic 25th (%),holding,248,float32,R
+L2 current harmonic 27th (%),holding,250,float32,R
+L2 current harmonic 29th (%),holding,252,float32,R
+L2 current harmonic 31st (%),holding,254,float32,R
+L2 current harmonic 33rd (%),holding,256,float32,R
+L2 current harmonic 35th (%),holding,258,float32,R
+L2 current harmonic 37th (%),holding,260,float32,R
+L2 current harmonic 39th (%),holding,262,float32,R
+L2 current harmonic 41st (%),holding,264,float32,R
+L2 current harmonic 43rd (%),holding,266,float32,R
+L2 current harmonic 45th (%),holding,268,float32,R
+L2 current harmonic 47th (%),holding,270,float32,R
+L2 current harmonic 49th (%),holding,272,float32,R
+L2 current harmonic 51st (%),holding,274,float32,R
+L3 voltage (V),holding,276,float32,R
+L3 current (A),holding,278,float32,R
+L3 active power (W),holding,280,float32,R
+L3 reactive power (VAr),holding,282,float32,R
+L3 apparent power (VA),holding,284,float32,R
+L3 CosΦ,holding,286,float32,R
+L3 power factor,holding,288,float32,R
+L3 frequency (Hz),holding,290,float32,R
+L3 THDV (%),holding,292,float32,R
+L3 THDI (%),holding,294,float32,R
+L3 voltage harmonic 1st (%),holding,296,float32,R
+L3 voltage harmonic 3rd (%),holding,298,float32,R
+L3 voltage harmonic 5th (%),holding,300,float32,R
+L3 voltage harmonic 7th (%),holding,302,float32,R
+L3 voltage harmonic 9th (%),holding,304,float32,R
+L3 voltage harmonic 11th (%),holding,306,float32,R
+L3 voltage harmonic 13th (%),holding,308,float32,R
+L3 voltage harmonic 15th (%),holding,310,float32,R
+L3 voltage harmonic 17th (%),holding,312,float32,R
+L3 voltage harmonic 19th (%),holding,314,float32,R
+L3 voltage harmonic 21st (%),holding,316,float32,R
+L3 voltage harmonic 23rd (%),holding,318,float32,R
+L3 voltage harmonic 25th (%),holding,320,float32,R
+L3 voltage harmonic 27th (%),holding,322,float32,R
+L3 voltage harmonic 29th (%),holding,324,float32,R
+L3 voltage harmonic 31st (%),holding,326,float32,R
+L3 voltage harmonic 33rd (%),holding,328,float32,R
+L3 voltage harmonic 35th (%),holding,330,float32,R
+L3 voltage harmonic 37th (%),holding,332,float32,R
+L3 voltage harmonic 39th (%),holding,334,float32,R
+L3 voltage harmonic 41st (%),holding,336,float32,R
+L3 voltage harmonic 43rd (%),holding,338,float32,R
+L3 voltage harmonic 45th (%),holding,340,float32,R
+L3 voltage harmonic 47th (%),holding,342,float32,R
+L3 voltage harmonic 49th (%),holding,344,float32,R
+L3 voltage harmonic 51st (%),holding,346,float32,R
+L3 current harmonic 1st (%),holding,348,float32,R
+L3 current harmonic 3rd (%),holding,350,float32,R
+L3 current harmonic 5th (%),holding,352,float32,R
+L3 current harmonic 7th (%),holding,354,float32,R
+L3 current harmonic 9th (%),holding,356,float32,R
+L3 current harmonic 11th (%),holding,358,float32,R
+L3 current harmonic 13th (%),holding,360,float32,R
+L3 current harmonic 15th (%),holding,362,float32,R
+L3 current harmonic 17th (%),holding,364,float32,R
+L3 current harmonic 19th (%),holding,366,float32,R
+L3 current harmonic 21st (%),holding,368,float32,R
+L3 current harmonic 23rd (%),holding,370,float32,R
+L3 current harmonic 25th (%),holding,372,float32,R
+L3 current harmonic 27th (%),holding,374,float32,R
+L3 current harmonic 29th (%),holding,376,float32,R
+L3 current harmonic 31st (%),holding,378,float32,R
+L3 current harmonic 33rd (%),holding,380,float32,R
+L3 current harmonic 35th (%),holding,382,float32,R
+L3 current harmonic 37th (%),holding,384,float32,R
+L3 current harmonic 39th (%),holding,386,float32,R
+L3 current harmonic 41st (%),holding,388,float32,R
+L3 current harmonic 43rd (%),holding,390,float32,R
+L3 current harmonic 45th (%),holding,392,float32,R
+L3 current harmonic 47th (%),holding,394,float32,R
+L3 current harmonic 49th (%),holding,396,float32,R
+L3 current harmonic 51st (%),holding,398,float32,R
+Alarm flags word 1 (bits: V1/V2/V3/IN/THDV2/THDV3/I1/I2/I3/V1H/V2H/V3H/VLL1/VLL2/VLL3/P1/P2/P3/IN2/Q1/Q2/Q3/S1/S2/S3/CosΦ1/CosΦ2/CosΦ3/PF1/PF2),holding,400,uint32,R
+Alarm flags word 2 (bits: PF3/F1/F2/F3/THDI1/THDI2/THDI3/I1H/I2H/I3H/BattV),holding,402,uint32,R
+T1 import active index (kWh),holding,404,float32,R
+T1 import active current hour (kWh),holding,406,float32,R
+T1 import active previous hour (kWh),holding,408,float32,R
+T1 import active current day (kWh),holding,410,float32,R
+T1 import active previous day (kWh),holding,412,float32,R
+T1 import active current month (kWh),holding,414,float32,R
+T1 import active previous month (kWh),holding,416,float32,R
+T1 export active index (kWh),holding,418,float32,R
+T1 export active current hour (kWh),holding,420,float32,R
+T1 export active previous hour (kWh),holding,422,float32,R
+T1 export active current day (kWh),holding,424,float32,R
+T1 export active previous day (kWh),holding,426,float32,R
+T1 export active current month (kWh),holding,428,float32,R
+T1 export active previous month (kWh),holding,430,float32,R
+T1 import reactive index (kVArh),holding,432,float32,R
+T1 import reactive current hour (kVArh),holding,434,float32,R
+T1 import reactive previous hour (kVArh),holding,436,float32,R
+T1 import reactive current day (kVArh),holding,438,float32,R
+T1 import reactive previous day (kVArh),holding,440,float32,R
+T1 import reactive current month (kVArh),holding,442,float32,R
+T1 import reactive previous month (kVArh),holding,444,float32,R
+T1 export reactive index (kVArh),holding,446,float32,R
+T1 export reactive current hour (kVArh),holding,448,float32,R
+T1 export reactive previous hour (kVArh),holding,450,float32,R
+T1 export reactive current day (kVArh),holding,452,float32,R
+T1 export reactive previous day (kVArh),holding,454,float32,R
+T1 export reactive current month (kVArh),holding,456,float32,R
+T1 export reactive previous month (kVArh),holding,458,float32,R
+T1 rate1 import active index (kWh),holding,460,float32,R
+T1 rate1 import active current hour (kWh),holding,462,float32,R
+T1 rate1 import active previous hour (kWh),holding,464,float32,R
+T1 rate1 import active current day (kWh),holding,466,float32,R
+T1 rate1 import active previous day (kWh),holding,468,float32,R
+T1 rate1 import active current month (kWh),holding,470,float32,R
+T1 rate1 import active previous month (kWh),holding,472,float32,R
+T1 rate1 export active index (kWh),holding,474,float32,R
+T1 rate1 export active current hour (kWh),holding,476,float32,R
+T1 rate1 export active previous hour (kWh),holding,478,float32,R
+T1 rate1 export active current day (kWh),holding,480,float32,R
+T1 rate1 export active previous day (kWh),holding,482,float32,R
+T1 rate1 export active current month (kWh),holding,484,float32,R
+T1 rate1 export active previous month (kWh),holding,486,float32,R
+T1 rate1 import reactive index (kVArh),holding,488,float32,R
+T1 rate1 import reactive current hour (kVArh),holding,490,float32,R
+T1 rate1 import reactive previous hour (kVArh),holding,492,float32,R
+T1 rate1 import reactive current day (kVArh),holding,494,float32,R
+T1 rate1 import reactive previous day (kVArh),holding,496,float32,R
+T1 rate1 import reactive current month (kVArh),holding,498,float32,R
+T1 rate1 import reactive previous month (kVArh),holding,500,float32,R
+T1 rate1 export reactive index (kVArh),holding,502,float32,R
+T1 rate1 export reactive current hour (kVArh),holding,504,float32,R
+T1 rate1 export reactive previous hour (kVArh),holding,506,float32,R
+T1 rate1 export reactive current day (kVArh),holding,508,float32,R
+T1 rate1 export reactive previous day (kVArh),holding,510,float32,R
+T1 rate1 export reactive current month (kVArh),holding,512,float32,R
+T1 rate1 export reactive previous month (kVArh),holding,514,float32,R
+T1 rate2 import active index (kWh),holding,516,float32,R
+T1 rate2 import reactive index (kVArh),holding,544,float32,R
+T1 rate2 export reactive index (kVArh),holding,558,float32,R
+T1 rate3 import active index (kWh),holding,572,float32,R
+T1 rate3 import reactive index (kVArh),holding,600,float32,R
+T1 rate3 export reactive index (kVArh),holding,614,float32,R
+T2 import active index (kWh),holding,628,float32,R
+T2 import active current hour (kWh),holding,630,float32,R
+T2 import active previous hour (kWh),holding,632,float32,R
+T2 import active current day (kWh),holding,634,float32,R
+T2 import active previous day (kWh),holding,636,float32,R
+T2 import active current month (kWh),holding,638,float32,R
+T2 import active previous month (kWh),holding,640,float32,R
+T2 export active index (kWh),holding,642,float32,R
+T2 import reactive index (kVArh),holding,656,float32,R
+T2 export reactive index (kVArh),holding,670,float32,R
+T2 export reactive previous month (kVArh),holding,682,float32,R
+Demand current month total active power (W),holding,684,float32,R
+Demand current month total active power timestamp,holding,686,uint32,R
+Demand current month total current (A),holding,688,float32,R
+Demand current month total current timestamp,holding,690,uint32,R
+Demand current month total reactive power (VAr),holding,692,float32,R
+Demand current month total reactive power timestamp,holding,694,uint32,R
+Demand current month total apparent power (VA),holding,696,float32,R
+Demand current month total apparent power timestamp,holding,698,uint32,R
+Demand current month L1 active power (W),holding,700,float32,R
+Demand current month L1 active power timestamp,holding,702,uint32,R
+Demand current month L1 current (A),holding,704,float32,R
+Demand current month L1 current timestamp,holding,706,uint32,R
+Demand current month L1 reactive power (VAr),holding,708,float32,R
+Demand current month L1 reactive power timestamp,holding,710,uint32,R
+Demand current month L1 apparent power (VA),holding,712,float32,R
+Demand current month L1 apparent power timestamp,holding,714,uint32,R
+Demand current month L2 active power (W),holding,716,float32,R
+Demand current month L2 active power timestamp,holding,718,uint32,R
+Demand current month L2 current (A),holding,720,float32,R
+Demand current month L2 current timestamp,holding,722,uint32,R
+Demand current month L2 reactive power (VAr),holding,724,float32,R
+Demand current month L2 reactive power timestamp,holding,726,uint32,R
+Demand current month L2 apparent power (VA),holding,728,float32,R
+Demand current month L2 apparent power timestamp,holding,730,uint32,R
+Demand current month L3 active power (W),holding,732,float32,R
+Demand current month L3 active power timestamp,holding,734,uint32,R
+Demand current month L3 current (A),holding,736,float32,R
+Demand current month L3 current timestamp,holding,738,uint32,R
+Demand current month L3 reactive power (VAr),holding,740,float32,R
+Demand current month L3 reactive power timestamp,holding,742,uint32,R
+Demand current month L3 apparent power (VA),holding,744,float32,R
+Demand current month L3 apparent power timestamp,holding,746,uint32,R
+Demand 1 month ago total active power (W),holding,748,float32,R
+Demand 1 month ago total active power timestamp,holding,750,uint32,R
+Demand 1 month ago total current (A),holding,752,float32,R
+Demand 1 month ago total apparent power (VA),holding,760,float32,R
+Demand 2 months ago total active power (W),holding,812,float32,R
+Demand 3 months ago total active power (W),holding,876,float32,R
+Demand 3 months ago L3 apparent power timestamp,holding,938,uint32,R
+Digital input 1 counter,holding,940,float32,R
+Digital input 2 counter,holding,942,float32,R
+Temperature (°C),holding,944,float32,R
+Battery voltage (V),holding,946,float32,R
+"System date and time (unix timestamp, R/W)",holding,948,uint32,R
+Digital input 3 counter (optional DIO),holding,950,float32,R
+Digital input 4 counter (optional DIO),holding,952,float32,R
+Digital input 5 counter (optional DIO),holding,954,float32,R
+Digital input 6 counter (optional DIO),holding,956,float32,R
+Digital input 7 counter (optional DIO),holding,958,float32,R
+Alarm 1 timestamp,holding,960,uint32,R
+Alarm 1 ID,holding,962,uint32,R
+"Alarm 1 status (1=ON, 0=OFF)",holding,964,uint32,R
+Alarm 1 value,holding,966,float32,R
+Alarm 2 timestamp,holding,968,uint32,R
+Alarm 2 ID,holding,970,uint32,R
+Alarm 2 status,holding,972,uint32,R
+Alarm 2 value,holding,974,float32,R
+Alarm 3 timestamp,holding,976,uint32,R
+Alarm 3 ID,holding,978,uint32,R
+Alarm 3 status,holding,980,uint32,R
+Alarm 3 value,holding,982,float32,R
+Alarm 4 timestamp,holding,984,uint32,R
+Alarm 4 ID,holding,986,uint32,R
+Alarm 4 status,holding,988,uint32,R
+Alarm 4 value,holding,990,float32,R
+Alarm 5 timestamp,holding,992,uint32,R
+Alarm 5 ID,holding,994,uint32,R
+Alarm 5 status,holding,996,uint32,R
+Alarm 5 value,holding,998,float32,R
+Alarm 6 timestamp,holding,1000,uint32,R
+Alarm 6 ID,holding,1002,uint32,R
+Alarm 6 status,holding,1004,uint32,R
+Alarm 6 value,holding,1006,float32,R
+Alarm 7 timestamp,holding,1008,uint32,R
+Alarm 7 ID,holding,1010,uint32,R
+Alarm 7 status,holding,1012,uint32,R
+Alarm 7 value,holding,1014,float32,R
+Alarm 8 timestamp,holding,1016,uint32,R
+Alarm 8 ID,holding,1018,uint32,R
+Alarm 8 status,holding,1020,uint32,R
+Alarm 8 value,holding,1022,float32,R
+Alarm 9 timestamp,holding,1024,uint32,R
+Alarm 9 ID,holding,1026,uint32,R
+Alarm 9 status,holding,1028,uint32,R
+Alarm 9 value,holding,1030,float32,R
+Alarm 10 timestamp,holding,1032,uint32,R
+Alarm 10 ID,holding,1034,uint32,R
+Alarm 10 status,holding,1036,uint32,R
+Alarm 10 value,holding,1038,float32,R
+Alarm 50 timestamp,holding,1352,uint32,R
+Alarm 50 ID,holding,1354,uint32,R
+Alarm 50 status,holding,1356,uint32,R
+Alarm 50 value,holding,1358,float32,R
+Last saved hourly archive file number,holding,1360,uint32,R
+Last saved daily archive file number,holding,1362,uint32,R
+Last saved monthly archive file number,holding,1364,uint32,R
+"T1 import active index 64-bit (high 32-bit, kWh)",holding,1366,uint32,R
+"T1 import active index 64-bit (low 32-bit, kWh)",holding,1368,uint32,R
+"T1 rate1 import active index 64-bit (high, kWh)",holding,1370,uint32,R
+"T1 rate1 import active index 64-bit (low, kWh)",holding,1372,uint32,R
+"T1 rate2 import active index 64-bit (high, kWh)",holding,1374,uint32,R
+"T1 rate2 import active index 64-bit (low, kWh)",holding,1376,uint32,R
+"T1 rate3 import active index 64-bit (high, kWh)",holding,1378,uint32,R
+"T1 rate3 import active index 64-bit (low, kWh)",holding,1380,uint32,R
+"T2 import active index 64-bit (high, kWh)",holding,1382,uint32,R
+"T2 import active index 64-bit (low, kWh)",holding,1384,uint32,R
+"T1 export active index 64-bit (high, kWh)",holding,1386,uint32,R
+"T1 export active index 64-bit (low, kWh)",holding,1388,uint32,R
+"T1 rate1 export active index 64-bit (high, kWh)",holding,1390,uint32,R
+"T1 rate1 export active index 64-bit (low, kWh)",holding,1392,uint32,R
+"T1 rate2 export active index 64-bit (high, kWh)",holding,1394,uint32,R
+"T1 rate2 export active index 64-bit (low, kWh)",holding,1396,uint32,R
+"T1 rate3 export active index 64-bit (high, kWh)",holding,1398,uint32,R
+"T1 rate3 export active index 64-bit (low, kWh)",holding,1400,uint32,R
+"T2 export active index 64-bit (high, kWh)",holding,1402,uint32,R
+"T2 export active index 64-bit (low, kWh)",holding,1404,uint32,R
+"T1 import reactive index 64-bit (high, kWh)",holding,1406,uint32,R
+"T1 import reactive index 64-bit (low, kWh)",holding,1408,uint32,R
+"T2 import reactive index 64-bit (high, kWh)",holding,1422,uint32,R
+"T2 import reactive index 64-bit (low, kWh)",holding,1424,uint32,R
+"T1 export reactive index 64-bit (high, kWh)",holding,1426,uint32,R
+"T1 export reactive index 64-bit (low, kWh)",holding,1428,uint32,R
+"T2 export reactive index 64-bit (high, kWh)",holding,1442,uint32,R
+"T2 export reactive index 64-bit (low, kWh)",holding,1444,uint32,R
+Digital input active/passive flags,holding,1446,uint32,R
+Run hour counter (h),holding,1448,uint32,R
+On hour counter (h),holding,1450,uint32,R
+Power interruption counter,holding,1452,uint32,R
+Total run minute counter (min),holding,1454,uint32,R
+Total on minute counter (min),holding,1456,uint32,R
+"L1 import active energy T1 (high, kWh)",holding,1458,uint32,R
+"L1 import active energy T1 (low, kWh)",holding,1460,uint32,R
+"L2 import active energy T1 (high, kWh)",holding,1478,uint32,R
+"L2 import active energy T1 (low, kWh)",holding,1480,uint32,R
+"L3 import active energy T1 (high, kWh)",holding,1498,uint32,R
+"L3 import active energy T1 (low, kWh)",holding,1500,uint32,R
+"L1 export active energy T1 (high, kWh)",holding,1518,uint32,R
+"L1 export active energy T1 (low, kWh)",holding,1520,uint32,R
+"L1 import reactive energy T1 (high, kVArh)",holding,1578,uint32,R
+"L1 import reactive energy T1 (low, kVArh)",holding,1580,uint32,R
+"L1 export reactive energy T1 (high, kVArh)",holding,1638,uint32,R
+"L1 export reactive energy T1 (low, kVArh)",holding,1640,uint32,R
+"L3 export reactive energy T2 (high, kVArh)",holding,1694,uint32,R
+Digital output log 1 timestamp,holding,1698,uint32,R
+Digital output log 1 data,holding,1700,uint32,R
+Digital output log 28 data,holding,1808,uint32,R
+"DI energy counter 1 (high, kWh)",holding,1810,uint32,R
+"DI energy counter 1 (low, kWh)",holding,1812,uint32,R
+"DI energy counter 2 (high, kWh)",holding,1814,uint32,R
+"DI energy counter 2 (low, kWh)",holding,1816,uint32,R
+"DI energy counter 7 (high, kWh)",holding,1834,uint32,R
+"DI energy counter 7 (low, kWh)",holding,1836,uint32,R
+"Complete erase confirm (write 1 after setting 1900-1916, W)",holding,1898,uint32,R
+Clear energy meters (W),holding,1900,uint32,R
+Clear demand values (W),holding,1902,uint32,R
+Clear digital input counters (W),holding,1904,uint32,R
+Clear all above (W),holding,1906,uint32,R
+Clear run hour counter (W),holding,1908,uint32,R
+Clear hourly archive records (W),holding,1910,uint32,R
+Clear daily archive records (W),holding,1912,uint32,R
+Clear monthly archive records (W),holding,1914,uint32,R
+Clear alarm records (W),holding,1916,uint32,R
+"Save settings to non-volatile memory (write 0 then write 1 to 1999 within 60s, W)",holding,1998,uint32,R
+Current transformer ratio (CTR),holding,2000,float32,R
+Voltage transformer ratio (VTR),holding,2002,float32,R
+"Connection type (0=3ph-4wire, 1=3ph-3wire, 2=Aron)",holding,2004,uint32,R
+Demand period (min),holding,2006,uint32,R
+"Power unit (0=Mega, 1=Kilo)",holding,2008,uint32,R
+T1 rate1 start time (hour),holding,2010,uint32,R
+T1 rate2 start time (hour),holding,2012,uint32,R
+T1 rate3 start time (hour),holding,2014,uint32,R
+Start of day (hour),holding,2016,uint32,R
+Start of month (day),holding,2018,uint32,R
+T1 import active energy preset (kWh),holding,2020,float32,R
+T1 export active energy preset (kWh),holding,2022,float32,R
+T1 import reactive energy preset (kVArh),holding,2024,float32,R
+T1 export reactive energy preset (kVArh),holding,2026,float32,R
+T2 import active energy preset (kWh),holding,2052,float32,R
+T2 export active energy preset (kWh),holding,2054,float32,R
+T2 import reactive energy preset (kVArh),holding,2056,float32,R
+T2 export reactive energy preset (kVArh),holding,2058,float32,R
+"Output 1 mode (0=Off, 1-20=tariff energy pulse, 21=DI)",holding,2060,uint32,R
+Output 1 energy per pulse,holding,2062,float32,R
+Output 1 pulse width (msec),holding,2064,uint32,R
+Output 1 multiplier,holding,2066,uint32,R
+Output 2 mode,holding,2068,uint32,R
+Output 2 energy per pulse,holding,2070,float32,R
+Output 2 pulse width (msec),holding,2072,uint32,R
+Output 2 multiplier,holding,2074,uint32,R
+"Input 1 mode (1=Off, 2=2nd-tariff, 3=Accumulator, 4=Run-hour, 5=DI-Meter)",holding,2076,uint32,R
+Input 1 delay (msec),holding,2078,uint32,R
+Input 2 mode,holding,2080,uint32,R
+Input 2 delay (msec),holding,2082,uint32,R
+"Baud rate (0=2400, 1=4800, 2=9600, 3=19200, 4=38400, 5=57600, 6=115200)",holding,2084,uint32,R
+Slave ID (1-247),holding,2086,uint32,R
+"Voltage (L-N) alarm relay (0=Off, 1=Relay1, 2=Relay2)",holding,2088,uint32,R
+Voltage (L-N) alarm low limit (V),holding,2090,float32,R
+Voltage (L-N) alarm high limit (V),holding,2092,float32,R
+Voltage (L-N) alarm delay (sec),holding,2094,uint32,R
+Voltage (L-N) alarm hysteresis (%),holding,2096,float32,R
+Voltage (L-L) alarm relay,holding,2098,uint32,R
+Voltage (L-L) alarm low limit (V),holding,2100,float32,R
+Voltage (L-L) alarm high limit (V),holding,2102,float32,R
+Voltage (L-L) alarm delay (sec),holding,2104,uint32,R
+Voltage (L-L) alarm hysteresis (%),holding,2106,float32,R
+Current alarm relay,holding,2108,uint32,R
+Current alarm low limit (A),holding,2110,float32,R
+Current alarm high limit (A),holding,2112,float32,R
+Current alarm delay (sec),holding,2114,uint32,R
+Current alarm hysteresis (%),holding,2116,float32,R
+Active power alarm relay,holding,2118,uint32,R
+Active power alarm low limit (W),holding,2120,float32,R
+Active power alarm high limit (W),holding,2122,float32,R
+Active power alarm delay (sec),holding,2124,uint32,R
+Active power alarm hysteresis (%),holding,2126,float32,R
+Reactive power alarm relay,holding,2128,uint32,R
+Reactive power alarm low limit (VAr),holding,2130,float32,R
+Reactive power alarm high limit (VAr),holding,2132,float32,R
+Reactive power alarm delay (sec),holding,2134,uint32,R
+Reactive power alarm hysteresis (%),holding,2136,float32,R
+Apparent power alarm relay,holding,2138,uint32,R
+Apparent power alarm low limit (VA),holding,2140,float32,R
+Apparent power alarm high limit (VA),holding,2142,float32,R
+Apparent power alarm delay (sec),holding,2144,uint32,R
+Apparent power alarm hysteresis (%),holding,2146,float32,R
+Neutral current alarm relay,holding,2148,uint32,R
+Neutral current alarm low limit (A),holding,2150,float32,R
+Neutral current alarm high limit (A),holding,2152,float32,R
+Neutral current alarm delay (sec),holding,2154,uint32,R
+Neutral current alarm hysteresis (%),holding,2156,float32,R
+Power factor alarm relay,holding,2158,uint32,R
+Power factor alarm low limit,holding,2160,float32,R
+Power factor alarm high limit,holding,2162,float32,R
+Power factor alarm delay (sec),holding,2164,uint32,R
+Power factor alarm hysteresis (%),holding,2166,float32,R
+CosΦ alarm relay,holding,2168,uint32,R
+CosΦ alarm low limit,holding,2170,float32,R
+CosΦ alarm high limit,holding,2172,float32,R
+CosΦ alarm delay (sec),holding,2174,uint32,R
+CosΦ alarm hysteresis (%),holding,2176,float32,R
+Frequency alarm relay,holding,2178,uint32,R
+Frequency alarm low limit (Hz),holding,2180,float32,R
+Frequency alarm high limit (Hz),holding,2182,float32,R
+Frequency alarm delay (sec),holding,2184,uint32,R
+Frequency alarm hysteresis (%),holding,2186,float32,R
+Temperature alarm relay,holding,2188,uint32,R
+Temperature alarm low limit (°C),holding,2190,float32,R
+Temperature alarm high limit (°C),holding,2192,float32,R
+Temperature alarm delay (sec),holding,2194,uint32,R
+Temperature alarm hysteresis (%),holding,2196,float32,R
+Voltage harmonics alarm relay,holding,2198,uint32,R
+Voltage harmonics alarm THDV high limit (%),holding,2200,float32,R
+Voltage harmonics alarm V3 high limit (%),holding,2202,float32,R
+Voltage harmonics alarm V5 high limit (%),holding,2204,float32,R
+Voltage harmonics alarm delay (sec),holding,2222,uint32,R
+Current harmonics alarm relay,holding,2224,uint32,R
+Current harmonics alarm THDI high limit (%),holding,2226,float32,R
+Current harmonics alarm I3 high limit (%),holding,2228,float32,R
+Current harmonics alarm delay (sec),holding,2248,uint32,R
+"Language (0=Turkish, 1=English, 2=Russian)",holding,2250,uint32,R
+Display contrast,holding,2252,uint32,R
+Password,holding,2254,uint32,R
+"Display on mode (0=Continuous, 1=Time-Dependent)",holding,2256,uint32,R
+Display on time (sec),holding,2258,uint32,R
+Serial number (RO),holding,2260,uint32,R
+Firmware version (RO),holding,2262,float32,R
+Order number (RO),holding,2264,uint32,R
+Output 3 mode (optional DIO),holding,2290,uint32,R
+Output 3 energy per pulse (optional DIO),holding,2292,float32,R
+Output 3 pulse width msec (optional DIO),holding,2294,uint32,R
+Output 3 multiplier (optional DIO),holding,2296,uint32,R
+Input 3 mode (optional DIO),holding,2330,uint32,R
+Input 3 delay msec (optional DIO),holding,2332,uint32,R
+Analog output 1 input mode (optional AO),holding,2350,uint32,R
+Analog output 1 output connection (optional AO),holding,2352,uint32,R
+Analog output 1 max value (optional AO),holding,2354,float32,R
+Analog output 1 min value (optional AO),holding,2356,float32,R
+"Analog output 1 multiplier (0=×1, 1=Kilo, 2=Mega) (optional AO)",holding,2358,uint32,R
+Password activation,holding,2390,float32,R
