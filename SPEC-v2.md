@@ -1,6 +1,6 @@
-# `.mbmap` — Modbus Map format, version 2 (draft)
+# `.mbmap` — Modbus Map format, version 2
 
-> **Status: draft.** Version 1 ([SPEC.md](SPEC.md)) is still the format of every map in this repository and the format to use for new maps. Version 2 is proposed in [docs/json-evaluation.md](docs/json-evaluation.md). It may still change until a reader supports it; after that, changes follow §8.
+> **Status: current.** Version 2 replaces version 1 ([SPEC.md](SPEC.md)), which is deprecated: readers **SHOULD** keep reading version 1 files, and writers **SHOULD** write version 2. The reasons are in [docs/json-evaluation.md](docs/json-evaluation.md). Changes follow §8.
 
 Version 2 describes the same thing as version 1, the Modbus register map of one device model, as a JSON document instead of metadata lines followed by a CSV table. The meaning of every field is the meaning it has in version 1, with one change: the four-letter `byte_order` is split into `byte_order` and `word_order` (§5), as announced in SPEC.md §9.
 

@@ -1,5 +1,7 @@
 # `.mbmap` — Modbus Map format, version 1
 
+> **Deprecated.** Version 2 ([SPEC-v2.md](SPEC-v2.md)), based on JSON, replaces this version. Readers **SHOULD** keep reading version 1 files; writers **SHOULD** write version 2. Convert a file with `python tools/migrate.py <file>.mbmap`. This document stays as the reference for reading old files, and SPEC-v2.md refers to it for the meaning of every field.
+
 A `.mbmap` file describes the Modbus register map of one device model: who makes it, how to talk to it, and what every register means. Any tool can read or write it. It is plain text, based on CSV, so it can be edited in a spreadsheet or a text editor and diffed in git.
 
 The key words **MUST**, **SHOULD** and **MAY** are used as in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
@@ -290,7 +292,7 @@ The [`tests/`](tests/) folder holds sample files with the diagnostics each one m
 
 This section is not part of version 1. It records where the format is going so that today's `byte_order` values have a defined migration path. Version 1 files and readers keep the semantics of §6 unchanged.
 
-The draft of version 2 ([SPEC-v2.md](SPEC-v2.md)) adopts this model, and `tools/migrate.py` converts version 1 files to it.
+Version 2 ([SPEC-v2.md](SPEC-v2.md)) adopts this model, and `tools/migrate.py` converts version 1 files to it.
 
 ### 9.1 Two independent choices
 
