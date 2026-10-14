@@ -26,6 +26,8 @@ def entry(path: Path) -> dict:
         "vendor_website": doc.get("vendor_website"),
         "status": doc.get("x_status"),
         "registers": len(doc.get("registers", [])),
+        "revision": doc.get("revision"),
+        "models": doc.get("models"),
     }
 
 
@@ -54,6 +56,8 @@ def entry_v1(path: Path) -> dict:
         "vendor_website": meta.get("vendor_website"),
         "status": meta.get("x_status"),
         "registers": registers,
+        "revision": None,
+        "models": None,
     }
 
 

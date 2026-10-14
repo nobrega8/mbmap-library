@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Example Corp",
+  "model": "EM-200 / EM-200-MID",
+  "models": ["EM-200", "EM-200-MID"],
+  "vendor_website": "example.com",
+  "description": "Three-phase energy meter (fictional example of firmware-dependent registers)",
+  "revision": 2,
+  "revised": "2026-10-14",
+  "firmware": "1.x and 2.x. Firmware 2.1 moved the energy counter to a 64-bit register and added the power factor.",
+  "firmware_min": "1",
+  "firmware_max": "2",
+  "sources": [
+    {"title": "EM-200 Modbus register list", "version": "C", "date": "2026-05", "url": "https://example.com/em-200-modbus.pdf", "note": "covers firmware 1.0 to 2.3"}
+  ],
+  "notes": [
+    "Fictional device. It shows how one map covers two firmware revisions with different registers."
+  ],
+  "protocol": "tcp+rtu",
+  "unit_id": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "registers": [
+    {"name": "Model code", "group": "Info", "area": "holding", "address": 0, "type": "uint16", "enum": {"200": "EM-200", "201": "EM-200-MID"}, "role": "model"},
+    {"name": "Firmware major", "group": "Info", "area": "holding", "address": 1, "type": "uint16", "bit": 8, "bits": 8, "role": "firmware"},
+    {"name": "Firmware minor", "group": "Info", "area": "holding", "address": 1, "type": "uint16", "bit": 0, "bits": 8, "role": "firmware"},
+    {"name": "Serial number", "group": "Info", "area": "holding", "address": 2, "type": "string", "length": 6, "role": "serial"},
+    {"name": "Voltage L1", "group": "Measurements", "area": "input", "address": 10, "type": "float32", "unit": "V"},
+    {"name": "Voltage L2", "group": "Measurements", "area": "input", "address": 12, "type": "float32", "unit": "V"},
+    {"name": "Voltage L3", "group": "Measurements", "area": "input", "address": 14, "type": "float32", "unit": "V"},
+    {"name": "Active energy", "group": "Energy", "area": "input", "address": 20, "type": "uint32", "scale": 0.1, "unit": "kWh", "firmware_max": "2.0", "description": "32-bit counter of firmware 1.x and 2.0"},
+    {"name": "Active energy", "group": "Energy", "area": "input", "address": 40, "type": "uint64", "scale": 0.001, "unit": "kWh", "firmware_min": "2.1", "description": "64-bit counter from firmware 2.1"},
+    {"name": "Power factor", "group": "Measurements", "area": "input", "address": 30, "type": "int16", "scale": 0.001, "firmware_min": "2.1"}
+  ]
+}

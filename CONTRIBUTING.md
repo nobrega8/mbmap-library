@@ -6,20 +6,27 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 
 1. Create `maps/<vendor>/<model>.mbmap.json`. Use lowercase slugs with `-` (`schneider-electric`, `pm5560`). If one map covers a model family, name the file after the family.
 2. Start from [`examples/example-corp/em-100.mbmap.json`](examples/example-corp/em-100.mbmap.json) and follow [SPEC.md](SPEC.md). Editors that support JSON Schema (VS Code and others) check the file as you type through its `$schema` key.
-3. Fill in `source` with the document you used: manual title, version or date, and a public URL if there is one.
-4. Run the validator and fix every error:
+3. Record the documents you used in `sources` (title, version, date and a public URL if there is one; SPEC.md section 3.3), and set `"revision": 1`.
+4. If the device reports its model or firmware in a register, give that register a `role` (SPEC.md section 4.7). If the map only fits some firmware versions, say so with `firmware_min` / `firmware_max`; leave them out when it fits every version or you do not know (SPEC.md section 3.2).
+5. Run the validator and fix every error:
 
    ```sh
    python tools/validate.py maps/<vendor>/<model>.mbmap.json
    ```
 
-5. Add the map to the index:
+6. Add the map to the index:
 
    ```sh
    python tools/build_index.py
    ```
 
-6. Open a pull request. In the description, say whether you tested the map on a real device, and with which firmware.
+7. Open a pull request. In the description, say whether you tested the map on a real device, and with which firmware.
+
+## Changing a map
+
+- Increase `revision` by one, and set `revised` to today's date, when the change affects how a device is read or written: a register, a connection default, a table, a firmware range or a model. Fixing a description or a note does not need a new revision.
+- A newer firmware that adds or moves a few registers: add those registers with `firmware_min` (and give the old ones `firmware_max`) instead of making a new file. When most of the map changes, make a separate file per firmware range.
+- Add the document you checked against to `sources`.
 
 ## Checking and correcting a converted map
 

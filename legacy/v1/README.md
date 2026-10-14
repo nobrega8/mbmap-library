@@ -37,6 +37,8 @@ python tools/migrate.py path/to/model.mbmap --stdout
 | `access`, `parity` | uppercase |
 | `x_` metadata and columns, unknown columns | kept as strings under the same key |
 
-What is not kept: blank lines, the order of columns, and the spelling of case-insensitive values. [`tools/test_migrate.py`](../../tools/test_migrate.py) converts every valid file in this folder and checks that a reader gets the same metadata, tables and registers from both versions.
+What is not kept: blank lines, the order of columns, and the spelling of case-insensitive values.
+
+Version 1 had only free text for the firmware and the source (`@firmware`, `@source`); they become `firmware` and `source`, unchanged. The structured keys of version 2 (`revision`, `models`, `firmware_min` / `firmware_max`, `sources`, `role`; SPEC.md sections 3.1 to 3.3 and 4.7) cannot be derived from free text, so `migrate.py` does not invent them: add them by hand where you know them. A converted map without them applies to every firmware, as it did before. [`tools/test_migrate.py`](../../tools/test_migrate.py) converts every valid file in this folder and checks that a reader gets the same metadata, tables and registers from both versions.
 
 Version 1 files are told apart from version 2 by their content: after an optional BOM and white space, a version 2 file starts with `{`, which a version 1 line never does.
