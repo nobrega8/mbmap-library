@@ -7,18 +7,18 @@ This folder is kept for converting old files and for tools that still open them:
 ```text
 SPEC.md       the version 1 specification, for reading old files
 examples/     the version 1 example (examples/example-corp/em-100.mbmap.json is its conversion)
-tests/        version 1 fixtures and their expected diagnostics (tools/run_tests.py runs them)
+tests/        version 1 fixtures and their expected diagnostics (tools/validate/run_tests.py runs them)
 ```
 
 ## Converting a version 1 file
 
 ```sh
-python tools/migrate.py path/to/model.mbmap              # writes path/to/model.mbmap.json next to it
-python tools/migrate.py old-maps/ --out-dir converted/   # a whole folder
-python tools/migrate.py path/to/model.mbmap --stdout
+python tools/migrate/migrate.py path/to/model.mbmap              # writes path/to/model.mbmap.json next to it
+python tools/migrate/migrate.py old-maps/ --out-dir converted/   # a whole folder
+python tools/migrate/migrate.py path/to/model.mbmap --stdout
 ```
 
-`migrate.py` refuses a file that has errors in version 1 (`python tools/validate.py path/to/model.mbmap` lists them). The conversion keeps every value and its meaning:
+`migrate.py` refuses a file that has errors in version 1 (`python tools/validate/validate.py path/to/model.mbmap` lists them). The conversion keeps every value and its meaning:
 
 | Version 1 | Version 2 |
 |---|---|
@@ -39,6 +39,6 @@ python tools/migrate.py path/to/model.mbmap --stdout
 
 What is not kept: blank lines, the order of columns, and the spelling of case-insensitive values.
 
-Version 1 had only free text for the firmware and the source (`@firmware`, `@source`); they become `firmware` and `source`, unchanged. The structured keys of version 2 (`revision`, `models`, `firmware_min` / `firmware_max`, `sources`, `role`; SPEC.md sections 3.1 to 3.3 and 4.7) cannot be derived from free text, so `migrate.py` does not invent them: add them by hand where you know them. A converted map without them applies to every firmware, as it did before. [`tools/test_migrate.py`](../../tools/test_migrate.py) converts every valid file in this folder and checks that a reader gets the same metadata, tables and registers from both versions.
+Version 1 had only free text for the firmware and the source (`@firmware`, `@source`); they become `firmware` and `source`, unchanged. The structured keys of version 2 (`revision`, `models`, `firmware_min` / `firmware_max`, `sources`, `role`; SPEC.md sections 3.1 to 3.3 and 4.7) cannot be derived from free text, so `migrate.py` does not invent them: add them by hand where you know them. A converted map without them applies to every firmware, as it did before. [`tools/migrate/test_migrate.py`](../../tools/migrate/test_migrate.py) converts every valid file in this folder and checks that a reader gets the same metadata, tables and registers from both versions.
 
 Version 1 files are told apart from version 2 by their content: after an optional BOM and white space, a version 2 file starts with `{`, which a version 1 line never does.

@@ -20,8 +20,10 @@ COMPATIBILITY.md                  tools that read the format, and what each supp
 maps/<vendor>/<model>.mbmap.json  the shared maps
 examples/                         fictional maps that show the format
 index.json                        list of the maps, for apps that browse the library
-tools/validate.py                 validator (also runs in CI)
-tools/build_index.py              rebuilds index.json
+tools/validate/                   the validator, and its test runner (both run in CI)
+tools/index/                      rebuilds index.json
+tools/revisions/                  checks that changed maps have a new revision
+tools/migrate/                    converts version 1 files to version 2
 tests/                            sample files and the diagnostics each must produce,
                                   for checking any .mbmap reader against the spec
 legacy/v1/                        the deprecated CSV-based format, and how to convert it
@@ -54,7 +56,7 @@ Building a tool that reads `.mbmap`? Follow [SPEC.md](SPEC.md), check it against
 New maps and fixes are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then check your file:
 
 ```sh
-python tools/validate.py maps/your-vendor/your-model.mbmap.json
+python tools/validate/validate.py maps/your-vendor/your-model.mbmap.json
 ```
 
 ## Contributors

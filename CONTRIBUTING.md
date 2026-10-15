@@ -11,20 +11,20 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 5. Run the validator and fix every error:
 
    ```sh
-   python tools/validate.py maps/<vendor>/<model>.mbmap.json
+   python tools/validate/validate.py maps/<vendor>/<model>.mbmap.json
    ```
 
 6. Add the map to the index:
 
    ```sh
-   python tools/build_index.py
+   python tools/index/build_index.py
    ```
 
 7. Open a pull request. In the description, say whether you tested the map on a real device, and with which firmware.
 
 ## Changing a map
 
-- Increase `revision` by one, and set `revised` to today's date, when the change affects how a device is read or written: a register, a connection default, a table, a firmware range or a model. Fixing a description or a note does not need a new revision. CI checks this on every pull request (`python tools/check_revisions.py origin/main` runs the same check locally).
+- Increase `revision` by one, and set `revised` to today's date, when the change affects how a device is read or written: a register, a connection default, a table, a firmware range or a model. Fixing a description or a note does not need a new revision. CI checks this on every pull request (`python tools/revisions/check_revisions.py origin/main` runs the same check locally).
 - A newer firmware that adds or moves a few registers: add those registers with `firmware_min` (and give the old ones `firmware_max`) instead of making a new file. When most of the map changes, make a separate file per firmware range.
 - Add the document you checked against to `sources`.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check that changed maps increase their revision (SPEC.md 3.1).
 
-Usage: python tools/check_revisions.py BASE   (a commit, e.g. origin/main)
+Usage: python tools/revisions/check_revisions.py BASE   (a commit, e.g. origin/main)
 
 For every map in maps/ that differs from BASE:
 - a new map needs a "revision";

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for tools/check_revisions.py. Usage: python tools/test_check_revisions.py"""
+"""Tests for tools/revisions/check_revisions.py. Usage: python tools/revisions/test_check_revisions.py"""
 
 from __future__ import annotations
 

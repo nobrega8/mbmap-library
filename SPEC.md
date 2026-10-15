@@ -425,4 +425,4 @@ A map without `models`, `firmware_min`, `firmware_max` and identity registers is
 
 ## 10. Older files
 
-Version 1 of the format, based on CSV, is deprecated. New readers do not need to support it; files in that format can be converted with [`tools/migrate.py`](tools/migrate.py) (see [legacy/v1](legacy/v1/)).
+Version 1 of the format, based on CSV, is deprecated. New readers do not need to support it; files in that format can be converted with [`tools/migrate/migrate.py`](tools/migrate/migrate.py) (see [legacy/v1](legacy/v1/)).
