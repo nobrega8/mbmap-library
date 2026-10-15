@@ -6,13 +6,13 @@ Tools that read `.mbmap` files, and which parts of the format ([SPEC.md](SPEC.md
 
 | Tool | What it is | What it does with a map |
 |---|---|---|
-| [Modbench](https://github.com/nobrega8/modbench) | Modbus TCP/UDP/RTU/ASCII client for Windows, Linux and macOS, with a command line (`modbench-cli`) and an MCP server | Opens a map and reads (and writes) the device by register name; browses and downloads this library; runs a simulated device shaped after a map. From the command line: `validate` and `convert` maps, and `map` reads every register of a map from a device; the MCP tools `read_map` and `validate_map` do the same for an AI assistant |
+| <img src="https://raw.githubusercontent.com/nobrega8/modbench/main/assets/icon.svg" width="20" height="20" alt="" align="top"> [Modbench](https://github.com/nobrega8/modbench) | Modbus TCP/UDP/RTU/ASCII client for Windows, Linux and macOS, with a command line (`modbench-cli`) and an MCP server | Opens a map and reads (and writes) the device by register name; browses and downloads this library; runs a simulated device shaped after a map. From the command line: `validate` and `convert` maps, and `map` reads every register of a map from a device; the MCP tools `read_map` and `validate_map` do the same for an AI assistant |
 
 ## Support by feature
 
 Legend: **Yes** supported · **Kept** read and written back, not shown.
 
-| Feature (SPEC.md section) | Modbench |
+| Feature (SPEC.md section) | <img src="https://raw.githubusercontent.com/nobrega8/modbench/main/assets/icon.svg" width="16" height="16" alt="" align="top"> Modbench |
 |---|---|
 | Format version 2, JSON (§2, §3) | Yes |
 | Format version 1, CSV (§10, deprecated) | Yes: opens it with a warning and converts it to version 2 |
