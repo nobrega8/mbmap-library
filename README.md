@@ -52,6 +52,18 @@ A map is a JSON file with one register per line, so it reads well in any text ed
 
 Building a tool that reads `.mbmap`? Follow [SPEC.md](SPEC.md), check it against the samples in [`tests/`](tests/), and open a pull request to add it to [COMPATIBILITY.md](COMPATIBILITY.md).
 
+## Badge
+
+A tool that reads `.mbmap` files can say so with this badge, which links here:
+
+[![Supports .mbmap](https://img.shields.io/badge/supports-.mbmap-0A7EA4?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICA8dGl0bGU+bWJtYXA8L3RpdGxlPgogIDxnIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSI+CiAgICA8cmVjdCB4PSIyLjEiIHk9IjIuNiIgd2lkdGg9IjIuNiIgaGVpZ2h0PSIyLjYiIHJ4PSIwLjUiLz4KICAgIDxyZWN0IHg9IjYuMTUiIHk9IjIuNiIgd2lkdGg9IjIuNiIgaGVpZ2h0PSIyLjYiIHJ4PSIwLjUiLz4KICAgIDxyZWN0IHg9IjEwLjIiIHk9IjIuNiIgd2lkdGg9IjIuNiIgaGVpZ2h0PSIyLjYiIHJ4PSIwLjUiLz4KICA8L2c+CiAgPHBhdGggZD0iTTMuMSAyMC41VjEyLjZhMi4zNSAyLjM1IDAgMCAxIDQuNyAwdjcuOU03LjggMTIuNmEyLjM1IDIuMzUgMCAwIDEgNC43IDB2Ny45Ii8+CiAgPHBhdGggZD0iTTE1LjYgMi45djE3LjZoNC4zYTEuNiAxLjYgMCAwIDAgMS42LTEuNnYtNi4yYTEuNiAxLjYgMCAwIDAtMS42LTEuNmgtNC4zIi8+Cjwvc3ZnPgo=)](https://github.com/nobrega8/mbmap-library)
+
+```markdown
+[![Supports .mbmap](https://img.shields.io/badge/supports-.mbmap-0A7EA4?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICA8dGl0bGU+bWJtYXA8L3RpdGxlPgogIDxnIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSI+CiAgICA8cmVjdCB4PSIyLjEiIHk9IjIuNiIgd2lkdGg9IjIuNiIgaGVpZ2h0PSIyLjYiIHJ4PSIwLjUiLz4KICAgIDxyZWN0IHg9IjYuMTUiIHk9IjIuNiIgd2lkdGg9IjIuNiIgaGVpZ2h0PSIyLjYiIHJ4PSIwLjUiLz4KICAgIDxyZWN0IHg9IjEwLjIiIHk9IjIuNiIgd2lkdGg9IjIuNiIgaGVpZ2h0PSIyLjYiIHJ4PSIwLjUiLz4KICA8L2c+CiAgPHBhdGggZD0iTTMuMSAyMC41VjEyLjZhMi4zNSAyLjM1IDAgMCAxIDQuNyAwdjcuOU03LjggMTIuNmEyLjM1IDIuMzUgMCAwIDEgNC43IDB2Ny45Ii8+CiAgPHBhdGggZD0iTTE1LjYgMi45djE3LjZoNC4zYTEuNiAxLjYgMCAwIDAgMS42LTEuNnYtNi4yYTEuNiAxLjYgMCAwIDAtMS42LTEuNmgtNC4zIi8+Cjwvc3ZnPgo=)](https://github.com/nobrega8/mbmap-library)
+```
+
+The logo is in [`assets/`](assets/): [`mbmap-logo.svg`](assets/mbmap-logo.svg) (dark, for light backgrounds) and [`mbmap-logo-white.svg`](assets/mbmap-logo-white.svg) (for badges and dark backgrounds). Its squares are registers.
+
 ## Contributing
 
 New maps and fixes are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then check your file:
