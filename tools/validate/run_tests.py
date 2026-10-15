@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Check tools/validate.py against the fixtures in tests/ (format version 2)
+"""Check tools/validate/validate.py against the fixtures in tests/ (format version 2)
 and legacy/v1/tests/ (the deprecated version 1).
 
-Usage: python tools/run_tests.py
+Usage: python tools/validate/run_tests.py
 
 Each entry in a suite's expected.json lists the (location, code) pairs a
 reader must report for that file, as errors and as warnings. Order does not
@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from validate import check_file  # noqa: E402
 
-REPO = Path(__file__).resolve().parent.parent
+REPO = Path(__file__).resolve().parents[2]
 SUITES = [REPO / "tests", REPO / "legacy" / "v1" / "tests"]
 
 

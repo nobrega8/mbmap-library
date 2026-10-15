@@ -2,9 +2,9 @@
 """Validate .mbmap.json maps against SPEC.md.
 
 Files of the deprecated version 1 (.mbmap, legacy/v1/SPEC.md) are also
-read, so they can be checked before tools/migrate.py converts them.
+read, so they can be checked before tools/migrate/migrate.py converts them.
 
-Usage: python tools/validate.py [PATH ...]   (defaults to maps/ and examples/)
+Usage: python tools/validate/validate.py [PATH ...]   (defaults to maps/ and examples/)
 
 Exits with 1 if any file has errors. Warnings are printed but do not fail.
 Standard library only.

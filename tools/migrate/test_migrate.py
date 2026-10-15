@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Check that tools/migrate.py converts version 1 maps to version 2 without loss.
+"""Check that tools/migrate/migrate.py converts version 1 maps to version 2 without loss.
 
-Usage: python tools/test_migrate.py
+Usage: python tools/migrate/test_migrate.py
 
 For every valid version 1 file (legacy/v1: examples, tests/valid, tests/warnings)
 it migrates the file and compares, field by field, what a reader would get
@@ -18,10 +18,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "validate"))
 from migrate import SPLIT_ORDER, dumps, migrate_text, read_v1  # noqa: E402
 from validate import parse_int  # noqa: E402
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 LEGACY = ROOT / "legacy" / "v1"
 # Version 1 files to migrate, and version 2 files to check against the schema.
 SOURCES = [LEGACY / "examples", LEGACY / "tests" / "valid", LEGACY / "tests" / "warnings",
@@ -189,7 +190,7 @@ def main() -> int:
     prototype = ROOT / "examples" / "example-corp" / "em-100.mbmap.json"
     if prototype.read_text(encoding="utf-8") != dumps(migrate_text(example.read_text(encoding="utf-8"))):
         failures += 1
-        print(f"FAIL {prototype.relative_to(ROOT).as_posix()}: out of date, run python tools/migrate.py {example.relative_to(ROOT).as_posix()}")
+        print(f"FAIL {prototype.relative_to(ROOT).as_posix()}: out of date, run python tools/migrate/migrate.py {example.relative_to(ROOT).as_posix()}")
 
     # Every valid version 2 file of the repository follows the schema.
     if validator is not None:

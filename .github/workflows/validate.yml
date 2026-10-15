@@ -19,12 +19,13 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - run: python tools/run_tests.py
-      - run: python tools/validate.py maps examples
-      - run: python tools/build_index.py --check
+      - run: python tools/validate/run_tests.py
+      - run: python tools/validate/validate.py maps examples
+      - run: python tools/index/build_index.py --check
       - run: pip install jsonschema
-      - run: python tools/test_migrate.py
-      - run: python tools/test_check_revisions.py
+      - run: python tools/migrate/test_migrate.py
+      - run: python tools/revisions/test_check_revisions.py
+      - run: python tools/export/test_export_ignition.py
       - name: Changed maps have a new revision
         if: github.event_name == 'pull_request'
-        run: python tools/check_revisions.py ${{ github.event.pull_request.base.sha }}
+        run: python tools/revisions/check_revisions.py ${{ github.event.pull_request.base.sha }}

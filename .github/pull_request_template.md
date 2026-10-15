@@ -14,7 +14,7 @@ Fill this in if you tested the map on a real device (you do not need to be its a
 
 ## Checklist
 
-- [ ] `python tools/validate.py` passes
+- [ ] `python tools/validate/validate.py` passes
 - [ ] Built only from public documents or my own testing (no NDA material)
 - [ ] No copied manual text, no private installation data
 - [ ] `x_status` is `verified` only if the map was tested on a real device

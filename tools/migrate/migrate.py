@@ -2,12 +2,12 @@
 """Convert .mbmap files from format version 1 (CSV) to version 2 (JSON).
 
 Usage:
-    python tools/migrate.py PATH [PATH ...]        # writes <name>.mbmap.json next to each file
-    python tools/migrate.py FILE --stdout          # prints the result instead
-    python tools/migrate.py PATH --out-dir DIR     # writes the results under DIR
+    python tools/migrate/migrate.py PATH [PATH ...]        # writes <name>.mbmap.json next to each file
+    python tools/migrate/migrate.py FILE --stdout          # prints the result instead
+    python tools/migrate/migrate.py PATH --out-dir DIR     # writes the results under DIR
 
 A directory is searched for *.mbmap files. A file with validation errors
-(tools/validate.py) is not converted. The conversion keeps every value and
+(tools/validate/validate.py) is not converted. The conversion keeps every value and
 its meaning (see legacy/v1/README.md): only blank lines, the spelling of
 case-insensitive values and the column order are not kept.
 
@@ -24,6 +24,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "validate"))
 from validate import check_text, parse_int  # noqa: E402
 
 SCHEMA_URL = "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json"

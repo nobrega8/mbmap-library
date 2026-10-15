@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Builds index.json: one entry per map in maps/, read by apps to browse the library.
 
-    python tools/build_index.py           # rewrite index.json
-    python tools/build_index.py --check   # fail if index.json is out of date
+    python tools/index/build_index.py           # rewrite index.json
+    python tools/index/build_index.py --check   # fail if index.json is out of date
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 INDEX = ROOT / "index.json"
 # verified: tested on a device; unverified: official source, not tested;
 # unofficial: unofficial source, not tested (CONTRIBUTING.md, "Status").
@@ -95,7 +95,7 @@ def main() -> int:
     if "--check" in sys.argv[1:]:
         current = INDEX.read_text(encoding="utf-8") if INDEX.exists() else ""
         if current != text:
-            print("index.json is out of date: run python tools/build_index.py")
+            print("index.json is out of date: run python tools/index/build_index.py")
             return 1
         print("index.json is up to date")
         return 0

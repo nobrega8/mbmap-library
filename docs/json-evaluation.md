@@ -9,7 +9,7 @@ Evaluation for [issue #5](https://github.com/nobrega8/mbmap-library/issues/5): s
 **JSON becomes format version 2. Version 1 is deprecated but stays readable.** The maps of this repository are in version 2.
 
 - [SPEC.md](../SPEC.md) defines version 2 and [schema/mbmap-2.schema.json](../schema/mbmap-2.schema.json) is its JSON Schema.
-- [tools/migrate.py](../tools/migrate.py) converts version 1 files to version 2. [tools/test_migrate.py](../tools/test_migrate.py) runs it on every valid version 1 file in the repository (431 today) and checks that nothing changes meaning; CI runs it with the schema check.
+- [tools/migrate/migrate.py](../tools/migrate/migrate.py) converts version 1 files to version 2. [tools/migrate/test_migrate.py](../tools/migrate/test_migrate.py) runs it on every valid version 1 file in the repository (431 today) and checks that nothing changes meaning; CI runs it with the schema check.
 - The rollout below is complete: Modbench reads version 2, `validate.py` checks both versions, and the maps were converted with `migrate.py`.
 
 Not chosen:
@@ -26,7 +26,7 @@ Not chosen:
 | Parsing | Custom line classifier (blank / `#` / `@key=value` / CSV), then RFC 4180 per line, then `key=value\|…` mini-syntax inside cells for enums and sentinels | One call to the platform's JSON parser |
 | Types | Every value is a string; the reader converts and validates each one | Numbers, integers, booleans and strings arrive typed |
 | Pitfalls readers hit | BOM, CRLF, `;` exports, `#`/`@` in the first field, case-insensitive values, trimming, short rows | Duplicate keys (not rejected by most parsers), 64-bit integers beyond 2^53 (handled with strings, SPEC.md §2.1) |
-| Reference implementation | [validate.py](../tools/validate.py): about 60 lines of `check_text` plus the enum/sentinel helpers only to read the file, before any rule is checked | Parsing is free; the semantic rules (§7) are the same work in both versions |
+| Reference implementation | [validate.py](../tools/validate/validate.py): about 60 lines of `check_text` plus the enum/sentinel helpers only to read the file, before any rule is checked | Parsing is free; the semantic rules (§7) are the same work in both versions |
 
 JSON removes the format-specific parsing, which is where independent implementations tend to disagree. It does not remove the semantic checks (scale factor targets, overlap, address range).
 
@@ -68,7 +68,7 @@ This is where CSV is better, and the reason version 1 is not dropped in a hurry.
 
 ### Migration cost and compatibility
 
-- **Library:** one command, `python tools/migrate.py maps`, plus updating `validate.py`, `build_index.py` and the CI to version 2.
+- **Library:** one command, `python tools/migrate/migrate.py maps`, plus updating `validate.py`, `build_index.py` and the CI to version 2.
 - **Readers:** Modbench (the only known reader) needs a version 2 loader, and should keep its version 1 loader to open users' own files. Readers that only know version 1 cannot open version 2 files; they report `missing-meta` and `missing-column` on the first line and refuse the file, not misread it.
 - **Users' private maps:** keep working in any reader that keeps version 1; `migrate.py` converts them when the user wants.
 - **index.json** keeps its fields; only `path` changes to `.mbmap.json`.
