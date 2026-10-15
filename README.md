@@ -24,6 +24,7 @@ tools/validate/                   the validator, and its test runner (both run i
 tools/index/                      rebuilds index.json
 tools/revisions/                  checks that changed maps have a new revision
 tools/migrate/                    converts version 1 files to version 2
+tools/export/                     exports a map to other software (Ignition)
 tests/                            sample files and the diagnostics each must produce,
                                   for checking any .mbmap reader against the spec
 legacy/v1/                        the deprecated CSV-based format, and how to convert it
