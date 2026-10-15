@@ -16,6 +16,7 @@ Each file describes one device model: the manufacturer, how to connect to it and
 ```text
 SPEC.md                           the .mbmap format specification
 schema/mbmap-2.schema.json        its JSON Schema
+COMPATIBILITY.md                  tools that read the format, and what each supports
 maps/<vendor>/<model>.mbmap.json  the shared maps
 examples/                         fictional maps that show the format
 index.json                        list of the maps, for apps that browse the library
@@ -42,11 +43,11 @@ Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING
 
 ## Using the maps
 
-A map is a JSON file with one register per line, so it reads well in any text editor and any language can load it with its JSON parser; editors that support JSON Schema check it as you type. Tools that read the format:
+A map is a JSON file with one register per line, so it reads well in any text editor and any language can load it with its JSON parser; editors that support JSON Schema check it as you type.
 
-- [Modbench](https://github.com/nobrega8/modbench): a lightweight Modbus TCP/RTU client for Windows and Linux. It can browse and download the maps in this repository directly.
+[COMPATIBILITY.md](COMPATIBILITY.md) lists the tools that read the format and which parts of it each one supports. The main one is [Modbench](https://github.com/nobrega8/modbench), a Modbus client for Windows, Linux and macOS that browses and downloads the maps in this repository directly.
 
-Building a tool that reads `.mbmap`? Follow [SPEC.md](SPEC.md), check it against the samples in [`tests/`](tests/), and open a pull request to add it here.
+Building a tool that reads `.mbmap`? Follow [SPEC.md](SPEC.md), check it against the samples in [`tests/`](tests/), and open a pull request to add it to [COMPATIBILITY.md](COMPATIBILITY.md).
 
 ## Contributing
 
