@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/mbmap-logo-white.svg">
+    <img src="assets/mbmap-logo.svg" width="96" alt="mbmap logo">
+  </picture>
+</p>
+
 # mbmap-library
 
 [![Validate maps](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml/badge.svg)](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml)
