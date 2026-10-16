@@ -20,14 +20,9 @@ COMPATIBILITY.md                  tools that read the format, and what each supp
 maps/<vendor>/<model>.mbmap.json  the shared maps
 examples/                         fictional maps that show the format
 index.json                        list of the maps, for apps that browse the library
-tools/validate/                   the validator, and its test runner (both run in CI)
-tools/index/                      rebuilds index.json
-tools/revisions/                  checks that changed maps have a new revision
-tools/migrate/                    converts version 1 files to version 2
 tools/export/                     exports a map to other software (Ignition)
 tests/                            sample files and the diagnostics each must produce,
                                   for checking any .mbmap reader against the spec
-legacy/v1/                        the deprecated CSV-based format, and how to convert it
 ```
 
 Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap.json`.
@@ -61,8 +56,6 @@ A tool that reads `.mbmap` files can say so with this badge, which links here:
 ```markdown
 [![Supports .mbmap](https://img.shields.io/badge/supports-.mbmap-0A7EA4?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICA8dGl0bGU+bWJtYXA8L3RpdGxlPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTAuNTUpIj4KICAgIDxnIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSI+CiAgICAgIDxyZWN0IHg9IjEuNDUiIHk9IjUuMyIgd2lkdGg9IjIuNiIgaGVpZ2h0PSIyLjYiIHJ4PSIwLjUiLz4KICAgICAgPHJlY3QgeD0iNS45NSIgeT0iNS4zIiB3aWR0aD0iMi42IiBoZWlnaHQ9IjIuNiIgcng9IjAuNSIvPgogICAgICA8cmVjdCB4PSIxMC40NSIgeT0iNS4zIiB3aWR0aD0iMi42IiBoZWlnaHQ9IjIuNiIgcng9IjAuNSIvPgogICAgPC9nPgogICAgPHBhdGggZD0iTTIuNzUgMTguNnYtNi4xNWEyLjI1IDIuMjUgMCAwIDEgNC41IDB2Ni4xNW0wLTYuMTVhMi4yNSAyLjI1IDAgMCAxIDQuNSAwdjYuMTUiLz4KICAgIDxwYXRoIGQ9Ik0xNi4yNSA2LjV2MTIuMWgyLjc1YTIuMjUgMi4yNSAwIDAgMCAyLjI1LTIuMjV2LTMuOWEyLjI1IDIuMjUgMCAwIDAtMi4yNS0yLjI1aC0yLjc1Ii8+CiAgPC9nPgo8L3N2Zz4K)](https://github.com/nobrega8/mbmap-library)
 ```
-
-The logo is in [`assets/`](assets/): [`mbmap-logo.svg`](assets/mbmap-logo.svg) (dark, for light backgrounds) and [`mbmap-logo-white.svg`](assets/mbmap-logo-white.svg) (for badges and dark backgrounds). Its squares are registers.
 
 ## Contributing
 
