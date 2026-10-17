@@ -50,7 +50,7 @@ pie showData
     title Maps by status
     "Verified" : 3
     "Official" : 110
-    "Unofficial" : 342
+    "Unofficial" : 341
 ```
 <!-- status-chart:end -->
 
