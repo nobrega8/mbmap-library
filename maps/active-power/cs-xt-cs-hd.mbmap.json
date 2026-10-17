@@ -1,14 +1,16 @@
 {
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
-  "vendor": "Active Power (Piller Power Systems)",
+  "vendor": "Active Power",
   "model": "CS XT / CS HD",
-  "vendor_website": "piller.com",
+  "vendor_website": "activepower.com",
   "description": "CleanSource CS XT and CS HD flywheel UPS",
-  "revision": 1,
+  "revision": 2,
+  "revised": "2026-10-17",
   "source": "Active Power, a Division of Piller Power Systems Inc., \"CS XT / CS HD Modbus Register Map\", 6090618-1 Rev. E (2019)",
   "notes": [
-    "Active Power (Piller Power Systems) CleanSource CS XT and CS HD flywheel UPS.",
+    "Active Power CleanSource CS XT and CS HD flywheel UPS (sold by Piller Power Systems in some countries).",
+    "Tested on a CleanSource UPS, October 2026.",
     "Read-only (FC03). 32-bit values: the lower register holds bits 15-0, so the",
     "word order is low word first (CDAB); read both registers in one request."
   ],
@@ -19,12 +21,16 @@
   "enums": {
     "output_source": {"0": "Unknown", "1": "Flywheel discharging", "2": "No output", "3": "Online mode", "4": "Bypass mode", "5": "Battery discharge mode"}
   },
-  "x_status": "official",
+  "x_status": "verified",
   "registers": [
-    {"name": "ACPW fixed ID", "group": "Identity", "area": "holding", "address": 0, "type": "uint16", "access": "R", "enum": {"16720": "AP"}, "description": "Always reads 16720 (0x4150, ASCII \"AP\")", "comment": "Identity"},
+    {"name": "ACPW fixed ID", "group": "Identity", "area": "holding", "address": 0, "type": "uint16", "access": "R", "enum": {"16720": "AP"}, "reference": 16720, "description": "Always reads 16720 (0x4150, ASCII \"AP\")", "comment": "Identity"},
     {"name": "Published register map version", "group": "Identity", "area": "holding", "address": 1, "type": "uint16", "access": "R"},
     {"name": "CIO firmware version", "group": "Identity", "area": "holding", "address": 5, "type": "uint16", "access": "R", "description": "Major revision in the high byte, minor in the low byte"},
+    {"name": "CIO firmware major", "group": "Identity", "area": "holding", "address": 5, "type": "uint16", "bit": 8, "bits": 8, "access": "R"},
+    {"name": "CIO firmware minor", "group": "Identity", "area": "holding", "address": 5, "type": "uint16", "bit": 0, "bits": 8, "access": "R"},
     {"name": "UPS PPC firmware version", "group": "Identity", "area": "holding", "address": 7, "type": "uint16", "access": "R", "description": "Major revision in the high byte, minor in the low byte"},
+    {"name": "UPS PPC firmware major", "group": "Identity", "area": "holding", "address": 7, "type": "uint16", "bit": 8, "bits": 8, "access": "R"},
+    {"name": "UPS PPC firmware minor", "group": "Identity", "area": "holding", "address": 7, "type": "uint16", "bit": 0, "bits": 8, "access": "R"},
     {"name": "UPS FPGA firmware version", "group": "Identity", "area": "holding", "address": 9, "type": "uint16", "scale": 0.01, "access": "R"},
     {"name": "UPS system serial number", "group": "Identity", "area": "holding", "address": 11, "type": "uint32", "access": "R"},
     {"name": "UPS discharge counter", "group": "Counters", "area": "holding", "address": 19, "type": "uint32", "access": "R"},
