@@ -49,7 +49,7 @@ Anyone who reads a device with a map can mark it as tested. You do not need to b
 3. Set `"x_status": "verified"` and add a line to `notes`: `"Tested on <model>, firmware <version>, <month year>."`
 4. Open a pull request and fill in the **Test report** part of the template: device, firmware, connection and the registers you checked.
 
-If you do not want to make a pull request, open a [test report issue](https://github.com/nobrega8/mbmap-library/issues/new?template=test-report.yml) instead and someone will update the map.
+If you do not want to make a pull request, open a [test report issue](https://github.com/nobrega8/mbmap-library/issues/new?template=1-test-report.yml) instead and someone will update the map.
 
 A test that finds problems you cannot fix is useful too: report it in an issue so the map is not marked as verified.
 
@@ -73,7 +73,7 @@ If a map cannot be checked (the model is not documented anywhere you can reach),
 
 ## Where to ask
 
-- A map is wrong or missing: an issue ([map request](https://github.com/nobrega8/mbmap-library/issues/new?template=map-request.md), [test report](https://github.com/nobrega8/mbmap-library/issues/new?template=test-report.yml)) or a pull request.
+- A map is wrong or missing: an issue ([map request](https://github.com/nobrega8/mbmap-library/issues/new?template=2-map-request.yml), [test report](https://github.com/nobrega8/mbmap-library/issues/new?template=1-test-report.yml)) or a pull request.
 - Questions about writing a map or about the format: [Q&A](https://github.com/nobrega8/mbmap-library/discussions/categories/q-a).
 - Changes to the format or the tools: [Ideas](https://github.com/nobrega8/mbmap-library/discussions/categories/ideas), before a pull request to SPEC.md.
 - A tool or project that uses `.mbmap`: [Show and tell](https://github.com/nobrega8/mbmap-library/discussions/categories/show-and-tell).

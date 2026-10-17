@@ -1,0 +1,72 @@
+name: Add a map
+description: Ask for a device that is not in the library yet
+title: "Map request: <vendor> <model>"
+labels: [map-request]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check the [index](https://github.com/nobrega8/mbmap-library/blob/main/index.json) or Modbench's online library first: the device may be listed under another model name of its family.
+        Maps are written from the manufacturer's public documentation, so a link to it is the most useful part of a request.
+  - type: input
+    id: vendor
+    attributes:
+      label: Vendor
+      placeholder: Acme Meters
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model or family
+      description: Every model name or code the map should cover
+      placeholder: PM-200, PM-210, PM-220
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of device
+      options:
+        - Energy meter / power analyser
+        - Inverter / battery
+        - Drive / motor control
+        - Generator / UPS / transfer switch
+        - HVAC / heat pump
+        - I/O module / gateway
+        - Sensor
+        - Other
+  - type: input
+    id: docs
+    attributes:
+      label: Modbus documentation
+      description: Link to the vendor's public register table or manual (title, version and page if you know them)
+      placeholder: https://www.acme.example/downloads/pm-200-modbus-v1.3.pdf
+  - type: dropdown
+    id: transport
+    attributes:
+      label: Transport
+      options:
+        - Modbus RTU (RS485)
+        - Modbus TCP
+        - Both
+        - Not sure
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Can you help?
+      options:
+        - label: I have the device and can test the map once it exists
+        - label: I can write the map myself (see CONTRIBUTING.md)
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Registers you need most, firmware version, quirks you know of
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Documentation
+      options:
+        - label: The documentation I linked is public (not under NDA or marked confidential)
+          required: false

@@ -54,7 +54,7 @@ pie showData
 ```
 <!-- status-chart:end -->
 
-Tested a map on your device? Tell us in a pull request or a [test report](https://github.com/nobrega8/mbmap-library/issues/new?template=test-report.yml), even if you did not write the map.
+Tested a map on your device? Tell us in a pull request or a [test report](https://github.com/nobrega8/mbmap-library/issues/new?template=1-test-report.yml), even if you did not write the map.
 
 Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to [Discussions](https://github.com/nobrega8/mbmap-library/discussions).
 
