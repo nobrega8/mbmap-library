@@ -74,7 +74,8 @@ def build() -> str:
         [entry(p) for p in maps] + [entry_v1(p) for p in legacy],
         key=lambda e: (e["vendor"].lower(), e["model"].lower()),
     )
-    return json.dumps({"mbmap_index": 1, "maps": entries}, indent=2, ensure_ascii=False) + "\n"
+    vendors = len({e["vendor"].strip().lower() for e in entries if e["vendor"].strip()})
+    return json.dumps({"mbmap_index": 1, "vendors": vendors, "maps": entries}, indent=2, ensure_ascii=False) + "\n"
 
 
 def readme_with_chart(index_text: str) -> str:
