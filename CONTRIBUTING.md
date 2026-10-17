@@ -71,4 +71,11 @@ If a map cannot be checked (the model is not documented anywhere you can reach),
 - **Prefer accuracy over coverage.** A short map with correct registers is more useful than a long one with guesses. If you are unsure about a register, leave it out or say so in its `description`.
 - **One model (or family) per file.** If a newer firmware changes the map, mention it in `@firmware` or create a separate file.
 
+## Where to ask
+
+- A map is wrong or missing: an issue ([map request](https://github.com/nobrega8/mbmap-library/issues/new?template=map-request.md), [test report](https://github.com/nobrega8/mbmap-library/issues/new?template=test-report.yml)) or a pull request.
+- Questions about writing a map or about the format: [Q&A](https://github.com/nobrega8/mbmap-library/discussions/categories/q-a).
+- Changes to the format or the tools: [Ideas](https://github.com/nobrega8/mbmap-library/discussions/categories/ideas), before a pull request to SPEC.md.
+- A tool or project that uses `.mbmap`: [Show and tell](https://github.com/nobrega8/mbmap-library/discussions/categories/show-and-tell).
+
 By contributing, you agree to release your contribution under [CC0 1.0](LICENSE).
