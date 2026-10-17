@@ -42,6 +42,16 @@ The maps in this library say how far they can be trusted in `x_status`. It is no
 - **`unverified`**: written from the manufacturer's documentation (named in `source`), but not tested on a device yet.
 - **`unofficial`**: copied from an unofficial source and not tested. A large part of the library was **converted from other open catalogues** of Modbus tables to get everyone started. Nobody has checked these against the manufacturer's documentation yet, and some details (byte order, which register area, scaling) may be wrong. Read them as a draft and check a value on the real device before you rely on the rest.
 
+<!-- status-chart:start -->
+```mermaid
+pie showData
+    title Maps by status
+    "Verified" : 2
+    "Unverified" : 69
+    "Unofficial" : 386
+```
+<!-- status-chart:end -->
+
 Tested a map on your device? Tell us in a pull request or a [test report](https://github.com/nobrega8/mbmap-library/issues/new?template=test-report.yml), even if you did not write the map.
 
 Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to [Discussions](https://github.com/nobrega8/mbmap-library/discussions).

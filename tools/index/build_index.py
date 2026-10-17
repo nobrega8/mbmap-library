@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Builds index.json: one entry per map in maps/, read by apps to browse the library.
 
-    python tools/index/build_index.py           # rewrite index.json
-    python tools/index/build_index.py --check   # fail if index.json is out of date
+    python tools/index/build_index.py           # rewrite index.json and the README status chart
+    python tools/index/build_index.py --check   # fail if either is out of date
 """
 
 from __future__ import annotations
@@ -13,6 +13,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 INDEX = ROOT / "index.json"
+README = ROOT / "README.md"
+CHART_START = "<!-- status-chart:start -->"
+CHART_END = "<!-- status-chart:end -->"
 # verified: tested on a device; unverified: official source, not tested;
 # unofficial: unofficial source, not tested (CONTRIBUTING.md, "Status").
 STATUSES = ("verified", "unverified", "unofficial")
@@ -74,6 +77,22 @@ def build() -> str:
     return json.dumps({"mbmap_index": 1, "maps": entries}, indent=2, ensure_ascii=False) + "\n"
 
 
+def readme_with_chart(index_text: str) -> str:
+    """README.md with the pie chart of map statuses between the chart markers refreshed."""
+    readme = README.read_text(encoding="utf-8")
+    start, end = readme.find(CHART_START), readme.find(CHART_END)
+    if start < 0 or end < start:
+        return readme
+    counts = {s: 0 for s in STATUSES}
+    for e in json.loads(index_text)["maps"]:
+        if e["status"] in counts:
+            counts[e["status"]] += 1
+    lines = ["```mermaid", "pie showData", "    title Maps by status"]
+    lines += [f'    "{s.capitalize()}" : {n}' for s, n in counts.items() if n]
+    lines.append("```")
+    return readme[: start + len(CHART_START)] + "\n" + "\n".join(lines) + "\n" + readme[end:]
+
+
 def status_errors() -> list[str]:
     """Maps in maps/ whose x_status is set but not one of STATUSES (it is optional)."""
     errors = []
@@ -92,14 +111,19 @@ def main() -> int:
     if errors:
         return 1
     text = build()
+    readme = readme_with_chart(text)
     if "--check" in sys.argv[1:]:
         current = INDEX.read_text(encoding="utf-8") if INDEX.exists() else ""
         if current != text:
             print("index.json is out of date: run python tools/index/build_index.py")
             return 1
+        if README.read_text(encoding="utf-8") != readme:
+            print("The status chart in README.md is out of date: run python tools/index/build_index.py")
+            return 1
         print("index.json is up to date")
         return 0
     INDEX.write_bytes(text.encode("utf-8"))
+    README.write_bytes(readme.encode("utf-8"))
     print(f"index.json: {len(json.loads(text)['maps'])} map(s)")
     return 0
 
