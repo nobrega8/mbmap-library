@@ -16,9 +16,9 @@ INDEX = ROOT / "index.json"
 README = ROOT / "README.md"
 CHART_START = "<!-- status-chart:start -->"
 CHART_END = "<!-- status-chart:end -->"
-# verified: tested on a device; unverified: official source, not tested;
+# verified: tested on a device; official: official source, not tested;
 # unofficial: unofficial source, not tested (CONTRIBUTING.md, "Status").
-STATUSES = ("verified", "unverified", "unofficial")
+STATUSES = ("verified", "official", "unofficial")
 
 
 def entry(path: Path) -> dict:

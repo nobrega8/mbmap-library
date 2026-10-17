@@ -40,7 +40,7 @@ Folder and file names are lowercase slugs, e.g. `maps/acme-meters/pm-200.mbmap.j
 The maps in this library say how far they can be trusted in `x_status`. It is not part of the mbmap format, just an optional key that this library and Modbench read:
 
 - **`verified`**: tested on a real device.
-- **`unverified`**: written from the manufacturer's documentation (named in `source`), but not tested on a device yet.
+- **`official`**: written from the manufacturer's documentation (named in `source`), but not tested on a device yet.
 - **`unofficial`**: copied from an unofficial source and not tested. A large part of the library was **converted from other open catalogues** of Modbus tables to get everyone started. Nobody has checked these against the manufacturer's documentation yet, and some details (byte order, which register area, scaling) may be wrong. Read them as a draft and check a value on the real device before you rely on the rest.
 
 <!-- status-chart:start -->
@@ -48,7 +48,7 @@ The maps in this library say how far they can be trusted in `x_status`. It is no
 pie showData
     title Maps by status
     "Verified" : 2
-    "Unverified" : 69
+    "Official" : 69
     "Unofficial" : 386
 ```
 <!-- status-chart:end -->

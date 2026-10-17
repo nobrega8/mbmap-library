@@ -2,7 +2,7 @@
 
 - Vendor / model:
 - Source document (title, version, URL):
-- `x_status`: `verified` / `unverified` / `unofficial`
+- `x_status`: `verified` / `official` / `unofficial`
 
 ## Test report
 

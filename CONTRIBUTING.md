@@ -35,7 +35,7 @@ Thanks for sharing a map. A good map saves the next person an afternoon with a P
 | `x_status` | Meaning |
 |---|---|
 | `verified` | Tested on a real device. |
-| `unverified` | Written from an official source (the manufacturer's manual or protocol document) but not tested on a device. |
+| `official` | Written from an official source (the manufacturer's manual or protocol document) but not tested on a device. |
 | `unofficial` | Copied from an unofficial source (another catalogue, a forum, a third-party integration) and not tested. |
 
 `x_status` is a tool-specific key, so changing it does not need a new `revision`.
@@ -59,7 +59,7 @@ Files with `"x_status": "unofficial"` were converted from other catalogues. To c
 
 1. Compare it with the manufacturer's manual: addresses, types, scaling, units, which register area (`holding` or `input`) and the byte and word order.
 2. Fix what is wrong. If the device has a register with a fixed value, add it as a `reference` (SPEC.md section 4.6) so tools can check the map.
-3. Change `source` to the document you used (title, version, public URL), remove the notes that say the map was converted, and set `x_status` to `unverified` (or `verified` if you also tested it on a device).
+3. Change `source` to the document you used (title, version, public URL), remove the notes that say the map was converted, and set `x_status` to `official` (or `verified` if you also tested it on a device).
 
 If a map cannot be checked (the model is not documented anywhere you can reach), correct what you can and leave it `unofficial`.
 
