@@ -3,71 +3,2518 @@
   "mbmap": 2,
   "vendor": "Siemens",
   "model": "Sentron PAC 2200",
-  "models": ["Sentron PAC 2200"],
-  "vendor_website": "siemens.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table siemens/sentron-pac-2200; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/siemens-sentron-pac-2200.htm. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Siemens Sentron PAC 2200.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+  "models": [
+    "SENTRON PAC2200",
+    "PAC2200",
+    "7KM2200"
   ],
+  "vendor_website": "siemens.com",
+  "description": "DIN-rail energy meter with RS-485 (Modbus RTU) or Ethernet (Modbus TCP)",
+  "revision": 3,
+  "revised": "2026-10-18",
+  "source": "Siemens, \"PAC2200 measuring device manual\", L1V30415167B-06 (12/2022), appendix A.1",
+  "sources": [
+    {
+      "title": "PAC2200 measuring device manual",
+      "version": "L1V30415167B-06",
+      "date": "2022-12",
+      "url": "https://support.industry.siemens.com/cs/attachments/109746835/MAN_L1V30415167B-06_en_en-US.pdf",
+      "note": "appendix A.1, tables A-3 to A-14; factory settings in section 6.3"
+    }
+  ],
+  "notes": [
+    "Addresses are the Modbus offsets of the manual. Values are read with FC03 or FC04; settings are written with FC10 and commands with FC06.",
+    "Read every value from its first register with its full length: a read that starts or ends inside a multi-register value returns an error. The I&M data is read and written as a whole block (64001-64027 and 64028-64116).",
+    "Factory settings of the RS-485 versions: address 126, 19200 baud, 8N2. The Ethernet versions use Modbus TCP, port 502.",
+    "The 65 A devices have a fixed primary and secondary current; those two settings can be written on the 5 A devices only.",
+    "Not in this map: the status bits read with FC01/FC02, the 10 s and 15 min load profiles and the daily and monthly energy history read with FC20 (files 1, 2, 90 and 91), the user-defined FC100 and the Modbus device identification (FC43)."
+  ],
+  "protocol": "rtu",
+  "unit_id": 126,
+  "baudrate": 19200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 2,
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Voltage VL1 N", "area": "holding", "address": 1, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage vlz", "area": "holding", "address": 3, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage vl N", "area": "holding", "address": 5, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage VL1 L2", "area": "holding", "address": 7, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage vlz L3", "area": "holding", "address": 9, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage vl L1", "area": "holding", "address": 11, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Current L1", "area": "holding", "address": 13, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current L2", "area": "holding", "address": 15, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current L3", "area": "holding", "address": 17, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Apparent power L1", "area": "holding", "address": 19, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Apparent power L2", "area": "holding", "address": 21, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Apparent power L3", "area": "holding", "address": 23, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Active power L1", "area": "holding", "address": 25, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Active power L2", "area": "holding", "address": 27, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Active power L3", "area": "holding", "address": 29, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Reactive power L1", "area": "holding", "address": 31, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Reactive power L2", "area": "holding", "address": 33, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Reactive power L3", "area": "holding", "address": 35, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Power factor L1", "area": "holding", "address": 37, "type": "float32", "access": "R"},
-    {"name": "Power factor L2", "area": "holding", "address": 39, "type": "float32", "access": "R"},
-    {"name": "Power factor L3", "area": "holding", "address": 41, "type": "float32", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 55, "type": "float32", "unit": "Hz", "access": "R"},
-    {"name": "Average voltage V L N", "area": "holding", "address": 57, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Average voltage V L L", "area": "holding", "address": 59, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Average current", "area": "holding", "address": 61, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Total apparent power", "area": "holding", "address": 63, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Total active power", "area": "holding", "address": 65, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Total reactive power", "area": "holding", "address": 67, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Total power factor", "area": "holding", "address": 69, "type": "float32", "access": "R"},
-    {"name": "Device diagnostics and device status", "area": "holding", "address": 205, "type": "uint32", "access": "R"},
-    {"name": "Status of the digital outputs", "area": "holding", "address": 207, "type": "uint32", "access": "R"},
-    {"name": "Status of the digital inputs", "area": "holding", "address": 209, "type": "uint32", "access": "R"},
-    {"name": "Active tariff", "area": "holding", "address": 211, "type": "uint32", "access": "R"},
-    {"name": "Universal counter", "area": "holding", "address": 215, "type": "uint32", "access": "R"},
-    {"name": "Relevant parameter changes counter", "area": "holding", "address": 217, "type": "uint32", "access": "R"},
-    {"name": "Counter all parameter changes", "area": "holding", "address": 219, "type": "uint32", "access": "R"},
-    {"name": "Cumulated active power import", "area": "holding", "address": 501, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Cumulated reactive power import", "area": "holding", "address": 503, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Cumulated active power export", "area": "holding", "address": 505, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Cumulated reactive power export", "area": "holding", "address": 507, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Maximum active power reading during the period", "area": "holding", "address": 509, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Minimum active power reading during the period", "area": "holding", "address": 511, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Maximum reactive power reading dur ing the period", "area": "holding", "address": 513, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Minimum reactive power reading dur ing the period", "area": "holding", "address": 515, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Length of the current measuring period", "area": "holding", "address": 517, "type": "uint32", "unit": "s", "access": "R"},
-    {"name": "Time since start of the active demand period", "area": "holding", "address": 519, "type": "uint32", "unit": "s", "access": "R"},
-    {"name": "Active energy import tariff 1", "area": "holding", "address": 801, "type": "float64", "unit": "Wh", "access": "R"},
-    {"name": "Active energy import tariff 2", "area": "holding", "address": 805, "type": "float64", "unit": "Wh", "access": "R"},
-    {"name": "Active energy export tariff 1", "area": "holding", "address": 809, "type": "float64", "unit": "Wh", "access": "R"},
-    {"name": "Active energy export tariff 2", "area": "holding", "address": 813, "type": "float64", "unit": "Wh", "access": "R"}
+    {
+      "name": "Voltage L1-N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L2-N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 3,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L3-N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L1-L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L2-L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 9,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L3-L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 11,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 13,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 15,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 17,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 19,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 21,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 23,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Active power L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 25,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Active power L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 27,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Active power L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 29,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 31,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 33,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 35,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 37,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 39,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 41,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 55,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Average voltage L-N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 57,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Average voltage L-L",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 59,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Average current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 61,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Total apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 63,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Total active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 65,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 67,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Total power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 69,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Neutral current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 71,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Device status and diagnostics (high word)",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "R",
+      "description": "Byte 0 and byte 1 of the status word (offset 205)"
+    },
+    {
+      "name": "Device status and diagnostics (low word)",
+      "group": "Status",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "access": "R",
+      "description": "Byte 2 and byte 3 of the status word (offset 205). Byte 2 holds the stored diagnostics bits to acknowledge with offset 60007"
+    },
+    {
+      "name": "No synchronization pulse",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 8,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Device configuration menu is active",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 9,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Voltage overload",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 10,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Current overload",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 11,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Update status is active",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 13,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Hardware write protection is active",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 14,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Modbus communication is write-protected",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 15,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Maximum pulse rate exceeded",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 1,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "SNTP not synchronized",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 6,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Waiting for user interaction",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "bool",
+      "access": "R",
+      "bit": 7,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Relevant parameter changes (stored)",
+      "group": "Status",
+      "area": "holding",
+      "address": 206,
+      "type": "bool",
+      "access": "R",
+      "bit": 8,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Maximum pulse rate exceeded (stored)",
+      "group": "Status",
+      "area": "holding",
+      "address": 206,
+      "type": "bool",
+      "access": "R",
+      "bit": 10,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Restart of the device (stored)",
+      "group": "Status",
+      "area": "holding",
+      "address": 206,
+      "type": "bool",
+      "access": "R",
+      "bit": 11,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Energy counter reset by user (stored)",
+      "group": "Status",
+      "area": "holding",
+      "address": 206,
+      "type": "bool",
+      "access": "R",
+      "bit": 12,
+      "description": "Bit of the device status word at offset 205"
+    },
+    {
+      "name": "Digital output status",
+      "group": "Status",
+      "area": "holding",
+      "address": 207,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bit 0 = digital output 0"
+    },
+    {
+      "name": "Digital input status",
+      "group": "Status",
+      "area": "holding",
+      "address": 209,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bit 0 = digital input 0"
+    },
+    {
+      "name": "Active tariff",
+      "group": "Status",
+      "area": "holding",
+      "address": 211,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "0": "Tariff 1",
+        "1": "Tariff 2"
+      }
+    },
+    {
+      "name": "Universal counter",
+      "group": "Status",
+      "area": "holding",
+      "address": 215,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 999999999
+    },
+    {
+      "name": "Relevant parameter changes counter",
+      "group": "Status",
+      "area": "holding",
+      "address": 217,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Parameter changes counter",
+      "group": "Status",
+      "area": "holding",
+      "address": 219,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Configurable energy counter",
+      "group": "Status",
+      "area": "holding",
+      "address": 231,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "kWh or kvarh, depending on the configured counter source"
+    },
+    {
+      "name": "Daily profile counter",
+      "group": "Status",
+      "area": "holding",
+      "address": 265,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Monthly profile counter",
+      "group": "Status",
+      "area": "holding",
+      "address": 267,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Annual profile counter",
+      "group": "Status",
+      "area": "holding",
+      "address": 269,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Cumulated average active power import",
+      "group": "Demand",
+      "area": "holding",
+      "address": 501,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Cumulated average reactive power import",
+      "group": "Demand",
+      "area": "holding",
+      "address": 503,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Cumulated average active power export",
+      "group": "Demand",
+      "area": "holding",
+      "address": 505,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Cumulated average reactive power export",
+      "group": "Demand",
+      "area": "holding",
+      "address": 507,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Maximum active power during the period",
+      "group": "Demand",
+      "area": "holding",
+      "address": 509,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Minimum active power during the period",
+      "group": "Demand",
+      "area": "holding",
+      "address": 511,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Maximum reactive power during the period",
+      "group": "Demand",
+      "area": "holding",
+      "address": 513,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Minimum reactive power during the period",
+      "group": "Demand",
+      "area": "holding",
+      "address": 515,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Length of the current measuring period",
+      "group": "Demand",
+      "area": "holding",
+      "address": 517,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time since start of the demand period",
+      "group": "Demand",
+      "area": "holding",
+      "address": 519,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time stamp of the current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 545,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unix time, UTC"
+    },
+    {
+      "name": "OID of the current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 547,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 549,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy import, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 551,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy export, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 553,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy export, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 555,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Length of the load profile period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 557,
+      "type": "uint32",
+      "unit": "ms",
+      "access": "R"
+    },
+    {
+      "name": "Information flags of the current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 559,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import tariff 1, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 561,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import tariff 2, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 565,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy import tariff 1, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 569,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy import tariff 2, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 573,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy export tariff 1, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 577,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy export tariff 2, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 581,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy export tariff 1, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 585,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy export tariff 2, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 589,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import tariff 1+2, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 593,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy export tariff 1+2, current period",
+      "group": "Current load profile period",
+      "area": "holding",
+      "address": 597,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Date and time",
+      "group": "Status",
+      "area": "holding",
+      "address": 799,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Unix time, UTC"
+    },
+    {
+      "name": "Active energy import tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 801,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Active energy import tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 805,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Active energy export tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 809,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Active energy export tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 813,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Reactive energy import tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 817,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Reactive energy import tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 821,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Reactive energy export tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 825,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Reactive energy export tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 829,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Apparent energy tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 833,
+      "type": "float64",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Apparent energy tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 837,
+      "type": "float64",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 active energy import tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 841,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 active energy import tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 845,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 active energy export tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 849,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 active energy export tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 853,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 reactive energy import tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 857,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 reactive energy import tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 861,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 reactive energy export tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 865,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 reactive energy export tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 869,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 apparent energy tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 873,
+      "type": "float64",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 apparent energy tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 877,
+      "type": "float64",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 active energy import tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 881,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 active energy import tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 885,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 active energy export tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 889,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 active energy export tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 893,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 reactive energy import tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 897,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 reactive energy import tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 901,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 reactive energy export tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 905,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 reactive energy export tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 909,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 apparent energy tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 913,
+      "type": "float64",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 apparent energy tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 917,
+      "type": "float64",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 active energy import tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 921,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 active energy import tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 925,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 active energy export tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 929,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 active energy export tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 933,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 reactive energy import tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 937,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 reactive energy import tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 941,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 reactive energy export tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 945,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 reactive energy export tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 949,
+      "type": "float64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 apparent energy tariff 1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 953,
+      "type": "float64",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 apparent energy tariff 2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 957,
+      "type": "float64",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Secondary total active energy import (MID)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 961,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Secondary total active energy export (MID)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 965,
+      "type": "float64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2801,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Active energy import tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2803,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Active energy export tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2805,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Active energy export tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2807,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Reactive energy import tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2809,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Reactive energy import tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2811,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Reactive energy export tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2813,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Reactive energy export tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2815,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Apparent energy tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2817,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Apparent energy tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2819,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 active energy import tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2821,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 active energy import tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2823,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 active energy export tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2825,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 active energy export tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2827,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 reactive energy import tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2829,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 reactive energy import tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2831,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 reactive energy export tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2833,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 reactive energy export tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2835,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 apparent energy tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2837,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L1 apparent energy tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2839,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 active energy import tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2841,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 active energy import tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2843,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 active energy export tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2845,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 active energy export tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2847,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 reactive energy import tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2849,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 reactive energy import tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2851,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 reactive energy export tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2853,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 reactive energy export tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2855,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 apparent energy tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2857,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L2 apparent energy tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2859,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 active energy import tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2861,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 active energy import tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2863,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 active energy export tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2865,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 active energy export tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2867,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 reactive energy import tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2869,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 reactive energy import tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2871,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 reactive energy export tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2873,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 reactive energy export tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2875,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 apparent energy tariff 1 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2877,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "L3 apparent energy tariff 2 (float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2879,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R",
+      "description": "Overflows at 1.0e12"
+    },
+    {
+      "name": "Secondary total active energy import (MID, float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2881,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Secondary total active energy export (MID, float32)",
+      "group": "Energy (single precision)",
+      "area": "holding",
+      "address": 2883,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Rated current display range",
+      "group": "Settings",
+      "area": "holding",
+      "address": 49999,
+      "type": "uint32",
+      "unit": "A",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 10000
+    },
+    {
+      "name": "Connection type",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50001,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "3P4W",
+        "4": "1P2W"
+      }
+    },
+    {
+      "name": "Primary current",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50011,
+      "type": "uint32",
+      "unit": "A",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 99999,
+      "description": "Writable on the 5 A device only; the 65 A device is fixed at 65 A"
+    },
+    {
+      "name": "Secondary current",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50013,
+      "type": "uint32",
+      "unit": "A",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 5,
+      "description": "1 A or 5 A; writable on the 5 A device only"
+    },
+    {
+      "name": "Load profile demand period",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50021,
+      "type": "uint32",
+      "unit": "min",
+      "access": "R",
+      "description": "1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30 or 60"
+    },
+    {
+      "name": "Synchronization",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50023,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "0": "No synchronization",
+        "1": "Via bus",
+        "2": "Via digital input",
+        "3": "Via internal clock"
+      }
+    },
+    {
+      "name": "Dialog language",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50047,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "German",
+        "1": "English"
+      }
+    },
+    {
+      "name": "Phase labels",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50049,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "IEC",
+        "1": "US"
+      }
+    },
+    {
+      "name": "Configurable counter source",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50051,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "Digital input"
+      }
+    },
+    {
+      "name": "Display contrast",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50055,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 10
+    },
+    {
+      "name": "Display backlight level (normal)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50057,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3
+    },
+    {
+      "name": "Display backlight level (dimmed)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50059,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3
+    },
+    {
+      "name": "Time until dimmed",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50061,
+      "type": "uint32",
+      "unit": "min",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 99
+    },
+    {
+      "name": "Digital output timeout",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50147,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 18000,
+      "description": "0 = no timeout (default)"
+    },
+    {
+      "name": "Default menu",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50149,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 12,
+      "enum": {
+        "1": "MEAS_VLN",
+        "2": "MEAS_VLL",
+        "3": "MEAS_I",
+        "4": "MEAS_S",
+        "5": "MEAS_P",
+        "6": "MEAS_Q",
+        "7": "MEAS_SPQ",
+        "8": "MEAS_PF",
+        "9": "MEAS_F",
+        "10": "MEAS_WORK_P",
+        "11": "MEAS_WORK_Q",
+        "12": "MEAS_WORK_S"
+      }
+    },
+    {
+      "name": "Timeout for return to default menu",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50151,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3600,
+      "description": "0 = no timeout; values from 1 to 9 are set to 10"
+    },
+    {
+      "name": "Date format",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50231,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "dd.mm.yyyy",
+        "1": "mm/dd/yy",
+        "2": "yyyy-mm-dd"
+      }
+    },
+    {
+      "name": "Daylight saving",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50233,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Auto EU",
+        "2": "Auto US",
+        "3": "Daylight saving table"
+      }
+    },
+    {
+      "name": "Time zone",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50235,
+      "type": "int32",
+      "unit": "min",
+      "access": "RW",
+      "description": "Multiple of 30"
+    },
+    {
+      "name": "Output pulse divider",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50237,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "1 kWh",
+        "1": "10 kWh",
+        "2": "100 kWh",
+        "3": "1000 kWh"
+      }
+    },
+    {
+      "name": "Input pulse divider",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50239,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "1 kWh",
+        "1": "10 kWh",
+        "2": "100 kWh",
+        "3": "1000 kWh"
+      }
+    },
+    {
+      "name": "Invert display",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50241,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Change current L1 direction",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50243,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Change current L2 direction",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50245,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Change current L3 direction",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50247,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "I(N) on display",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50249,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "DI usage type",
+      "group": "Digital input",
+      "area": "holding",
+      "address": 50025,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "No action",
+        "1": "Pulse interface",
+        "2": "Switching on/off peak",
+        "3": "Synchronization",
+        "4": "Display backlight"
+      }
+    },
+    {
+      "name": "DI index",
+      "group": "Digital input",
+      "area": "holding",
+      "address": 50029,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "kWh",
+        "1": "kvarh"
+      }
+    },
+    {
+      "name": "DI pulses per kWh/kvarh",
+      "group": "Digital input",
+      "area": "holding",
+      "address": 50031,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 4000
+    },
+    {
+      "name": "DO group assignment",
+      "group": "Digital output",
+      "area": "holding",
+      "address": 50033,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 99
+    },
+    {
+      "name": "DO usage type",
+      "group": "Digital output",
+      "area": "holding",
+      "address": 50035,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "No action",
+        "1": "Device active",
+        "2": "Switching output",
+        "3": "Direction of rotation",
+        "5": "Pulse output"
+      }
+    },
+    {
+      "name": "DO index",
+      "group": "Digital output",
+      "area": "holding",
+      "address": 50041,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "Import kWh",
+        "1": "Export kWh",
+        "2": "Import kvarh",
+        "3": "Export kvarh"
+      }
+    },
+    {
+      "name": "DO pulses per kWh/kvarh",
+      "group": "Digital output",
+      "area": "holding",
+      "address": 50043,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 4000
+    },
+    {
+      "name": "DO pulse length",
+      "group": "Digital output",
+      "area": "holding",
+      "address": 50045,
+      "type": "uint32",
+      "unit": "ms",
+      "access": "RW",
+      "write_min": 30,
+      "write_max": 500
+    },
+    {
+      "name": "Aggregation file 1 period length",
+      "group": "Communication",
+      "area": "holding",
+      "address": 62983,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW",
+      "description": "Greater than 3 s; an integer divider of a minute, an hour or a day"
+    },
+    {
+      "name": "Aggregation file 1 method",
+      "group": "Communication",
+      "area": "holding",
+      "address": 62985,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "RMS",
+        "2": "Arithmetic"
+      }
+    },
+    {
+      "name": "Aggregation file 2 period length",
+      "group": "Communication",
+      "area": "holding",
+      "address": 62987,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Aggregation file 2 method",
+      "group": "Communication",
+      "area": "holding",
+      "address": 62989,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "RMS",
+        "2": "Arithmetic"
+      }
+    },
+    {
+      "name": "DHCP",
+      "group": "Communication",
+      "area": "holding",
+      "address": 62991,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "Ethernet versions"
+    },
+    {
+      "name": "SNTP server IP address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 62993,
+      "type": "uint32",
+      "access": "RW",
+      "description": "IPv4 address as a 32-bit number"
+    },
+    {
+      "name": "SNTP client mode",
+      "group": "Communication",
+      "area": "holding",
+      "address": 62995,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Active client",
+        "2": "Broadcast client"
+      }
+    },
+    {
+      "name": "Subnet firewall",
+      "group": "Communication",
+      "area": "holding",
+      "address": 62997,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "IP address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63001,
+      "type": "uint32",
+      "access": "RW",
+      "description": "IPv4 address as a 32-bit number"
+    },
+    {
+      "name": "Subnet mask",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63003,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "Gateway",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63005,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "Bootloader version",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63007,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Password protection",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63009,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Modbus RTU address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63135,
+      "type": "uint32",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 247,
+      "description": "RS-485 versions"
+    },
+    {
+      "name": "Modbus RTU baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63137,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "4800",
+        "1": "9600",
+        "2": "19200",
+        "3": "38400",
+        "4": "57600",
+        "5": "115200"
+      }
+    },
+    {
+      "name": "Modbus RTU format",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63139,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0": "8N2",
+        "1": "8E1",
+        "2": "8O1",
+        "3": "8N1"
+      }
+    },
+    {
+      "name": "Modbus RTU response time",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63141,
+      "type": "uint32",
+      "unit": "ms",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 255
+    },
+    {
+      "name": "HTTP server port",
+      "group": "Communication",
+      "area": "holding",
+      "address": 63143,
+      "type": "uint32",
+      "access": "RW",
+      "description": "0 = off"
+    },
+    {
+      "name": "Hardware write protection",
+      "group": "Communication",
+      "area": "holding",
+      "address": 65290,
+      "type": "uint32",
+      "access": "W",
+      "enum": {
+        "0": "On",
+        "1": "Off"
+      },
+      "description": "Requires pressing the SW key on the device"
+    },
+    {
+      "name": "Manufacturer ID",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64001,
+      "type": "uint16",
+      "access": "R",
+      "reference": 42,
+      "description": "42 = Siemens AG"
+    },
+    {
+      "name": "Order number",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64002,
+      "type": "string",
+      "access": "R",
+      "length": 10
+    },
+    {
+      "name": "Serial number",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64012,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "role": "serial"
+    },
+    {
+      "name": "Hardware version",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64020,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version type letter",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64021,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "description": "ASCII code of the type letter (V)"
+    },
+    {
+      "name": "Firmware version major",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64021,
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 8,
+      "role": "firmware"
+    },
+    {
+      "name": "Firmware version minor",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64022,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "role": "firmware"
+    },
+    {
+      "name": "Firmware version patch",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64022,
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 8,
+      "role": "firmware"
+    },
+    {
+      "name": "Counter for I&M changes",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64023,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Profile ID",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64024,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Specific profile ID",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64025,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "I&M version",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64026,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte major, low byte minor"
+    },
+    {
+      "name": "Supported I&M data",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64027,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Plant identifier",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64028,
+      "type": "string",
+      "access": "RW",
+      "length": 16
+    },
+    {
+      "name": "Location identifier",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64044,
+      "type": "string",
+      "access": "RW",
+      "length": 11
+    },
+    {
+      "name": "Installation date",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64055,
+      "type": "string",
+      "access": "RW",
+      "length": 8
+    },
+    {
+      "name": "Comment",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64063,
+      "type": "string",
+      "access": "RW",
+      "length": 27
+    },
+    {
+      "name": "Signature",
+      "group": "Device identification",
+      "area": "holding",
+      "address": 64090,
+      "type": "string",
+      "access": "RW",
+      "length": 27
+    },
+    {
+      "name": "Reset to factory settings",
+      "group": "Commands",
+      "area": "holding",
+      "address": 60000,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Device reset",
+      "group": "Commands",
+      "area": "holding",
+      "address": 60001,
+      "type": "uint16",
+      "access": "W",
+      "description": "Does not change the Modbus address"
+    },
+    {
+      "name": "Synchronize load profile",
+      "group": "Commands",
+      "area": "holding",
+      "address": 60005,
+      "type": "uint16",
+      "unit": "min",
+      "access": "W",
+      "write_min": 1,
+      "write_max": 60,
+      "description": "1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30 or 60"
+    },
+    {
+      "name": "Switch tariff",
+      "group": "Commands",
+      "area": "holding",
+      "address": 60006,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Main tariff",
+        "1": "Secondary tariff"
+      }
+    },
+    {
+      "name": "Acknowledge diagnostics bits",
+      "group": "Commands",
+      "area": "holding",
+      "address": 60007,
+      "type": "uint16",
+      "access": "W",
+      "description": "Acknowledge the stored bits of the device status word (offset 205, byte 2)"
+    },
+    {
+      "name": "Switch outputs",
+      "group": "Commands",
+      "area": "holding",
+      "address": 60008,
+      "type": "uint16",
+      "access": "W",
+      "description": "Low byte: digital output; high byte: 0 = off, 1 = on. Only for outputs set to remote switching"
+    },
+    {
+      "name": "Switch vector group",
+      "group": "Commands",
+      "area": "holding",
+      "address": 60009,
+      "type": "uint16",
+      "access": "W",
+      "description": "High byte: group 0-99; low byte: 1 = on, 0 = off"
+    },
+    {
+      "name": "Reset daily and monthly energy memory",
+      "group": "Commands",
+      "area": "holding",
+      "address": 60010,
+      "type": "uint16",
+      "access": "W"
+    }
   ]
 }
