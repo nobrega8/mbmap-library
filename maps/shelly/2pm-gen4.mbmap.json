@@ -1,0 +1,261 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Shelly",
+  "model": "2PM Gen4",
+  "models": [
+    "Shelly 2PM Gen4",
+    "2PM Gen4",
+    "S4SW-002P16EU"
+  ],
+  "vendor_website": "shelly.com",
+  "description": "Two-channel smart relay or roller shutter controller with power metering and Modbus TCP",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "Shelly Gen2 API documentation: Modbus and Switch component pages, Shelly 2PM Gen4 device page",
+  "sources": [
+    {
+      "title": "Shelly Gen2 API: Modbus",
+      "url": "https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Modbus"
+    },
+    {
+      "title": "Shelly Gen2 API: Switch",
+      "url": "https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Switch",
+      "note": "Modbus registers table"
+    },
+    {
+      "title": "Shelly Gen2 API: Shelly 2PM Gen4",
+      "url": "https://shelly-api-docs.shelly.cloud/gen2/Devices/Gen4/Shelly2PMG4"
+    }
+  ],
+  "notes": [
+    "Modbus TCP must be enabled first (Modbus.SetConfig with enable=true, or in the web interface).",
+    "The documentation lists input registers in 3xxxx notation: 33000 is input register 3000.",
+    "Floats and 32-bit values are sent low word first, as in the documentation's modbus_cli examples (-B mixed).",
+    "Each Switch component has a block of 20 input registers starting at 33000 + 20 x its id; Switch:1 starts at 33020.",
+    "Not in this map: the output coils (the documentation lists them for the Pro 3EM with output add-on and the Pro EM only) and the Cover component, which has no Modbus register table. The Switch measurements are the same whether the channels are used as relays or as a roller shutter."
+  ],
+  "protocol": "tcp",
+  "port": 502,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "MAC address",
+      "group": "Device",
+      "area": "input",
+      "address": 0,
+      "type": "string",
+      "length": 6
+    },
+    {
+      "name": "Model",
+      "group": "Device",
+      "area": "input",
+      "address": 6,
+      "type": "string",
+      "length": 10,
+      "role": "model"
+    },
+    {
+      "name": "Device name",
+      "group": "Device",
+      "area": "input",
+      "address": 16,
+      "type": "string",
+      "length": 32
+    },
+    {
+      "name": "Output 1 state",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3000,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Voltage 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3001,
+      "type": "float32",
+      "unit": "V"
+    },
+    {
+      "name": "Current 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3003,
+      "type": "float32",
+      "unit": "A"
+    },
+    {
+      "name": "Active power 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3005,
+      "type": "float32",
+      "unit": "W"
+    },
+    {
+      "name": "Frequency 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3007,
+      "type": "float32",
+      "unit": "Hz"
+    },
+    {
+      "name": "Power factor 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3009,
+      "type": "float32"
+    },
+    {
+      "name": "Active energy 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3011,
+      "type": "float32",
+      "unit": "Wh"
+    },
+    {
+      "name": "Returned active energy 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3013,
+      "type": "float32",
+      "unit": "Wh"
+    },
+    {
+      "name": "Undervoltage error 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3015,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Overvoltage error 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3016,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Overcurrent error 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3017,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Overpower error 1",
+      "group": "Channel 1",
+      "area": "input",
+      "address": 3018,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Output 2 state",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3020,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Voltage 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3021,
+      "type": "float32",
+      "unit": "V"
+    },
+    {
+      "name": "Current 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3023,
+      "type": "float32",
+      "unit": "A"
+    },
+    {
+      "name": "Active power 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3025,
+      "type": "float32",
+      "unit": "W"
+    },
+    {
+      "name": "Frequency 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3027,
+      "type": "float32",
+      "unit": "Hz"
+    },
+    {
+      "name": "Power factor 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3029,
+      "type": "float32"
+    },
+    {
+      "name": "Active energy 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3031,
+      "type": "float32",
+      "unit": "Wh"
+    },
+    {
+      "name": "Returned active energy 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3033,
+      "type": "float32",
+      "unit": "Wh"
+    },
+    {
+      "name": "Undervoltage error 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3035,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Overvoltage error 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3036,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Overcurrent error 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3037,
+      "type": "bool",
+      "bit": 0
+    },
+    {
+      "name": "Overpower error 2",
+      "group": "Channel 2",
+      "area": "input",
+      "address": 3038,
+      "type": "bool",
+      "bit": 0
+    }
+  ]
+}
