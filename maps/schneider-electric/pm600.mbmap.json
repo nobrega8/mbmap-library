@@ -3,71 +3,2326 @@
   "mbmap": 2,
   "vendor": "Schneider Electric",
   "model": "PM600",
-  "models": ["PM600"],
+  "models": [
+    "PM600",
+    "PM620",
+    "PM650"
+  ],
   "vendor_website": "se.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table schneider/electric-pm600; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/schneider-electric-pm600.htm. Not verified against the manufacturer's documentation",
+  "description": "Power meter",
+  "revision": 3,
+  "revised": "2026-10-18",
+  "source": "Square D, Power Meter Register Listing, PM_Reglist.doc (revised 12/22/98), as published as PM_600_Modbus_list.pdf",
+  "sources": [
+    {
+      "title": "PM 600 series Modbus Register List (PM_600_Modbus_list.pdf)",
+      "version": "revised 1998-12-22",
+      "url": "https://www.se.com/us/en/faqs/FA220490/",
+      "note": "PDF attached to the Schneider Electric FAQ"
+    }
+  ],
   "notes": [
-    "Schneider Electric PM600.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Addresses are the register numbers of the register listing (Modicon numbering, 1-based): the address on the wire is the register number minus 1.",
+    "Values are 16-bit integers. Currents, voltages and powers are multiplied by 10 to the power of their scale group register (2020 current, 2023 voltage, 2024 power); the unit is the one shown. Frequency is in hundredths of a hertz.",
+    "Registers that exist only on the PM620 or PM650 say so in their description (minimum and maximum values, demand, date and time, alarms and logs are PM650 or PM620 and PM650 only).",
+    "Not in this map: the 4-register energy values (modulo 10,000 per register), date and time, the event and alarm tables and the file setup registers.",
+    "Demand registers 1701 to 1712 and the predicted and present power demands carry the same scale groups as the metered values; the average power factors at peak are percentages in the listing and are left unscaled."
   ],
   "byte_order": "big",
   "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "address_base": 1,
+  "x_status": "official",
   "registers": [
-    {"name": "Update interval", "area": "holding", "address": 999, "type": "int16", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 1000, "type": "int16", "unit": "Hz", "access": "R"},
-    {"name": "Current, phase A", "area": "holding", "address": 1002, "type": "int16", "unit": "A", "access": "R"},
-    {"name": "Current, phase B", "area": "holding", "address": 1003, "type": "int16", "unit": "A", "access": "R"},
-    {"name": "Current, phase C", "area": "holding", "address": 1004, "type": "int16", "unit": "A", "access": "R"},
-    {"name": "Current, calculated neutral", "area": "holding", "address": 1005, "type": "int16", "unit": "A", "access": "R"},
-    {"name": "Current unbalance, phase A", "area": "holding", "address": 1009, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Current unbalance, phase B", "area": "holding", "address": 1010, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Current unbalance, phase C", "area": "holding", "address": 1011, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Current unbalance, worst", "area": "holding", "address": 1012, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Voltage, phase A to B", "area": "holding", "address": 1013, "type": "int16", "unit": "V", "access": "R"},
-    {"name": "Voltage, phase B to C", "area": "holding", "address": 1014, "type": "int16", "unit": "V", "access": "R"},
-    {"name": "Voltage, phase C to A", "area": "holding", "address": 1015, "type": "int16", "unit": "V", "access": "R"},
-    {"name": "Voltage, phase A to neutral", "area": "holding", "address": 1017, "type": "int16", "unit": "V", "access": "R"},
-    {"name": "Voltage, phase B to neutral", "area": "holding", "address": 1018, "type": "int16", "unit": "V", "access": "R"},
-    {"name": "Voltage, phase C to neutral", "area": "holding", "address": 1019, "type": "int16", "unit": "V", "access": "R"},
-    {"name": "Voltage unbalance, phase A B", "area": "holding", "address": 1021, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance, phase B C", "area": "holding", "address": 1022, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance, phase C A", "area": "holding", "address": 1023, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance, L L worst", "area": "holding", "address": 1024, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance, phase A", "area": "holding", "address": 1025, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance, phase B", "area": "holding", "address": 1026, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance, phase C", "area": "holding", "address": 1027, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance, L N worst", "area": "holding", "address": 1028, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "True power factor, phase A", "area": "holding", "address": 1030, "type": "int16", "access": "R"},
-    {"name": "True power factor, phase B", "area": "holding", "address": 1031, "type": "int16", "access": "R"},
-    {"name": "True power factor, phase C", "area": "holding", "address": 1032, "type": "int16", "access": "R"},
-    {"name": "True power factor, 3 phase total", "area": "holding", "address": 1033, "type": "int16", "access": "R"},
-    {"name": "Real power, phase A", "area": "holding", "address": 1038, "type": "int16", "unit": "kW", "access": "R"},
-    {"name": "Real power, phase B", "area": "holding", "address": 1039, "type": "int16", "unit": "kW", "access": "R"},
-    {"name": "Real power, phase C", "area": "holding", "address": 1040, "type": "int16", "unit": "kW", "access": "R"},
-    {"name": "Real power, 3 phase total", "area": "holding", "address": 1041, "type": "int16", "unit": "kW", "access": "R"},
-    {"name": "Reactive power, phase A", "area": "holding", "address": 1042, "type": "int16", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power, phase B", "area": "holding", "address": 1043, "type": "int16", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power, phase C", "area": "holding", "address": 1044, "type": "int16", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power, 3 phase total", "area": "holding", "address": 1045, "type": "int16", "unit": "kvar", "access": "R"},
-    {"name": "Apparent power, phase A", "area": "holding", "address": 1046, "type": "int16", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power, phase B", "area": "holding", "address": 1047, "type": "int16", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power, phase C", "area": "holding", "address": 1048, "type": "int16", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power, 3 phase total", "area": "holding", "address": 1049, "type": "int16", "unit": "kVA", "access": "R"},
-    {"name": "Thd/thd A current", "area": "holding", "address": 1050, "type": "int16", "access": "R"},
-    {"name": "Thd/thd B current", "area": "holding", "address": 1051, "type": "int16", "access": "R"},
-    {"name": "Thd/thd C current", "area": "holding", "address": 1052, "type": "int16", "access": "R"},
-    {"name": "Thd/thd A voltage", "area": "holding", "address": 1054, "type": "int16", "access": "R"},
-    {"name": "Thd/thd B voltage", "area": "holding", "address": 1055, "type": "int16", "access": "R"},
-    {"name": "Thd/thd C voltage", "area": "holding", "address": 1056, "type": "int16", "access": "R"},
-    {"name": "A current fundamental rms magnitude", "area": "holding", "address": 1077, "type": "int16", "unit": "A", "access": "R"},
-    {"name": "Scale Factor A", "area": "holding", "address": 2019, "type": "int16", "access": "R"},
-    {"name": "Scale Factor D", "area": "holding", "address": 2022, "type": "int16", "access": "R"},
-    {"name": "Scale Factor E", "area": "holding", "address": 2023, "type": "int16", "access": "R"}
+    {
+      "name": "Update Interval",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1000,
+      "type": "int16",
+      "access": "R",
+      "unit": "s",
+      "scale": 0.001
+    },
+    {
+      "name": "Frequency",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1001,
+      "type": "int16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase A Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1003,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Phase B Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1004,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Phase C Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1005,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Neutral Current, Calculated",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1006,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)",
+      "description": "(PM-620 and PM-650 only)"
+    },
+    {
+      "name": "Current Unbalance, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1010,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Current Unbalance, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1011,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Current Unbalance, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1012,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Current Unbalance, Worst",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1013,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Phase A-B Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1014,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Phase B-C Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1015,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Phase C-A Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1016,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Phase A-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1018,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Phase B-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1019,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Phase C-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1020,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Voltage Unbalance, Phase A-B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1022,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Voltage Unbalance, Phase B-C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1023,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Voltage Unbalance, Phase C-A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1024,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Voltage Unbalance, Worst L-L",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1025,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Voltage Unbalance, Phase A-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1026,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Voltage Unbalance, Phase B-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1027,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Voltage Unbalance, Phase C-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1028,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Voltage Unbalance, Worst L-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1029,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "True Power Factor, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1031,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "True Power Factor, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1032,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "True Power Factor, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1033,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "True Power Factor, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1034,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Real Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1039,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Real Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1040,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Real Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1041,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Real Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1042,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Reactive Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1043,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Reactive Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1044,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Reactive Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1045,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Reactive Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1046,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Apparent Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1047,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Apparent Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1048,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Apparent Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1049,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Apparent Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1050,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "THD/thd Current, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1051,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-620 and PM-650 only)"
+    },
+    {
+      "name": "THD/thd Current, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1052,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-620 and PM-650 only)"
+    },
+    {
+      "name": "THD/thd Current, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1053,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-620 and PM-650 only)"
+    },
+    {
+      "name": "THD/thd Voltage, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1055,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-620 and PM-650 only)"
+    },
+    {
+      "name": "THD/thd Voltage, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1056,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-620 and PM-650 only)"
+    },
+    {
+      "name": "THD/thd Voltage, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1057,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(PM-620 and PM-650 only)"
+    },
+    {
+      "name": "Current Fundamental RMS Magnitude, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1078,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Current Fundamental Coincident Angle, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1079,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Current Fundamental RMS Magnitude, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1080,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Current Fundamental Coincident Angle, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1081,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Current Fundamental RMS Magnitude, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1082,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Current Fundamental Coincident Angle, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1083,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Voltage Fundamental RMS Magnitude, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1088,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Voltage Fundamental Coincident Angle, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1089,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Voltage Fundamental RMS Magnitude, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1090,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Voltage Fundamental Coincident Angle, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1091,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Voltage Fundamental RMS Magnitude, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1092,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Voltage Fundamental Coincident Angle, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1093,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Voltage Fundamental RMS Magnitude, Phase A-B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1094,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Voltage Fundamental Coincident Angle, Phase A-B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1095,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Voltage Fundamental RMS Magnitude, Phase B-C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1096,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Voltage Fundamental Coincident Angle, Phase B-C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1097,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Voltage Fundamental RMS Magnitude, Phase C-A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1098,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Voltage Fundamental Coincident Angle, Phase C-A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1099,
+      "type": "int16",
+      "access": "R",
+      "unit": "°",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Update Interval",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1200,
+      "type": "int16",
+      "access": "R",
+      "unit": "s",
+      "scale": 0.001
+    },
+    {
+      "name": "Minimum Frequency",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1201,
+      "type": "int16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Minimum Phase A Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1203,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Minimum Phase B Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1204,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Minimum Phase C Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1205,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Minimum Neutral Current, calculated",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1206,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Minimum Current Unbalance, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1210,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Current Unbalance, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1211,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Current Unbalance, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1212,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Current Unbalance, Worst",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1213,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Phase A-B Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1214,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Minimum Phase B-C Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1215,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Minimum Phase C-A Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1216,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Minimum Phase A-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1218,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Minimum Phase B-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1219,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Minimum Phase C-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1220,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Minimum Voltage Unbalance, Phase A-B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1222,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Voltage Unbalance, Phase B-C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1223,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Voltage Unbalance, Phase C-A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1224,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Voltage Unbalance, Worst L-L",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1225,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Voltage Unbalance, Phase A-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1226,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Voltage Unbalance, Phase B-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1227,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Voltage Unbalance, Phase C-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1228,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum Voltage Unbalance, Worst L-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1229,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum True Power Factor, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1231,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Minimum True Power Factor, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1232,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Minimum True Power Factor, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1233,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Minimum True Power Factor, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1234,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Minimum Real Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1239,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Real Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1240,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Real Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1241,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Real Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1242,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Reactive Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1243,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Reactive Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1244,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Reactive Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1245,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Reactive Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1246,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Apparent Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1247,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Apparent Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1248,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Apparent Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1249,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum Apparent Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1250,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Minimum THD/thd Current, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1251,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum THD/thd Current, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1252,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum THD/thd Current, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1253,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum THD/thd Voltage, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1255,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum THD/thd Voltage, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1256,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Minimum THD/thd Voltage, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1257,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Update Interval",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1400,
+      "type": "int16",
+      "access": "R",
+      "unit": "s",
+      "scale": 0.001
+    },
+    {
+      "name": "Maximum Frequency",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1401,
+      "type": "int16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Maximum Phase A Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1403,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Maximum Phase B Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1404,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Maximum Phase C Current",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1405,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Maximum Neutral Current, calculated",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1406,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Maximum Current Unbalance, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1410,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Current Unbalance, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1411,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Current Unbalance, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1412,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Current Unbalance, Worst",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1413,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Phase A-B Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1414,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Maximum Phase B-C Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1415,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Maximum Phase C-A Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1416,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Maximum Phase A-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1418,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Maximum Phase B-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1419,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Maximum Phase C-N Voltage",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1420,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Scale group D (voltage)"
+    },
+    {
+      "name": "Maximum Voltage Unbalance, Phase A-B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1422,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Voltage Unbalance, Phase B-C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1423,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Voltage Unbalance, Phase C-A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1424,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Voltage Unbalance, Worst L-L",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1425,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Voltage Unbalance, Phase A-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1426,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Voltage Unbalance, Phase B-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1427,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Voltage Unbalance, Phase C-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1428,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Voltage Unbalance, Worst L-N",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1429,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum True Power Factor, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1431,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Maximum True Power Factor, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1432,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Maximum True Power Factor, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1433,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Maximum True Power Factor, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1434,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Maximum Real Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1439,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Real Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1440,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Real Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1441,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Real Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1442,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Reactive Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1443,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Reactive Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1444,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Reactive Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1445,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Reactive Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1446,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Apparent Power, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1447,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Apparent Power, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1448,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Apparent Power, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1449,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum Apparent Power, Total",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1450,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Maximum THD/thd Current, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1451,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum THD/thd Current, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1452,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum THD/thd Current, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1453,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum THD/thd Voltage, Phase A",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1455,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum THD/thd Voltage, Phase B",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1456,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum THD/thd Voltage, Phase C",
+      "group": "Metered values",
+      "area": "holding",
+      "address": 1457,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Present Current Demand Phase A",
+      "group": "Current demand",
+      "area": "holding",
+      "address": 1701,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Present Current Demand Phase B",
+      "group": "Current demand",
+      "area": "holding",
+      "address": 1702,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Present Current Demand Phase C",
+      "group": "Current demand",
+      "area": "holding",
+      "address": 1703,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Present Demand Neutral Current",
+      "group": "Current demand",
+      "area": "holding",
+      "address": 1704,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Peak Current Demand Phase A",
+      "group": "Current demand",
+      "area": "holding",
+      "address": 1709,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Peak Current Demand Phase B",
+      "group": "Current demand",
+      "area": "holding",
+      "address": 1710,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Peak Current Demand Phase C",
+      "group": "Current demand",
+      "area": "holding",
+      "address": 1711,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Scale group A (current)"
+    },
+    {
+      "name": "Present Real Power Demand, 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1731,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Present Reactive Power Demand, 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1732,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Present Apparent Power Demand, 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1733,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Peak Real Power Demand 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1734,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Average Power Factor, @ Peak Real",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1735,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Peak Reactive Power Demand 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1738,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Average Power Factor @ Peak Reactive",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1739,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Peak Apparent Power Demand, 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1742,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)"
+    },
+    {
+      "name": "Average Power Factor, @ Peak Apparent",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1743,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Predicted Real Power Demand, 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1746,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale_factor": "Scale group E (power)",
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Predicted Reactive Power Demand, 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1747,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale_factor": "Scale group E (power)",
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Predicted Apparent Power Demand, 3-Phase Total",
+      "group": "Power demand",
+      "area": "holding",
+      "address": 1748,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale_factor": "Scale group E (power)",
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "System connection",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2001,
+      "type": "int16",
+      "access": "R",
+      "description": "System connection code: 30, 31 or 40"
+    },
+    {
+      "name": "CT ratio 3-phase, primary",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2002,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "CT ratio 3-phase, secondary",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2003,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "PT ratio 3-phase, primary",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2006,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "PT ratio 3-phase, primary scale factor",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2007,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Phase A Current Correction Factors",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2009,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Phase B Current Correction Factors",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2010,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Phase C Current Correction Factors",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2011,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Phase A Voltage Correction Factors",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2013,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Phase B Voltage Correction Factors",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2014,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Phase C Voltage Correction Factors",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2015,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Nominal System Frequency",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2016,
+      "type": "int16",
+      "access": "R",
+      "description": "50 or 60 Hz"
+    },
+    {
+      "name": "Device Address",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2017,
+      "type": "int16",
+      "access": "R",
+      "description": "0 to 199"
+    },
+    {
+      "name": "Device Baud Rate",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2018,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Scale group A (current)",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2020,
+      "type": "int16",
+      "access": "R",
+      "description": "Power of 10; -2 to 0"
+    },
+    {
+      "name": "Scale group D (voltage)",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2023,
+      "type": "int16",
+      "access": "R",
+      "description": "Power of 10; -1 to 2"
+    },
+    {
+      "name": "Scale group E (power)",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2024,
+      "type": "int16",
+      "access": "R",
+      "description": "Power of 10; -3 to 3"
+    },
+    {
+      "name": "Scaling Error",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2026,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Command Password",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2028,
+      "type": "int16",
+      "access": "R",
+      "description": "Computed by the meter"
+    },
+    {
+      "name": "Master Password",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2029,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Reset Access Password",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2031,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Limited Access Disable Bit Mask",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2032,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Voltage gain A-N, range 1",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2050,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Voltage gain B-N, range 1",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2051,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Voltage gain C-N, range 1",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2052,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Voltage gain A-N, range 2",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2053,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Voltage gain B-N, range 2",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2054,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Voltage gain C-N, range 2",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2055,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Voltage gain A-N, range 3",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2056,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Voltage gain B-N, range 3",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2057,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Voltage gain C-N, range 3",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2058,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths; range select register 2064 chooses the range (0 = 120/208 V, 1 = 277/480 V, 2 = 347/600 V)"
+    },
+    {
+      "name": "Current gain phase A",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2060,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths"
+    },
+    {
+      "name": "Current gain phase B",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2061,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths"
+    },
+    {
+      "name": "Current gain phase C",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2062,
+      "type": "int16",
+      "access": "R",
+      "description": "In 10,000ths"
+    },
+    {
+      "name": "Voltage Range Select",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2064,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "120/208 V",
+        "1": "277/480 V",
+        "2": "347/600 V"
+      }
+    },
+    {
+      "name": "Power demand interval",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2077,
+      "type": "int16",
+      "access": "R",
+      "unit": "min"
+    },
+    {
+      "name": "Power demand sub-interval",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2078,
+      "type": "int16",
+      "access": "R",
+      "unit": "min",
+      "description": "(PM-650 only)"
+    },
+    {
+      "name": "Operating Mode Selections Bit map",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2081,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Energy Accumulation Method",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2082,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Configuration Changes",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2083,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of PMOS system restarts",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2084,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Square-D Product ID Number",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2085,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "481": "PM600",
+        "482": "PM620",
+        "483": "PM650"
+      },
+      "role": "model"
+    },
+    {
+      "name": "Installed Real Time Clock",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2086,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Total memory for logging",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2088,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Remaining memory for logging",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2089,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "PMOS-M Revision Level",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2091,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "PMOS-D Revision Level",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2092,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "PMRS Revision Level",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2093,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Unit Revision",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2095,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Display F/W Revision",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2098,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages sent to this unit",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2100,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages sent to other units",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2101,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages with invalid address",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2102,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages with bad checksum",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2103,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages with error",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2104,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages with illegal opcode",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2105,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages with illegal registers",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2106,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Invalid write responses",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2107,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages with illegal counts",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2108,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Messages with frame error",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2109,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Control Power Failures",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2110,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Bitmap for Self-Test results",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2120,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Voltage/Current Phase Loss Bit Map",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2122,
+      "type": "int16",
+      "access": "R"
+    }
   ]
 }
