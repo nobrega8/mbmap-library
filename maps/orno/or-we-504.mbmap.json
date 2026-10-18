@@ -1,0 +1,151 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Orno",
+  "model": "OR-WE-504",
+  "models": [
+    "OR-WE-504",
+    "WE-504"
+  ],
+  "vendor_website": "orno.pl",
+  "description": "Single-phase energy meter, 80 A, RS-485 (Modbus RTU)",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "ORNO, OR-WE-504 register list (OR-WE-504_rejestry.pdf)",
+  "sources": [
+    {
+      "title": "OR-WE-504 register list (rejestry)",
+      "url": "https://files.orno.pl/support/Others/ORNO/ORWE504_5901752481282/OR-WE-504_rejestry.pdf",
+      "note": "manufacturer document: serial settings, command examples and holding registers 0 to 15"
+    },
+    {
+      "title": "ORNO OR-WE-504 product page",
+      "url": "https://www.orno.pl/en/energy-meters-without-mid/340-1-phase-energy-meter-wtih-rs-485-80a-5901752481282.html"
+    }
+  ],
+  "notes": [
+    "Values are read with FC03. Addresses are the register addresses of the register list (hexadecimal 0x00 to 0x0F).",
+    "Factory settings: address 1, 9600 baud, 8 data bits, no parity, 1 stop bit.",
+    "Writing needs the password to be removed first: send the vendor command 01 28 FE 01 00 02 04 00 00 00 00 (CRC), after which writes work for 10 seconds. The factory password is 00 00 00 00.",
+    "Only the registers listed in the manufacturer's register list are in this map."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 7,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "RW",
+      "description": "Writing 0 clears the counter; the password must be removed first (see the notes)"
+    },
+    {
+      "name": "Reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 9,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "1200",
+        "2": "2400",
+        "3": "4800",
+        "4": "9600"
+      }
+    },
+    {
+      "name": "Address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "RW"
+    }
+  ]
+}

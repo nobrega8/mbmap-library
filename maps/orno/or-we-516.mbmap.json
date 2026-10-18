@@ -1,0 +1,543 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Orno",
+  "model": "OR-WE-516",
+  "models": [
+    "OR-WE-516",
+    "WE-516"
+  ],
+  "vendor_website": "orno.pl",
+  "description": "Three-phase energy meter, 80 A, MID, RS-485 (Modbus RTU)",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "ORNO, OR-WE-516 register list (OR-WE-516_rejestry.pdf)",
+  "sources": [
+    {
+      "title": "OR-WE-516 register list (rejestry)",
+      "url": "https://files.orno.pl/support/Others/ORNO/ORWE516_5902560322415/OR-WE-516_rejestry.pdf",
+      "note": "manufacturer document: holding registers and write commands"
+    },
+    {
+      "title": "ORNO OR-WE-516 product page",
+      "url": "https://www.orno.pl/en/energy-meters-with-mid/349-3-phase-energy-meter-with-rs-485-80a-mid-4-5-modules-din-th-35mm-5902560322415.html"
+    },
+    {
+      "title": "HARDWARIO Chester: Orno OR-WE-516",
+      "url": "https://docs.hardwario.com/chester/supported-devices/modbus/orno-or-we-516",
+      "note": "factory serial settings (address 1, 9600, even parity, 1 stop bit)"
+    }
+  ],
+  "notes": [
+    "Values are read with FC03 and are 32-bit floating-point numbers (two registers, most significant register first), as a user report on the Node-RED forum confirms. Addresses are the register addresses of the register list.",
+    "The register list does not give units; the units shown are those of the quantities (V, A, Hz, W, var, VA).",
+    "Factory settings: address 1, 9600 baud, 8 data bits, 1 stop bit; the manufacturer's list shows a check bit and third-party guides give even parity.",
+    "Writes: Meter ID, baud rate, combined code and cycle time with FC06, S0 output rate with FC16.",
+    "Only the registers listed in the manufacturer's register list are in this map."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "E",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Serial number",
+      "group": "Device",
+      "area": "holding",
+      "address": 0,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Meter ID",
+      "group": "Device",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Modbus address"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Device",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Software version",
+      "group": "Device",
+      "area": "holding",
+      "address": 4,
+      "type": "float32",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Hardware version",
+      "group": "Device",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "CT rate",
+      "group": "Device",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "S0 output rate",
+      "group": "Device",
+      "area": "holding",
+      "address": 9,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Cycle time",
+      "group": "Device",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "L1 voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L2 voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 16,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L3 voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "L1 current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L2 current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L3 current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 26,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Total active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 28,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "L1 active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 30,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "L2 active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "L3 active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 34,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "L1 reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 38,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "L2 reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "L3 reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 42,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Total apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 44,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "L1 apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 46,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "L2 apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 48,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "L3 apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 50,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Total power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 52,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "L1 power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 54,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "L2 power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 56,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "L3 power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 58,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 256,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L1 total active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 258,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L2 total active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 260,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L3 total active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 262,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "Forward active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 264,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L1 forward active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 266,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L2 forward active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 268,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L3 forward active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 270,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "Reverse active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 272,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L1 reverse active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 274,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L2 reverse active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 276,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L3 reverse active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 278,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "Total reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 280,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L1 reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 282,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L2 reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 284,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L3 reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 286,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "Forward reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 288,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L1 forward reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 290,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L2 forward reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 292,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L3 forward reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 294,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "Reverse reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 296,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L1 reverse reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 298,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L2 reverse reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 300,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "L3 reverse reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 302,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit not stated in the register list"
+    },
+    {
+      "name": "Combined code",
+      "group": "Device",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "access": "RW"
+    }
+  ]
+}
