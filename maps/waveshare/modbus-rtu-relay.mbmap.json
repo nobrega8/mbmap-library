@@ -1,0 +1,59 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Waveshare",
+  "model": "Modbus RTU Relay",
+  "models": [
+    "Modbus RTU Relay (8-ch)"
+  ],
+  "vendor_website": "waveshare.com",
+  "description": "8-channel relay module with Modbus RTU over RS485",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "Waveshare wiki: Modbus RTU Relay, development protocol V3",
+  "sources": [
+    {
+      "title": "Waveshare wiki: Modbus RTU Relay",
+      "url": "https://www.waveshare.com/wiki/Modbus_RTU_Relay"
+    }
+  ],
+  "notes": [
+    "Factory settings: slave address 1, 9600 baud, 8 data bits, no parity, 1 stop bit.",
+    "Relays 1 to 8 are coils 0 to 7 (function codes 01, 05 and 0F). Address 0x00FF switches every relay at once and 0x01FF toggles every relay; both are write-only.",
+    "The documentation lists the parity values in the UART parameter in two different orders (0x01 odd and 0x02 even in the command, the reverse in the reply); check on the device.",
+    "Flash commands (0x0200 to 0x0207 flash on, 0x0400 to 0x0407 flash off) are function 05 writes whose value field is the delay in units of 100 ms (0x0007 = 700 ms); they are not listed as registers.",
+    "Broadcast address 0 is accepted for writes."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "data_bits": 8,
+  "parity": "N",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {"name": "Relay 1", "group": "Relays", "area": "coil", "address": 0, "type": "bool", "access": "RW", "description": "1 = on, 0 = off"},
+    {"name": "Relay 2", "group": "Relays", "area": "coil", "address": 1, "type": "bool", "access": "RW", "description": "1 = on, 0 = off"},
+    {"name": "Relay 3", "group": "Relays", "area": "coil", "address": 2, "type": "bool", "access": "RW", "description": "1 = on, 0 = off"},
+    {"name": "Relay 4", "group": "Relays", "area": "coil", "address": 3, "type": "bool", "access": "RW", "description": "1 = on, 0 = off"},
+    {"name": "Relay 5", "group": "Relays", "area": "coil", "address": 4, "type": "bool", "access": "RW", "description": "1 = on, 0 = off"},
+    {"name": "Relay 6", "group": "Relays", "area": "coil", "address": 5, "type": "bool", "access": "RW", "description": "1 = on, 0 = off"},
+    {"name": "Relay 7", "group": "Relays", "area": "coil", "address": 6, "type": "bool", "access": "RW", "description": "1 = on, 0 = off"},
+    {"name": "Relay 8", "group": "Relays", "area": "coil", "address": 7, "type": "bool", "access": "RW", "description": "1 = on, 0 = off"},
+    {"name": "All relays", "group": "Commands", "area": "coil", "address": 255, "type": "bool", "access": "W", "description": "Write-only (0x00FF): 1 turns every relay on, 0 turns every relay off"},
+    {"name": "Toggle relay 1", "group": "Commands", "area": "coil", "address": 256, "type": "bool", "access": "W", "description": "Write 1 to toggle the relay"},
+    {"name": "Toggle relay 2", "group": "Commands", "area": "coil", "address": 257, "type": "bool", "access": "W", "description": "Write 1 to toggle the relay"},
+    {"name": "Toggle relay 3", "group": "Commands", "area": "coil", "address": 258, "type": "bool", "access": "W", "description": "Write 1 to toggle the relay"},
+    {"name": "Toggle relay 4", "group": "Commands", "area": "coil", "address": 259, "type": "bool", "access": "W", "description": "Write 1 to toggle the relay"},
+    {"name": "Toggle relay 5", "group": "Commands", "area": "coil", "address": 260, "type": "bool", "access": "W", "description": "Write 1 to toggle the relay"},
+    {"name": "Toggle relay 6", "group": "Commands", "area": "coil", "address": 261, "type": "bool", "access": "W", "description": "Write 1 to toggle the relay"},
+    {"name": "Toggle relay 7", "group": "Commands", "area": "coil", "address": 262, "type": "bool", "access": "W", "description": "Write 1 to toggle the relay"},
+    {"name": "Toggle relay 8", "group": "Commands", "area": "coil", "address": 263, "type": "bool", "access": "W", "description": "Write 1 to toggle the relay"},
+    {"name": "Toggle all relays", "group": "Commands", "area": "coil", "address": 511, "type": "bool", "access": "W", "description": "Write 1 to toggle every relay"},
+    {"name": "UART parameters", "group": "Configuration", "area": "holding", "address": 8192, "type": "uint16", "access": "RW", "description": "High byte: parity (0 none, 1 even, 2 odd, see notes). Low byte: baud rate (0 4800, 1 9600, 2 19200, 3 38400, 4 57600, 5 115200, 6 128000, 7 256000)"},
+    {"name": "Device address", "group": "Configuration", "area": "holding", "address": 16384, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 255, "description": "Modbus slave address, 1 to 255"},
+    {"name": "Software version", "group": "Device", "area": "holding", "address": 32768, "type": "uint16", "access": "R", "scale": 0.01, "description": "100 = V1.00", "role": "firmware"}
+  ]
+}
