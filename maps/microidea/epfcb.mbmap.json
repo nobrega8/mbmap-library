@@ -1,0 +1,2338 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Microidea",
+  "model": "EPFCB",
+  "models": [
+    "EPFCB"
+  ],
+  "vendor_website": "microidea.it",
+  "description": "Automatic power factor controller with up to 13 capacitor steps, Modbus over RS485 or Ethernet",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "firmware": "01.07",
+  "source": "Microidea, \"EPFCB - Registers Modbus\", firmware 01.07 (2017-11-30); https://www.microidea.it/sites/default/files/pdf/EPFC%20MODBUS%20TABLE.pdf",
+  "sources": [
+    {
+      "title": "EPFCB - Registers Modbus",
+      "version": "FW 01.07",
+      "date": "2017-11-30",
+      "url": "https://www.microidea.it/sites/default/files/pdf/EPFC%20MODBUS%20TABLE.pdf",
+      "note": "all three pages: input registers and holding registers"
+    }
+  ],
+  "notes": [
+    "Power factor controller EPFCB. The manual file is named EPFC and its table is titled EPFCB.",
+    "Serial Modbus must be switched on in the setup (A.05 Serial protocol = Modbus, address 1-199); with A.04 set to Ethernet the controller uses the IP address and port from A.06.",
+    "The manual does not give the order of the two words of a 32-bit or 64-bit value, nor the factory serial settings. Big word order is assumed; check it against the display.",
+    "The single alarm bits of the 32-bit alarm words assume the high word is at the lower address.",
+    "Addresses 0x0048-0x004C and 0x0058-0x005C are not described in the manual.",
+    "Temperatures are in the unit chosen by A.07 (degrees Celsius or Fahrenheit)."
+  ],
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Power factor",
+      "group": "Measurements",
+      "area": "input",
+      "address": 0,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Actual cos phi, sent as cos x 1000"
+    },
+    {
+      "name": "Voltage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "RMS voltage"
+    },
+    {
+      "name": "Current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "RMS current"
+    },
+    {
+      "name": "Reactive power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 4,
+      "type": "int32",
+      "unit": "var",
+      "access": "R",
+      "description": "Actual reactive power; negative is capacitive"
+    },
+    {
+      "name": "Reactive power demand",
+      "group": "Measurements",
+      "area": "input",
+      "address": 6,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Active power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 8,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "THD I",
+      "group": "Measurements",
+      "area": "input",
+      "address": 10,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "THD V",
+      "group": "Measurements",
+      "area": "input",
+      "address": 11,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "General alarms",
+      "group": "Alarms",
+      "area": "input",
+      "address": 12,
+      "type": "uint32",
+      "access": "R",
+      "description": "One bit per alarm, 1 = active. The manual lists this as a 16-bit value but uses bit 31, so it is read here as two registers. Bits: 0 voltage too high, 1 voltage too low, 2 current too high, 3 current too low, 4 overcompensation, 5 undercompensation, 6 over temperature, 7 high THD V, 8 high THD I, 9 minimum cos, 10 external over temperature, 31 wrong frequency"
+    },
+    {
+      "name": "General alarm - Voltage too high",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - Voltage too low",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - Current too high",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - Current too low",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - Overcompensation",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - Undercompensation",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - Over temperature",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - High THD V",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - High THD I",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - Minimum cos",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - External over temperature",
+      "group": "Alarms",
+      "area": "input",
+      "address": 13,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "General alarm - Wrong frequency",
+      "group": "Alarms",
+      "area": "input",
+      "address": 12,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "EEPROM alarms",
+      "group": "Alarms",
+      "area": "input",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits: 0 setup parameters error, 1 calibration parameters error, 2 various parameters error, 3 erase EEPROM error"
+    },
+    {
+      "name": "EEPROM alarm - Setup parameters error",
+      "group": "Alarms",
+      "area": "input",
+      "address": 14,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "EEPROM alarm - Calibration parameters error",
+      "group": "Alarms",
+      "area": "input",
+      "address": 14,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "EEPROM alarm - Various parameters error",
+      "group": "Alarms",
+      "area": "input",
+      "address": 14,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "EEPROM alarm - Erase EEPROM error",
+      "group": "Alarms",
+      "area": "input",
+      "address": 14,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Output steps status",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 = step 1 ... bit 12 = step 13, 1 = step inserted"
+    },
+    {
+      "name": "Step 1 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Step 2 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Step 3 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Step 4 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Step 5 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Step 6 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Step 7 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Step 8 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Step 9 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Step 10 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Step 11 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Step 12 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Step 13 inserted",
+      "group": "Steps",
+      "area": "input",
+      "address": 15,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Step 1 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 16,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 2 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 18,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 3 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 20,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 4 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 22,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 5 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 24,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 6 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 26,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 7 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 28,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 8 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 30,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 9 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 32,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 10 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 34,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 11 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 36,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 12 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 38,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 13 reactive power",
+      "group": "Steps",
+      "area": "input",
+      "address": 40,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R",
+      "description": "Reactive power the step really delivers"
+    },
+    {
+      "name": "Step 1 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 42,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 2 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 43,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 3 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 44,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 4 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 45,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 5 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 46,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 6 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 47,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 7 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 48,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 8 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 49,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 9 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 50,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 10 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 51,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 11 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 52,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 12 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 53,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Step 13 discharge time",
+      "group": "Steps",
+      "area": "input",
+      "address": 54,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds left before the capacitor is discharged"
+    },
+    {
+      "name": "Internal temperature",
+      "group": "Measurements",
+      "area": "input",
+      "address": 55,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°C / °F",
+      "access": "R",
+      "description": "In the unit chosen by A.07"
+    },
+    {
+      "name": "Maximum number of steps",
+      "group": "Info",
+      "area": "input",
+      "address": 56,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware checksum",
+      "group": "Info",
+      "area": "input",
+      "address": 57,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Quadrant",
+      "group": "Measurements",
+      "area": "input",
+      "address": 58,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Inductive load",
+        "2": "Inductive generator",
+        "3": "Capacitive generator",
+        "4": "Capacitive load"
+      }
+    },
+    {
+      "name": "Working hours",
+      "group": "Statistics",
+      "area": "input",
+      "address": 59,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R",
+      "description": "Total working hours"
+    },
+    {
+      "name": "Maximum voltage measured",
+      "group": "Statistics",
+      "area": "input",
+      "address": 61,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Maximum current measured",
+      "group": "Statistics",
+      "area": "input",
+      "address": 62,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Maximum THD I measured",
+      "group": "Statistics",
+      "area": "input",
+      "address": 64,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Maximum THD V measured",
+      "group": "Statistics",
+      "area": "input",
+      "address": 65,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Maximum internal temperature measured",
+      "group": "Statistics",
+      "area": "input",
+      "address": 66,
+      "type": "uint16",
+      "unit": "°C / °F",
+      "access": "R"
+    },
+    {
+      "name": "Maximum external temperature measured",
+      "group": "Statistics",
+      "area": "input",
+      "address": 67,
+      "type": "uint16",
+      "unit": "°C / °F",
+      "access": "R"
+    },
+    {
+      "name": "Mode",
+      "group": "Setup",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Manual",
+        "1": "Auto"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Manual step combination",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 8191,
+      "description": "Steps to insert in manual mode: bit 0 = step 1 ... bit 12 = step 13"
+    },
+    {
+      "name": "Manual step 1",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 2",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 3",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 4",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 5",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 6",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 7",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 6,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 8",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 7,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 9",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 8,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 10",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 9,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 11",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 10,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 12",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 11,
+      "access": "RW"
+    },
+    {
+      "name": "Manual step 13",
+      "group": "Setup",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 12,
+      "access": "RW"
+    },
+    {
+      "name": "Desired cos",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW",
+      "write_min": -0.99,
+      "write_max": 1.0,
+      "description": "Target cos phi: 0.85 to 1.00, or -0.90 to -0.99 for capacitive"
+    },
+    {
+      "name": "Sensitivity",
+      "group": "Setup",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "unit": "s/step",
+      "access": "RW",
+      "write_min": 5,
+      "write_max": 600
+    },
+    {
+      "name": "Language",
+      "group": "Setup",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "English",
+        "1": "Italian",
+        "2": "Spanish"
+      },
+      "write_min": 0,
+      "write_max": 2
+    },
+    {
+      "name": "P.01 CT primary current",
+      "group": "Setup",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 10000,
+      "description": "0 or 5 to 10000"
+    },
+    {
+      "name": "P.02 VT ratio",
+      "group": "Setup",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "RW",
+      "write_min": 0.4,
+      "write_max": 100
+    },
+    {
+      "name": "P.03 Capacitor nominal voltage",
+      "group": "Setup",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "write_min": 80,
+      "write_max": 65000
+    },
+    {
+      "name": "P.04 Step reconnection time",
+      "group": "Setup",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 600
+    },
+    {
+      "name": "P.05 Desired cos in generator mode",
+      "group": "Setup",
+      "area": "holding",
+      "address": 9,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW",
+      "write_min": -0.99,
+      "write_max": 1.0,
+      "description": "0 = disabled, 0.80 to 1.00, or -0.80 to -0.99 for capacitive"
+    },
+    {
+      "name": "Step 1 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 10,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 2 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 12,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 3 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 14,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 4 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 16,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 5 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 18,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 6 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 20,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 7 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 22,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 8 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 24,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 9 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 26,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 10 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 28,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 11 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 30,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 12 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 32,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "Step 13 power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 34,
+      "type": "int32",
+      "access": "RW",
+      "enum": {
+        "-3": "Fan",
+        "-2": "Normally open alarm",
+        "-1": "Normally closed alarm",
+        "0": "Disabled"
+      },
+      "write_min": -3,
+      "write_max": 10000000,
+      "description": "Step size; the manual gives the unit as var but also writes kvar. Special values: 0 disabled, -1 NCA, -2 NOA, -3 fan"
+    },
+    {
+      "name": "A.01 Mains connection",
+      "group": "Setup",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Three-phase",
+        "1": "Single-phase"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "A.01 Mains voltage",
+      "group": "Setup",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "write_min": 220,
+      "write_max": 440,
+      "description": "In steps of 5 V"
+    },
+    {
+      "name": "A.02 CT current sense",
+      "group": "Setup",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "L1 direct",
+        "2": "L1 inverse",
+        "3": "L2 direct",
+        "4": "L2 inverse",
+        "5": "L3 direct",
+        "6": "L3 inverse"
+      },
+      "write_min": 1,
+      "write_max": 6
+    },
+    {
+      "name": "A.03 Frequency",
+      "group": "Setup",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "50 Hz",
+        "2": "60 Hz"
+      },
+      "write_min": 1,
+      "write_max": 2
+    },
+    {
+      "name": "A.04 Communication port",
+      "group": "Setup",
+      "area": "holding",
+      "address": 40,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "RS485",
+        "1": "Ethernet"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "A.05 Serial address",
+      "group": "Setup",
+      "area": "holding",
+      "address": 41,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 199,
+      "description": "0 = disabled, 1 to 199"
+    },
+    {
+      "name": "A.05 Serial protocol",
+      "group": "Setup",
+      "area": "holding",
+      "address": 42,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Proprietary",
+        "1": "Modbus"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "A.05 Baud rate",
+      "group": "Setup",
+      "area": "holding",
+      "address": 43,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "2": "1200",
+        "3": "2400",
+        "4": "4800",
+        "5": "9600",
+        "6": "19200"
+      },
+      "write_min": 2,
+      "write_max": 6
+    },
+    {
+      "name": "A.05 Parity",
+      "group": "Setup",
+      "area": "holding",
+      "address": 44,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Odd",
+        "2": "Even"
+      },
+      "write_min": 0,
+      "write_max": 2
+    },
+    {
+      "name": "A.06 Ethernet IP address",
+      "group": "Setup",
+      "area": "holding",
+      "address": 45,
+      "type": "uint32",
+      "access": "RW",
+      "description": "IPv4 address as a 32-bit number"
+    },
+    {
+      "name": "A.06 Ethernet gateway address",
+      "group": "Setup",
+      "area": "holding",
+      "address": 47,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Gateway IPv4 address as a 32-bit number"
+    },
+    {
+      "name": "A.06 Ethernet port",
+      "group": "Setup",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "A.07 Temperature scale",
+      "group": "Setup",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "°C",
+        "1": "°F"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "A.07 Fan relay off below",
+      "group": "Setup",
+      "area": "holding",
+      "address": 51,
+      "type": "uint16",
+      "unit": "°C / °F",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 240,
+      "description": "Minimum temperature threshold for disabling the fan relay"
+    },
+    {
+      "name": "A.07 Fan relay off above",
+      "group": "Setup",
+      "area": "holding",
+      "address": 52,
+      "type": "uint16",
+      "unit": "°C / °F",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 240,
+      "description": "Maximum temperature threshold for disabling the fan relay"
+    },
+    {
+      "name": "A.08 Fixed step number",
+      "group": "Setup",
+      "area": "holding",
+      "address": 53,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 12
+    },
+    {
+      "name": "A.08 Fixed step type",
+      "group": "Setup",
+      "area": "holding",
+      "address": 54,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Normal",
+        "1": "With calculations"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "A.09 Antihunting threshold",
+      "group": "Setup",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW",
+      "write_min": -0.99,
+      "write_max": 1.0,
+      "description": "0 = disabled, 0.90 to 1.00, or -0.95 to -0.99 for capacitive"
+    },
+    {
+      "name": "A.10 Delay between steps",
+      "group": "Setup",
+      "area": "holding",
+      "address": 56,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 5
+    },
+    {
+      "name": "A.11 Time to return to home page",
+      "group": "Setup",
+      "area": "holding",
+      "address": 57,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 180,
+      "description": "0 = disabled, 5 to 180"
+    },
+    {
+      "name": "A.12 Keyboard illumination",
+      "group": "Setup",
+      "area": "holding",
+      "address": 58,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Enabled",
+        "1": "Disabled"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "A.13 External input function",
+      "group": "Setup",
+      "area": "holding",
+      "address": 59,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disabled",
+        "1": "External temperature probe",
+        "2": "Activate second desired cos"
+      },
+      "write_min": 0,
+      "write_max": 2
+    },
+    {
+      "name": "A.13 Second desired cos",
+      "group": "Setup",
+      "area": "holding",
+      "address": 60,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW",
+      "write_min": -0.99,
+      "write_max": 1.0,
+      "description": "0.85 to 1.00, or -0.90 to -0.99 for capacitive"
+    },
+    {
+      "name": "Alarm threshold voltage too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 61,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 100,
+      "description": "0 = disabled"
+    },
+    {
+      "name": "Alarm threshold voltage too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 62,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 100,
+      "description": "0 = disabled"
+    },
+    {
+      "name": "Alarm threshold current too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 63,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 200,
+      "description": "0 = disabled"
+    },
+    {
+      "name": "Alarm threshold current too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 100.0,
+      "description": "0 = disabled",
+      "scale": 0.1
+    },
+    {
+      "name": "Alarm threshold overcompensation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 65,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = disabled. The manual's range for this value is unclear"
+    },
+    {
+      "name": "Alarm threshold undercompensation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = disabled. The manual's range for this value is unclear"
+    },
+    {
+      "name": "Alarm threshold over temperature",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "unit": "°C / °F",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 158,
+      "description": "0 = disabled, 35 to 158"
+    },
+    {
+      "name": "Alarm threshold high THD V",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 68,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 150,
+      "description": "0 = disabled, 1 to 150"
+    },
+    {
+      "name": "Alarm threshold high THD I",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 69,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 150,
+      "description": "0 = disabled, 1 to 150"
+    },
+    {
+      "name": "Alarm threshold minimum cos",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 0.95,
+      "description": "0 = disabled, 0.50 to 0.95"
+    },
+    {
+      "name": "Alarm threshold external probe over temperature",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 71,
+      "type": "uint16",
+      "unit": "°C / °F",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 158,
+      "description": "0 = disabled, 35 to 158"
+    },
+    {
+      "name": "Alarm delay voltage too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 77,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay voltage too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 78,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay current too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 79,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay current too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 80,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay overcompensation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay undercompensation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay over temperature",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 83,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay high THD V",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 84,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay high THD I",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 85,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay minimum cos",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 86,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm delay external probe over temperature",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 87,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Steps disconnection time on current too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 93,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 64799
+    },
+    {
+      "name": "Alarm relay mask",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 94,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Alarms that drive the alarm relay: same bits as the general alarms, 1 = enabled"
+    },
+    {
+      "name": "Alarm relay on - Voltage too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - Voltage too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - Current too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - Current too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - Overcompensation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - Undercompensation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - Over temperature",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 6,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - High THD V",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 7,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - High THD I",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 8,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - Minimum cos",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 9,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - External over temperature",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "bool",
+      "bit": 10,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm relay on - Wrong frequency",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 94,
+      "type": "bool",
+      "bit": 15,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm step disconnection mask",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 96,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Alarms that disconnect the steps: same bits as the general alarms, 1 = enabled"
+    },
+    {
+      "name": "Alarm disconnects steps on - Voltage too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - Voltage too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - Current too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - Current too low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - Overcompensation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - Undercompensation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - Over temperature",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 6,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - High THD V",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 7,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - High THD I",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 8,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - Minimum cos",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 9,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - External over temperature",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "bool",
+      "bit": 10,
+      "access": "RW"
+    },
+    {
+      "name": "Alarm disconnects steps on - Wrong frequency",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 96,
+      "type": "bool",
+      "bit": 15,
+      "access": "RW"
+    },
+    {
+      "name": "Step 1 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 98,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 2 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 100,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 3 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 102,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 4 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 104,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 5 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 106,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 6 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 108,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 7 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 110,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 8 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 112,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 9 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 114,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 10 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 116,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 11 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 118,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 12 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 120,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 13 insertions",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 122,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Number of times the step was inserted"
+    },
+    {
+      "name": "Step 1 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 124,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 2 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 126,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 3 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 128,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 4 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 130,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 5 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 132,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 6 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 134,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 7 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 136,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 8 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 138,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 9 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 140,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 10 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 142,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 11 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 144,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 12 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 146,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Step 13 insertion time",
+      "group": "Statistics",
+      "area": "holding",
+      "address": 148,
+      "type": "uint32",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "Active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 150,
+      "type": "uint64",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "Counter in thousandths; the manual gives the unit as W, probably Wh or kWh"
+    },
+    {
+      "name": "Reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 154,
+      "type": "uint64",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "Counter in thousandths; the manual gives the unit as var"
+    },
+    {
+      "name": "Apparent energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 158,
+      "type": "uint64",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "Counter in thousandths; the manual gives the unit as VA"
+    },
+    {
+      "name": "A.14 Display contrast",
+      "group": "Setup",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 55,
+      "write_max": 63
+    },
+    {
+      "name": "Secondary CT current",
+      "group": "Setup",
+      "area": "holding",
+      "address": 163,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW",
+      "enum": {
+        "1": "1 A",
+        "5": "5 A"
+      },
+      "write_min": 1,
+      "write_max": 5
+    },
+    {
+      "name": "Voltage input connection",
+      "group": "Setup",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "L1-L2",
+        "1": "L2-L3",
+        "2": "L3-L1"
+      },
+      "write_min": 0,
+      "write_max": 2
+    },
+    {
+      "name": "Capacitor overcurrent second threshold",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "write_min": 100,
+      "write_max": 200
+    },
+    {
+      "name": "Overcurrent alarm off time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 166,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3599
+    }
+  ]
+}
