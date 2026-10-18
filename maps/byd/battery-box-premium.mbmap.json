@@ -1,0 +1,78 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "BYD",
+  "model": "Battery-Box Premium",
+  "models": [
+    "Battery-Box Premium HVS",
+    "Battery-Box Premium HVM",
+    "Battery-Box Premium HVL",
+    "Battery-Box Premium LVS",
+    "Battery-Box Premium LVL"
+  ],
+  "vendor_website": "bydbatterybox.com",
+  "description": "Battery-Box Premium battery management unit, read-only status over its Ethernet port",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "Community reverse engineering of the BE Connect Plus protocol (sarnau/BYD-Battery-Box-Infos); BYD publishes no register map",
+  "sources": [
+    {
+      "title": "sarnau/BYD-Battery-Box-Infos, Read_Modbus.py and README",
+      "url": "https://github.com/sarnau/BYD-Battery-Box-Infos",
+      "note": "Unofficial; register meanings come from the reference script, not from a BYD document"
+    }
+  ],
+  "notes": [
+    "Unofficial: BYD does not publish this protocol and the registers were worked out from the installer software. Treat every value as unchecked and keep to reading.",
+    "The battery management unit answers on its fixed Ethernet address 192.168.16.254, port 8080, unit id 1. It speaks Modbus RTU framing (with CRC) carried over a TCP connection, not Modbus TCP with the MBAP header; a client must be set to RTU-over-TCP.",
+    "Only one client can be connected at a time: the BE Connect Plus app and a monitoring script cannot run together. Wi-Fi access of the unit is switched off after a while, so the wired Ethernet port is the practical route; the unit needs a route to 192.168.16.0/24.",
+    "Readable blocks found by the community: 0x0000 to 0x0066 (hardware information and configuration), 0x0500 to 0x0518 (current status), 0x0550 to 0x0557 (BMS information) and 0x05A0 to 0x05A7 (history). The last two are request-and-response areas and are not mapped; registers 0x0010 to 0x0012 hold the hardware configuration and must never be written.",
+    "The bit meanings of the error bitmask at 0x050D are not mapped; the reference script prints it as a hexadecimal number."
+  ],
+  "protocol": "tcp",
+  "unit_id": 1,
+  "port": 8080,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "unofficial",
+  "enums": {
+    "area": {"1": "A", "2": "B"},
+    "application": {"0": "Off Grid", "1": "On Grid", "2": "Backup"},
+    "phase": {"0": "Single", "1": "Three"}
+  },
+  "registers": [
+    {"name": "Serial number", "group": "Device", "area": "holding", "address": 0, "type": "string", "access": "R", "length": 9, "role": "serial", "description": "18 ASCII characters; the prefix tells the type: P03 or E0P3 for high-voltage packs (HVL, HVM, HVS), P02 or P011 for low-voltage ones (LVL, LVFlex, LVS)"},
+    {"name": "BMU A version major", "group": "Device", "area": "holding", "address": 12, "type": "uint16", "access": "R", "bit": 8, "bits": 8, "description": "Firmware area A of the battery management unit, shown as V<major>.<minor>"},
+    {"name": "BMU A version minor", "group": "Device", "area": "holding", "address": 12, "type": "uint16", "access": "R", "bit": 0, "bits": 8},
+    {"name": "BMU B version major", "group": "Device", "area": "holding", "address": 13, "type": "uint16", "access": "R", "bit": 8, "bits": 8, "description": "Firmware area B of the battery management unit"},
+    {"name": "BMU B version minor", "group": "Device", "area": "holding", "address": 13, "type": "uint16", "access": "R", "bit": 0, "bits": 8},
+    {"name": "BMS version major", "group": "Device", "area": "holding", "address": 14, "type": "uint16", "access": "R", "bit": 8, "bits": 8, "description": "Battery management system firmware"},
+    {"name": "BMS version minor", "group": "Device", "area": "holding", "address": 14, "type": "uint16", "access": "R", "bit": 0, "bits": 8},
+    {"name": "BMU working area", "group": "Device", "area": "holding", "address": 15, "type": "uint16", "access": "R", "bit": 8, "bits": 8, "enum": "area"},
+    {"name": "BMS working area", "group": "Device", "area": "holding", "address": 15, "type": "uint16", "access": "R", "bit": 0, "bits": 8, "enum": "area"},
+    {"name": "Module quantity", "group": "Device", "area": "holding", "address": 16, "type": "uint16", "access": "R", "bit": 0, "bits": 4},
+    {"name": "BMS quantity", "group": "Device", "area": "holding", "address": 16, "type": "uint16", "access": "R", "bit": 4, "bits": 4},
+    {"name": "Inverter code", "group": "Device", "area": "holding", "address": 16, "type": "uint16", "access": "R", "bit": 8, "bits": 4, "description": "Index into the list of inverters the pack was configured for; the list in the reference script has more entries than four bits can address. Do not change it: it is the hardware configuration"},
+    {"name": "Application", "group": "Device", "area": "holding", "address": 17, "type": "uint16", "access": "R", "bit": 8, "bits": 8, "enum": "application"},
+    {"name": "Battery type code", "group": "Device", "area": "holding", "address": 17, "type": "uint16", "access": "R", "bit": 0, "bits": 8, "description": "Index into the battery type list of the serial prefix: HVL, HVM, HVS for P03 and E0P3, or LVL, LVFlex (Lite), LVS / LVS Lite for P02 and P011"},
+    {"name": "Phase", "group": "Device", "area": "holding", "address": 18, "type": "uint16", "access": "R", "bit": 8, "bits": 8, "enum": "phase"},
+    {"name": "State of charge", "group": "Battery", "area": "holding", "address": 1280, "type": "uint16", "access": "R", "unit": "%"},
+    {"name": "Maximum cell voltage", "group": "Battery", "area": "holding", "address": 1281, "type": "uint16", "access": "R", "scale": 0.01, "unit": "V"},
+    {"name": "Minimum cell voltage", "group": "Battery", "area": "holding", "address": 1282, "type": "uint16", "access": "R", "scale": 0.01, "unit": "V"},
+    {"name": "State of health", "group": "Battery", "area": "holding", "address": 1283, "type": "uint16", "access": "R", "unit": "%"},
+    {"name": "Current", "group": "Battery", "area": "holding", "address": 1284, "type": "int16", "access": "R", "scale": 0.1, "unit": "A"},
+    {"name": "Battery voltage", "group": "Battery", "area": "holding", "address": 1285, "type": "uint16", "access": "R", "scale": 0.01, "unit": "V"},
+    {"name": "Maximum cell temperature", "group": "Battery", "area": "holding", "address": 1286, "type": "uint16", "access": "R", "unit": "°C"},
+    {"name": "Minimum cell temperature", "group": "Battery", "area": "holding", "address": 1287, "type": "uint16", "access": "R", "unit": "°C"},
+    {"name": "BMU temperature", "group": "Battery", "area": "holding", "address": 1288, "type": "uint16", "access": "R", "unit": "°C"},
+    {"name": "BMU version major", "group": "Battery", "area": "holding", "address": 1290, "type": "uint16", "access": "R", "bit": 8, "bits": 8},
+    {"name": "BMU version minor", "group": "Battery", "area": "holding", "address": 1290, "type": "uint16", "access": "R", "bit": 0, "bits": 8},
+    {"name": "Error bitmask", "group": "Battery", "area": "holding", "address": 1293, "type": "uint16", "access": "R", "description": "Bit set for each error; the bit meanings of the pack are not documented here"},
+    {"name": "P/T version major", "group": "Battery", "area": "holding", "address": 1294, "type": "uint16", "access": "R", "bit": 8, "bits": 8, "description": "Parameter table version"},
+    {"name": "P/T version minor", "group": "Battery", "area": "holding", "address": 1294, "type": "uint16", "access": "R", "bit": 0, "bits": 8},
+    {"name": "Output voltage", "group": "Battery", "area": "holding", "address": 1296, "type": "uint16", "access": "R", "scale": 0.01, "unit": "V"},
+    {"name": "Charge cycles", "group": "Battery", "area": "holding", "address": 1297, "type": "uint16", "access": "R", "description": "Read as one register by the reference script; the neighbouring register may hold the high word"},
+    {"name": "Discharge cycles", "group": "Battery", "area": "holding", "address": 1299, "type": "uint16", "access": "R", "description": "Read as one register by the reference script"}
+  ]
+}
