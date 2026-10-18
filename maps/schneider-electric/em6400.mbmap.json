@@ -3,71 +3,1197 @@
   "mbmap": 2,
   "vendor": "Schneider Electric",
   "model": "EM6400",
-  "models": ["EM6400"],
+  "models": [
+    "EM6400",
+    "EM6434",
+    "EM6436",
+    "EM6459"
+  ],
   "vendor_website": "se.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table schneider/electric-em6400; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/schneider-electric-em6400.htm. Not verified against the manufacturer's documentation",
+  "description": "Multifunction energy meter (Conzerv EM6400 series)",
+  "revision": 3,
+  "revised": "2026-10-18",
+  "source": "Conzerv Systems, EM 6400 DigitAN v03.02.01.00 Series Register Map, V03.02.02.00 consolidated register map (EM6400RegMap_V01.01.02.pdf)",
+  "sources": [
+    {
+      "title": "EM6400 series Modbus register map (EM6400RegMap_V01.01.02)",
+      "url": "https://www.se.com/in/en/faqs/FA349907/",
+      "note": "PDF attached to the Schneider Electric India FAQ \"Modbus Register address required for EM6400 meter\""
+    }
+  ],
   "notes": [
-    "Schneider Electric EM6400.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Addresses are the register numbers of the register map without the leading 4 (43901 is holding register 3901): Modicon numbering, 1-based, so the address on the wire is the register number minus 1.",
+    "The map has one table for all models; the description of a register says when it exists only on some of them (EM6400 Basic, IE, DM, DM+IE, THD and their combinations, EM6434, EM6459, EM6436).",
+    "Values are 32-bit floats or 32-bit integers (the run-second counters and the maximum demand time), no scaling needed. The register map does not state the order of the two registers; this map uses the least significant register first, which is what third-party integration guides report for the EM6400 series. If the values look wrong, try big word order.",
+    "The register map's reserved registers and its 'old' energy registers (a second set of 43122, 43124 and so on, one register after the main energy registers) are left out."
   ],
   "byte_order": "big",
-  "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "word_order": "little",
+  "address_base": 1,
+  "x_status": "official",
   "registers": [
-    {"name": "%V1 voltage thd, phase 1", "area": "holding", "address": 3860, "type": "float32", "access": "R", "description": "unit: %V1"},
-    {"name": "%V2 voltage thd, phase 2", "area": "holding", "address": 3862, "type": "float32", "access": "R", "description": "unit: %V2"},
-    {"name": "%V3 voltage thd, phase 3", "area": "holding", "address": 3864, "type": "float32", "access": "R", "description": "unit: %V3"},
-    {"name": "%A1 current thd, phase 1", "area": "holding", "address": 3866, "type": "float32", "access": "R", "description": "unit: %A1"},
-    {"name": "%A2 current thd, phase 2", "area": "holding", "address": 3868, "type": "float32", "access": "R", "description": "unit: %A2"},
-    {"name": "Va apparent power, total", "area": "holding", "address": 3900, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "W active power, total", "area": "holding", "address": 3902, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Var reactive power, total", "area": "holding", "address": 3904, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Pf avg pf", "area": "holding", "address": 3906, "type": "float32", "access": "R"},
-    {"name": "Vll line to line avg voltage", "area": "holding", "address": 3908, "type": "float32", "unit": "VLL", "access": "R"},
-    {"name": "Vln line to neutral voltage", "area": "holding", "address": 3910, "type": "float32", "unit": "VLN", "access": "R"},
-    {"name": "A avg current", "area": "holding", "address": 3912, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "F frequency, hz", "area": "holding", "address": 3914, "type": "float32", "unit": "F", "access": "R"},
-    {"name": "VA1 apparent power, phase1", "area": "holding", "address": 3916, "type": "float32", "access": "R", "description": "unit: VA1"},
-    {"name": "W1 active power, phase1", "area": "holding", "address": 3918, "type": "float32", "access": "R", "description": "unit: W1"},
-    {"name": "Var1 reactive power, phase1", "area": "holding", "address": 3920, "type": "float32", "access": "R", "description": "unit: VAR1"},
-    {"name": "PF1 pf, phase1", "area": "holding", "address": 3922, "type": "float32", "access": "R", "description": "unit: PF1"},
-    {"name": "V12 voltage phase1 to phase2", "area": "holding", "address": 3924, "type": "float32", "access": "R", "description": "unit: V12"},
-    {"name": "V1 voltage phase1 to neutral", "area": "holding", "address": 3926, "type": "float32", "access": "R", "description": "unit: V1"},
-    {"name": "A1 current, phase1", "area": "holding", "address": 3928, "type": "float32", "access": "R", "description": "unit: A1"},
-    {"name": "VA2 apparent power, phase2", "area": "holding", "address": 3930, "type": "float32", "access": "R", "description": "unit: VA2"},
-    {"name": "W2 active power, phase2", "area": "holding", "address": 3932, "type": "float32", "access": "R", "description": "unit: W2"},
-    {"name": "Var2 reactive power, phase2", "area": "holding", "address": 3934, "type": "float32", "access": "R", "description": "unit: VAR2"},
-    {"name": "PF2 pf, phase2", "area": "holding", "address": 3936, "type": "float32", "access": "R", "description": "unit: PF2"},
-    {"name": "V23 voltage phase2 to phase3", "area": "holding", "address": 3938, "type": "float32", "access": "R", "description": "unit: V23"},
-    {"name": "V2 voltage phase2 to neutral", "area": "holding", "address": 3940, "type": "float32", "access": "R", "description": "unit: V2"},
-    {"name": "A2 current, phase2", "area": "holding", "address": 3942, "type": "float32", "access": "R", "description": "unit: A2"},
-    {"name": "VA3 apparent power, phase3", "area": "holding", "address": 3944, "type": "float32", "access": "R", "description": "unit: VA3"},
-    {"name": "W3 active power, phase3", "area": "holding", "address": 3946, "type": "float32", "access": "R", "description": "unit: W3"},
-    {"name": "Var3 reactive power, phase3", "area": "holding", "address": 3948, "type": "float32", "access": "R", "description": "unit: VAR3"},
-    {"name": "PF3 pf, phase3", "area": "holding", "address": 3950, "type": "float32", "access": "R", "description": "unit: PF3"},
-    {"name": "V31 voltage phase3 to phase1", "area": "holding", "address": 3952, "type": "float32", "access": "R", "description": "unit: V31"},
-    {"name": "V3 voltage phase3 to neutral", "area": "holding", "address": 3954, "type": "float32", "access": "R", "description": "unit: V3"},
-    {"name": "A3 current, phase3", "area": "holding", "address": 3956, "type": "float32", "access": "R", "description": "unit: A3"},
-    {"name": "Fwdvah forward apparent energy", "area": "holding", "address": 3958, "type": "float32", "unit": "FwdVAh", "access": "R"},
-    {"name": "Fwdwh forward active energy", "area": "holding", "address": 3960, "type": "float32", "unit": "FwdWh", "access": "R"},
-    {"name": "Fwdvarh forward reactive inductive energy", "area": "holding", "address": 3962, "type": "float32", "access": "R", "description": "unit: FwdVARh"},
-    {"name": "Fwdvarh forward reactive capacitive energy", "area": "holding", "address": 3964, "type": "float32", "access": "R", "description": "unit: FwdVARh"},
-    {"name": "Revvah reverse apparent energy", "area": "holding", "address": 3966, "type": "float32", "unit": "RevVAh", "access": "R"},
-    {"name": "Revwh reverse active energy", "area": "holding", "address": 3968, "type": "float32", "unit": "RevWh", "access": "R"},
-    {"name": "Revvarh reverse reactive inductive energy", "area": "holding", "address": 3970, "type": "float32", "access": "R", "description": "unit: RevVARh"},
-    {"name": "Revvarh reverse reactive capacitive energy", "area": "holding", "address": 3972, "type": "float32", "access": "R", "description": "unit: RevVARh"},
-    {"name": "Present demand", "area": "holding", "address": 3974, "type": "float32", "access": "R", "description": "unit: Present"},
-    {"name": "Rising demand", "area": "holding", "address": 3976, "type": "float32", "unit": "Rising", "access": "R"},
-    {"name": "Max md", "area": "holding", "address": 3978, "type": "float32", "unit": "Max", "access": "R"},
-    {"name": "Max dm occurrence time", "area": "holding", "address": 3980, "type": "float32", "unit": "Max", "access": "R"},
-    {"name": "On hrs", "area": "holding", "address": 3992, "type": "int32", "unit": "On", "access": "R"},
-    {"name": "Fwdrun secs", "area": "holding", "address": 3994, "type": "int32", "unit": "FwdRun", "access": "R"},
-    {"name": "Revrun secs", "area": "holding", "address": 3996, "type": "int32", "unit": "RevRun", "access": "R"},
-    {"name": "Intr number of power interruption", "area": "holding", "address": 3998, "type": "int32", "unit": "Intr", "access": "R"}
+    {
+      "name": "Apparent Power - avg (3901)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3901,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Register SxNy_VA. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Active Power -avg (3903)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3903,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Register SxNy_W. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "Reactive Power - avg (3905)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3905,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Register SxNy_VAR. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Avg PF (3907)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3907,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PF"
+    },
+    {
+      "name": "Line to Line avg Voltage (3909)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3909,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_VLL. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Line to Neutral Voltage (3911)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3911,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_VLN. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Avg Current (3913)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3913,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_A. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Frequency (3915)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3915,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Register SxNy_Hz. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "R-phase Apparent Power (3917)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3917,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Register SxNy_VA_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "R-phase Active Power (3919)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3919,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Register SxNY_W_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "R-phase Reactive Power (3921)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3921,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Register SxNy_VAR_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "R-phase PF (3923)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3923,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PF_r"
+    },
+    {
+      "name": "R-Y phase Voltage (3925)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3925,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_Vry. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "R-phase to Neutral Voltage (3927)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3927,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_Vr. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "R-phase Current (3929)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3929,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_A_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Y-phase Apparent Power (3931)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3931,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Register SxNy_VA_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Y-phase Active Power (3933)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3933,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Register SxNy_W_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "Y_phase Reactive Power (3935)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3935,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Register SxNy_VAR_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Y_phase PF (3937)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3937,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PF_y"
+    },
+    {
+      "name": "Y_B phase Voltage (3939)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3939,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_Vyb. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Y_phase to Neutral Voltage (3941)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3941,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_Vy. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Y-phase Current (3943)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3943,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_A_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "B_phase Apparent Power (3945)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3945,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Register SxNy_VA_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "B_phase Active power (3947)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3947,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Register SxNy_W_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "B_phase Reactive power (3949)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3949,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Register SxNy_VAR_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "B_phase PF (3951)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3951,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PF_b"
+    },
+    {
+      "name": "B_R phase voltage (3953)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3953,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_Vbr. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "B_phase to Neutral Voltage (3955)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3955,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_V_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "B_phase Current (3957)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3957,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_A_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Forward Apparent Energy (3959)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3959,
+      "type": "float32",
+      "access": "R",
+      "unit": "VAh",
+      "description": "Register SxNy_Fwd_VAh. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Forward Active Energy (3961)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3961,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Register SxNy_Fwd_Wh. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "Forward ReActive Inductive Energy (3963)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3963,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Register SxNy_Fwd_VARh Inductive. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Forward ReActive Capacitve Energy (3965)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3965,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Register SxNy_Fwd_VARh Capacitive. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Reverse Apparent Energy (3967)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3967,
+      "type": "float32",
+      "access": "R",
+      "unit": "VAh",
+      "description": "Register SxNy_Rev_VAh. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Reverse Active Energy (3969)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3969,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Register SxNy_Rev_Wh. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Reverse Active Energy (3971)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3971,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Register SxNy_Rev_VARh Inductive. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Reverse Active Energy (3973)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3973,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Register SxNy_Rev_VARh Capacitive. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Present Demand (3975)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3975,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PresentDemand. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Rising Demand (3977)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3977,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_RisingDemand. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Maximum Demand (3979)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3979,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_MaxDM. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Maximum Demand Occurence Time (3993)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3993,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_MaxDMTime. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Forward Runseconds (3995)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3995,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Fwd_Runsecs. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Reverse Runseconds (3997)",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3997,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Rev_Runsecs. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Number of Power Interruptions",
+      "group": "Turbo Block",
+      "area": "holding",
+      "address": 3999,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Intr. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "R-Phase Voltage %THD",
+      "group": "THD Block",
+      "area": "holding",
+      "address": 3861,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Vr_THD. Only on EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Y-Phase Voltage %THD",
+      "group": "THD Block",
+      "area": "holding",
+      "address": 3863,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Vy_THD. Only on EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "B-Phase Voltage %THD",
+      "group": "THD Block",
+      "area": "holding",
+      "address": 3865,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Vb_THD. Only on EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "R-Phase Current %THD",
+      "group": "THD Block",
+      "area": "holding",
+      "address": 3867,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Ar_THD. Only on EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Y-Phase Current %THD",
+      "group": "THD Block",
+      "area": "holding",
+      "address": 3869,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Ay_THD. Only on EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "B-Phase Current %THD",
+      "group": "THD Block",
+      "area": "holding",
+      "address": 3871,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Ab_THD. Only on EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Apparent Power - avg (3001)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3001,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Register SxNy_VA. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Active Power -avg (3003)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3003,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Register SxNy_W. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "Reactive Power - avg (3005)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3005,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Register SxNy_VAR. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Avg PF (3007)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3007,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PF"
+    },
+    {
+      "name": "Line to Line avg Voltage (3009)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3009,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_VLL. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Line to Neutral Voltage (3011)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3011,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_VLN. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Avg Current (3013)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3013,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_A. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Frequency (3015)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3015,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Register SxNy_Hz. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Number of interruptions (3019)",
+      "group": "Total RMS Block",
+      "area": "holding",
+      "address": 3019,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Intr. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "R-phase Apparent Power (3031)",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3031,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Register SxNy_VA_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "R-phase Active Power (3033)",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3033,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Register SxNY_W_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "R-phase Reactive Power (3035)",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3035,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Register SxNy_VAR_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "R-phase PF (3037)",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3037,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PF_r"
+    },
+    {
+      "name": "R-Y phase Voltage (3039)",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3039,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_V_ry. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "R-phase to Neutral Voltage (3041)",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3041,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_V_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "R-phase Current (3043)",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3043,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_A_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "R_Frequency",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3045,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Register SxNy_Hz_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Number of interruptions (3049)",
+      "group": "R-Phase RMS Block",
+      "area": "holding",
+      "address": 3049,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Intr_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Y-phase Apparent Power (3061)",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3061,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Register SxNy_VA_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Y-phase Active Power (3063)",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3063,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Register SxNy_W_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "Y_phase Reactive Power (3065)",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3065,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Register SxNy_VAR_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Y_phase PF (3067)",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3067,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PF_y"
+    },
+    {
+      "name": "Y_B phase Voltage (3069)",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3069,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_V_yb. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Y_phase to Neutral Voltage (3071)",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3071,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_V_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Y-phase Current (3073)",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3073,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_A_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "Y_Frequency",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3075,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Register SxNy_Hz_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Number of interruptions (3079)",
+      "group": "Y-Phase RMS Block",
+      "area": "holding",
+      "address": 3079,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Intr_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "B_phase Apparent Power (3091)",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3091,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Register SxNy_VA_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "B_phase Active power (3093)",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3093,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Register SxNy_W_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "B_phase Reactive power (3095)",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3095,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Register SxNy_VAR_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "B_phase PF (3097)",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3097,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PF_b"
+    },
+    {
+      "name": "B_R phase voltage (3099)",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3099,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_V_br. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "B_phase to Neutral Voltage (3101)",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3101,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_V_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "B_phase Current (3103)",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3103,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_A_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459, EM6436"
+    },
+    {
+      "name": "B_Frequency",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3105,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Register SxNy_Hz_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Number of interruptions (3109)",
+      "group": "B-Phase RMS Block",
+      "area": "holding",
+      "address": 3109,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Intr_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Forward Apparent Energy (3121)",
+      "group": "Block 7",
+      "area": "holding",
+      "address": 3121,
+      "type": "float32",
+      "access": "R",
+      "unit": "VAh",
+      "description": "Register SxNy_Fwd_VAh. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Forward Active Energy (3123)",
+      "group": "Block 7",
+      "area": "holding",
+      "address": 3123,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Register SxNy_Fwd_Wh. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434, EM6436"
+    },
+    {
+      "name": "Forward ReActive Inductive Energy (3125)",
+      "group": "Block 7",
+      "area": "holding",
+      "address": 3125,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Register SxNy_Fwd_VARh Inductive. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Forward ReActive Capacitve Energy (3131)",
+      "group": "Block 7",
+      "area": "holding",
+      "address": 3131,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Register SxNy_Fwd_VARh Capacitive. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Forward Runseconds (3139)",
+      "group": "Block 7",
+      "area": "holding",
+      "address": 3139,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Fwd_Runsecs. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6434"
+    },
+    {
+      "name": "Reverse Apparent Energy (3151)",
+      "group": "Block 8",
+      "area": "holding",
+      "address": 3151,
+      "type": "float32",
+      "access": "R",
+      "unit": "VAh",
+      "description": "Register SxNy_Rev_VAh. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Reverse Active Energy (3153)",
+      "group": "Block 8",
+      "area": "holding",
+      "address": 3153,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Register SxNy_Rev_Wh. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Reverse ReActive Inductive Energy",
+      "group": "Block 8",
+      "area": "holding",
+      "address": 3155,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Register SxNy_Rev_VARh Inductive. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Reverse ReActive Capacitve Energy",
+      "group": "Block 8",
+      "area": "holding",
+      "address": 3161,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Register SxNy_Rev_VARh Capacitive. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Reverse Runseconds (3169)",
+      "group": "Block 8",
+      "area": "holding",
+      "address": 3169,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Rev_Runsecs. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Total Apparent Energy",
+      "group": "Total Integrated Block",
+      "area": "holding",
+      "address": 3181,
+      "type": "float32",
+      "access": "R",
+      "unit": "VAh",
+      "description": "Register SxNy_Tot_VAh. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Total Active Energy",
+      "group": "Total Integrated Block",
+      "area": "holding",
+      "address": 3183,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Register SxNy_Tot_Wh. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Total ReActive Capacitve Energy",
+      "group": "Total Integrated Block",
+      "area": "holding",
+      "address": 3191,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Register SxNy_Tot_VARh Capacitive. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Total Runseconds",
+      "group": "Total Integrated Block",
+      "area": "holding",
+      "address": 3199,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_Tot_Runsecs. Only on EM6400 IE, EM6400 DM+IE, EM6400 IE+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Present Demand (3735)",
+      "group": "Demand Block",
+      "area": "holding",
+      "address": 3735,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_PresentDemand. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Rising Demand (3737)",
+      "group": "Demand Block",
+      "area": "holding",
+      "address": 3737,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_RisingDemand. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Demand TimeRemaining",
+      "group": "Demand Block",
+      "area": "holding",
+      "address": 3739,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_TimeRemaining. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Maximum Demand (3741)",
+      "group": "MaxDemand Block",
+      "area": "holding",
+      "address": 3741,
+      "type": "float32",
+      "access": "R",
+      "description": "Register SxNy_MaxDM. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Maximum Demand Occurence Time (3743)",
+      "group": "MaxDemand Block",
+      "area": "holding",
+      "address": 3743,
+      "type": "uint32",
+      "access": "R",
+      "description": "Register SxNy_MaxDMTime. Only on EM6400 DM, EM6400 DM+IE, EM6400 DM+THD, EM6400 DM+IE+THD"
+    },
+    {
+      "name": "Average Load Percentage",
+      "group": "Block 15",
+      "area": "holding",
+      "address": 3881,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Load_Avg. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Percentage Of R Phase Load",
+      "group": "Block 15",
+      "area": "holding",
+      "address": 3883,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Load_r. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Percentage Of Y Phase Load",
+      "group": "Block 15",
+      "area": "holding",
+      "address": 3885,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Load_y. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Percentage Of B Phase Load",
+      "group": "Block 15",
+      "area": "holding",
+      "address": 3887,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Load_b. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Unbalanced Load Percentage",
+      "group": "Block 15",
+      "area": "holding",
+      "address": 3889,
+      "type": "float32",
+      "access": "R",
+      "unit": "%",
+      "description": "Register SxNy_Load_Unbalanced. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Nutral Voltage",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3701,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Register SxNy_Vn. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Nutral Current",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3703,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Register SxNy_In. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Voltage Phase Angle r-Phase",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3705,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Register SxNy_Vr. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Voltage Phase Angle y-Phase",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3707,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Register SxNy_Vy. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Voltage Phase Angle b-Phase",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3709,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Register SxNy_Vb. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Current Phase Angle r-Phase",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3711,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Register SxNy_Ar. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Current Phase Angle y-Phase",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3713,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Register SxNy_Ay. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Current Phase Angle b-Phase",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3715,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Register SxNy_Ab. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    },
+    {
+      "name": "Rotations per Minute",
+      "group": "Phase Angle Block",
+      "area": "holding",
+      "address": 3717,
+      "type": "float32",
+      "access": "R",
+      "unit": "rpm",
+      "description": "Register SxNy_RPM. Only on EM6400 (Basic), EM6400 IE, EM6400 DM, EM6400 DM+IE, EM6400 THD, EM6400 IE+THD, EM6400 DM+THD, EM6400 DM+IE+THD, EM6459"
+    }
   ]
 }
