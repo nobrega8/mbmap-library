@@ -2,72 +2,1148 @@
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
   "vendor": "Schneider Electric",
-  "model": "Powerlogic ION8600",
-  "models": ["Powerlogic ION8600"],
+  "model": "ION8600",
+  "models": [
+    "ION8600",
+    "Powerlogic ION8600"
+  ],
   "vendor_website": "se.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table schneider/electric-powerlogic-ion8600; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/schneider-electric-powerlogic-ion8600.htm. Not verified against the manufacturer's documentation",
+  "description": "Revenue meter (default Modbus register map)",
+  "revision": 3,
+  "revised": "2026-10-18",
+  "source": "Schneider Electric, Modbus protocol and register map for ION devices, 70022-0124-01 (08/2011), section Modbus register map ION8600",
+  "sources": [
+    {
+      "title": "PowerLogic ION Meters Modbus Protocol and Register Map",
+      "version": "70022-0124-01",
+      "date": "2011-08",
+      "url": "https://www.se.com/us/en/download/document/70022-0124-01/",
+      "note": "Modbus Slave module registers, section ION8600"
+    }
+  ],
   "notes": [
-    "Schneider Electric Powerlogic ION8600.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "The register map of an ION meter has a part you configure (the Modbus Slave modules) and a fixed part. This map is the default Modbus Slave module map of the template revisions named by the manufacturer; if the meter has a custom framework, the registers can be elsewhere.",
+    "Addresses are the 4xxxx register numbers of the manual minus 40000, as sent on the wire (register 40011 is address 10). Values are read with FC03; FC16 writes the registers marked read/write.",
+    "32-bit values have the high-order register first. A value shown with a scale is the register divided by the scaling of the module (11982 with scaling 10 is 1198.2). The units are inferred from the register labels.",
+    "Unmapped registers between blocks read as 0xFFFF.",
+    "Not in this map: the 32-bit modulus-10000 (M10K) energy registers, and the common Modbus registers for setup and control.",
+    "Default template revisions: This table outlines the default data registers available on the ION8600 power meters. This register map is applicable to the following template revisions:  8600A_V330_FAC_V3.3.0.0.0  8600A_V330_FAC-35S_V3.3.0.0.0  8600B_V330_FAC_V3.3.0.0.0  8600B_V330_FAC-35S_V3.3.0.0.0  8600C_V330_FAC_V3.3.0.0.0  8600C_V330_FAC-35S_V3.3.0.0.0 And the following RMICAN approved frameworks, to be used with v321 firmware:  8600A_"
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Vln a, Volts/Amps/Freq", "area": "holding", "address": 10, "type": "uint16", "access": "R"},
-    {"name": "Vln b, Volts/Amps/Freq", "area": "holding", "address": 11, "type": "uint16", "access": "R"},
-    {"name": "Vln c, Volts/Amps/Freq", "area": "holding", "address": 12, "type": "uint16", "access": "R"},
-    {"name": "Vln avg, Volts/Amps/Freq", "area": "holding", "address": 13, "type": "uint16", "access": "R"},
-    {"name": "Vll ab, Volts/Amps/Freq", "area": "holding", "address": 14, "type": "uint16", "access": "R"},
-    {"name": "Vll bc, Volts/Amps/Freq", "area": "holding", "address": 15, "type": "uint16", "access": "R"},
-    {"name": "Vll ca, Volts/Amps/Freq", "area": "holding", "address": 16, "type": "uint16", "access": "R"},
-    {"name": "Vll avg, Volts/Amps/Freq", "area": "holding", "address": 17, "type": "uint16", "access": "R"},
-    {"name": "I a, Volts/Amps/Freq", "area": "holding", "address": 18, "type": "uint16", "access": "R"},
-    {"name": "I b, Volts/Amps/Freq", "area": "holding", "address": 19, "type": "uint16", "access": "R"},
-    {"name": "I c, Volts/Amps/Freq", "area": "holding", "address": 20, "type": "uint16", "access": "R"},
-    {"name": "I avg, Volts/Amps/Freq", "area": "holding", "address": 21, "type": "uint16", "access": "R"},
-    {"name": "V unbal, Volts/Amps/Freq", "area": "holding", "address": 22, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "I unbal, Volts/Amps/Freq", "area": "holding", "address": 23, "type": "uint16", "access": "R"},
-    {"name": "Freq, Volts/Amps/Freq", "area": "holding", "address": 24, "type": "uint16", "access": "R"},
-    {"name": "I4, Volts/Amps/Freq", "area": "holding", "address": 25, "type": "uint16", "access": "R"},
-    {"name": "KW a, Power/PF", "area": "holding", "address": 26, "type": "int32", "unit": "kW", "access": "R"},
-    {"name": "KW b, Power/PF", "area": "holding", "address": 28, "type": "int32", "unit": "kW", "access": "R"},
-    {"name": "KW c, Power/PF", "area": "holding", "address": 30, "type": "int32", "unit": "kW", "access": "R"},
-    {"name": "KW tot, Power/PF", "area": "holding", "address": 32, "type": "int32", "unit": "kW", "access": "R"},
-    {"name": "KVAR a, Power/PF", "area": "holding", "address": 34, "type": "int32", "unit": "kvar", "access": "R"},
-    {"name": "KVAR b, Power/PF", "area": "holding", "address": 36, "type": "int32", "unit": "kvar", "access": "R"},
-    {"name": "KVAR c, Power/PF", "area": "holding", "address": 38, "type": "int32", "unit": "kvar", "access": "R"},
-    {"name": "KVAR tot, Power/PF", "area": "holding", "address": 40, "type": "int32", "unit": "kvar", "access": "R"},
-    {"name": "KVA a, Power/PF", "area": "holding", "address": 42, "type": "int32", "unit": "kVA", "access": "R"},
-    {"name": "KVA b, Power/PF", "area": "holding", "address": 44, "type": "int32", "unit": "kVA", "access": "R"},
-    {"name": "KVA c, Power/PF", "area": "holding", "address": 46, "type": "int32", "unit": "kVA", "access": "R"},
-    {"name": "KVA tot, Power/PF", "area": "holding", "address": 48, "type": "int32", "unit": "kVA", "access": "R"},
-    {"name": "PF sign a, Power/PF", "area": "holding", "address": 50, "type": "int32", "access": "R"},
-    {"name": "PF sign b, Power/PF", "area": "holding", "address": 52, "type": "int32", "access": "R"},
-    {"name": "PF sign c, Power/PF", "area": "holding", "address": 54, "type": "int32", "access": "R"},
-    {"name": "PF sign tot, Power/PF", "area": "holding", "address": 56, "type": "int32", "access": "R"},
-    {"name": "Vll avg mx, Min/Max/Demand", "area": "holding", "address": 58, "type": "int32", "access": "R"},
-    {"name": "I avg mx, Min/Max/Demand", "area": "holding", "address": 60, "type": "int32", "access": "R"},
-    {"name": "KW tot mx, Min/Max/Demand", "area": "holding", "address": 62, "type": "int32", "unit": "kW", "access": "R"},
-    {"name": "KVAR tot mx, Min/Max/Demand", "area": "holding", "address": 64, "type": "int32", "unit": "kvar", "access": "R"},
-    {"name": "KVA tot mx, Min/Max/Demand", "area": "holding", "address": 66, "type": "int32", "unit": "kVA", "access": "R"},
-    {"name": "Freq mx, Min/Max/Demand", "area": "holding", "address": 68, "type": "int32", "access": "R"},
-    {"name": "Vll avg mn, Min/Max/Demand", "area": "holding", "address": 70, "type": "int32", "access": "R"},
-    {"name": "I avg mn, Min/Max/Demand", "area": "holding", "address": 72, "type": "int32", "access": "R"},
-    {"name": "Freq mn, Min/Max/Demand", "area": "holding", "address": 74, "type": "int32", "access": "R"},
-    {"name": "KW sd del rec, Min/Max/Demand", "area": "holding", "address": 76, "type": "int32", "unit": "kW", "access": "R"},
-    {"name": "KVA sd del+rec, Min/Max/Demand", "area": "holding", "address": 78, "type": "int32", "unit": "kVA", "access": "R"},
-    {"name": "KVAR sd del rec, Min/Max/Demand", "area": "holding", "address": 80, "type": "int32", "unit": "kvar", "access": "R"},
-    {"name": "KW sd mx d r, Min/Max/Demand", "area": "holding", "address": 82, "type": "int32", "unit": "kW", "access": "R"},
-    {"name": "KVA sd mx d+r, Min/Max/Demand", "area": "holding", "address": 84, "type": "int32", "unit": "kVA", "access": "R"},
-    {"name": "KVAR sd mx d r, Min/Max/Demand", "area": "holding", "address": 86, "type": "int32", "unit": "kvar", "access": "R"},
-    {"name": "Phase Rev, Min/Max/Demand", "area": "holding", "address": 88, "type": "int32", "access": "R"},
-    {"name": "KWh del, Energy/THD", "area": "holding", "address": 90, "type": "int32", "unit": "kWh", "access": "R"},
-    {"name": "KWh rec, Energy/THD", "area": "holding", "address": 92, "type": "int32", "unit": "kWh", "access": "R"}
+    {
+      "name": "Vln a (40011)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Vln b (40012)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Vln c (40013)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Vln avg (40014)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Vll ab (40015)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Vll bc (40016)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Vll ca (40017)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Vll avg (40018)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Ia (40019)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Ib (40020)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Ic (40021)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "I avg (40022)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "V unbal (40023)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "I unbal (40024)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Freq (40025)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.1
+    },
+    {
+      "name": "I4 (40026)",
+      "group": "Volts/Amps/Freq",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "kW a (40027)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 27,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.1
+    },
+    {
+      "name": "kW b (40029)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 29,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.1
+    },
+    {
+      "name": "kW c (40031)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 31,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.1
+    },
+    {
+      "name": "kW tot (40033)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 33,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.1
+    },
+    {
+      "name": "kVAR a (40035)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 35,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.1
+    },
+    {
+      "name": "kVAR b (40037)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 37,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.1
+    },
+    {
+      "name": "kVAR c (40039)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 39,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.1
+    },
+    {
+      "name": "kVAR tot (40041)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 41,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.1
+    },
+    {
+      "name": "kVA a (40043)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 43,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.1
+    },
+    {
+      "name": "kVA b (40045)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 45,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.1
+    },
+    {
+      "name": "kVA c (40047)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 47,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.1
+    },
+    {
+      "name": "kVA tot (40049)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 49,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.1
+    },
+    {
+      "name": "PF sign a (40051)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 51,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "PF sign b (40053)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 53,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "PF sign c (40055)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 55,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "PF sign tot (40057)",
+      "group": "Power/PF",
+      "area": "holding",
+      "address": 57,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Vll avg mx (40059)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 59,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "I avg mx (40061)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 61,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "kW tot mx (40063)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 63,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.1
+    },
+    {
+      "name": "kVAR tot mx (40065)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 65,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.1
+    },
+    {
+      "name": "kVA tot mx (40067)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 67,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.1
+    },
+    {
+      "name": "Freq mx (40069)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 69,
+      "type": "int32",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.1
+    },
+    {
+      "name": "Vll avg mn",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 71,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "I avg mn (40073)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 73,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Freq mn (40075)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 75,
+      "type": "int32",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.1
+    },
+    {
+      "name": "kW sd del-rec",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 77,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.1
+    },
+    {
+      "name": "kVA sd del+rec",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 79,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.1
+    },
+    {
+      "name": "kVAR sd del-rec",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 81,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.1
+    },
+    {
+      "name": "kW sd mx d-r",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 83,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.1
+    },
+    {
+      "name": "kVA sd mx d+r",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 85,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.1
+    },
+    {
+      "name": "kVAR sd mx d-r",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 87,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase Rev (40089)",
+      "group": "Min/Max/Demand",
+      "area": "holding",
+      "address": 89,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Ia (40150)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Ib (40151)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 151,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Ic (40152)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 152,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "I4 (40153)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 153,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "I avg (40155)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 155,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "I avg mn (40156)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 156,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "I avg mx (40157)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 157,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "I avg mean 1",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 158,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Freq (40159)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 159,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.1
+    },
+    {
+      "name": "Freq mn (40160)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 160,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.1
+    },
+    {
+      "name": "Freq mx (40161)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 161,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.1
+    },
+    {
+      "name": "Freq mean 1",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.1
+    },
+    {
+      "name": "V unbal (40163)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 163,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "I unbal (40164)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase Rev (40165)",
+      "group": "Amp/freq/unbal",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Vln a (40166)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 166,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vln b (40168)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 168,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vln c (40170)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 170,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vln avg (40172)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 172,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vln avg mx",
+      "group": "Volts",
+      "area": "holding",
+      "address": 174,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vll ab (40178)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 178,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vll bc (40180)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 180,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vll ca (40182)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 182,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vll avg (40184)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 184,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vll avg mx (40186)",
+      "group": "Volts",
+      "area": "holding",
+      "address": 186,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Vll avg mean 1",
+      "group": "Volts",
+      "area": "holding",
+      "address": 188,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "kW a (40198)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 198,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "kW b (40200)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 200,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "kW c (40202)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 202,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "kW tot (40204)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 204,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "kW tot mx (40206)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 206,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "kVAR a (40208)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 208,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "kVAR b (40210)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 210,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "kVAR c (40212)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 212,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "kVAR tot (40214)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 214,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "kVAR tot mx (40216)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 216,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "kVA a (40218)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 218,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "kVA b (40220)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 220,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "kVA c (40222)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 222,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "kVA tot (40224)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 224,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "kVA tot mx (40226)",
+      "group": "kW/kVAr/kVA",
+      "area": "holding",
+      "address": 226,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "kWh del",
+      "group": "kWh/kVArh",
+      "area": "holding",
+      "address": 230,
+      "type": "int32",
+      "access": "R",
+      "unit": "kWh"
+    },
+    {
+      "name": "kWh rec",
+      "group": "kWh/kVArh",
+      "area": "holding",
+      "address": 232,
+      "type": "int32",
+      "access": "R",
+      "unit": "kWh"
+    },
+    {
+      "name": "kVARh del",
+      "group": "kWh/kVArh",
+      "area": "holding",
+      "address": 234,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvarh"
+    },
+    {
+      "name": "kVARh rec",
+      "group": "kWh/kVArh",
+      "area": "holding",
+      "address": 236,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvarh"
+    },
+    {
+      "name": "kVAh del+rec",
+      "group": "kWh/kVArh",
+      "area": "holding",
+      "address": 238,
+      "type": "int32",
+      "access": "R",
+      "unit": "kVAh"
+    },
+    {
+      "name": "PF sign a (40262)",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 262,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "PF sign b (40263)",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 263,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "PF sign c (40264)",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 264,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "PF sign tot (40265)",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 265,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "V1 THD mx",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 266,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "V2 THD mx",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 267,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "V3 THD mx",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 268,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "I1 THD mx",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 269,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "I2 THD mx",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 270,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "I3 THD mx",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 271,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "I1 K Factor",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 272,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.01
+    },
+    {
+      "name": "I2 K Factor",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 273,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.01
+    },
+    {
+      "name": "I3 K Factor",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 274,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.01
+    },
+    {
+      "name": "I1 Crest Factor",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 275,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.01
+    },
+    {
+      "name": "I2 Crest Factor",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 276,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.01
+    },
+    {
+      "name": "I3 Crest Factor",
+      "group": "PF/THD/Kfactor",
+      "area": "holding",
+      "address": 277,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.01
+    },
+    {
+      "name": "PO V1-Flck N 2",
+      "group": "Flicker Count",
+      "area": "holding",
+      "address": 1000,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PO V1-Flck N12",
+      "group": "Flicker Count",
+      "area": "holding",
+      "address": 1001,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PO V2-Flck N 2",
+      "group": "Flicker Count",
+      "area": "holding",
+      "address": 1002,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PO V2-Flck N12",
+      "group": "Flicker Count",
+      "area": "holding",
+      "address": 1003,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PO V3-Flck N 2",
+      "group": "Flicker Count",
+      "area": "holding",
+      "address": 1004,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PO V3-Flck N12",
+      "group": "Flicker Count",
+      "area": "holding",
+      "address": 1005,
+      "type": "uint16",
+      "access": "R"
+    }
   ]
 }
