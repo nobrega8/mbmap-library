@@ -3,71 +3,3564 @@
   "mbmap": 2,
   "vendor": "Schneider Electric",
   "model": "EM4200",
-  "models": ["EM4200"],
+  "models": [
+    "EM4200"
+  ],
   "vendor_website": "se.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table schneider/electric-em4200; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/schneider-electric-em4200.htm. Not verified against the manufacturer's documentation",
+  "description": "Energy meter",
+  "revision": 3,
+  "revised": "2026-10-18",
+  "source": "Schneider Electric, EM4200 Modbus register map (EM4200_Modbus_RegisterMap.xlsx), sheet EM4200 Register Map",
+  "sources": [
+    {
+      "title": "EM4200 Modbus Register Map",
+      "date": "2019-01-30",
+      "url": "https://www.se.com/us/en/download/document/EM4200_Modbus_Register_Map/",
+      "note": "workbook EM4200_Modbus_RegisterMap.xlsx"
+    }
+  ],
   "notes": [
-    "Schneider Electric EM4200.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Addresses are the base 1 register numbers of the register map: the address on the wire is the register number minus 1.",
+    "32-bit values and floats have the most significant register first, except where the map marks the order as LSR (the Enercept-compatible energy counters), which have the least significant register first.",
+    "Integer registers with a scale letter (I, V, W, E) are multiplied by 10 to the power of the matching scale factor register (4188 to 4191). 0x8000 means unavailable.",
+    "The Enercept-compatible integer data block (registers 1 to 39), whose scale depends on the CT size, is not in this map; use the floating-point or the integer data of the uni- and bi-directional blocks."
   ],
   "byte_order": "big",
   "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "address_base": 1,
+  "x_status": "official",
+  "sentinels": {
+    "uint16": {
+      "0x8000": "Unavailable"
+    }
+  },
   "registers": [
-    {"name": "Total instantaneous real power (3 phase total)", "area": "holding", "address": 2, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Total instantaneous reactive power (3 phase total)", "area": "holding", "address": 3, "type": "uint16", "unit": "kvar", "access": "R"},
-    {"name": "Total instantaneous apparent power (3 phase total)", "area": "holding", "address": 4, "type": "uint16", "unit": "kVA", "access": "R"},
-    {"name": "Total power factor (total kw / total kva) (5)", "area": "holding", "address": 5, "type": "uint16", "access": "R"},
-    {"name": "Voltage, line to line, average of phases", "area": "holding", "address": 6, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Voltage, line to neutral, average of phases", "area": "holding", "address": 7, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Current, average of phases", "area": "holding", "address": 8, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Real power, L1 (9)", "area": "holding", "address": 9, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Real power, L2 (10)", "area": "holding", "address": 10, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Real power, L3 (11)", "area": "holding", "address": 11, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Power factor, L1 (12)", "area": "holding", "address": 12, "type": "uint16", "access": "R"},
-    {"name": "Power factor, L2 (13)", "area": "holding", "address": 13, "type": "uint16", "access": "R"},
-    {"name": "Power factor, L3", "area": "holding", "address": 14, "type": "uint16", "access": "R"},
-    {"name": "Voltage, L1 L2", "area": "holding", "address": 15, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Voltage, L2 L3", "area": "holding", "address": 16, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Voltage, L3 L1", "area": "holding", "address": 17, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Voltage, L1 N", "area": "holding", "address": 18, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Voltage, L2 N", "area": "holding", "address": 19, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Voltage, L3 N", "area": "holding", "address": 20, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Current, instantaneous, L1", "area": "holding", "address": 21, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Current, instantaneous, L2", "area": "holding", "address": 22, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Current, instantaneous, L3", "area": "holding", "address": 23, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Present demand sub interval", "area": "holding", "address": 24, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Minimum demand", "area": "holding", "address": 25, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Maximum demand", "area": "holding", "address": 26, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Present demand", "area": "holding", "address": 27, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Peak demand", "area": "holding", "address": 28, "type": "uint16", "unit": "kW", "access": "R"},
-    {"name": "Ct size (100, 300, etc.)", "area": "holding", "address": 30, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Count of kwh resets", "area": "holding", "address": 31, "type": "uint16", "access": "R", "description": "unit: Count"},
-    {"name": "Count of peak demand resets", "area": "holding", "address": 32, "type": "uint16", "access": "R", "description": "unit: Count"},
-    {"name": "Count of sub intervals", "area": "holding", "address": 33, "type": "uint16", "access": "R", "description": "unit: Count"},
-    {"name": "Count of number readings in present sub interval", "area": "holding", "address": 34, "type": "uint16", "access": "R", "description": "unit: Count"},
-    {"name": "System type: see manual", "area": "holding", "address": 35, "type": "uint16", "access": "R", "description": "unit: integer"},
-    {"name": "Sub interval length: sets the length of a sub interval. value is the number of seconds times 5 (for example, 15 minutes is 4500). for sync to comms, set this to zero", "area": "holding", "address": 36, "type": "uint16", "access": "R", "description": "unit: integer"},
-    {"name": "Number of sub intervals per demand interval. sets the number of sub intervals that make a single demand interval. legal values are 1 to 6. for block demand, set this to 1", "area": "holding", "address": 37, "type": "uint16", "access": "R", "description": "unit: integer"},
-    {"name": "Command", "area": "holding", "address": 38, "type": "uint16", "access": "R", "description": "unit: bit map"},
-    {"name": "Real energy consumption", "area": "holding", "address": 256, "type": "float32", "unit": "kWh", "access": "R"},
-    {"name": "Real energy consumption (redundant)", "area": "holding", "address": 258, "type": "float32", "unit": "kWh", "access": "R"},
-    {"name": "Total instantaneous real power", "area": "holding", "address": 260, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Total instantaneous reactive power", "area": "holding", "address": 262, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Total instantaneous apparent power", "area": "holding", "address": 264, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Total power factor (total kw / total kva) (266)", "area": "holding", "address": 266, "type": "float32", "access": "R"},
-    {"name": "Voltage, line to line, average of 3 phases", "area": "holding", "address": 268, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage, line to neutral, average of 3 phases", "area": "holding", "address": 270, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Current, average of 3 phases", "area": "holding", "address": 272, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Real power, L1 (274)", "area": "holding", "address": 274, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Real power, L2 (276)", "area": "holding", "address": 276, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Real power, L3 (278)", "area": "holding", "address": 278, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Power factor, L1 (280)", "area": "holding", "address": 280, "type": "float32", "access": "R"},
-    {"name": "Power factor, L2 (282)", "area": "holding", "address": 282, "type": "float32", "access": "R"}
+    {
+      "name": "System Type: See Manual.",
+      "group": "Enercept Configuration",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "description": "20 = Single Phase, 2-Wire: L1 + N 20 = Single Phase, 2-Wire: L1 + L2 21 = Single Split Phase, 3-Wire: L1 + L2 + N 30 = 3 Phase Delta, ∆, L1 + L2 + L3, no N 40 = 3 Phase Wye, Y, L1 + L2 + L3 + N. Range: 20 21 30 40"
+    },
+    {
+      "name": "Sub–Interval Length: Sets the length of a sub–interval. Value is the number of seconds times 5 (for example, 15 minutes is 4500). For sync–to–comms, set this to zero.",
+      "group": "Enercept Configuration",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 32767
+    },
+    {
+      "name": "Number of sub-intervals per demand interval. Sets the number of sub-intervals that make a single demand interval. Legal values are 1 to 6. For block demand, set this to 1.",
+      "group": "Enercept Configuration",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 6
+    },
+    {
+      "name": "Command (39)",
+      "group": "Enercept Configuration",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "unit": "bit map",
+      "access": "RW",
+      "description": "bit 0 (mask 1) = Begin new demand sub-interval bit 1 (mask 2) = Clear kWH accumulator (only command supported on Basic model) bit 2 (mask 3) = Reset peak demand. Range: 0x00 - 0x07"
+    },
+    {
+      "name": "Reserved, Returns 0x8000 (QNAN) (40)",
+      "group": "Enercept Configuration",
+      "area": "holding",
+      "address": 40,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Real Energy Consumption",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 257,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "RW",
+      "description": "Clear by writing a 0 to either integer kWh register #1 or 2"
+    },
+    {
+      "name": "Real Energy Consumption (redundant)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 259,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "RW"
+    },
+    {
+      "name": "Total Instantaneous Real Power",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 261,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Total Instantaneous Reactive Power",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 263,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Instantaneous Apparent Power",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 265,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Total Power Factor (Total KW / Total KVA) (267)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 267,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, Line to Line, Average of 3 Phases",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 269,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, Line to Neutral, Average of 3 Phases",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 271,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current, Average of 3 Phases",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 273,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, L1 (275)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 275,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, L2 (277)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 277,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, L3 (279)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 279,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor, L1 (281)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 281,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor, L2 (283)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 283,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor, L3 (285)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 285,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L1-L2 (287)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 287,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L2-L3 (289)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 289,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L3-L1 (291)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 291,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L1-N (293)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 293,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L2-N (295)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 295,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L3-N (297)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 297,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current, Instantaneous, L1",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 299,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, Instantaneous, L2",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 301,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, Instantaneous, L3",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 303,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Present Demand Sub–Interval",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 305,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Minimum Demand",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 307,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Maximum Demand",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 309,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Present Demand",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 311,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Peak Demand",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 313,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "CT Size (100, 300, etc.)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 317,
+      "type": "float32",
+      "unit": "Amps",
+      "access": "R"
+    },
+    {
+      "name": "Count of kWH Resets",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 319,
+      "type": "float32",
+      "unit": "Integer",
+      "access": "R"
+    },
+    {
+      "name": "Count of Peak Demand Resets",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 321,
+      "type": "float32",
+      "unit": "Integer",
+      "access": "R"
+    },
+    {
+      "name": "Count of Sub Intervals",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 323,
+      "type": "float32",
+      "unit": "Integer",
+      "access": "R"
+    },
+    {
+      "name": "Count of Number Readings in Present Sub–Interval",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 325,
+      "type": "float32",
+      "unit": "Integer",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Reports QNAN (0x7FC00000) (327)",
+      "group": "Enercept Float Data",
+      "area": "holding",
+      "address": 327,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Real Energy Consumption (MSR)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1025,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Accumulated Real (Active) Energy (Ph)"
+    },
+    {
+      "name": "Reactive Energy Consumption (MSR)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1027,
+      "type": "uint32",
+      "unit": "KVARh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Accumulated Reactive Energy (Qh)"
+    },
+    {
+      "name": "Apparent Energy Consumption (MSR)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1029,
+      "type": "uint32",
+      "unit": "KVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Accumulated Apparent Energy (Sh)"
+    },
+    {
+      "name": "Total Instantaneous Real (P) Power",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1031,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Total Power"
+    },
+    {
+      "name": "Total Instantaneous Reactive (Q) Power",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1032,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Instantaneous Apparent (S) Power",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1033,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Average Power Factor (PF: Total KW / Total KVA) (1034)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1034,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.0001,
+      "description": "Average of Active Phases"
+    },
+    {
+      "name": "Voltage - Line to Line (U), Average of Active Phases",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1035,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Voltage - Line to Neutral (V), Average of Active Phases",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1036,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Current, Average of Active Phases (1037)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1037,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)"
+    },
+    {
+      "name": "Frequency (derived from phase A, B, or C in that order) (1038)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1038,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Frequency"
+    },
+    {
+      "name": "Total Real Power Present Demand (1039)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1039,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Present"
+    },
+    {
+      "name": "Total Reactive Power Present Demand (1040)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1040,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Apparent Power Present Demand (1041)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1041,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Real Power Max Demand (1042)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1042,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Maximum"
+    },
+    {
+      "name": "Total Reactive Power Max Demand (1043)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1043,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Apparent Power Max Demand (1044)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1044,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Reserved, Returns 0x8000 (QNAN) (1045)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1045,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Pulse Counter 1 (Real Energy) (1048)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1048,
+      "type": "uint32",
+      "unit": "Counter",
+      "access": "R",
+      "description": "Contact Closure Counters. Valid for both Pulse inputs and outputs. Default count source are shown in (). Clear via Command Register. Inputs are user defined. Reset via Command Register"
+    },
+    {
+      "name": "Pulse Counter 2 (Reactive Energy) (1050)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1050,
+      "type": "uint32",
+      "unit": "Counter",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Returns 0x8000 (QNAN) (1052)",
+      "group": "Uni-Dir Integer - Summary",
+      "area": "holding",
+      "address": 1052,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Real Energy Consumption, L1 (1056)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1056,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Real (Active) Energy (Ph)"
+    },
+    {
+      "name": "Real Energy Consumption, L2 (1058)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1058,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Real Energy Consumption, L3 (1060)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1060,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Reactive Energy Consumption, L1 (1062)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1062,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Reactive Energy (Qh)"
+    },
+    {
+      "name": "Reactive Energy Consumption, L2 (1064)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1064,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Reactive Energy Consumption, L3 (1066)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1066,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Apparent Energy Consumption, L1 (1068)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1068,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Apparent Energy (Sh)"
+    },
+    {
+      "name": "Apparent Energy Consumption, L2 (1070)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1070,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Apparent Energy Consumption, L3 (1072)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1072,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Real Power, L1 (1074)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1074,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Real (Active) Power (P)"
+    },
+    {
+      "name": "Real Power, L2 (1075)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1075,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Real Power, L3 (1076)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1076,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Reactive Power, L1 (1077)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1077,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Reactive Power (Q)"
+    },
+    {
+      "name": "Reactive Power, L2 (1078)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1078,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Reactive Power, L3 (1079)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1079,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Apparent Power, L1 (1080)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1080,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Apparent Power (S)"
+    },
+    {
+      "name": "Apparent Power, L2 (1081)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1081,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Apparent Power, L3 (1082)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1082,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Power Factor, L1 (1083)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1083,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.0001,
+      "description": "Power Factor"
+    },
+    {
+      "name": "Power Factor, L2 (1084)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1084,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.0001
+    },
+    {
+      "name": "Power Factor, L3 (1085)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1085,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.0001
+    },
+    {
+      "name": "Voltage, L1-L2 (1086)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1086,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)",
+      "description": "Voltage - Line to Line"
+    },
+    {
+      "name": "Voltage, L2-L3 (1087)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1087,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Voltage, L3-L1 (1088)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1088,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Voltage, L1-N (1089)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1089,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)",
+      "description": "Voltage - Line to Neutral"
+    },
+    {
+      "name": "Voltage, L2-N (1090)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1090,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Voltage, L3-N (1091)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1091,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Current, L1 (1092)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1092,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)",
+      "description": "Current"
+    },
+    {
+      "name": "Current, L2 (1093)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1093,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)"
+    },
+    {
+      "name": "Current, L3 (1094)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1094,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)"
+    },
+    {
+      "name": "Current, Neutral (1095)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1095,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)"
+    },
+    {
+      "name": "Reserved, Returns 0x8000 (QNAN) (1096)",
+      "group": "Uni-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 1096,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Real Energy (Ph) Consumption",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1537,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Accumulated Energy: Reset via Command Register"
+    },
+    {
+      "name": "Reactive Energy (Qh) Consumption",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1539,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Energy (Sh) Consumption",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1541,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Total Instantaneous Real Power (P)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1543,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Total of Active Phases"
+    },
+    {
+      "name": "Total Instantaneous Reactive Power (Q)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1545,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Instantaneous Apparent Power (S)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1547,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Average Power Factor (PF: Total KW / Total KVA) (1549)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1549,
+      "type": "float32",
+      "access": "R",
+      "description": "Average of Active Phases"
+    },
+    {
+      "name": "Voltage Line to Line (U), Average of Active Phases",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1551,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "VoltageLine to Neutral (V), Average of Active Phases",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1553,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current, Average of Active Phases (1555)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1555,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Frequency (derived from phase A, B, or C in that order) (1557)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1557,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R",
+      "description": "Frequency"
+    },
+    {
+      "name": "Total Real Power Present Demand (1559)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1559,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Present"
+    },
+    {
+      "name": "Total Reactive Power Present Demand (1561)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1561,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Apparent Power Present Demand (1563)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1563,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Total Real Power Max Demand (1565)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1565,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Maximum"
+    },
+    {
+      "name": "Total Reactive Power Max Demand (1567)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1567,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Apparent Power Max Demand (1569)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1569,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Reports QNAN (0x7FC00000) (1571)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1571,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse Counter 1 (Real Energy) (1577)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1577,
+      "type": "float32",
+      "access": "R",
+      "description": "Contact Closure Counters. Valid for both Pulse inputs and outputs. Default counters are shown in (). Inputs are user defined. Reset via Command Register"
+    },
+    {
+      "name": "Pulse Counter 2 (Reactive Energy) (1579)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1579,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Reports QNAN (0x7FC00000) (1581)",
+      "group": "Uni-Dir Float – Summary",
+      "area": "holding",
+      "address": 1581,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Real Energy Consumption, L1 (1589)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1589,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Per Phase Real Energy (Ph)"
+    },
+    {
+      "name": "Real Energy Consumption, L2 (1591)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1591,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Real Energy Consumption, L3 (1593)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1593,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Energy Consumption, L1 (1595)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1595,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Per Phase Reactive Energy (Qh)"
+    },
+    {
+      "name": "Reactive Energy Consumption, L2 (1597)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1597,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Energy Consumption, L3 (1599)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1599,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Energy Consumption, L1 (1601)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1601,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Per Phase Apparent Energy (Sh)"
+    },
+    {
+      "name": "Apparent Energy Consumption, L2 (1603)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1603,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Energy Consumption, L3 (1605)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1605,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, L1 (1607)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1607,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Real (Active) Power (P)"
+    },
+    {
+      "name": "Real Power, L2 (1609)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1609,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, L3 (1611)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1611,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, L1 (1613)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1613,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Reactive Power (Q)"
+    },
+    {
+      "name": "Reactive Power, L2 (1615)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1615,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, L3 (1617)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1617,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, L1 (1619)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1619,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Apparent Power (S)"
+    },
+    {
+      "name": "Apparent Power, L2 (1621)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1621,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, L3 (1623)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1623,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor, L1 (1625)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1625,
+      "type": "float32",
+      "access": "R",
+      "description": "Power Factor (PF)"
+    },
+    {
+      "name": "Power Factor, L2 (1627)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1627,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor, L3 (1629)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1629,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L1-L2 (1631)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1631,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Voltage - Line to Line (U)"
+    },
+    {
+      "name": "Voltage, L2-L3 (1633)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1633,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L3-L1 (1635)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1635,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L1-N (1637)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1637,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Voltage - Line to Neutral (V)"
+    },
+    {
+      "name": "Voltage, L2-N (1639)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1639,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L3-N (1641)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1641,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current, Phase A",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1643,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Current"
+    },
+    {
+      "name": "Current, Phase B",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1645,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, Phase C",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1647,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, Neutral (1649)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1649,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Reports QNAN (0x7FC00000) (1651)",
+      "group": "Uni-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 1651,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Real Energy: Net (Import - Export)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2049,
+      "type": "int32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Accumulated Real Energy"
+    },
+    {
+      "name": "Real Energy: Quadrants 1 & 4 Import, Delivered, Down Stream (2051)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2051,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Real Energy: Quadrants 2 & 3 Export, Received, Up Stream (2053)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2053,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Reactive Energy – Quadrant 1: Inductive (IEEE), Lags Import Real Energy (IEC)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2055,
+      "type": "uint32",
+      "unit": "KVARh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Accumulated Reactive Energy: Quadrants 3 + 4 = Export/Received Quadrants 1 + 2 = Import/Delivered"
+    },
+    {
+      "name": "Reactive Energy – Quadrant 2: Inductive (IEEE), Leads Export Real Energy (IEC)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2057,
+      "type": "uint32",
+      "unit": "KVARh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Reactive Energy – Quadrant 3: Capacitive (IEEE), Lags Export Real Energy (IEC)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2059,
+      "type": "uint32",
+      "unit": "KVARh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Reactive Energy – Quadrant 4: Capacitive (IEEE), Leads Import Real Energy (IEC)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2061,
+      "type": "uint32",
+      "unit": "KVARh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Apparent Energy: Net (Import - Export) (2063)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2063,
+      "type": "int32",
+      "unit": "KVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Accumulated Apparent Energy: Import and Export Correspond with Real Energy. Calculated as a vector sum"
+    },
+    {
+      "name": "Apparent Energy: Quadrants 1 & 4 Import, Delivered, Down Stream (2065)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2065,
+      "type": "uint32",
+      "unit": "KVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Apparent Energy: Quadrants 2 & 3 Export, Received, Up Stream (2067)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2067,
+      "type": "uint32",
+      "unit": "KVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Total Net Instantaneous Real (P) Power (2069)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2069,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Power"
+    },
+    {
+      "name": "Total Net Instantaneous Reactive (Q) Power (2070)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2070,
+      "type": "int16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Net Instantaneous Apparent (S) Power (vector sum) (2071)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2071,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Power Factor (Total KW / Total KVA) (2072)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2072,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.0001,
+      "description": "PF"
+    },
+    {
+      "name": "Voltage, L-L (U), Average of Active Phases (2073)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2073,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)",
+      "description": "Voltage"
+    },
+    {
+      "name": "Voltage, L-N (V), Average of Active Phases (2074)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2074,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Current, Average of Active Phases (2075)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2075,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)",
+      "description": "Current"
+    },
+    {
+      "name": "Frequency (2076)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2076,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R",
+      "scale": 0.01,
+      "description": "F"
+    },
+    {
+      "name": "Total Real Power Present Demand (2077)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2077,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Present"
+    },
+    {
+      "name": "Total Reactive Power Present Demand (2078)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2078,
+      "type": "int16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Apparent Power Present Demand (2079)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2079,
+      "type": "int16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Real Power Max Demand (2080)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2080,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Maximum: Import / Consume / Down Stream"
+    },
+    {
+      "name": "Total Reactive Power Max Demand (2081)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2081,
+      "type": "int16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Apparent Power Max Demand (2082)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2082,
+      "type": "int16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Real Power Max Demand (2083)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2083,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Maximum: Export / Source / Up Stream"
+    },
+    {
+      "name": "Total Reactive Power Max Demand (2084)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2084,
+      "type": "int16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Total Apparent Power Max Demand (2085)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2085,
+      "type": "int16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Reserved, Returns 0x8000 (QNAN) (2086)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2086,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Pulse Counter 1 (Import Real Energy) (2087)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2087,
+      "type": "uint32",
+      "access": "R",
+      "description": "Contact Closure Counters. Valid for both Pulse inputs and outputs. E21Cx counts are shown in (). See Energy per Pulse Configuration register for the Wh per pulse count. Clear via reset register. Inputs are user defined"
+    },
+    {
+      "name": "Pulse Counter 2 (Export Real Energy) (2089)",
+      "group": "Bi-Dir Integer - Summary",
+      "area": "holding",
+      "address": 2089,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Real Energy, L1 (2091)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2091,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Import / Consume / Down Stream"
+    },
+    {
+      "name": "Accumulated Real Energy, L2 (2093)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2093,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Real Energy, L3 (2095)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2095,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Real Energy, L1 (2097)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2097,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Export / Source / Up Stream"
+    },
+    {
+      "name": "Accumulated Real Energy, L2 (2099)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2099,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Real Energy, L3 (2101)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2101,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q1 Reactive Energy, L1 (2103)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2103,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Import / Consume / Down Stream"
+    },
+    {
+      "name": "Accumulated Q1 Reactive Energy, L2 (2105)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2105,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q1 Reactive Energy, L3 (2107)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2107,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q2 Reactive Energy, L1 (2109)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2109,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q2 Reactive Energy, L2 (2111)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2111,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q2 Reactive Energy, L3 (2113)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2113,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q3 Reactive Energy, L1 (2115)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2115,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Export / Source / Up Stream"
+    },
+    {
+      "name": "Accumulated Q3 Reactive Energy, L2 (2117)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2117,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q3 Reactive Energy, L3 (2119)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2119,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q4 Reactive Energy, L1 (2121)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2121,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q4 Reactive Energy, L2 (2123)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2123,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Q4 Reactive Energy, L3 (2125)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2125,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L1 (2127)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2127,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Import / Consume / Down Stream"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L2 (2129)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2129,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L3 (2131)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2131,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L1 (2133)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2133,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)",
+      "description": "Export / Source / Up Stream"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L2 (2135)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2135,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L3 (2137)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2137,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "scale_factor": "Scale factor E (energy)"
+    },
+    {
+      "name": "Real Power (P), L1",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2139,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Real Power (P)"
+    },
+    {
+      "name": "Real Power (P), L2",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2140,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Real Power (P), L3",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2141,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Reactive Power (Q), L1",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2142,
+      "type": "int16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Reactive Power (Q)"
+    },
+    {
+      "name": "Reactive Power (Q), L2",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2143,
+      "type": "int16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Reactive Power (Q), L3",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2144,
+      "type": "int16",
+      "unit": "kvar",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Apparent Power (S), L1",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2145,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)",
+      "description": "Apparent Power (S)"
+    },
+    {
+      "name": "Apparent Power (S), L2",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2146,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Apparent Power (S), L3",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2147,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Power Factor (PF), L1",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2148,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.0001,
+      "description": "Power Factor (PF)"
+    },
+    {
+      "name": "Power Factor (PF), L2",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2149,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.0001
+    },
+    {
+      "name": "Power Factor (PF), L3",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2150,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.0001
+    },
+    {
+      "name": "Voltage (U), L1-L2 (2151)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2151,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)",
+      "description": "Voltage - Line to Line (U)"
+    },
+    {
+      "name": "Voltage (U), L2-L3 (2152)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2152,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Voltage (U), L3-L1 (2153)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2153,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Voltage (V), L1-N",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2154,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)",
+      "description": "Voltage - Line to Neutral (V)"
+    },
+    {
+      "name": "Voltage (V), L2-N",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2155,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Voltage (V), L3-N",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2156,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "scale_factor": "Scale factor V (voltage)"
+    },
+    {
+      "name": "Current, L1 (2157)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2157,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)",
+      "description": "Current"
+    },
+    {
+      "name": "Current, L2 (2158)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2158,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)"
+    },
+    {
+      "name": "Current, L3 (2159)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2159,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)"
+    },
+    {
+      "name": "Current, Neutral (2160)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2160,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "scale_factor": "Scale factor I (current)"
+    },
+    {
+      "name": "Reserved, Reports QNAN (0x8000)",
+      "group": "Bi-Dir Integer - Per Phase",
+      "area": "holding",
+      "address": 2161,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Real Energy: Net (Import - Export)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2561,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Accumulated Real Energy"
+    },
+    {
+      "name": "Real Energy: Quadrants 1 & 4 Import, Delivered, Down Stream (2563)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2563,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Real Energy: Quadrants 2 & 3 Export, Received, Up Stream (2565)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2565,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Energy – Quadrant 1: Lags Import Real Energy (IEC) Inductive (IEEE)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2567,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R",
+      "description": "Accumulated Reactive Energy: Quadrants 1 + 2 = Import/Delivered Quadrants 3 + 4 = Export/Received"
+    },
+    {
+      "name": "Reactive Energy – Quadrant 2: Leads Export Real Energy (IEC) Inductive (IEEE)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2569,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Energy – Quadrant 3: Lags Export Real Energy (IEC) Capacitive (IEEE)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2571,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Energy – Quadrant 4: Leads Import Real Energy (IEC) Capacitive (IEEE)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2573,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Energy: Net (Import - Export) (2575)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2575,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R",
+      "description": "Accumulated Apparent Energy: Import and Export Correspond with Real Energy. Calculated as a vector sum"
+    },
+    {
+      "name": "Apparent Energy: Quadrants 1 & 4 Import, Delivered, Down Stream (2577)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2577,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Energy: Quadrants 2 & 3 Export, Received, Up Stream (2579)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2579,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Total Net Instantaneous Real (P) Power (2581)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2581,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Power"
+    },
+    {
+      "name": "Total Net Instantaneous Reactive (Q) Power (2583)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2583,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Net Instantaneous Apparent (S) Power (vector sum) (2585)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2585,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Total Power Factor (Total KW / Total KVA) (2587)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2587,
+      "type": "float32",
+      "access": "R",
+      "description": "PF"
+    },
+    {
+      "name": "Voltage, L-L (U), Average of Active Phases (2589)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2589,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Voltage"
+    },
+    {
+      "name": "Voltage, L-N (V), Average of Active Phases (2591)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2591,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current, Average of Active Phases (2593)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2593,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Current"
+    },
+    {
+      "name": "Frequency (2595)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2595,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R",
+      "description": "F"
+    },
+    {
+      "name": "Total Real Power Present Demand (2597)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2597,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Present"
+    },
+    {
+      "name": "Total Reactive Power Present Demand (2599)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2599,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Apparent Power Present Demand (2601)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2601,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Total Real Power Max Demand (2603)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2603,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Maximum: Import / Consume / Down Stream"
+    },
+    {
+      "name": "Total Reactive Power Max Demand (2605)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2605,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Apparent Power Max Demand (2607)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2607,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Total Real Power Max Demand (2609)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2609,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Maximum: Export / Source / Up Stream"
+    },
+    {
+      "name": "Total Reactive Power Max Demand (2611)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2611,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Apparent Power Max Demand (2613)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2613,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Reports QNAN (0x7FC00000) (2615)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2615,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse Counter 1 (Import Real Energy) (2617)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2617,
+      "type": "float32",
+      "access": "R",
+      "description": "Contact Closure Counters. Valid for both Pulse inputs and outputs. E21Cx counts are shown in (). See register 144 – Energy per Pulse for the Wh per pulse count. Clear via command register. Inputs are user defined. These values are derived from the 32 bit integer counter and will roll over to 0 when "
+    },
+    {
+      "name": "Pulse Counter 2 (Export Real Energy) (2619)",
+      "group": "Bi-Dir Float - Summary",
+      "area": "holding",
+      "address": 2619,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Real Energy, L1 (2621)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2621,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Import / Consume / Down Stream"
+    },
+    {
+      "name": "Accumulated Real Energy, L2 (2623)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2623,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Real Energy, L3 (2625)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2625,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Real Energy, L1 (2627)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2627,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Export / Source / Up Stream"
+    },
+    {
+      "name": "Accumulated Real Energy, L2 (2629)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2629,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Real Energy, L3 (2631)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2631,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Q1 Reactive Energy, L1 (2633)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2633,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R",
+      "description": "Quadrant 1: Import / Consume / Down Stream"
+    },
+    {
+      "name": "Accumulated Q1 Reactive Energy, L2 (2635)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2635,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Q1 Reactive Energy, L3 (2637)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2637,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Q2 Reactive Energy, L1 (2639)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2639,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R",
+      "description": "Quadrant 2: Import / Consume / Down Stream"
+    },
+    {
+      "name": "Accumulated Q2 Reactive Energy, L2 (2641)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2641,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Q2 Reactive Energy, L3 (2643)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2643,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Q3 Reactive Energy, L1 (2645)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2645,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R",
+      "description": "Quadrant 3: Export / Source / Up Stream"
+    },
+    {
+      "name": "Accumulated Q3 Reactive Energy, L2 (2647)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2647,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Q3 Reactive Energy, L3 (2649)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2649,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Q4 Reactive Energy, L1 (2651)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2651,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R",
+      "description": "Quadrant 4: Export / Source / Up Stream"
+    },
+    {
+      "name": "Accumulated Q4 Reactive Energy, L2 (2653)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2653,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Q4 Reactive Energy, L3 (2655)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2655,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L1 (2657)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2657,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R",
+      "description": "Import / Consume / Down Stream"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L2 (2659)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2659,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L3 (2661)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2661,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L1 (2663)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2663,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R",
+      "description": "Export / Source / Up Stream"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L2 (2665)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2665,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Accumulated Apparent Energy, L3 (2667)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2667,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, L1 (2669)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2669,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Real (Active) Power (P)"
+    },
+    {
+      "name": "Real Power, L2 (2671)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2671,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, L3 (2673)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2673,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, L1 (2675)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2675,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Reactive Power (Q)"
+    },
+    {
+      "name": "Reactive Power, L2 (2677)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2677,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, L3 (2679)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2679,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, L1 (2681)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2681,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Apparent Power (S)"
+    },
+    {
+      "name": "Apparent Power, L2 (2683)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2683,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, L3 (2685)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2685,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor, L1 (2687)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2687,
+      "type": "float32",
+      "access": "R",
+      "description": "Power Factor (PF)"
+    },
+    {
+      "name": "Power Factor, L2 (2689)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2689,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor, L3 (2691)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2691,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Voltage (U), L1-L2 (2693)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2693,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Line to Line Voltage (U)"
+    },
+    {
+      "name": "Voltage (U), L2-L3 (2695)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2695,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage (U), L3-L1 (2697)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2697,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L1-N (2699)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2699,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Line to Neutral Voltage (V)"
+    },
+    {
+      "name": "Voltage, L2-N (2701)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2701,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L3-N (2703)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2703,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current, L1 (2705)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2705,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Current"
+    },
+    {
+      "name": "Current, L2 (2707)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2707,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, L3 (2709)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2709,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, Neutral (measured or calculated)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2711,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Reports QNAN (0x7FC00000) (2713)",
+      "group": "Bi-Dir Float – Per Phase",
+      "area": "holding",
+      "address": 2713,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Calibration Event Counter. Security feature. Increments whenever the meter Calibration is successfully written.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4171,
+      "type": "uint16",
+      "unit": "count",
+      "access": "R"
+    },
+    {
+      "name": "Configuration Event Counter. Security feature.Increments whenever the meter configuration is successfully written.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4172,
+      "type": "uint16",
+      "unit": "count",
+      "access": "R"
+    },
+    {
+      "name": "Analog Output Mode: Output not supported on all models. The mode select the units and the reference for 100% of full scale. 0 = Not Supported on this model. 1 = Watts. Full scale set by the Theoretical Maximum System Power calculated by the meter below. 2 = VAR. Full scale set by the Theoretical Maximum System Power calculated by the meter below. 3 = Amps. Average of active phases set by System Type set below. Full scale set by the CT Primary size below. 4 = Volts. Average of active phases set by System Type set below. Full scale set by the System Voltage below.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4173,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 4
+    },
+    {
+      "name": "CT Input Polarity Bit Map: Controls the polarity of the input signal from the CT. Has 3 bits for CT inputs L1, L2 and L3. If a bit is 0, the associated CT current data polarity is unchanged (the default). If the bit is set to 1, polarity of the CT data is inverted. Setting a bit to 1 has the effect of taking the CT off the wire, flipping it over, and putting it back on the wire, changing the direction of the to load arrow. Default is 0x0000. Bit 0: Reserved, returns 0. Bit 1: CT L1 (A) Inverted Bit 2: CT L2 (B) Inverted Bit 3: CT L3 (C) Inverted Bits 4 - 15: unused, returns 0.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4174,
+      "type": "uint16",
+      "unit": "Bitmap",
+      "access": "RW",
+      "description": "Range: 0-0x000E"
+    },
+    {
+      "name": "Voltage Input L1 (A) to CT Input Association: Default is 1.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4175,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 4,
+      "description": "Voltage to Current Input Association: Controls which CT input each voltage input is convoluted with to calculate real, reactive, and apparent power"
+    },
+    {
+      "name": "Voltage Input L2 (B) to CT Input Association: Default is 2.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4176,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 4
+    },
+    {
+      "name": "Voltage Input L3 (B) to CT Input Association: Default is 3.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4177,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 4
+    },
+    {
+      "name": "Meter Control Override Bitmap: 1 = Active. Indicates if any of the physical rotary controls or inputs to the meter have been overridden via communications. If the associated bit is True (1), the value that the control indicates is not correct, the value written over communications is being used by the meter. If any bit in this register is true, the Override LED on the meter is illuminated. Bit 0: CT Primary Size Control Overridden. Bit 1: Energy Pulse Weight Control Overridden. Bit 2: Device Address (Modbus RTU or BACnet MS/TP) Control Overridden. Bit 3: Meter Mode Control Overridden. Bit 4: Analog Output Control Overridden. Bit 5: CT Interface Overridden (Voltage Mode vs Rogowski CT). Bits 6-7: Reserved, return 0. Bit 8: Reserved, returns 0. Bit 9: Voltage Input L1 (A) to CT Input Association Overridden, see register 4175. Bit 10: Voltage Input L2 (B) to CT Input Association Overridden, see register 4176. Bit 11: Voltage Input L3 (C) to CT Input Association Overridden, see register 4177. Bit 12: Reserved, returns 0. Bit 13: CT Input L1 (A) Polarity Overridden, see register 4174. Bit 14: CT Input L2 (B) Polarity Overridden, see register 4174. Bit 15: CT Input L3 (C) Polarity Overridden, see register 4174.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4178,
+      "type": "uint16",
+      "unit": "Bitmap",
+      "access": "R"
+    },
+    {
+      "name": "Command Register: - Write 30078 (0x757E) to clear all Energy Accumulators to 0 (All). - Write 21212 (0x52DC) to reset Max Demand values to Present Demand Values. Takes effect at the end of the next 1 second calculation cycle. Write no more frequently than every 10 seconds. Not available on BDS models. - Write 21211 (0x52DB) to begin new Demand Sub-Interval calculation cycle. Only supported when demand is in sync-to-comms mode (Number of Demand Sub-Intervals is set to 0). Takes effect at the end of the next 1 second calculation cycle. Write no more frequently than every 10 seconds. Not available on BDS models. - Write 16640 (0x4100) to Reset Logging. Logging models only. - Write 16498 (0x4072) to Clear Pulse Counters to 0. - Write 12345 (0x3039) to reset all Min/Max values to present values. EDS models only. - Read always returns 0.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4179,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "description": "Range: N/A"
+    },
+    {
+      "name": "System Type: See Manual. Note: only the indicated phases are monitored for Phase Loss.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4180,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Single Phase: L1 + N Single Phase: L1 + L2 Single Split Phase: L1 + L2 + N 3 phase ∆, L1 + L2 + L3, no N 3 phase Y, L1 + L2 + L3 + N. Range: 10 11 12 31 40"
+    },
+    {
+      "name": "CT Primary: 1-12800 = CT Current Rating for phase A, B, & C. Not configurable on system calibrated models.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4181,
+      "type": "uint16",
+      "unit": "Amps",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 12800
+    },
+    {
+      "name": "Current Input / CT Secondary Bitmap: 1 = Active. Not user configurable on System Calibrated models. Either Voltage or Rogowski input mode must be enabled on flex models. Bit 0-1: Voltage Input Mode, 11b = 1/3 V. No other modes are supported. Bit 2: Rowgowski Input Mode Bit 3: unused Bit 4: System Calibrated (0=Flex) Read Only Bit Bit 5: unused Bit 6: unused Bit 7: unused Bits 8-15: unused",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4182,
+      "type": "uint16",
+      "unit": "bitmap",
+      "access": "RW",
+      "description": "Range: Write: 3, 4 Read: 3, 4, 19, 20"
+    },
+    {
+      "name": "PT Ratio - The meter scales this value by 100, so entering 200 yields a Potential Transformer ratio of 2:1. The default is 100 (1.00:1), which is no PT attached. Set this value before setting the System Voltage (below).",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4183,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0.01,
+      "write_max": 320.0
+    },
+    {
+      "name": "System Voltage – This voltage is Line to Line unless in System Type 10 (register 130), in which case it is Line to Neutral. This value is used to by the meter to calculate the full scale power for the analog outputs and pulse configuration (see below), and as full scale for phase loss (see register 142). The meter will refuse voltages that are outside the range of 82-660 volts when divided by the PT Ratio (above).",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4184,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 82,
+      "write_max": 32000
+    },
+    {
+      "name": "Theoretical Maximum System Power – This read only register is the theoretical maximum power the meter expects to see on a service. Its value is calculated by the meter from the System Type (register 130), CT size (register 131), and System Voltage (register 134). The register is updated whenever the user changes any of these parameters. This value is 100% of scale on the analog output (0-5VDC or 4-20mA), if equipped. It is also used to determine the maximum power the pulse outputs can keep up with. This integer register has the same scale as other integer power registers (see register 140 for power scaling).",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4185,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "scale_factor": "Scale factor W (power)"
+    },
+    {
+      "name": "Neutral CT Primary: 1-12800 = CT Current Rating for the neutral current input. Not configurable on system calibrated models.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4186,
+      "type": "uint16",
+      "unit": "Amps",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 12800
+    },
+    {
+      "name": "Reserved, Returns 0 (4187)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4187,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Scale factor I (current)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4188,
+      "type": "int16",
+      "unit": "integer",
+      "access": "R",
+      "description": "Scale Factors: These registers contain a signed integer, which scales the corresponding integer registers (see Scale column). Floating point registers are not scaled. Scaling is re-calculated whenever the meter configuration is changed"
+    },
+    {
+      "name": "Scale factor V (voltage)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4189,
+      "type": "int16",
+      "unit": "integer",
+      "access": "R"
+    },
+    {
+      "name": "Scale factor W (power)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4190,
+      "type": "int16",
+      "unit": "integer",
+      "access": "R"
+    },
+    {
+      "name": "Scale factor E (energy)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4191,
+      "type": "int16",
+      "unit": "integer",
+      "access": "R"
+    },
+    {
+      "name": "Phase Loss Voltage Threshold: Set in percent of the System Voltage above. Default is 75 (75%). Set to 0 to disable the Phase Loss detection (both voltage and imbalance).",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4192,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 99
+    },
+    {
+      "name": "Phase Loss Imbalance Threshold in Percent. Default is 25% phase to phase difference. For system type 40 (3 + N), both Line to Neutral and Line to Line voltages are tested. In System type 31, only Line to Line voltages are examined. In system type 12 (2 + N) just the two line to neutral voltages are compared.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4193,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 99
+    },
+    {
+      "name": "Wh (& VARh, if equipped) Energy per Pulse Output Contact Closure - Default is 1 KWh. If the meter cannot find a Pulse Duration that will keep up with the Maximum System Power (see register 135), It will reject the new value. If this is the case, check the meter configuration and/or try a larger value.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4194,
+      "type": "uint16",
+      "unit": "Wh",
+      "access": "RW",
+      "description": "Range: 10000, 1000, 500, 250, 100, 10, 1"
+    },
+    {
+      "name": "Pulse Contact Closure Duration in mS - This read only value is set by the meter to the slowest duration (in mS per closure) that will keep up with the Theoretical Maximum System Power (see register 135). Note that the open time is greater than or equal to the closure time, so the maximum pulse rate (Pulses Per Second) is the inverse of double the pulse time.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4195,
+      "type": "uint16",
+      "unit": "ms",
+      "access": "R"
+    },
+    {
+      "name": "Error Bitmap 1: 1 = Active: Bit 0: Phase A Voltage out of range Bit 1: Phase B Voltage out of range Bit 2: Phase C Voltage out of range Bit 3: Phase N Voltage out of range Bit 4: Phase A Current out of range Bit 5: Phase B Current out of range Bit 6: Phase C Current out of range Bit 7: Phase N Current out of range Bit 8: Phase Loss on Voltage Phase A Bit 9: Phase Loss on Voltage Phase B Bit 10: Phase Loss on Voltage Phase C Bit 11: Frequency out of the range of 45 – 65 Hz, or there is insufficient voltage on any phase to determine frequency. Bit 12: Low Power Factor on Phase A. Bit 13: Low Power Factor on Phase B. Bit 14: Low Power Factor on Phase C. Bit 15: Reserved, return 0. Note: Low Power Factor may indicate an extremely capacitive or inductive load, or that the Voltage and Current Phases are miss-connected, with one or more phases having a PF of less than 0.5.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4196,
+      "type": "uint16",
+      "unit": "Bitmap",
+      "access": "R"
+    },
+    {
+      "name": "Count of Energy Accumulator resets",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4197,
+      "type": "uint16",
+      "unit": "count",
+      "access": "R"
+    },
+    {
+      "name": "Error Bitmap 2: 1 = Active: Bits 0 – 3: Reserved, return 0. Bit 4: Energy pulse output overrun error. Can only occur if the model has pulse outputs. The pulse output(s) are unable to keep up with the assigned accumulator (typically Total Real Energy). To fix, increase the Pulse Energy or reduce the Pulse Duration and reset the energy accumulators. Bit 5: Energy pulse output configuration error (present pulse energy setting may not keep up with the Theoretical Maximum System Power). To fix, Increase the Pulse Energy or reduce the Pulse Duration. Bit 6: unused, returns 0 Bit 7: unused, returns 0 Bits 8 - 11: Reserved, return 0. Bits 12 – 15: Reserved, return 0.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4198,
+      "type": "uint16",
+      "unit": "Bitmap",
+      "access": "R"
+    },
+    {
+      "name": "Number of Sub-Intervals per Demand Interval. Sets the number of sub-intervals that make a single demand interval. For block demand, set this to 1. Default is 1. When Sub-Interval Length register #150 is set to 0 (sync-to-comms mode), this register is ignored.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4199,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 6
+    },
+    {
+      "name": "Sub-Interval Length in seconds. For external demand sync, set this register to 0 and then write 21211 to the command register to start each sub-interval. Default is 900 seconds (15 minutes). If logging is supported, this is also the Logging interval.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4200,
+      "type": "uint16",
+      "unit": "Seconds",
+      "access": "RW",
+      "description": "Range: 0, 10-32767"
+    },
+    {
+      "name": "Meter Status Bitmap: Bit 0: True if demand interval synced to clock on minute or hour boundaries. If False Demand timer is free running. Bit 1: Meter Locked. This indicator is enabled if write access to the meter via Modbus has been locked via the user interface. Bit 2: Override LED on. This indicator is enabled if any of the rotary controls have been overriden via protocol communications. Bit 3: Reserved, returns 0. Bits 4 – 7: Reserved, return 0. Bits 8 - 11: Reserved, return 0. Bits 12 – 15: Reserved, return 0.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4201,
+      "type": "uint16",
+      "unit": "bitmap",
+      "access": "R"
+    },
+    {
+      "name": "Power Up Counter",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4202,
+      "type": "uint16",
+      "unit": "count",
+      "access": "R"
+    },
+    {
+      "name": "Output Configuration Unless otherwise noted all units have an NO Energy contact and a NO or NC (Normally Open - Form A, or Closed-Form B) Phase Loss contact.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4203,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "R",
+      "description": "3rd Output: 0 = RS-485 1 = RS-485 2 = VAR Pulse 3 = VAR Pulse 4 = 4-20mA 5 = 4-20mA 8 = 0-5VDC 9 = 0-5VDC 15 = Display Only"
+    },
+    {
+      "name": "Reserved, Returns 0 (4204)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4204,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "R"
+    },
+    {
+      "name": "Date / Time Clock (RTC). If the meter's clock backup runs out, the RTC resets to: Day 01? Month 01?",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4205,
+      "type": "uint16",
+      "unit": "Day / Month",
+      "access": "RW",
+      "description": "Most Significant Byte (MSB) Day 1-31 (0x01-0x1F). Range: See Bytes"
+    },
+    {
+      "name": "Hour 00? Year (20) 00?",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4206,
+      "type": "uint16",
+      "unit": "Hour / Year",
+      "access": "RW",
+      "description": "Hour 0-23 (0x00-0x17). Range: See Bytes"
+    },
+    {
+      "name": "Second 00? Minute 00?",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4207,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Seconds 0-59 (0x00-0x3B). Range: See Bytes"
+    },
+    {
+      "name": "Device Address (Modbus RTU and BACnet MS/TP MAC Address)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4208,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Returns 0 (4209)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4209,
+      "type": "uint16",
+      "unit": "Bitmap",
+      "access": "R"
+    },
+    {
+      "name": "Baud Rate: Speeds above 38400 are not recommended for use with Modbus. They do not improve performance due to required Modbus protocol silent times, and may prevent the use of firmware update tools. The higher speeds are supported primarily for auto-bauding with BACnet protocol. When auto-bauding, the meter first determines the baud rate and parity. Only then can it determine the protocol.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4210,
+      "type": "uint32",
+      "unit": "integer",
+      "access": "R"
+    },
+    {
+      "name": "Reserved, Returns 0 (4212)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 4212,
+      "type": "uint16",
+      "unit": "integer",
+      "access": "R"
+    },
+    {
+      "name": "Manufacturer",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5000,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Model",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5032,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Name",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5064,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Data Set",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5096,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Serial Number",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5128,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Location: User assigned ASCII character string, typically to identify the meter's physical location.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5160,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "RW",
+      "description": "Range: ASCII Text + Null"
+    },
+    {
+      "name": "Expansion (optional)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5192,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Date of Manufacture",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5224,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "RS Version",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5256,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "OS Version",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5288,
+      "type": "string",
+      "length": 32,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Product Revision",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5320,
+      "type": "string",
+      "length": 4,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Hardware Revision",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 5324,
+      "type": "string",
+      "length": 4,
+      "unit": "ASCII",
+      "access": "R"
+    },
+    {
+      "name": "Hardware Version",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7000,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware Version, Reset System (Boot Down Loader), 5 digits of the form 1.23.45 (Major.Minor.Revision)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7001,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware Version, Operating System (Application), 5 digits of the form 1.23.45 (Major.Minor.Revision)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7002,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Device ID: 15035",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7003,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus Address",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7004,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Baudrate",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7005,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Password (always returns 0). Used only for download.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7006,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Selftest (always returns 0)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7007,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PLOS (Power Logic Operating System). Returns the one’s complement of software’s safe vectors flag. Indicates if the Application (OS) or Boot (Downloader/Reset System) is running.",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7008,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Command (7009)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7009,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Parameters",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7010,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Status",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7026,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Result",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7027,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "I/O Data",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7028,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Data Area",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7029,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Reserved, Returns 0x8000 (QNAN) (7157)",
+      "group": "Meter Configuration & Logging",
+      "area": "holding",
+      "address": 7157,
+      "type": "uint16",
+      "access": "R"
+    }
   ]
 }
