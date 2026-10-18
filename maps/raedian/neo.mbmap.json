@@ -1,0 +1,198 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Raedian",
+  "model": "NEO",
+  "models": [
+    "NEO",
+    "NEO 7-T5"
+  ],
+  "vendor_website": "raedian.com",
+  "description": "AC wallbox with RS-485 (Modbus RTU) control",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "evcc charger driver for the RAEDIAN AC wallbox, which implements the manufacturer's 'Modbus Protocol RAEDIAN AC Wallbox v0.3'. Not checked against the manufacturer's document",
+  "sources": [
+    {
+      "title": "evcc: RAEDIAN wallbox driver (charger/raedian.go)",
+      "url": "https://github.com/evcc-io/evcc/blob/master/charger/raedian.go",
+      "note": "register addresses, types, units and the charging states"
+    },
+    {
+      "title": "Eniris: Raedian charging stations",
+      "url": "https://docs.eniris.com/Devices/EV-charging-station/Raedian",
+      "note": "serial settings; the NEO has RS-485 only"
+    }
+  ],
+  "notes": [
+    "Values are read with FC03; the control registers are written with FC06 (16-bit) and FC16 (32-bit).",
+    "Enable Modbus RTU in the charger's settings first. Serial settings: 9600 baud, 8 data bits, no parity, 1 stop bit; the address is set in the same menu (1 in the examples).",
+    "Unofficial: taken from a third-party driver, not from the manufacturer's protocol document (Raedian's support page does not publish it).",
+    "The driver reads the status as a 32-bit word whose byte A1 holds the charging state in bits 6 to 0 and a current-limit flag in bit 7; here they are split into the two registers."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "unofficial",
+  "x_origin": "evcc",
+  "registers": [
+    {
+      "name": "Status (high word)",
+      "group": "Status",
+      "area": "holding",
+      "address": 32780,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bytes A3 and A2 of the status word at 0x800C"
+    },
+    {
+      "name": "Charging state",
+      "group": "Status",
+      "area": "holding",
+      "address": 32781,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 7,
+      "enum": {
+        "0": "A: idle",
+        "1": "B1: vehicle plugged in, waiting for authorization",
+        "2": "B2: vehicle plugged in, ready to charge (PWM)",
+        "3": "C1: vehicle ready, S2 closed (no PWM)",
+        "4": "C2: contactor closed, charging",
+        "5": "Other"
+      },
+      "description": "Bits 6 to 0 of byte A1 of the status word"
+    },
+    {
+      "name": "Current limit flag",
+      "group": "Status",
+      "area": "holding",
+      "address": 32781,
+      "type": "bool",
+      "access": "R",
+      "bit": 15,
+      "description": "Bit 7 of byte A1 of the status word"
+    },
+    {
+      "name": "Current L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32784,
+      "type": "uint32",
+      "unit": "A",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Current L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32786,
+      "type": "uint32",
+      "unit": "A",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Current L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32788,
+      "type": "uint32",
+      "unit": "A",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Voltage L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32790,
+      "type": "uint32",
+      "unit": "V",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Voltage L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32792,
+      "type": "uint32",
+      "unit": "V",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Voltage L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32794,
+      "type": "uint32",
+      "unit": "V",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32796,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Charged energy",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32798,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Energy of the current session"
+    },
+    {
+      "name": "Maximum charging current",
+      "group": "Control",
+      "area": "holding",
+      "address": 33024,
+      "type": "uint32",
+      "unit": "A",
+      "access": "W",
+      "scale": 0.001,
+      "description": "Set in mA; 0 stops charging"
+    },
+    {
+      "name": "Phases",
+      "group": "Control",
+      "area": "holding",
+      "address": 33026,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "1": "1 phase",
+        "2": "3 phases"
+      }
+    },
+    {
+      "name": "Start or stop",
+      "group": "Control",
+      "area": "holding",
+      "address": 33029,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Stop",
+        "1": "Start"
+      }
+    }
+  ]
+}
