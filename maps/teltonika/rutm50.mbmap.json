@@ -1,0 +1,565 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Teltonika",
+  "model": "RUTM50",
+  "models": [
+    "RUTM50"
+  ],
+  "vendor_website": "teltonika-networks.com",
+  "description": "5G router: system, mobile data and I/O values over the Modbus server",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "Teltonika Networks Wiki, \"RUTM50 Modbus\"; https://wiki.teltonika-networks.com/view/RUTM50_Modbus",
+  "sources": [
+    {
+      "title": "RUTM50 Modbus (Teltonika Networks Wiki)",
+      "url": "https://wiki.teltonika-networks.com/view/RUTM50_Modbus",
+      "note": "Modbus Registers: get and set parameter tables",
+      "version": "wiki revision 181842"
+    }
+  ],
+  "notes": [
+    "Teltonika RUTM50 5G router: the Modbus TCP server and the serial Modbus server both answer with the same system values. The registers are holding registers (function 3 to read, 6 and 16 to write).",
+    "The manual lists a register address (0-based, as sent on the bus) and a register number (address + 1). This map uses the address.",
+    "Text values take 2 characters per register. Numbers take 2 registers; the manual gives no word order, so big is assumed.",
+    "Mobile data counters are in bytes, kilobytes or megabytes, as chosen by the Mobile data type setting of the Modbus server.",
+    "The server is off by default. Factory settings: TCP port 502, device ID 1 (0 answers to any ID), serial 9600 baud, 8 data bits, no parity, 1 stop bit.",
+    "With 'Enable custom register block' on, registers from 1025 onward are a user-defined block that is not in this map.",
+    "Left out because the manual is not clear: Mobile data received last month (SIM1), Mobile data sent last month (SIM1), Mobile data received last month (SIM2), Mobile data sent last month (SIM2), Mobile data received last week (SIM1), Mobile data sent last week (SIM1), Mobile data received last week (SIM2), Mobile data sent last week (SIM2), Change APN (length not fixed)."
+  ],
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "System uptime",
+      "group": "Info",
+      "area": "holding",
+      "address": 1,
+      "access": "R",
+      "type": "uint32",
+      "description": "System uptime"
+    },
+    {
+      "name": "Mobile signal strength",
+      "group": "Info",
+      "area": "holding",
+      "address": 3,
+      "access": "R",
+      "type": "int32",
+      "unit": "dBm",
+      "description": "RSSI"
+    },
+    {
+      "name": "Temperature",
+      "group": "Info",
+      "area": "holding",
+      "address": 5,
+      "access": "R",
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "System hostname",
+      "group": "Info",
+      "area": "holding",
+      "address": 7,
+      "access": "RW",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "GSM operator name",
+      "group": "Info",
+      "area": "holding",
+      "address": 23,
+      "access": "R",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "Serial number",
+      "group": "Info",
+      "area": "holding",
+      "address": 39,
+      "access": "R",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "LAN MAC address",
+      "group": "Info",
+      "area": "holding",
+      "address": 55,
+      "access": "R",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "Device name",
+      "group": "Info",
+      "area": "holding",
+      "address": 71,
+      "access": "RW",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "Active SIM card name",
+      "group": "Info",
+      "area": "holding",
+      "address": 87,
+      "access": "R",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "Network registration info",
+      "group": "Info",
+      "area": "holding",
+      "address": 103,
+      "access": "R",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "Network type",
+      "group": "Info",
+      "area": "holding",
+      "address": 119,
+      "access": "R",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "WAN IP address",
+      "group": "Info",
+      "area": "holding",
+      "address": 139,
+      "access": "R",
+      "type": "uint32",
+      "description": "The manual calls it an 8-bit unsigned integer but gives two registers; read as one 32-bit number"
+    },
+    {
+      "name": "GPS latitude",
+      "group": "GPS",
+      "area": "holding",
+      "address": 143,
+      "access": "R",
+      "type": "float32"
+    },
+    {
+      "name": "GPS longitude",
+      "group": "GPS",
+      "area": "holding",
+      "address": 145,
+      "access": "R",
+      "type": "float32"
+    },
+    {
+      "name": "GPS fixed time",
+      "group": "GPS",
+      "area": "holding",
+      "address": 147,
+      "access": "R",
+      "type": "string",
+      "length": 16,
+      "description": "ASCII format (YYYY-MM-DD hh:mm:ss)"
+    },
+    {
+      "name": "GPS datetime",
+      "group": "GPS",
+      "area": "holding",
+      "address": 163,
+      "access": "R",
+      "type": "string",
+      "length": 16,
+      "description": "ASCII format (YYYY-MM-DD hh:mm:ss)"
+    },
+    {
+      "name": "GPS speed",
+      "group": "GPS",
+      "area": "holding",
+      "address": 179,
+      "access": "R",
+      "type": "float32"
+    },
+    {
+      "name": "GPS satellite count",
+      "group": "GPS",
+      "area": "holding",
+      "address": 181,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "GPS accuracy",
+      "group": "GPS",
+      "area": "holding",
+      "address": 183,
+      "access": "R",
+      "type": "float32"
+    },
+    {
+      "name": "Mobile data received today (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 185,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent today (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 187,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received this week (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 189,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent this week (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 191,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received this month (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 193,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent this month (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 195,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received last 24h (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 197,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent last 24h (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 199,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Switch WiFi ON/OFF",
+      "group": "Control",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "W",
+      "description": "Turns WiFi ON or OFF",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Switch mobile data connection",
+      "group": "Control",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "W",
+      "description": "Turns mobile data connection ON or OFF",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Active SIM card index",
+      "group": "Info",
+      "area": "holding",
+      "address": 205,
+      "access": "RW",
+      "type": "uint16",
+      "write_min": 0,
+      "write_max": 2,
+      "enum": {
+        "0": "Switch to the other SIM",
+        "1": "SIM1",
+        "2": "SIM2"
+      },
+      "description": "Reading gives the active SIM; writing 1 or 2 selects it, 0 switches to the other one"
+    },
+    {
+      "name": "Reboot",
+      "group": "Control",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 1 to reboot the device",
+      "write_min": 1,
+      "write_max": 1
+    },
+    {
+      "name": "Mobile data received last 7 days (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 292,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent last 7 days (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 294,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received last 30 days (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 296,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent last 30 days (SIM1)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 298,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received today (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 300,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent today (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 302,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received this week (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 304,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent this week (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 306,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received this month (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 308,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent this month (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 310,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received last 24h (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 312,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent last 24h (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 314,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received last 7 days (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 316,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent last 7 days (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 318,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data received last 30 days (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 320,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Mobile data sent last 30 days (SIM2)",
+      "group": "Mobile data",
+      "area": "holding",
+      "address": 322,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Input (PIN3)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 324,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "Output (PIN4)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 325,
+      "access": "RW",
+      "type": "uint16",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Modem ID",
+      "group": "Info",
+      "area": "holding",
+      "address": 328,
+      "access": "R",
+      "type": "string",
+      "length": 8
+    },
+    {
+      "name": "IMSI",
+      "group": "Info",
+      "area": "holding",
+      "address": 348,
+      "access": "R",
+      "type": "string",
+      "length": 16
+    },
+    {
+      "name": "Unix timestamp",
+      "group": "Info",
+      "area": "holding",
+      "address": 364,
+      "access": "R",
+      "type": "uint32"
+    },
+    {
+      "name": "Local ISO time",
+      "group": "Info",
+      "area": "holding",
+      "address": 366,
+      "access": "R",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "name": "UTC time",
+      "group": "Info",
+      "area": "holding",
+      "address": 378,
+      "access": "R",
+      "type": "string",
+      "length": 12
+    },
+    {
+      "name": "Switch 2.4GHz WiFi ON/OFF",
+      "group": "Control",
+      "area": "holding",
+      "address": 390,
+      "type": "uint16",
+      "access": "W",
+      "description": "Turns 2.4GHz WiFi ON or OFF",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Switch 5GHz WiFi ON/OFF",
+      "group": "Control",
+      "area": "holding",
+      "address": 391,
+      "type": "uint16",
+      "access": "W",
+      "description": "Turns 5GHz WiFi ON or OFF",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "LAN IP",
+      "group": "Info",
+      "area": "holding",
+      "address": 394,
+      "access": "RW",
+      "type": "uint32"
+    },
+    {
+      "name": "Send SMS",
+      "group": "Control",
+      "area": "holding",
+      "address": 396,
+      "type": "uint16",
+      "access": "W",
+      "description": "Sends an SMS with content defined in Add SMS (397) register",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Add SMS",
+      "group": "Info",
+      "area": "holding",
+      "address": 397,
+      "access": "RW",
+      "type": "string",
+      "length": 90
+    }
+  ]
+}
