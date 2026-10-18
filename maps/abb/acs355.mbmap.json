@@ -1,0 +1,2477 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "ABB",
+  "model": "ACS355",
+  "models": [
+    "ACS355"
+  ],
+  "vendor_website": "abb.com",
+  "description": "General machinery drive ACS355 over the embedded fieldbus (Modbus RTU, EIA-485 through the FMBA-01 module or RS-232 through the panel connector)",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "ABB, \"ACS355 drives user's manual\", 3AUA0000066143 revision E; https://library.e.abb.com/public/805f31a82d524d8aa8a750011e2cd001/EN_ACS355_UM_E_A5.pdf",
+  "sources": [
+    {
+      "title": "ACS355 drives user's manual",
+      "version": "3AUA0000066143 revision E",
+      "url": "https://library.e.abb.com/public/805f31a82d524d8aa8a750011e2cd001/EN_ACS355_UM_E_A5.pdf",
+      "note": "chapter 13 (embedded fieldbus) and the actual signals and parameters of groups 01, 03, 04, 16, 30, 52, 53 and 98"
+    }
+  ],
+  "notes": [
+    "Register 4xxxx is sent as address xxxx - 1, so this map uses address_base 1: 40001 control word is address 1, parameter 0104 is address 104. Parameters 0101 to 9999 sit at registers 40101 to 49999.",
+    "Communication works only after 9802 COMM PROT SEL is set to standard Modbus and the group 53 parameters are set; new settings take effect at the next power-up.",
+    "Control word and status word are available in two forms: the 16-bit ABB drives profile (registers 1 and 4) and the 32-bit DCU profile (registers 31 to 34); which one works depends on 5305 EFB CTRL PROFILE.",
+    "To control the drive from the network set the command and reference sources (1001, 1002, 1102, 1103, 1106) to COMM.",
+    "Parameter writes over Modbus are volatile; write 1 to 1607 PARAM SAVE to keep them.",
+    "This map holds the control area, the operating data and fault groups, and the serial-link parameters. The other drive parameters follow the same rule (parameter number is the register) and are in the manual's parameter list.",
+    "Signed values use two's complement. Supported functions are 3, 6, 8 (diagnostics), 16 and 23.",
+    "The factory serial settings are station ID 1, 9.6 kbit/s, 8 data bits, no parity and 1 stop bit."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Control word (ABB profile)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "description": "ABB drives profile control word; only with 5305 EFB CTRL PROFILE = ABB DRV LIM or ABB DRV FULL. Parameter 5319 shows a copy"
+    },
+    {
+      "name": "Control word - OFF1 (1 = ready to operate, 0 = ramp stop)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - OFF2 (0 = coast to stop)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - OFF3 (0 = emergency stop)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - Inhibit operation (1 = enable operation)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - Ramp output to zero (1 = enabled, ABB DRV FULL only)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - Ramp hold (0 = halt ramping)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - Ramp input to zero (0 = force to zero)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 6,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - Reset (0 to 1 resets a fault)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 7,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - Remote command (ABB DRV FULL only)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 10,
+      "access": "RW"
+    },
+    {
+      "name": "Control word - External control location (1 = EXT2)",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 11,
+      "access": "RW"
+    },
+    {
+      "name": "Reference 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.005,
+      "unit": "%",
+      "write_min": -163.835,
+      "write_max": 163.835,
+      "description": "External reference REF1 for speed or frequency: 20000 is 100 % of 1105 REF1 MAX, negative is reverse"
+    },
+    {
+      "name": "Reference 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "write_min": -327.67,
+      "write_max": 327.67,
+      "description": "External reference REF2 for speed, frequency, torque or PID: 10000 is 100 % of 1108 REF2 MAX"
+    },
+    {
+      "name": "Status word (ABB profile)",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "description": "ABB drives profile status word; only with the ABB profiles. Parameter 5320 shows a copy"
+    },
+    {
+      "name": "Status word - Ready to switch on",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Status word - Ready to operate",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Status word - Operation enabled",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Status word - Tripped",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Status word - OFF2 inactive",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Status word - OFF3 inactive",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Status word - Switch-on inhibited",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Status word - Alarm",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Status word - At setpoint",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Status word - Remote",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Status word - Above limit",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Status word - External control location (1 = EXT2)",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Status word - External run enable",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Actual value 1",
+      "group": "Status",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "access": "R",
+      "description": "Value chosen by parameter 5310 EFB PAR 10 (default parameter index 103)"
+    },
+    {
+      "name": "Actual value 2",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "int16",
+      "access": "R",
+      "description": "Value chosen by parameter 5311 EFB PAR 11 (default parameter index 104)"
+    },
+    {
+      "name": "Actual value 3",
+      "group": "Status",
+      "area": "holding",
+      "address": 7,
+      "type": "int16",
+      "access": "R",
+      "description": "Value chosen by parameter 5312 EFB PAR 12 (default parameter index 0)"
+    },
+    {
+      "name": "Actual value 4",
+      "group": "Status",
+      "area": "holding",
+      "address": 8,
+      "type": "int16",
+      "access": "R",
+      "description": "Value chosen by parameter 5313 EFB PAR 13 (default parameter index 0)"
+    },
+    {
+      "name": "Actual value 5",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "int16",
+      "access": "R",
+      "description": "Value chosen by parameter 5314 EFB PAR 14 (default parameter index 0)"
+    },
+    {
+      "name": "Actual value 6",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "access": "R",
+      "description": "Value chosen by parameter 5315 EFB PAR 15 (default parameter index 0)"
+    },
+    {
+      "name": "Actual value 7",
+      "group": "Status",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "access": "R",
+      "description": "Value chosen by parameter 5316 EFB PAR 16 (default parameter index 0)"
+    },
+    {
+      "name": "Actual value 8",
+      "group": "Status",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "access": "R",
+      "description": "Value chosen by parameter 5317 EFB PAR 17 (default parameter index 0)"
+    },
+    {
+      "name": "Control word DCU 1 (0301)",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Low word of the DCU profile control word; only with 5305 EFB CTRL PROFILE = DCU PROFILE"
+    },
+    {
+      "name": "DCU control word 1 - Stop",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Start",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Reverse",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Local",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Reset",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - EXT2",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Run disable",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 6,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Stop along ramp",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 7,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Emergency stop",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 8,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Coast to stop",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 9,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Ramp 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 10,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Ramp output to zero",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 11,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Ramp hold",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 12,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Ramp input to zero",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 13,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Request local lock",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 14,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 1 - Torque limit 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 15,
+      "access": "RW"
+    },
+    {
+      "name": "Control word DCU 2 (0302)",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High word of the DCU profile control word"
+    },
+    {
+      "name": "DCU control word 2 - Fieldbus local control",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Fieldbus local reference",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Start disable 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Start disable 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Jogging 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Jogging 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Constant speed reference request",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 11,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Average speed reference request",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 12,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Fieldbus link on",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 13,
+      "access": "RW"
+    },
+    {
+      "name": "DCU control word 2 - Start inhibit",
+      "group": "Control",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 14,
+      "access": "RW"
+    },
+    {
+      "name": "Status word DCU 1 (0303)",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "uint16",
+      "access": "R",
+      "description": "Low word of the DCU profile status word"
+    },
+    {
+      "name": "DCU status word 1 - Ready",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Enabled",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Started",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Running",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Zero speed",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Accelerating",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Decelerating",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - At setpoint",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Limit",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Supervision",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Reverse reference",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Reverse actual",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Panel local",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Fieldbus local",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - EXT2 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 1 - Fault",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Status word DCU 2 (0304)",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "R",
+      "description": "High word of the DCU profile status word"
+    },
+    {
+      "name": "DCU status word 2 - Alarm",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Notice",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Direction lock",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Local lock",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Vector control mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Jogging active",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Control word requested from fieldbus",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Reference 1 requested from fieldbus",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Reference 2 requested from fieldbus",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - External PID reference 2 requested from fieldbus",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "DCU status word 2 - Start inhibit from fieldbus",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "0101 Speed and direction",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 101,
+      "type": "int16",
+      "access": "R",
+      "unit": "rpm",
+      "description": "Negative is reverse"
+    },
+    {
+      "name": "0102 Speed",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 102,
+      "type": "int16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "0103 Output frequency",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "Hz"
+    },
+    {
+      "name": "0104 Current",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "0105 Torque",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 105,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Share of the motor nominal torque"
+    },
+    {
+      "name": "0106 Power",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 106,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "0107 DC bus voltage",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "0109 Output voltage",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "0110 Drive temperature",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 110,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C",
+      "description": "IGBT temperature"
+    },
+    {
+      "name": "0111 External reference 1",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 111,
+      "type": "int16",
+      "access": "R",
+      "description": "In rpm or 0.1 Hz, depending on 9904 MOTOR CTRL MODE"
+    },
+    {
+      "name": "0112 External reference 2",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 112,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0113 Control location",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 113,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Local",
+        "1": "EXT1",
+        "2": "EXT2"
+      }
+    },
+    {
+      "name": "0114 Run time",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 114,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "0115 kWh counter",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "Rolls over at 65535"
+    },
+    {
+      "name": "0120 AI 1",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 120,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0121 AI 2",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 121,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0124 AO 1",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 124,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "mA"
+    },
+    {
+      "name": "0126 PID 1 output",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 126,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0127 PID 2 output",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 127,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0128 PID 1 setpoint",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 128,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit set by 4006 UNITS, 4007 UNIT SCALE and 4027"
+    },
+    {
+      "name": "0129 PID 2 setpoint",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 129,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit set by 4106 UNITS and 4107 UNIT SCALE"
+    },
+    {
+      "name": "0130 PID 1 feedback",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 130,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit set by 4006 UNITS, 4007 UNIT SCALE and 4027"
+    },
+    {
+      "name": "0131 PID 2 feedback",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 131,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit set by 4106 UNITS and 4107 UNIT SCALE"
+    },
+    {
+      "name": "0132 PID 1 deviation",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 132,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit set by 4006 UNITS, 4007 UNIT SCALE and 4027"
+    },
+    {
+      "name": "0133 PID 2 deviation",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 133,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit set by 4106 UNITS and 4107 UNIT SCALE"
+    },
+    {
+      "name": "0134 Comm RO word",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "access": "R",
+      "description": "Relay output control word from the fieldbus (see 1401 RELAY OUTPUT 1)"
+    },
+    {
+      "name": "0135 Comm value 1",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 135,
+      "type": "int16",
+      "access": "RW",
+      "description": "Free data location the fieldbus can write"
+    },
+    {
+      "name": "0136 Comm value 2",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 136,
+      "type": "int16",
+      "access": "RW",
+      "description": "Free data location the fieldbus can write"
+    },
+    {
+      "name": "0137 Process variable 1",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 137,
+      "type": "int16",
+      "access": "R",
+      "description": "Defined by parameter group 34 PANEL DISPLAY"
+    },
+    {
+      "name": "0138 Process variable 2",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 138,
+      "type": "int16",
+      "access": "R",
+      "description": "Defined by parameter group 34 PANEL DISPLAY"
+    },
+    {
+      "name": "0139 Process variable 3",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 139,
+      "type": "int16",
+      "access": "R",
+      "description": "Defined by parameter group 34 PANEL DISPLAY"
+    },
+    {
+      "name": "0140 Run time (thousands of hours)",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 140,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kh"
+    },
+    {
+      "name": "0141 MWh counter",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 141,
+      "type": "uint16",
+      "access": "R",
+      "unit": "MWh",
+      "description": "Rolls over at 65535"
+    },
+    {
+      "name": "0142 Revolution counter",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 142,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Mrev",
+      "description": "Millions of motor revolutions"
+    },
+    {
+      "name": "0143 Drive on time (days)",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 143,
+      "type": "uint16",
+      "access": "R",
+      "unit": "days"
+    },
+    {
+      "name": "0144 Drive on time (2 s ticks)",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 144,
+      "type": "uint16",
+      "access": "R",
+      "scale": 2,
+      "unit": "s"
+    },
+    {
+      "name": "0145 Motor temperature",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 145,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit depends on the sensor chosen in group 35"
+    },
+    {
+      "name": "0146 Mechanical angle",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 146,
+      "type": "uint16",
+      "access": "R",
+      "description": "Share of 5001 PULSE NR"
+    },
+    {
+      "name": "0147 Mechanical revolutions",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 147,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "0148 Z pulse detected",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 148,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not detected",
+        "1": "Detected"
+      }
+    },
+    {
+      "name": "0150 Control board temperature",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "0158 PID comm value 1",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 158,
+      "type": "int16",
+      "access": "RW",
+      "description": "Data from the fieldbus for PID control"
+    },
+    {
+      "name": "0159 PID comm value 2",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 159,
+      "type": "int16",
+      "access": "RW",
+      "description": "Data from the fieldbus for PID control"
+    },
+    {
+      "name": "0160 DI 1-5 status",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 160,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit per digital input: bit 0 = DI1 ... bit 4 = DI5"
+    },
+    {
+      "name": "0161 Pulse input frequency",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 161,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "0162 RO status",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "De-energized",
+        "1": "Energized"
+      }
+    },
+    {
+      "name": "0163 TO status",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 163,
+      "type": "uint16",
+      "access": "R",
+      "description": "Transistor output used as a digital output"
+    },
+    {
+      "name": "0164 TO frequency",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "0165 Timer value",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "s"
+    },
+    {
+      "name": "0166 Counter value",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 166,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "0167 Sequence programming status",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 167,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 enabled, bit 1 started, bit 2 paused, bit 3 logic value"
+    },
+    {
+      "name": "0168 Sequence programming state",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 168,
+      "type": "uint16",
+      "access": "R",
+      "description": "State 1 to 8"
+    },
+    {
+      "name": "0169 Sequence programming timer",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 169,
+      "type": "uint16",
+      "access": "R",
+      "scale": 2,
+      "unit": "s"
+    },
+    {
+      "name": "0170 Sequence programming AO value",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 170,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0171 Sequence cycle counter",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 171,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "0172 Absolute torque",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 172,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0173 RO 2-4 status",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 173,
+      "type": "uint16",
+      "access": "R",
+      "description": "Relays of the MREL-01 module, as a decimal number of three digits (100 = RO2 on)"
+    },
+    {
+      "name": "0179 Brake torque memory",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 179,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0180 Encoder synchronized",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 180,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not synchronized",
+        "1": "Synchronized"
+      }
+    },
+    {
+      "name": "0181 Extension module",
+      "group": "Operating data",
+      "area": "holding",
+      "address": 181,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "None",
+        "1": "MREL-01",
+        "2": "MTAC-01",
+        "3": "MPOW-01"
+      }
+    },
+    {
+      "name": "0301 FB cmd word 1",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 301,
+      "type": "uint16",
+      "access": "R",
+      "description": "Same as the DCU control word 1"
+    },
+    {
+      "name": "0302 FB cmd word 2",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 302,
+      "type": "uint16",
+      "access": "R",
+      "description": "Same as the DCU control word 2"
+    },
+    {
+      "name": "0303 FB sts word 1",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 303,
+      "type": "uint16",
+      "access": "R",
+      "description": "Same as the DCU status word 1"
+    },
+    {
+      "name": "0304 FB sts word 2",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 304,
+      "type": "uint16",
+      "access": "R",
+      "description": "Same as the DCU status word 2"
+    },
+    {
+      "name": "0305 Fault word 1",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per fault or alarm, 1 = active"
+    },
+    {
+      "name": "Fault word 1 - Overcurrent",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - DC overvoltage",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - Device overtemperature",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - Short circuit",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - DC undervoltage",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - AI1 loss",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - AI2 loss",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - Motor overtemperature",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - Panel loss",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - ID run failed",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - Motor stall",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - Control board overtemperature",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - External fault 1",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - External fault 2",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 1 - Earth fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "0306 Fault word 2",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per fault or alarm, 1 = active"
+    },
+    {
+      "name": "Fault word 2 - Underload",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Thermal failure",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Current measurement",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Supply phase",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Encoder error",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Overspeed",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Config file",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Serial 1 error",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - EFB configuration file error",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Force trip",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Motor phase",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 2 - Output wiring",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "0307 Fault word 3",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per fault or alarm, 1 = active"
+    },
+    {
+      "name": "Fault word 3 - Incompatible software",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 3 - Safe torque off",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 3 - STO1 lost",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 3 - STO2 lost",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 3 - Control board ID error",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 3 - DSP stack error",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 3 - DSP overload",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 3 - SERF corrupt or macro",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Fault word 3 - Parameter error",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "0308 Alarm word 1",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "RW",
+      "description": "One bit per fault or alarm, 1 = active; write 0 to reset all alarms"
+    },
+    {
+      "name": "Alarm word 1 - Overcurrent",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Overvoltage",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Undervoltage",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Direction lock",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - IO comm",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - AI1 loss",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - AI2 loss",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Panel loss",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Device overtemperature",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Motor temperature",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Underload",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Motor stall",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 1 - Autoreset",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "0309 Alarm word 2",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "uint16",
+      "access": "RW",
+      "description": "One bit per fault or alarm, 1 = active; write 0 to reset all alarms"
+    },
+    {
+      "name": "Alarm word 2 - PID sleep",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - ID run",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - Start enable 1 missing",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - Start enable 2 missing",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - Emergency stop",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - Encoder error",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - First start",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - Input phase loss",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - Motor back EMF",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Alarm word 2 - Safe torque off",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "0401 Last fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 401,
+      "type": "uint16",
+      "access": "R",
+      "description": "Code of the latest fault, 0 = fault history clear"
+    },
+    {
+      "name": "0402 Fault time 1",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 402,
+      "type": "uint16",
+      "access": "R",
+      "unit": "days",
+      "description": "Day of the latest fault: a date, or the days since 1980 when the clock is not set"
+    },
+    {
+      "name": "0403 Fault time 2",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 403,
+      "type": "uint16",
+      "access": "R",
+      "scale": 2,
+      "unit": "s",
+      "description": "Time of the latest fault in 2 s ticks on the basic panel"
+    },
+    {
+      "name": "0404 Speed at fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 404,
+      "type": "int16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "0405 Frequency at fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 405,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "Hz"
+    },
+    {
+      "name": "0406 Voltage at fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 406,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "0407 Current at fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 407,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "0408 Torque at fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 408,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "0409 Status at fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 409,
+      "type": "uint16",
+      "access": "R",
+      "description": "Drive status word at the time of the latest fault"
+    },
+    {
+      "name": "0412 Previous fault 1",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 412,
+      "type": "uint16",
+      "access": "R",
+      "description": "Code of the 2nd latest fault"
+    },
+    {
+      "name": "0413 Previous fault 2",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 413,
+      "type": "uint16",
+      "access": "R",
+      "description": "Code of the 3rd latest fault"
+    },
+    {
+      "name": "0414 DI 1-5 at fault",
+      "group": "Faults and alarms",
+      "area": "holding",
+      "address": 414,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "1607 Param save",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 1607,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Done",
+        "1": "Save"
+      },
+      "write_min": 0,
+      "write_max": 1,
+      "description": "Write 1 to store the changed parameters; values written over Modbus are otherwise volatile"
+    },
+    {
+      "name": "3018 Comm fault function",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 3018,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not selected",
+        "1": "Fault",
+        "2": "Constant speed 7",
+        "3": "Last speed"
+      },
+      "write_min": 0,
+      "write_max": 3
+    },
+    {
+      "name": "3019 Comm fault time",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 3019,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "write_min": 0,
+      "write_max": 600
+    },
+    {
+      "name": "5205 Parity errors",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5205,
+      "type": "uint16",
+      "access": "R",
+      "description": "Characters with a parity error received"
+    },
+    {
+      "name": "5206 Frame errors",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5206,
+      "type": "uint16",
+      "access": "R",
+      "description": "Characters with a framing error received"
+    },
+    {
+      "name": "5207 Buffer overruns",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5207,
+      "type": "uint16",
+      "access": "R",
+      "description": "Characters over the 128-byte message limit"
+    },
+    {
+      "name": "5208 CRC errors",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5208,
+      "type": "uint16",
+      "access": "R",
+      "description": "Messages received with a CRC error"
+    },
+    {
+      "name": "5302 EFB station ID",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5302,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 247,
+      "description": "Modbus address; takes effect at the next power-up or when it is cleared and set again"
+    },
+    {
+      "name": "5303 EFB baud rate",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5303,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "12": "1.2 kbit/s",
+        "24": "2.4 kbit/s",
+        "48": "4.8 kbit/s",
+        "96": "9.6 kbit/s",
+        "192": "19.2 kbit/s",
+        "384": "38.4 kbit/s",
+        "576": "57.6 kbit/s",
+        "1152": "115.2 kbit/s"
+      },
+      "description": "Raw value is the rate in units of 0.1 kbit/s"
+    },
+    {
+      "name": "5304 EFB parity",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5304,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "8 data bits, no parity, 1 stop bit",
+        "1": "8 data bits, no parity, 2 stop bits",
+        "2": "8 data bits, even parity, 1 stop bit",
+        "3": "8 data bits, odd parity, 1 stop bit"
+      },
+      "write_min": 0,
+      "write_max": 3
+    },
+    {
+      "name": "5305 EFB control profile",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5305,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "ABB drives limited",
+        "1": "DCU profile",
+        "2": "ABB drives full"
+      },
+      "write_min": 0,
+      "write_max": 2
+    },
+    {
+      "name": "5306 EFB OK messages",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5306,
+      "type": "uint16",
+      "access": "R",
+      "description": "Valid messages received"
+    },
+    {
+      "name": "5307 EFB CRC errors",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5307,
+      "type": "uint16",
+      "access": "R",
+      "description": "Messages received with a CRC error"
+    },
+    {
+      "name": "5310 EFB par 10",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5310,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Parameter index shown in register 40005"
+    },
+    {
+      "name": "5311 EFB par 11",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5311,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Parameter index shown in register 40006"
+    },
+    {
+      "name": "5312 EFB par 12",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5312,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Parameter index shown in register 40007"
+    },
+    {
+      "name": "5313 EFB par 13",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5313,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Parameter index shown in register 40008"
+    },
+    {
+      "name": "5314 EFB par 14",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5314,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Parameter index shown in register 40009"
+    },
+    {
+      "name": "5315 EFB par 15",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5315,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Parameter index shown in register 40010"
+    },
+    {
+      "name": "5316 EFB par 16",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5316,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Parameter index shown in register 40011"
+    },
+    {
+      "name": "5317 EFB par 17",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5317,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Parameter index shown in register 40012"
+    },
+    {
+      "name": "5318 EFB par 18",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5318,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "ms",
+      "write_min": 0,
+      "write_max": 65535,
+      "description": "Extra delay before the drive answers; also holds the latest Modbus exception code"
+    },
+    {
+      "name": "5319 EFB par 19",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5319,
+      "type": "uint16",
+      "access": "R",
+      "description": "Copy of the ABB profile control word"
+    },
+    {
+      "name": "5320 EFB par 20",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 5320,
+      "type": "uint16",
+      "access": "R",
+      "description": "Copy of the ABB profile status word"
+    },
+    {
+      "name": "9802 Comm prot sel",
+      "group": "Serial link",
+      "area": "holding",
+      "address": 9802,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not selected",
+        "1": "Standard Modbus (EIA-485)",
+        "4": "External fieldbus adapter",
+        "10": "Modbus RS232"
+      },
+      "description": "1 selects the embedded Modbus over the FMBA-01 module, 10 over the panel RS-232 connector"
+    }
+  ]
+}
