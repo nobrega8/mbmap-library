@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "LG",
+  "model": "PMBUSB00A Modbus gateway (Therma V / Hydrokit)",
+  "models": [
+    "PMBUSB00A"
+  ],
+  "vendor_website": "lg.com",
+  "description": "Modbus RTU gateway for LG air conditioners, ventilators and Therma V / Hydrokit heat pumps, indoor unit 0",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "LG MODBUS RTU GATEWAY (PMBUSB00A) leaflet, Modbus gateway memory map, Hydrokit & THERMA V column",
+  "sources": [
+    {
+      "title": "LG Modbus RTU Gateway PMBUSB00A, Gateway Specs",
+      "url": "https://www.lg.com/gr/business/download/airsolution/Gateway_Specs[20210318_171618039].pdf",
+      "note": "Memory map: coil, discrete, input and holding registers"
+    }
+  ],
+  "notes": [
+    "The gateway talks to up to 16 indoor units on one module (64 with 4 modules). The registers below are those of the indoor unit with central address N = 0: for another unit, coils and discrete inputs are at N x 16 plus the number listed, input and holding registers at N x 20 plus the number listed.",
+    "The leaflet numbers the registers 1-based (0x01 coil 1, 10001 discrete 1, 30001 input 1, 40001 holding 1), so this map uses address_base 1.",
+    "Only the Hydrokit and THERMA V column of the leaflet is mapped. For air conditioners and ventilators the same numbers mean other things (fan speed, swing, filter alarm, pipe temperatures, ventilation mode); see the leaflet.",
+    "Temperatures are in 0.1 degree Celsius steps. Operate mode values: 0 cooling, 3 auto, 4 heating (1 dehumidifying and 2 fan exist only for air conditioners).",
+    "Serial settings are fixed by the leaflet at 9600 bit/s, no parity, 1 stop bit; the Modbus slave address of the gateway is set on the gateway itself and is not given in the leaflet.",
+    "Registers not listed in the leaflet column (reserved) are left out. Other Therma V generations and control boards may use different register addresses: check a read against the unit before writing."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "data_bits": 8,
+  "parity": "N",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "enums": {
+    "mode": {"0": "Cooling", "1": "Dehumidifying (air conditioner)", "2": "Fan (air conditioner)", "3": "Auto", "4": "Heating"}
+  },
+  "registers": [
+    {"name": "Operate (on/off)", "group": "Indoor unit 0", "area": "coil", "address": 1, "type": "bool", "access": "RW", "description": "0 = stop, 1 = run"},
+    {"name": "Hot water mode (on/off)", "group": "Indoor unit 0", "area": "coil", "address": 2, "type": "bool", "access": "RW", "description": "0 = disable, 1 = enable"},
+    {"name": "Lock remote controller", "group": "Indoor unit 0", "area": "coil", "address": 4, "type": "bool", "access": "RW", "description": "0 = unlock, 1 = lock"},
+    {"name": "Connected IDU", "group": "Indoor unit 0", "area": "discrete", "address": 1, "type": "bool", "access": "R", "description": "0 = disconnected, 1 = connected"},
+    {"name": "Alarm", "group": "Indoor unit 0", "area": "discrete", "address": 2, "type": "bool", "access": "R", "description": "0 = normal, 1 = alarm"},
+    {"name": "Hot water only", "group": "Indoor unit 0", "area": "discrete", "address": 3, "type": "bool", "access": "R", "description": "Hydrokit only: 0 = normal, 1 = hot water only"},
+    {"name": "Target temperature select", "group": "Indoor unit 0", "area": "discrete", "address": 4, "type": "bool", "access": "R", "description": "0 = air, 1 = water"},
+    {"name": "Error division", "group": "Indoor unit 0", "area": "discrete", "address": 5, "type": "bool", "access": "R", "description": "Hydrokit only: 0 = CH type error, 1 = BC type error"},
+    {"name": "Error code", "group": "Indoor unit 0", "area": "input", "address": 1, "type": "uint16", "access": "R", "description": "0 to 255; see the error table of the product"},
+    {"name": "Room temperature", "group": "Indoor unit 0", "area": "input", "address": 2, "type": "int16", "access": "R", "scale": 0.1, "unit": "°C"},
+    {"name": "Water inlet temperature", "group": "Indoor unit 0", "area": "input", "address": 3, "type": "int16", "access": "R", "scale": 0.1, "unit": "°C"},
+    {"name": "Water outlet temperature", "group": "Indoor unit 0", "area": "input", "address": 4, "type": "int16", "access": "R", "scale": 0.1, "unit": "°C"},
+    {"name": "Sanitary tank temperature", "group": "Indoor unit 0", "area": "input", "address": 5, "type": "int16", "access": "R", "scale": 0.1, "unit": "°C"},
+    {"name": "Solar temperature", "group": "Indoor unit 0", "area": "input", "address": 6, "type": "int16", "access": "R", "scale": 0.1, "unit": "°C", "description": "AWHP only"},
+    {"name": "Operate mode", "group": "Indoor unit 0", "area": "holding", "address": 1, "type": "uint16", "access": "RW", "enum": "mode", "description": "Hydrokit with middle-temperature DHW and AWHP: 0, 3 or 4; Hydrokit with high-temperature DHW: 3 or 4"},
+    {"name": "Target temperature DHW", "group": "Indoor unit 0", "area": "holding", "address": 2, "type": "uint16", "access": "RW", "scale": 0.1, "unit": "°C", "description": "0 to 127 °C, limited by the upper and lower limits set on the remote controller"},
+    {"name": "Target temperature", "group": "Indoor unit 0", "area": "holding", "address": 3, "type": "uint16", "access": "RW", "scale": 0.1, "unit": "°C", "description": "0 to 127 °C, limited by the upper and lower limits set on the remote controller"}
+  ]
+}
