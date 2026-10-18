@@ -1,0 +1,470 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "LinkedGo",
+  "model": "ST802-B",
+  "models": [
+    "ST802-B",
+    "ST802",
+    "LinkedGo ST802-B"
+  ],
+  "vendor_website": "linkedgo.com",
+  "description": "Smart HVAC thermostat (fan coil, underfloor heating, ventilation) with RS-485 (Modbus RTU), sold by Shelly",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "LinkedGo, \"ST802 Youth Smart Thermostat technical instruction\", section 11, RS485 Modbus protocol of LinkedGo 3.0",
+  "sources": [
+    {
+      "title": "ST802 Youth Smart Thermostat technical instruction",
+      "url": "https://storage.googleapis.com/mauser-public-images/prod_description_document/2025/282/ca065a98d3074f9a4833a0add36f3fcd_cf31db8df7d388aae17e00dc60a3be462c3f40b6.pdf",
+      "note": "manufacturer document for the ST802; sections 9 to 12"
+    },
+    {
+      "title": "Shelly: Smart HVAC Thermostat (ST802-B)",
+      "url": "https://www.shelly.com/blogs/documentation/smart-hvac-thermostat"
+    }
+  ],
+  "notes": [
+    "Function codes: FC03 reads, FC06 and FC16 write. Addresses are the hexadecimal registers of the manual; the registers of the status group (0x2101 and following) are read-only.",
+    "The manual describes the ST802. Shelly lists RS-485/Modbus control for the ST802-B (the Shelly edition) but publishes no register table, so this map assumes the same LinkedGo 3.0 protocol; it has not been checked on an ST802-B.",
+    "Two RS-485 ports (A1/B1 and A2/B2). In the factory settings port 1 is a master (P00 = 1) and port 2 a slave (P05 = 0); set the port that connects to your controller to slave, protocol LinkedGo 3.0, baud rate 4800 or 9600 (default 9600), slave ID 1 to 255 (default 1) from the display menu or these registers.",
+    "The manual does not state the parity or stop bits; 8 data bits, no parity and 1 stop bit are assumed.",
+    "Temperatures and humidity are in tenths: 10 means 1 °C or 1 %."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "On/off",
+      "group": "Control",
+      "area": "holding",
+      "address": 4097,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "H00"
+    },
+    {
+      "name": "Thermostat function",
+      "group": "Control",
+      "area": "holding",
+      "address": 4099,
+      "type": "uint16",
+      "access": "RW",
+      "description": "H02: 0, 1, 2, 3 or 17 (fan coil and floor heating combination; see the manual)",
+      "write_min": 0,
+      "write_max": 17
+    },
+    {
+      "name": "Mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 4100,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Cooling",
+        "3": "Dry",
+        "4": "Heating",
+        "5": "Floor heating",
+        "7": "Ventilation"
+      },
+      "description": "H03"
+    },
+    {
+      "name": "Heating and cooling function",
+      "group": "Control",
+      "area": "holding",
+      "address": 4102,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Heating and cooling",
+        "1": "Only cooling",
+        "2": "Only heating"
+      },
+      "description": "H05"
+    },
+    {
+      "name": "Fan speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 4103,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Low",
+        "2": "Medium",
+        "3": "High",
+        "4": "Fourth speed",
+        "5": "Fifth speed"
+      },
+      "description": "H06. AC fans: 0 to 3; DC fans: 0 to 5"
+    },
+    {
+      "name": "Set point",
+      "group": "Control",
+      "area": "holding",
+      "address": 4104,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "H07. Between the minimum and maximum set point; steps of 0.5 °C"
+    },
+    {
+      "name": "Humidity set point",
+      "group": "Control",
+      "area": "holding",
+      "address": 4105,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "scale": 0.1,
+      "write_min": 40,
+      "write_max": 75,
+      "description": "H08"
+    },
+    {
+      "name": "Minimum set point",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4120,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "scale": 0.1,
+      "write_min": 5,
+      "write_max": 50,
+      "description": "H23, up to the maximum set point"
+    },
+    {
+      "name": "Maximum set point",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4121,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "H24, from the minimum set point to 50 °C"
+    },
+    {
+      "name": "DC fan lowest speed voltage",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4176,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F02"
+    },
+    {
+      "name": "DC fan highest speed voltage",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4177,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F03"
+    },
+    {
+      "name": "DC fan 1st speed voltage",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4179,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F05"
+    },
+    {
+      "name": "DC fan 2nd speed voltage",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4180,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F06"
+    },
+    {
+      "name": "DC fan 3rd speed voltage",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4181,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F07"
+    },
+    {
+      "name": "DC fan 4th speed voltage",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4182,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F08"
+    },
+    {
+      "name": "DC fan 5th speed voltage",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4183,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F09"
+    },
+    {
+      "name": "DC fan minimum voltage at start",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4184,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F10"
+    },
+    {
+      "name": "DC fan initial start voltage",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4185,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "F11"
+    },
+    {
+      "name": "DC fan start time",
+      "group": "DC fan",
+      "area": "holding",
+      "address": 4186,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 2,
+      "write_max": 180,
+      "description": "F12"
+    },
+    {
+      "name": "RS485-1 role",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4238,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Slave",
+        "1": "Master"
+      },
+      "description": "P00"
+    },
+    {
+      "name": "RS485-1 baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4239,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "2": "4800",
+        "3": "9600"
+      },
+      "description": "P01"
+    },
+    {
+      "name": "RS485-1 protocol",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4240,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "LinkedGo 3.0",
+        "3": "DC fan"
+      },
+      "description": "P02"
+    },
+    {
+      "name": "RS485-1 slave ID",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4241,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 255,
+      "description": "P03"
+    },
+    {
+      "name": "RS485-2 role",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4242,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Slave",
+        "1": "Master"
+      },
+      "description": "P05"
+    },
+    {
+      "name": "RS485-2 baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4243,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "2": "4800",
+        "3": "9600"
+      },
+      "description": "P06"
+    },
+    {
+      "name": "RS485-2 protocol",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4244,
+      "type": "uint16",
+      "access": "RW",
+      "description": "P07: 11 = LinkedGo 3.0"
+    },
+    {
+      "name": "RS485-2 slave ID",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4246,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 255,
+      "description": "P08"
+    },
+    {
+      "name": "Room temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8449,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "scale": 0.1,
+      "description": "O00"
+    },
+    {
+      "name": "Room humidity",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8450,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R",
+      "scale": 0.1,
+      "description": "O01"
+    },
+    {
+      "name": "Temperature O02",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8451,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "scale": 0.1,
+      "description": "O02; the manual does not name this value"
+    },
+    {
+      "name": "High speed relay",
+      "group": "Status",
+      "area": "holding",
+      "address": 8464,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "1 = relay closed"
+    },
+    {
+      "name": "Medium speed relay",
+      "group": "Status",
+      "area": "holding",
+      "address": 8464,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Low speed relay",
+      "group": "Status",
+      "area": "holding",
+      "address": 8464,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Fan coil valve",
+      "group": "Status",
+      "area": "holding",
+      "address": 8464,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Floor heating valve",
+      "group": "Status",
+      "area": "holding",
+      "address": 8464,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Dry contact output",
+      "group": "Status",
+      "area": "holding",
+      "address": 8464,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Room sensor failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 8474,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "Alarm E03"
+    }
+  ]
+}
