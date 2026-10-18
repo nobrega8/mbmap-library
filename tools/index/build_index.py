@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -21,11 +22,18 @@ CHART_END = "<!-- status-chart:end -->"
 STATUSES = ("verified", "official", "unofficial")
 
 
+def digest(path: Path) -> dict:
+    """Size and sha256 of the map file, which the signed index vouches for."""
+    data = path.read_bytes()
+    return {"sha256": hashlib.sha256(data).hexdigest(), "size": len(data)}
+
+
 def entry(path: Path) -> dict:
     """Index entry for a version 2 map."""
     doc = json.loads(path.read_bytes().decode("utf-8-sig"))
     return {
         "path": path.relative_to(ROOT).as_posix(),
+        **digest(path),
         "vendor": doc.get("vendor", ""),
         "model": doc.get("model", ""),
         "description": doc.get("description"),
@@ -56,6 +64,7 @@ def entry_v1(path: Path) -> dict:
             registers += 1
     return {
         "path": path.relative_to(ROOT).as_posix(),
+        **digest(path),
         "vendor": meta.get("vendor", ""),
         "model": meta.get("model", ""),
         "description": meta.get("description"),

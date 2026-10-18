@@ -1,0 +1,44 @@
+name: Sign index
+
+# Publishes index.json and its Ed25519 signature on the `signed` branch, always as a pair, so an
+# app that fetches both gets a signature that matches. Maps are checked against the sha256 in the
+# signed index. The private key is the repository secret MBMAP_SIGNING_KEY.
+
+on:
+  push:
+    branches: [main]
+    paths: [index.json, "maps/**", signing/**, tools/sign/**]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sign-index
+  cancel-in-progress: false
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography
+      - run: python tools/index/build_index.py --check
+      - name: Sign
+        env:
+          MBMAP_SIGNING_KEY: ${{ secrets.MBMAP_SIGNING_KEY }}
+        run: python tools/sign/sign.py sign index.json
+      - run: python tools/sign/sign.py verify index.json --maps
+      - name: Publish on the signed branch
+        run: |
+          mkdir ../signed && cp index.json index.json.sig signing/mbmap-library.pub ../signed/
+          cd ../signed
+          git init -q -b signed
+          git config user.name "mbmap-library signer"
+          git config user.email "actions@users.noreply.github.com"
+          git add .
+          git commit -q -m "Signed index of ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" signed

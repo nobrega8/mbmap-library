@@ -79,3 +79,17 @@ If a map cannot be checked (the model is not documented anywhere you can reach),
 - A tool or project that uses `.mbmap`: [Show and tell](https://github.com/nobrega8/mbmap-library/discussions/categories/show-and-tell).
 
 By contributing, you agree to release your contribution under [CC0 1.0](LICENSE).
+
+## Signed index
+
+`index.json` lists the sha256 and size of every map. After each push to `main`, the *Sign index*
+workflow signs `index.json` with Ed25519 (the secret `MBMAP_SIGNING_KEY`) and publishes
+`index.json`, `index.json.sig` and `signing/mbmap-library.pub` together on the `signed` branch.
+Contributors do nothing: run `build_index.py` as above and never sign by hand.
+
+Apps that download maps should fetch the pair from the `signed` branch, check the signature
+against the public key built into the app, and check each map against its sha256 before they
+install it. `python tools/sign/sign.py verify index.json --maps` is the reference check.
+
+The key is not in the repository. To rotate it: `python tools/sign/sign.py keygen <file>`, replace
+`signing/mbmap-library.pub`, set the new secret, and ship the new public key in the apps.
