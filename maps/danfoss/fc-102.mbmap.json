@@ -1,0 +1,465 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Danfoss",
+  "model": "VLT HVAC Drive FC 102",
+  "models": [
+    "FC 102"
+  ],
+  "vendor_website": "danfoss.com",
+  "description": "VLT HVAC Drive FC 102 (1.1-90 kW) over the built-in RS485 port, Modbus RTU with the FC control profile",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "Danfoss, \"VLT HVAC Drive FC 102 1.1-90 kW Design Guide\", MG11BC22 (06/2014); https://assets.danfoss.com/documents/272740/AJ299549559248en-US1801.pdf",
+  "sources": [
+    {
+      "title": "VLT HVAC Drive FC 102 1.1-90 kW Design Guide",
+      "version": "MG11BC22",
+      "date": "2014-06",
+      "url": "https://assets.danfoss.com/documents/272740/AJ299549559248en-US1801.pdf",
+      "note": "chapter 8.6 to 8.11 (Modbus RTU, register map, FC profile)"
+    }
+  ],
+  "notes": [
+    "Holding register of parameter x-yy is 10 times its number: 3-12 is register 3120, 8-30 is register 8300. Array parameters need the index in register 9 first.",
+    "Registers and coils are numbered from 1 in the guide, and the bus address is one less (register 50000 is sent as 49999), so this map uses address_base 1.",
+    "Control word, bus reference, status word and main actual value sit at registers 50000, 50010, 50200 and 50210.",
+    "This map lists the registers the design guide describes and a few parameters it uses as examples. The other parameters, their sizes and conversion indexes are in the FC 102 programming guide; a 32-bit parameter takes two registers.",
+    "The guide also describes the control word and status word as coils (1 to 16 and 33 to 48); they are not in this map, use the registers instead.",
+    "To enable Modbus: 8-30 Protocol = Modbus RTU, 8-31 Address 1 to 247, 8-32 Baud rate 2400 to 115200, 8-33 even parity with 1 stop bit by default.",
+    "Function codes: 1, 3, 5, 6, 15 and 16, plus 11, 17 and the diagnostics function 8."
+  ],
+  "protocol": "rtu",
+  "parity": "E",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Last error code",
+      "group": "Info",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "description": "Last error code from an FC data object interface"
+    },
+    {
+      "name": "Parameter index",
+      "group": "Info",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Index used for the next access to an array parameter; set it before reading or writing one"
+    },
+    {
+      "name": "Control word",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "FC profile control word (8-10 Control Profile = FC profile)"
+    },
+    {
+      "name": "Control word - Preset reference select",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "uint16",
+      "access": "RW",
+      "bit": 0,
+      "bits": 2,
+      "enum": {
+        "0": "Preset reference 1",
+        "1": "Preset reference 2",
+        "2": "Preset reference 3",
+        "3": "Preset reference 4"
+      },
+      "description": "Chooses one of the four values of 3-10 Preset Reference (bits 0 and 1)"
+    },
+    {
+      "name": "Control word - DC brake",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 2,
+      "description": "0 = DC brake and stop, 1 = ramp"
+    },
+    {
+      "name": "Control word - Coasting",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 3,
+      "description": "0 = coast to a stop, 1 = no coasting"
+    },
+    {
+      "name": "Control word - Quick stop",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 4,
+      "description": "0 = quick stop, 1 = ramp"
+    },
+    {
+      "name": "Control word - Hold output frequency",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 5,
+      "description": "0 = hold the present output frequency, 1 = use the ramp"
+    },
+    {
+      "name": "Control word - Start",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 6,
+      "description": "0 = ramp stop, 1 = start"
+    },
+    {
+      "name": "Control word - Reset",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 7,
+      "description": "Reset a trip on the rising edge"
+    },
+    {
+      "name": "Control word - Jog",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 8,
+      "description": "1 = run at the jog speed (3-19)"
+    },
+    {
+      "name": "Control word - Ramp 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 9,
+      "description": "0 = ramp 1, 1 = ramp 2"
+    },
+    {
+      "name": "Control word - Data valid",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 10,
+      "description": "1 = the drive uses the control word, 0 = it ignores it"
+    },
+    {
+      "name": "Control word - Relay 01",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 11,
+      "description": "1 = relay 01 on, if 5-40 Function Relay selects control word bit 11"
+    },
+    {
+      "name": "Control word - Relay 02",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 12,
+      "description": "1 = relay on, if 5-40 Function Relay selects control word bit 12. The text calls it relay 04 and the table relay 02"
+    },
+    {
+      "name": "Control word - Set-up select",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "uint16",
+      "access": "RW",
+      "bit": 13,
+      "bits": 2,
+      "enum": {
+        "0": "Set-up 1",
+        "1": "Set-up 2",
+        "2": "Set-up 3",
+        "3": "Set-up 4"
+      },
+      "description": "Needs Multi Set-ups (bits 13 and 14)"
+    },
+    {
+      "name": "Control word - Reverse",
+      "group": "Control",
+      "area": "holding",
+      "address": 50000,
+      "type": "bool",
+      "access": "RW",
+      "bit": 15,
+      "description": "1 = reverse"
+    },
+    {
+      "name": "Bus reference",
+      "group": "Control",
+      "area": "holding",
+      "address": 50010,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.006103515625,
+      "unit": "%",
+      "write_min": -200,
+      "write_max": 199.993896484375,
+      "description": "Speed reference as a share of the maximum reference: 16384 (4000 hex) is 100 %, negative is reverse (two's complement)"
+    },
+    {
+      "name": "Status word",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "uint16",
+      "access": "R",
+      "description": "FC profile status word"
+    },
+    {
+      "name": "Status word - Control ready",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Status word - Drive ready",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Status word - Enabled (not coasting)",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 2,
+      "description": "0 = coasting, 1 = enabled"
+    },
+    {
+      "name": "Status word - Trip",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 3,
+      "description": "1 = tripped; reset to resume"
+    },
+    {
+      "name": "Status word - Error (no trip)",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Status word - Trip locked",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Status word - Warning",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Status word - Speed equals reference",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 8,
+      "description": "1 = motor speed matches the reference"
+    },
+    {
+      "name": "Status word - Bus control",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 9,
+      "description": "1 = the drive can be controlled over the serial line, 0 = local operation"
+    },
+    {
+      "name": "Status word - Frequency limit OK",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 10,
+      "description": "0 = output frequency at the low or high speed limit"
+    },
+    {
+      "name": "Status word - In operation",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "Status word - Stopped, auto-start",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 12,
+      "description": "1 = stopped for inverter over-temperature and resumes by itself"
+    },
+    {
+      "name": "Status word - Voltage limit exceeded",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 13
+    },
+    {
+      "name": "Status word - Torque limit exceeded",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 14
+    },
+    {
+      "name": "Status word - Timer limit exceeded",
+      "group": "Status",
+      "area": "holding",
+      "address": 50200,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Main actual value",
+      "group": "Status",
+      "area": "holding",
+      "address": 50210,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.006103515625,
+      "unit": "%",
+      "description": "Actual output frequency in the same scale as the bus reference: 16384 (4000 hex) is 100 %"
+    },
+    {
+      "name": "3-12 Catch up/slow-down value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 3120,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Parameter 3-12; the manual's example: 1352 is 12.52 %"
+    },
+    {
+      "name": "4-14 Motor speed high limit [Hz]",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 4140,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "Hz",
+      "description": "Parameter 4-14; the manual's write example sends 1000 for 100 Hz"
+    },
+    {
+      "name": "8-30 Protocol",
+      "group": "Serial",
+      "area": "holding",
+      "address": 8300,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Set to Modbus RTU to use this map"
+    },
+    {
+      "name": "8-31 Address",
+      "group": "Serial",
+      "area": "holding",
+      "address": 8310,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 247
+    },
+    {
+      "name": "8-32 Baud rate",
+      "group": "Serial",
+      "area": "holding",
+      "address": 8320,
+      "type": "uint16",
+      "access": "RW",
+      "description": "2400 to 115200 baud, coded as in the programming guide"
+    },
+    {
+      "name": "8-33 Parity / stop bits",
+      "group": "Serial",
+      "area": "holding",
+      "address": 8330,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default: even parity, 1 stop bit; coded as in the programming guide"
+    },
+    {
+      "name": "Parameter write control",
+      "group": "Control",
+      "area": "coil",
+      "address": 65,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = parameter changes go to RAM only, 1 = to RAM and EEPROM"
+    }
+  ]
+}
