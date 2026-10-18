@@ -1,0 +1,365 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "WEG",
+  "model": "CFW300",
+  "models": [
+    "CFW300"
+  ],
+  "vendor_website": "weg.net",
+  "description": "Compact AC drive CFW300: Modbus RTU control, status and serial settings",
+  "revision": 1,
+  "revised": "2026-10-18",
+  "source": "WEG, \"CFW300 Modbus RTU User's Manual\", 10003806158 / 02 (2018-12); https://www.automationdirect.com/static/manuals/wegdrives/modbus_rtu_manual.pdf",
+  "sources": [
+    {
+      "title": "CFW300 Modbus RTU User's Manual",
+      "version": "10003806158 / 02",
+      "date": "2018-12",
+      "url": "https://www.automationdirect.com/static/manuals/wegdrives/modbus_rtu_manual.pdf",
+      "note": "sections 3 (programming) and 5.2 (memory map)"
+    }
+  ],
+  "notes": [
+    "WEG CFW300 frequency inverter, Modbus RTU slave. The manual describes only the serial-link parameters and the control and status words; the other drive parameters are in the CFW300 programming manual and are not in this map.",
+    "Every parameter is a holding register and the register address is the parameter number (P0308 is register 308). The same registers answer function 04.",
+    "To control the drive from the network, set the local and remote command and reference sources (parameters 220 to 228) to serial.",
+    "Function 43 reads the vendor, the product code and the firmware version ('VX.XX').",
+    "Connection defaults are the factory values: address 1, 19200 baud, 8 data bits, even parity, 1 stop bit.",
+    "The manual's examples send the high byte of each 16-bit value first."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "parity": "E",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "P048 Present alarm",
+      "group": "Status",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of the alarm now active"
+    },
+    {
+      "name": "P049 Present fault",
+      "group": "Status",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of the fault now active"
+    },
+    {
+      "name": "P100 Acceleration time",
+      "group": "Ramps",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "s",
+      "access": "RW",
+      "description": "First acceleration ramp; the manual's write example sends 10 for 1.0 s"
+    },
+    {
+      "name": "P101 Deceleration time",
+      "group": "Ramps",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "s",
+      "access": "RW",
+      "description": "First deceleration ramp; the manual's write example sends 20 for 2.0 s"
+    },
+    {
+      "name": "P308 Serial address",
+      "group": "Serial",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 247
+    },
+    {
+      "name": "P310 Serial baud rate",
+      "group": "Serial",
+      "area": "holding",
+      "address": 310,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "9600",
+        "1": "19200",
+        "2": "38400"
+      },
+      "write_min": 0,
+      "write_max": 2
+    },
+    {
+      "name": "P311 Serial byte configuration",
+      "group": "Serial",
+      "area": "holding",
+      "address": 311,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "8N1",
+        "1": "8E1",
+        "2": "8O1",
+        "3": "8N2",
+        "4": "8E2",
+        "5": "8O2"
+      },
+      "write_min": 0,
+      "write_max": 5
+    },
+    {
+      "name": "P313 Communication error action",
+      "group": "Serial",
+      "area": "holding",
+      "address": 313,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Inactive",
+        "1": "Disable via Run/Stop",
+        "2": "Disable via General Enable",
+        "3": "Change to Local",
+        "4": "Change to Local keeping commands and reference",
+        "5": "Causes a fault"
+      },
+      "write_min": 0,
+      "write_max": 5
+    },
+    {
+      "name": "P314 Serial watchdog",
+      "group": "Serial",
+      "area": "holding",
+      "address": 314,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 999,
+      "description": "0 = disabled"
+    },
+    {
+      "name": "P316 Serial interface status",
+      "group": "Serial",
+      "area": "holding",
+      "address": 316,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active",
+        "2": "Watchdog error"
+      }
+    },
+    {
+      "name": "P680 Status word",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit map of the drive status"
+    },
+    {
+      "name": "P680 - Second ramp",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "P680 - In configuration mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "P680 - Alarm condition",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "P680 - Motor running",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "P680 - General enable active",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "P680 - Forward direction",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "P680 - JOG active",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "P680 - Remote mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "P680 - Undervoltage",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "P680 - Fault condition",
+      "group": "Status",
+      "area": "holding",
+      "address": 680,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "P681 Motor speed",
+      "group": "Status",
+      "area": "holding",
+      "address": 681,
+      "type": "int16",
+      "scale": 0.01220703125,
+      "unit": "% of rated frequency",
+      "access": "R",
+      "description": "13-bit scale: 8192 is the motor rated frequency (P0403), negative is reverse"
+    },
+    {
+      "name": "P682 Serial control word",
+      "group": "Control",
+      "area": "holding",
+      "address": 682,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Commands from the serial line. Only works when the command sources in the 220 to 228 parameters are set to serial"
+    },
+    {
+      "name": "P682 - Run",
+      "group": "Control",
+      "area": "holding",
+      "address": 682,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW"
+    },
+    {
+      "name": "P682 - General enable",
+      "group": "Control",
+      "area": "holding",
+      "address": 682,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW"
+    },
+    {
+      "name": "P682 - Forward direction",
+      "group": "Control",
+      "area": "holding",
+      "address": 682,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW"
+    },
+    {
+      "name": "P682 - JOG",
+      "group": "Control",
+      "area": "holding",
+      "address": 682,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW"
+    },
+    {
+      "name": "P682 - Remote mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 682,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW"
+    },
+    {
+      "name": "P682 - Second ramp",
+      "group": "Control",
+      "area": "holding",
+      "address": 682,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW"
+    },
+    {
+      "name": "P682 - Fault reset",
+      "group": "Control",
+      "area": "holding",
+      "address": 682,
+      "type": "bool",
+      "bit": 7,
+      "access": "RW"
+    },
+    {
+      "name": "P683 Serial speed reference",
+      "group": "Control",
+      "area": "holding",
+      "address": 683,
+      "type": "int16",
+      "scale": 0.01220703125,
+      "unit": "% of rated frequency",
+      "access": "RW",
+      "write_min": -400.0,
+      "write_max": 399.98779296875,
+      "description": "13-bit scale: 8192 is the motor rated frequency (P0403). Direction also depends on bit 2 of the control word"
+    }
+  ]
+}
