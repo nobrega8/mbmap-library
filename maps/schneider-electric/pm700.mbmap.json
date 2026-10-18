@@ -2,72 +2,2561 @@
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
   "vendor": "Schneider Electric",
-  "model": "PM700",
-  "models": ["PM700"],
-  "vendor_website": "se.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table schneider/electric-pm700; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/schneider-electric-pm700.htm. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Schneider Electric PM700.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+  "model": "PM200 / PM700 / PM750",
+  "models": [
+    "PM200",
+    "PM200P",
+    "PM210",
+    "PM700",
+    "PM700P",
+    "PM710",
+    "PM750"
   ],
+  "vendor_website": "se.com",
+  "description": "Power meter",
+  "revision": 3,
+  "revised": "2026-10-18",
+  "source": "Schneider Electric, Series 200 and 700 Power Meter (PM200, PM700, PM750) register list, firmware 3.050",
+  "sources": [
+    {
+      "title": "Series 200 and 700 Power Meter (PM200, PM700, PM750) Register List with 3.050 firmware functionality",
+      "url": "https://www.se.com/ww/en/faqs/FA212154/",
+      "note": "spreadsheet Series_PM200_PM700_Register_List.xls"
+    }
+  ],
+  "notes": [
+    "Addresses are the register numbers of the register list (Modicon numbering, 1-based): the address on the wire is the register number minus 1.",
+    "The 4000 series holds integers scaled by the four scale factor registers (4105 to 4108): value = register x 10^scale factor, in the unit shown. The 1000 series holds the same values as floating-point numbers, already in engineering units.",
+    "Power factor registers 4009 and 4048: a negative signed value is reported as value + 32768 (see the register list).",
+    "The alarm configuration blocks (4140 and following, 16 registers per alarm position) are written with the command interface and are not in this map.",
+    "Registers that exist only on some of the models say so in their description."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
   "byte_order": "big",
   "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "address_base": 1,
+  "x_status": "official",
   "registers": [
-    {"name": "Real energy, total", "area": "holding", "address": 1000, "type": "float32", "unit": "kWh", "access": "R"},
-    {"name": "Apparent energy, total", "area": "holding", "address": 1002, "type": "float32", "unit": "kVAh", "access": "R"},
-    {"name": "Reactive energy, total", "area": "holding", "address": 1004, "type": "float32", "unit": "kvarh", "access": "R"},
-    {"name": "Real power, total", "area": "holding", "address": 1006, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Apparent power, total", "area": "holding", "address": 1008, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Reactive power, total", "area": "holding", "address": 1010, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Power factor, total", "area": "holding", "address": 1012, "type": "float32", "access": "R"},
-    {"name": "Voltage, L L, 3P average", "area": "holding", "address": 1014, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage, L N, 3P average", "area": "holding", "address": 1016, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Current, 3P average", "area": "holding", "address": 1018, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 1020, "type": "float32", "unit": "Hz", "access": "R"},
-    {"name": "Real power, total demand present", "area": "holding", "address": 1022, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Apparent power, total demand present", "area": "holding", "address": 1024, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Reactive power, total demand present", "area": "holding", "address": 1026, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Real power, total demand peak", "area": "holding", "address": 1028, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Apparent power, total demand peak", "area": "holding", "address": 1030, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Reactive power, total demand peak", "area": "holding", "address": 1032, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Current, A", "area": "holding", "address": 1034, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, B", "area": "holding", "address": 1036, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, C", "area": "holding", "address": 1038, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, N", "area": "holding", "address": 1040, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, A, demand present", "area": "holding", "address": 1042, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, B, demand present", "area": "holding", "address": 1044, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, C, demand present", "area": "holding", "address": 1046, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, A, demand peak", "area": "holding", "address": 1048, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, B, demand peak", "area": "holding", "address": 1050, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Voltage, A B", "area": "holding", "address": 1054, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage, B C", "area": "holding", "address": 1056, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage, C A", "area": "holding", "address": 1058, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage, A N", "area": "holding", "address": 1060, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage, B N", "area": "holding", "address": 1062, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage, C N", "area": "holding", "address": 1064, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Real power, A", "area": "holding", "address": 1066, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Real power, B", "area": "holding", "address": 1068, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Real power, C", "area": "holding", "address": 1070, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Apparent power, A", "area": "holding", "address": 1072, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power, B", "area": "holding", "address": 1074, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power, C", "area": "holding", "address": 1076, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Reactive power, A", "area": "holding", "address": 1078, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power, B", "area": "holding", "address": 1080, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power, C", "area": "holding", "address": 1082, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Current, A, THD", "area": "holding", "address": 1084, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Current, B, THD", "area": "holding", "address": 1086, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Current, C, THD", "area": "holding", "address": 1088, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage, A N, THD", "area": "holding", "address": 1092, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage, B N, THD", "area": "holding", "address": 1094, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage, C N, THD", "area": "holding", "address": 1096, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage, A B, THD", "area": "holding", "address": 1098, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage, B C, THD", "area": "holding", "address": 1100, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage, C A, THD", "area": "holding", "address": 1102, "type": "float32", "unit": "%", "access": "R"}
+    {
+      "name": "Usage Hours",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 1204,
+      "type": "float32",
+      "unit": "h",
+      "access": "R",
+      "description": "This combination timer counts the total time for which the absolute current on at least one phase is > 0.1Amp. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Usage Minutes",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 1206,
+      "type": "float32",
+      "unit": "min",
+      "access": "R",
+      "description": "This combination timer counts the total time for which the absolute current on at least one phase is > 0.1Amp. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reset Counter",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4073,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Counts the number of times the meter boots up. Only on PM750"
+    },
+    {
+      "name": "Scale factor I (current)",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4105,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Scale factor V (voltage)",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4106,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Scale factor W (power)",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4107,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Scale factor E (energy)",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4108,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Usage Hours (4110)",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4110,
+      "type": "int16",
+      "unit": "h",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Usage Minutes (4111)",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4111,
+      "type": "int16",
+      "unit": "min",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Error Bitmap",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4112,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Thermal Demand Interval",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4117,
+      "type": "int16",
+      "unit": "min",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "description": "Current Demand Only"
+    },
+    {
+      "name": "Power Block Demand Interval",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4118,
+      "type": "int16",
+      "unit": "min",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "description": "Duration in minutes"
+    },
+    {
+      "name": "Power Block Demand Number of Sub-Intervals",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4119,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "description": "0: Sliding Block Calculation If Reg[4118 <= 15 Minutes the Sub-interval is 15 Seconds if Reg[4118 > 15 Minutes the Sub-interval is 60 Seconds 1: Fixed Block Else: Rolling Block (Must be evenly divided into 4188 to the second)"
+    },
+    {
+      "name": "CT Ratio - Primary",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4120,
+      "type": "int16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 32767
+    },
+    {
+      "name": "CT Ratio - Secondary",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4121,
+      "type": "int16",
+      "access": "RW",
+      "description": "Range: 1 or 5"
+    },
+    {
+      "name": "PT Ratio - Primary",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4122,
+      "type": "int16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 32767
+    },
+    {
+      "name": "PT Ratio - Scale (0 = No PT)",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4123,
+      "type": "int16",
+      "access": "RW",
+      "description": "Range: 0, 1, 10, 100"
+    },
+    {
+      "name": "PT Ratio - Secondary",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4124,
+      "type": "int16",
+      "access": "RW",
+      "description": "Range: 100, 110, 115, 120"
+    },
+    {
+      "name": "Service Frequency",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4125,
+      "type": "int16",
+      "unit": "Hz",
+      "access": "RW",
+      "description": "Range: 50 or 60"
+    },
+    {
+      "name": "Reset Commands",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4126,
+      "type": "int16",
+      "access": "W",
+      "description": "Write a reset command code (see the notes): 666 restart demand, 1115 reset meter, 3211 default alarms, 3320 de-energize output, 3321 energize output, 3361 reset output counter, 3365 reset input counters, 6209 preset energy from 4000-4005, 10001 clear usage timers, 14255 reset min/max, 21212 reset peak demand, 30078 clear energy"
+    },
+    {
+      "name": "System Type",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4127,
+      "type": "int16",
+      "access": "RW",
+      "description": "System type code: 10, 11, 12, 30, 31, 32, 40, 42 or 44",
+      "write_min": 10,
+      "write_max": 44
+    },
+    {
+      "name": "Display Mode",
+      "group": "Setup and status",
+      "area": "holding",
+      "address": 4128,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 = IEC Units 1 = IEEE Units. Range: 0,1",
+      "enum": {
+        "0": "IEC units",
+        "1": "IEEE units"
+      }
+    },
+    {
+      "name": "Signed Real Energy, Consumption",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1000,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Energy, Consumption",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1002,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Signed Reactive Energy, Consumption",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1004,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, Total",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1006,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, Total",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1008,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, Total",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1010,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor, Total",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1012,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L-L, 3P Average",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1014,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, L-N, 3P Average",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1016,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, 3P Average",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1018,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Frequency",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1020,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R",
+      "description": "Derived from Phase A"
+    },
+    {
+      "name": "Current, A",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1034,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, B",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1036,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, C",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1038,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, N",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1040,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1054,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, B-C",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1056,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, C-A",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1058,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, A-N",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1060,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, B-N",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1062,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, C-N",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1064,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, A",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1066,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, B",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1068,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, C",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1070,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, A",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1072,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, B",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1074,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, C",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1076,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, A",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1078,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, B",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1080,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, C",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1082,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1084,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1086,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1088,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1092,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1094,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1096,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1098,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1100,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, THD",
+      "group": "Metering",
+      "area": "holding",
+      "address": 1102,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Energy, Consumption",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4000,
+      "type": "int32",
+      "unit": "kWh",
+      "scale_factor": "Scale factor E (energy)",
+      "access": "R",
+      "description": "Signed in all PM2's, PM7s and PM750"
+    },
+    {
+      "name": "Apparent Energy, Consumption (4002)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4002,
+      "type": "int32",
+      "unit": "kVAh",
+      "scale_factor": "Scale factor E (energy)",
+      "access": "R",
+      "description": "Signed in all PM2's, PM7s and PM750"
+    },
+    {
+      "name": "Reactive Energy, Consumption",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4004,
+      "type": "int32",
+      "unit": "kvarh",
+      "scale_factor": "Scale factor E (energy)",
+      "access": "R",
+      "description": "Signed in all PM2's, PM7s and PM750"
+    },
+    {
+      "name": "Real Power, Total (4006)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4006,
+      "type": "int16",
+      "unit": "kW",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, Total (4007)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4007,
+      "type": "int16",
+      "unit": "kVA",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, Total (4008)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4008,
+      "type": "int16",
+      "unit": "kvar",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Signed in all PM2's, PM7s and PM750"
+    },
+    {
+      "name": "Power Factor, Total (4009)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4009,
+      "type": "int16",
+      "scale": 0.0001,
+      "access": "R"
+    },
+    {
+      "name": "Voltage, L-L, 3P Average (4010)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4010,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, L-N, 3P Average (4011)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4011,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, 3P Average (4012)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4012,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Frequency (4013)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4013,
+      "type": "int16",
+      "unit": "Hz",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Derived from Phase A"
+    },
+    {
+      "name": "Current, A (4020)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4020,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Current, B (4021)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4021,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Current, C (4022)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4022,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Current, N (4023)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4023,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B (4030)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4030,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, B-C (4031)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4031,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, C-A (4032)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4032,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, A-N (4033)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4033,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, B-N (4034)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4034,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R"
+    },
+    {
+      "name": "Voltage, C-N (4035)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4035,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, A (4036)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4036,
+      "type": "int16",
+      "unit": "kW",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, B (4037)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4037,
+      "type": "int16",
+      "unit": "kW",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, C (4038)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4038,
+      "type": "int16",
+      "unit": "kW",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, A (4039)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4039,
+      "type": "int16",
+      "unit": "kVA",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, B (4040)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4040,
+      "type": "int16",
+      "unit": "kVA",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, C (4041)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4041,
+      "type": "int16",
+      "unit": "kVA",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, A (4042)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4042,
+      "type": "int16",
+      "unit": "kvar",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, B (4043)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4043,
+      "type": "int16",
+      "unit": "kvar",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, C (4044)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4044,
+      "type": "int16",
+      "unit": "kvar",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Signed in all PM7s and PM750. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, THD (4045)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4045,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, THD (4046)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4046,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, THD (4047)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4047,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Power Factor, Total Signed",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4048,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "\"-\" sign indicates lag If a negative value is reported, add 32768 then divide by 1000 to find the lagging PF reported. Only on PM750"
+    },
+    {
+      "name": "Voltage, A-N, THD (4049)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4049,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, THD (4050)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4050,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, THD (4051)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4051,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, THD (4052)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4052,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, THD (4053)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4053,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, THD (4054)",
+      "group": "Metering",
+      "area": "holding",
+      "address": 4054,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, Total Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1104,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, Total Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1106,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, Total Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1108,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Power Factor, Total Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1110,
+      "type": "float32",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Frequency Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1112,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R",
+      "description": "derived from Phase A. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1114,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1116,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1118,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, N, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1120,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1122,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1124,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1126,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1128,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1130,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1132,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1134,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1136,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1138,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1142,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1144,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1146,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1148,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1150,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, THD Minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1152,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, Total Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1154,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, Total Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1156,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, Total Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1158,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Power Factor, Total Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1160,
+      "type": "float32",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Frequency Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1162,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R",
+      "description": "derived from Phase A. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1164,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1166,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1168,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, N, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1170,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1172,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1174,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1176,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1178,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1180,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1182,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1184,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1186,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1188,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1192,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1194,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1196,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1198,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1200,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, THD Maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 1202,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, Total Minimum (4055)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4055,
+      "type": "int16",
+      "unit": "kW",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, Total Minimum (4056)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4056,
+      "type": "int16",
+      "unit": "kVA",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, Total Minimum (4057)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4057,
+      "type": "int16",
+      "unit": "kvar",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Power Factor, Total Minimum (4058)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4058,
+      "type": "int16",
+      "scale": 0.0001,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Frequency Minimum (4059)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4059,
+      "type": "int16",
+      "unit": "Hz",
+      "scale": 0.01,
+      "access": "R",
+      "description": "derived from Phase A. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, Minimum (4060)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4060,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, Minimum (4061)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4061,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, Minimum (4062)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4062,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, N, Minimum (4063)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4063,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, Minimum (4064)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4064,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, Minimum (4065)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4065,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, Minimum (4066)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4066,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, Minimum (4067)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4067,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, Minimum (4068)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4068,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, Minimum (4069)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4069,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, THD Minimum (4070)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4070,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, THD Minimum (4071)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4071,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, THD Minimum (4072)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4072,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, THD Minimum (4074)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4074,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, THD Minimum (4075)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4075,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, THD Minimum (4076)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4076,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, THD Minimum (4077)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4077,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, THD Minimum (4078)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4078,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, THD Minimum (4079)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4079,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, Total Maximum (4080)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4080,
+      "type": "int16",
+      "unit": "kW",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Apparent Power, Total Maximum (4081)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4081,
+      "type": "int16",
+      "unit": "kVA",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Reactive Power, Total Maximum (4082)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4082,
+      "type": "int16",
+      "unit": "kvar",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Power Factor, Total Maximum (4083)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4083,
+      "type": "int16",
+      "scale": 0.0001,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Frequency Maximum (4084)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4084,
+      "type": "int16",
+      "unit": "Hz",
+      "scale": 0.01,
+      "access": "R",
+      "description": "derived from Phase A. Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, Maximum (4085)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4085,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, Maximum (4086)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4086,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, Maximum (4087)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4087,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, N, Maximum (4088)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4088,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, Maximum (4089)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4089,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, Maximum (4090)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4090,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, Maximum (4091)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4091,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, Maximum (4092)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4092,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, Maximum (4093)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4093,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, Maximum (4094)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4094,
+      "type": "int16",
+      "unit": "V",
+      "scale_factor": "Scale factor V (voltage)",
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, A, THD Maximum (4095)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4095,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, B, THD Maximum (4096)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4096,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Current, C, THD Maximum (4097)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4097,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-N, THD Maximum (4099)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4099,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-N, THD Maximum (4100)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4100,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-N, THD Maximum (4101)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4101,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, A-B, THD Maximum (4102)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4102,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, B-C, THD Maximum (4103)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4103,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Voltage, C-A, THD Maximum (4104)",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 4104,
+      "type": "int16",
+      "unit": "%",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Only on PM700, PM700P, PM710, PM750"
+    },
+    {
+      "name": "Real Power, Total Demand Present",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1022,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, Total Demand Present",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1024,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, Total Demand Present",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1026,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, Total Demand Peak",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1028,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, Total Demand Peak",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1030,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, Total Demand Peak",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1032,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Current, A, Demand Present",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1042,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, B, Demand Present",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1044,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, C, Demand Present",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1046,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, A, Demand Peak",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1048,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, B, Demand Peak",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1050,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, C, Demand Peak",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1052,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, Total Demand Present (4014)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4014,
+      "type": "int16",
+      "unit": "kW",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, Total Demand Present (4015)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4015,
+      "type": "int16",
+      "unit": "kVA",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, Total Demand Present (4016)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4016,
+      "type": "int16",
+      "unit": "kvar",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R"
+    },
+    {
+      "name": "Real Power, Total Demand Peak (4017)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4017,
+      "type": "int16",
+      "unit": "kW",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power, Total Demand Peak (4018)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4018,
+      "type": "int16",
+      "unit": "kVA",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power, Total Demand Peak (4019)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4019,
+      "type": "int16",
+      "unit": "kvar",
+      "scale_factor": "Scale factor W (power)",
+      "access": "R"
+    },
+    {
+      "name": "Current, A, Demand Present (4024)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4024,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Current, B, Demand Present (4025)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4025,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Current, C, Demand Present (4026)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4026,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Current, A, Demand Peak (4027)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4027,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Current, B, Demand Peak (4028)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4028,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Current, C, Demand Peak (4029)",
+      "group": "Demand",
+      "area": "holding",
+      "address": 4029,
+      "type": "int16",
+      "unit": "A",
+      "scale_factor": "Scale factor I (current)",
+      "access": "R"
+    },
+    {
+      "name": "Digital Output Status",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4114,
+      "type": "int16",
+      "access": "R",
+      "description": "0 = Off 1 = On. Only on PM750",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Digital Input S1 Status",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4115,
+      "type": "int16",
+      "access": "R",
+      "description": "0 = Off 1 = On. Only on PM750",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Digital Input S2 Status",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4116,
+      "type": "int16",
+      "access": "R",
+      "description": "0 = Off 1 = On. Only on PM750",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Digital Output Mode",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4129,
+      "type": "int16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 2,
+      "description": "0 = External Control (default) 1 = Alarm Mode 2 = KWH Pulse Mode (See Mfg Setup). Only on PM750",
+      "enum": {
+        "0": "External control",
+        "1": "Alarm",
+        "2": "kWh pulse"
+      }
+    },
+    {
+      "name": "Digital Input S1 Mode",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4130,
+      "type": "int16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "description": "0 = Normal (default) 1 = Demand Interval Synch. Only on PM750",
+      "enum": {
+        "0": "Normal",
+        "1": "Demand interval synchronization"
+      }
+    },
+    {
+      "name": "Digital Input S2 Mode",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4131,
+      "type": "int16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "description": "0 = Normal (default) 1 = Demand Interval Synch. Only on PM750",
+      "enum": {
+        "0": "Normal",
+        "1": "Demand interval synchronization"
+      }
+    },
+    {
+      "name": "Digital Output Counter",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4132,
+      "type": "int32",
+      "access": "R",
+      "description": "Only on PM750"
+    },
+    {
+      "name": "Digital Input S1 Counter",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4134,
+      "type": "int32",
+      "access": "R",
+      "description": "Only on PM750"
+    },
+    {
+      "name": "Digital Input S2 Counter",
+      "group": "Digital inputs and output",
+      "area": "holding",
+      "address": 4136,
+      "type": "int32",
+      "access": "R",
+      "description": "Only on PM750"
+    },
+    {
+      "name": "Alarm Status Bitmap",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4113,
+      "type": "int16",
+      "access": "R",
+      "description": "Only on PM750"
+    },
+    {
+      "name": "Alarm Setup Semaphore",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4139,
+      "type": "int16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 60,
+      "description": "Enter the amount of time in seconds needed to write the setup of the alarms. Only on PM750"
+    },
+    {
+      "name": "Firmware Version, Reset System",
+      "group": "Device",
+      "area": "holding",
+      "address": 7000,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware Version, Operating System",
+      "group": "Device",
+      "area": "holding",
+      "address": 7001,
+      "type": "int16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Serial Number",
+      "group": "Device",
+      "area": "holding",
+      "address": 7002,
+      "type": "int32",
+      "access": "R",
+      "description": "Date and time of manufacture in UTC",
+      "role": "serial"
+    },
+    {
+      "name": "Device ID",
+      "group": "Device",
+      "area": "holding",
+      "address": 7004,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "15165": "PM700, PM700P, PM710",
+        "15201": "PM200, PM200P, PM210",
+        "15202": "PM750"
+      },
+      "role": "model"
+    },
+    {
+      "name": "Modbus Address",
+      "group": "Device",
+      "area": "holding",
+      "address": 7005,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Baudrate",
+      "group": "Device",
+      "area": "holding",
+      "address": 7006,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Password",
+      "group": "Device",
+      "area": "holding",
+      "address": 7007,
+      "type": "int16",
+      "access": "RW",
+      "description": "always returns 0"
+    },
+    {
+      "name": "Selftest",
+      "group": "Device",
+      "area": "holding",
+      "address": 7008,
+      "type": "int16",
+      "access": "R",
+      "description": "always returns 0"
+    },
+    {
+      "name": "PLOS",
+      "group": "Device",
+      "area": "holding",
+      "address": 7009,
+      "type": "int16",
+      "access": "R",
+      "description": "0 for OK and 65535 for BAD"
+    },
+    {
+      "name": "Command",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 7015,
+      "type": "int16",
+      "access": "RW",
+      "description": "Command :PMO Command Interface (DLF support only)"
+    },
+    {
+      "name": "Command Parameters",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 7016,
+      "type": "int16",
+      "access": "RW",
+      "description": "Parameters :PMO Command Interface (DLF support only)"
+    },
+    {
+      "name": "Command Status",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 7032,
+      "type": "int16",
+      "access": "RW",
+      "description": "Status :PMO Command Interface (DLF support only)"
+    },
+    {
+      "name": "Command Result",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 7033,
+      "type": "int16",
+      "access": "RW",
+      "description": "Result :PMO Command Interface (DLF support only)"
+    },
+    {
+      "name": "Command Data Location Register Number",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 7034,
+      "type": "int16",
+      "access": "RW",
+      "description": "I/O Data :PMO Command Interface (DLF support only)"
+    },
+    {
+      "name": "Command Data Area",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 7035,
+      "type": "int16",
+      "access": "RW",
+      "description": "Data Area :PMO Command Interface (DLF support only)"
+    }
   ]
 }
