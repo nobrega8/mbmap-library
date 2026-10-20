@@ -1,0 +1,45 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "XY",
+  "model": "XY-MD02",
+  "models": [
+    "XY-MD02"
+  ],
+  "description": "RS485 temperature and humidity transmitter with an SHT20 sensor, Modbus RTU",
+  "revision": 1,
+  "revised": "2026-10-20",
+  "source": "XY-MD02 Modbus RTU RS485 SHT20 Temperature Humidity Transmitter manual",
+  "sources": [
+    {
+      "title": "XY-MD02 Modbus RTU RS485 SHT20 Temperature Humidity Transmitter manual",
+      "note": "Modbus protocol tables and examples"
+    }
+  ],
+  "notes": [
+    "Function codes 0x03, 0x04, 0x06 and 0x10. Temperature and humidity are input registers (FC04); the settings are holding registers (FC03 read, FC06 or FC10 write).",
+    "Addresses are the ones in the manual's frames: temperature is read from address 0x0001 (frame 01 04 00 01 00 01).",
+    "The manual's register table gives the baud rate as 0 = 9600, 1 = 14400, 2 = 19200, but its write example sets 0x2580 (9600) in that register. Which one the device takes is not confirmed; the labels follow the table.",
+    "The manual does not give the corrections' encoding. The serial settings table of its UART protocol section (9600, 8 data bits, 1 stop bit, no parity) is used as the default here; the Modbus section does not repeat them.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "baud_rate": {"0": "9600", "1": "14400", "2": "19200"}
+  },
+  "registers": [
+    {"name": "Temperature", "group": "Measurement", "area": "input", "address": 1, "type": "int16", "scale": 0.1, "unit": "°C", "access": "R", "description": "Signed value in tenths of a degree (0x0131 is 30.5 °C, 0xFF33 is -20.5 °C)"},
+    {"name": "Humidity", "group": "Measurement", "area": "input", "address": 2, "type": "uint16", "scale": 0.1, "unit": "%RH", "access": "R", "description": "Relative humidity in tenths of a percent (0x0222 is 54.6 %RH)"},
+    {"name": "Device address", "group": "Configuration", "area": "holding", "address": 257, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 247, "description": "Modbus slave address, default 1"},
+    {"name": "Baud rate", "group": "Configuration", "area": "holding", "address": 258, "type": "uint16", "access": "RW", "enum": "baud_rate", "description": "The register table lists 0, 1 and 2; the manual's write example uses 0x2580 (9600) instead, see the notes"},
+    {"name": "Temperature correction", "group": "Configuration", "area": "holding", "address": 259, "type": "int16", "access": "RW", "write_min": -10, "write_max": 10, "unit": "°C", "description": "Range -10 to 10 °C in the manual; how the value is encoded (whole degrees or tenths) is not stated"},
+    {"name": "Humidity correction", "group": "Configuration", "area": "holding", "address": 260, "type": "int16", "access": "RW", "write_min": -10, "write_max": 10, "unit": "%RH", "description": "Range -10 to 10 %RH in the manual; how the value is encoded (whole percent or tenths) is not stated"}
+  ]
+}
