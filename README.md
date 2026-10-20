@@ -29,7 +29,7 @@ COMPATIBILITY.md                  tools that read the format, and what each supp
 maps/<vendor>/<model>.mbmap.json  the shared maps
 examples/                         fictional maps that show the format
 index.json                        list of the maps, for apps that browse the library
-tools/export/                     exports a map to other software (Ignition)
+tools/                            validator, index builder and other scripts (see tools/README.md)
 tests/                            sample files and the diagnostics each must produce,
                                   for checking any .mbmap reader against the spec
 ```
