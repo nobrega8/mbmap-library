@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Electools",
+  "model": "EDM-TH100",
+  "models": [
+    "EDM-TH100"
+  ],
+  "description": "RS485 temperature and humidity monitor, Modbus RTU",
+  "revision": 1,
+  "revised": "2026-10-20",
+  "source": "EDM-TH100 wiki, 3.1 Especificações Técnicas and 3.2 Mapa Registradores Modbus (https://wiki.electools.com.br/books/edm-th100)",
+  "sources": [
+    {
+      "title": "EDM-TH100 wiki, 3.2 Mapa Registradores Modbus",
+      "url": "https://wiki.electools.com.br/books/edm-th100/page/32-mapa-registradores-modbus"
+    },
+    {
+      "title": "EDM-TH100 wiki, 3.1 Especificações Técnicas",
+      "url": "https://wiki.electools.com.br/books/edm-th100/page/31-especificacoes-tecnicas"
+    }
+  ],
+  "notes": [
+    "Function codes 0x03, 0x04, 0x06 and 0x10. Measurements and device information are input registers (FC04); the settings are holding registers (FC03 read, FC06 or FC10 write).",
+    "The addresses are the ones the wiki prints (001, 002, 200 to 205, 257 to 261). The wiki does not say whether they are sent as they are or minus one: test with the temperature at address 1.",
+    "Serial settings are the factory defaults of the wiki's table: baud rate 0 (9600) and serial configuration 2 (8E1), so even parity with 1 stop bit.",
+    "The wiki lists the corrections (260, 261) as unsigned 16-bit with a range of -100 to 100, while its specifications give -10 to +10. They are read here as signed 16-bit, in the unit of the specifications; the encoding (whole units or tenths) is not stated, so check before writing them.",
+    "The wiki puts the humidity correction at 260 and the temperature correction at 261.",
+    "The uptime (205) is a 32-bit value; its word order is not stated, the default (big) is used.",
+    "The encoding of the product code, the hardware version and the firmware version is not stated, so none of them has an identity role.",
+    "Written from the manufacturer's wiki; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "E",
+  "databits": 8,
+  "stopbits": 1,
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "baud_rate": {"0": "9600", "1": "14400", "2": "19200", "3": "38400", "4": "57600", "5": "115200"},
+    "serial_config": {"0": "8N1", "1": "8N2", "2": "8E1", "3": "8O1"}
+  },
+  "registers": [
+    {"name": "Temperature", "group": "Measurement", "area": "input", "address": 1, "type": "uint16", "scale": 0.1, "unit": "°C", "access": "R", "description": "Unsigned 16-bit value in tenths of a degree (range 0 to 60 °C)"},
+    {"name": "Humidity", "group": "Measurement", "area": "input", "address": 2, "type": "uint16", "scale": 0.1, "unit": "%RH", "access": "R", "description": "Unsigned 16-bit value in tenths of a percent"},
+    {"name": "Communication quality", "group": "Device", "area": "input", "address": 200, "type": "uint16", "unit": "%", "access": "R", "description": "Communication quality index"},
+    {"name": "Product code", "group": "Device", "area": "input", "address": 201, "type": "uint16", "access": "R"},
+    {"name": "Hardware version", "group": "Device", "area": "input", "address": 202, "type": "uint16", "access": "R"},
+    {"name": "Firmware version", "group": "Device", "area": "input", "address": 203, "type": "uint16", "access": "R"},
+    {"name": "Serial number", "group": "Device", "area": "input", "address": 204, "type": "uint16", "access": "R", "role": "serial"},
+    {"name": "Uptime", "group": "Device", "area": "input", "address": 205, "type": "uint32", "unit": "s", "access": "R", "description": "Time since the device was powered on"},
+    {"name": "Device address", "group": "Configuration", "area": "holding", "address": 257, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 247, "description": "Modbus slave address, default 1"},
+    {"name": "Baud rate", "group": "Configuration", "area": "holding", "address": 258, "type": "uint16", "access": "RW", "enum": "baud_rate", "description": "Default 0 (9600)"},
+    {"name": "Serial configuration", "group": "Configuration", "area": "holding", "address": 259, "type": "uint16", "access": "RW", "enum": "serial_config", "description": "Default 2 (8E1)"},
+    {"name": "Humidity correction", "group": "Configuration", "area": "holding", "address": 260, "type": "int16", "access": "RW", "write_min": -10, "write_max": 10, "unit": "%RH", "description": "Range -10 to +10 %RH in the specifications; the wiki's table says -100 to 100, see the notes"},
+    {"name": "Temperature correction", "group": "Configuration", "area": "holding", "address": 261, "type": "int16", "access": "RW", "write_min": -10, "write_max": 10, "unit": "°C", "description": "Range -10 to +10 °C in the specifications; the wiki's table says -100 to 100, see the notes"}
+  ]
+}
