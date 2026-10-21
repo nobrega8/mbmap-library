@@ -1,0 +1,192 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Delta Electronics",
+  "model": "DVP-ES2/EX2/SS2/SA2/SX2/SE",
+  "models": [
+    "DVP-ES2",
+    "DVP-EX2",
+    "DVP-SS2",
+    "DVP-SA2",
+    "DVP-SX2",
+    "DVP-SE"
+  ],
+  "vendor_website": "deltaww.com",
+  "description": "Delta DVP series PLCs. The map holds the first device of each Modbus block; the others follow from the formulas in the notes.",
+  "revision": 1,
+  "revised": "2026-10-21",
+  "sources": [
+    {
+      "title": "DVP-ES2/EX2/SS2/SA2/SX2/SE Operation Manual - Programming",
+      "date": "2012-07",
+      "note": "section 4.4, PLC Device Address"
+    }
+  ],
+  "x_status": "official",
+  "notes": [
+    "A PLC has no fixed list of registers: what you read is the program's own devices. Only the first device of each block is listed here; a tool or user derives the rest by counting from it.",
+    "Address of device n (wire address, hex): S 0x0000+n; X 0x0400+n; Y 0x0500+n; T 0x0600+n (contact as coil, value as holding); M0-M1535 0x0800+n; M1536-M4095 0xB000+(n-1536); C0-C199 0x0E00+n (contact as coil, value as holding); C200-C255 contact 0x0EC8+(n-200), 32-bit value 0x0700+2*(n-200); D0-D4095 0x1000+n; D4096-D9999 0x9000+(n-4096).",
+    "X and Y numbers are octal (X0-X7, X10-X17...): convert the octal number to decimal before adding it to the base. The spreadsheet supplied with the request numbers Y after Y37 in decimal, which does not match the manual, so the manual was followed.",
+    "Reading with FC01/FC02/FC03 and writing with FC05/FC06/FC15/FC16 are supported. The decimal numbers in Delta's tables (X0 = 101025, Y0 = 001281, D0 = 404097) are the same locations in Modicon notation.",
+    "Factory serial format is 9600 bps, 7 data bits, even parity, 1 stop bit, in ASCII mode, station 1. RTU mode (8 data bits) is selected by the PLC program, so adjust databits when you switch. Not all models have both ports.",
+    "Not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "E",
+  "databits": 7,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "registers": [
+    {
+      "name": "X0",
+      "group": "Inputs",
+      "area": "discrete",
+      "address": "0x0400",
+      "type": "bool",
+      "access": "R",
+      "description": "First digital input. X is octal: X7 is followed by X10, so Xn is at 0x0400 + the octal number read as a plain count."
+    },
+    {
+      "name": "Y0",
+      "group": "Outputs",
+      "area": "coil",
+      "address": "0x0500",
+      "type": "bool",
+      "access": "RW",
+      "description": "First digital output. Y is octal like X."
+    },
+    {
+      "name": "S0",
+      "group": "Step relays",
+      "area": "coil",
+      "address": "0x0000",
+      "type": "bool",
+      "access": "RW",
+      "description": "First step relay; S0 to S1023 follow one after the other."
+    },
+    {
+      "name": "T0 contact",
+      "group": "Timers",
+      "area": "coil",
+      "address": "0x0600",
+      "type": "bool",
+      "access": "R",
+      "description": "Contact of timer T0; T0 to T255 follow one after the other."
+    },
+    {
+      "name": "T0 current value",
+      "group": "Timers",
+      "area": "holding",
+      "address": "0x0600",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Current value of timer T0 (16-bit); T255 is at 0x06FF."
+    },
+    {
+      "name": "M0",
+      "group": "Auxiliary relays",
+      "area": "coil",
+      "address": "0x0800",
+      "type": "bool",
+      "access": "RW",
+      "description": "First auxiliary relay; M0 to M1535 run from 0x0800 to 0x0DFF."
+    },
+    {
+      "name": "M1536",
+      "group": "Auxiliary relays",
+      "area": "coil",
+      "address": "0xB000",
+      "type": "bool",
+      "access": "RW",
+      "description": "M1536 to M4095 are in a separate block, from 0xB000 to 0xB9FF."
+    },
+    {
+      "name": "C0 contact",
+      "group": "Counters",
+      "area": "coil",
+      "address": "0x0E00",
+      "type": "bool",
+      "access": "R",
+      "description": "Contact of 16-bit counter C0; C0 to C199 run from 0x0E00 to 0x0EC7."
+    },
+    {
+      "name": "C0 current value",
+      "group": "Counters",
+      "area": "holding",
+      "address": "0x0E00",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Current value of 16-bit counter C0; C199 is at 0x0EC7."
+    },
+    {
+      "name": "C200 contact",
+      "group": "Counters",
+      "area": "coil",
+      "address": "0x0EC8",
+      "type": "bool",
+      "access": "R",
+      "description": "Contact of 32-bit counter C200; C200 to C255 run from 0x0EC8 to 0x0EFF."
+    },
+    {
+      "name": "C200 current value",
+      "group": "Counters",
+      "area": "holding",
+      "address": "0x0700",
+      "type": "int32",
+      "access": "RW",
+      "description": "Current value of 32-bit counter C200, two registers each; C201 is at 0x0702 and C255 at 0x076E.",
+      "word_order": "little"
+    },
+    {
+      "name": "D0",
+      "group": "Data registers",
+      "area": "holding",
+      "address": "0x1000",
+      "type": "uint16",
+      "access": "RW",
+      "description": "First data register; D0 to D4095 run from 0x1000 to 0x1FFF."
+    },
+    {
+      "name": "D4096",
+      "group": "Data registers",
+      "area": "holding",
+      "address": "0x9000",
+      "type": "uint16",
+      "access": "RW",
+      "description": "D4096 to D9999 are in a separate block starting at 0x9000. Models with fewer data registers stop earlier."
+    },
+    {
+      "name": "COM1 (RS-232) communication format",
+      "group": "Communication settings",
+      "area": "holding",
+      "address": "0x140C",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Special register D1036: speed and format of COM1. Written by the PLC program or WPLSoft, not normally changed over Modbus."
+    },
+    {
+      "name": "COM2 (RS-485) communication format",
+      "group": "Communication settings",
+      "area": "holding",
+      "address": "0x1460",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Special register D1120: speed and format of COM2."
+    },
+    {
+      "name": "Communication address",
+      "group": "Communication settings",
+      "area": "holding",
+      "address": "0x1461",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Special register D1121: the station address used on COM1 and COM2.",
+      "write_min": 1,
+      "write_max": 255
+    }
+  ]
+}
