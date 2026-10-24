@@ -1,0 +1,68 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Zhongsheng",
+  "model": "ZTS-3000 analog I/O series",
+  "models": [
+    "ZTS-3000"
+  ],
+  "vendor_website": "zskjdg.com",
+  "description": "RS485 analog input/output modules (1 to 8 channels, 0-5 V, 0-10 V, 0/4-20 mA and other ranges), Modbus RTU",
+  "revision": 1,
+  "revised": "2026-10-24",
+  "source": "Analog input/output series user manual, RS485 version V2.0 (Zhongsheng Technology, 2019)",
+  "sources": [
+    {
+      "title": "模拟量输入输出系列使用手册 (RS485版) / Analog input/output series user manual, RS485 version",
+      "version": "V2.0",
+      "date": "2019",
+      "url": "https://zhongshengkeji.oss-cn-shenzhen.aliyuncs.com/%E4%BA%A7%E5%93%81%E8%B5%84%E6%96%99/9%E6%A8%A1%E6%8B%9F%E9%87%8F%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%B3%BB%E5%88%97/RS485/%E6%A8%A1%E6%8B%9F%E9%87%8F%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%B3%BB%E5%88%97%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C(RS485%E7%89%88).pdf",
+      "note": "section 2, tables 2.1 and 2.2; checked against the English translation attached to issue #71"
+    }
+  ],
+  "notes": [
+    "One map for the whole series: a module has 1 to 8 input and/or output channels, so only the first registers exist on a smaller module.",
+    "Function codes 03, 04, 06 and 10. Measured values are input registers; output setpoints and settings are holding registers. Output setpoints are not kept after power off; the settings are.",
+    "Values are unsigned 16-bit with three decimals (raw 1000 = 1.000) when the data format register is 2 (fixed 3 decimals). With another data format the scale in this map is wrong: the manual's variable-decimal format puts the number of decimals in the ten-thousands digit (raw 31000 = 1.000).",
+    "The manual is inconsistent about the factory data format: section 2.2 calls fixed decimals the factory default, table 2.2 gives a reset value of 0 (variable decimals). Read register 0x3A first and write 2 if needed.",
+    "On 0/4-20 mA input models the value is the voltage across the 249 ohm input shunt, in V: divide by 249 to get the current in A (1.000 V = 4.016 mA).",
+    "Address, baud rate, data format and parity take effect after a power cycle.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "baudrate": {"0": "4800", "1": "9600", "2": "14400", "3": "19200", "4": "38400", "5": "56000", "6": "57600", "7": "115200"},
+    "data_format": {"0": "Variable decimal point", "1": "Fixed, 2 decimals", "2": "Fixed, 3 decimals", "3": "Fixed, 4 decimals"},
+    "parity": {"0": "None", "1": "Odd", "2": "Even"}
+  },
+  "registers": [
+    {"name": "Input 1", "group": "Inputs", "area": "input", "address": "0x0000", "type": "uint16", "scale": 0.001, "unit": "V", "description": "Channel 1 measured value (V; on current models the shunt voltage)"},
+    {"name": "Input 2", "group": "Inputs", "area": "input", "address": "0x0001", "type": "uint16", "scale": 0.001, "unit": "V", "description": "Channel 2 measured value"},
+    {"name": "Input 3", "group": "Inputs", "area": "input", "address": "0x0002", "type": "uint16", "scale": 0.001, "unit": "V", "description": "Channel 3 measured value"},
+    {"name": "Input 4", "group": "Inputs", "area": "input", "address": "0x0003", "type": "uint16", "scale": 0.001, "unit": "V", "description": "Channel 4 measured value"},
+    {"name": "Input 5", "group": "Inputs", "area": "input", "address": "0x0004", "type": "uint16", "scale": 0.001, "unit": "V", "description": "Channel 5 measured value"},
+    {"name": "Input 6", "group": "Inputs", "area": "input", "address": "0x0005", "type": "uint16", "scale": 0.001, "unit": "V", "description": "Channel 6 measured value"},
+    {"name": "Input 7", "group": "Inputs", "area": "input", "address": "0x0006", "type": "uint16", "scale": 0.001, "unit": "V", "description": "Channel 7 measured value"},
+    {"name": "Input 8", "group": "Inputs", "area": "input", "address": "0x0007", "type": "uint16", "scale": 0.001, "unit": "V", "description": "Channel 8 measured value"},
+    {"name": "Output 1", "group": "Outputs", "area": "holding", "address": "0x000A", "type": "uint16", "scale": 0.001, "access": "RW", "description": "Channel 1 output setpoint, in V or mA by output type; not kept after power off"},
+    {"name": "Output 2", "group": "Outputs", "area": "holding", "address": "0x000B", "type": "uint16", "scale": 0.001, "access": "RW", "description": "Channel 2 output setpoint, in V or mA"},
+    {"name": "Output 3", "group": "Outputs", "area": "holding", "address": "0x000C", "type": "uint16", "scale": 0.001, "access": "RW", "description": "Channel 3 output setpoint, in V or mA"},
+    {"name": "Output 4", "group": "Outputs", "area": "holding", "address": "0x000D", "type": "uint16", "scale": 0.001, "access": "RW", "description": "Channel 4 output setpoint, in V or mA"},
+    {"name": "Output 5", "group": "Outputs", "area": "holding", "address": "0x000E", "type": "uint16", "scale": 0.001, "access": "RW", "description": "Channel 5 output setpoint, in V or mA"},
+    {"name": "Output 6", "group": "Outputs", "area": "holding", "address": "0x000F", "type": "uint16", "scale": 0.001, "access": "RW", "description": "Channel 6 output setpoint, in V or mA"},
+    {"name": "Output 7", "group": "Outputs", "area": "holding", "address": "0x0010", "type": "uint16", "scale": 0.001, "access": "RW", "description": "Channel 7 output setpoint, in V or mA"},
+    {"name": "Output 8", "group": "Outputs", "area": "holding", "address": "0x0011", "type": "uint16", "scale": 0.001, "access": "RW", "description": "Channel 8 output setpoint, in V or mA"},
+    {"name": "Active upload interval", "group": "Settings", "area": "holding", "address": "0x0031", "type": "uint16", "scale": 0.001, "unit": "s", "access": "RW", "description": "Interval of unsolicited data frames; 0 = off (factory default)"},
+    {"name": "Slave address", "group": "Settings", "area": "holding", "address": "0x0032", "type": "uint16", "access": "RW", "write_min": 1, "write_max": 255, "description": "Modbus address; factory default 1"},
+    {"name": "Baud rate", "group": "Settings", "area": "holding", "address": "0x0033", "type": "uint16", "access": "RW", "enum": "baudrate", "write_min": 0, "write_max": 7, "description": "Factory default 1 (9600)"},
+    {"name": "Data format", "group": "Settings", "area": "holding", "address": "0x003A", "type": "uint16", "access": "RW", "enum": "data_format", "write_min": 0, "write_max": 3, "description": "Decimal format of inputs and outputs; this map assumes 2"},
+    {"name": "Parity", "group": "Settings", "area": "holding", "address": "0x003D", "type": "uint16", "access": "RW", "enum": "parity", "write_min": 0, "write_max": 2, "description": "Factory default 0 (none); 8 data bits and 1 stop bit"}
+  ]
+}
