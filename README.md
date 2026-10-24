@@ -49,7 +49,7 @@ The maps in this library say how far they can be trusted in `x_status`. It is no
 pie showData
     title Maps by status
     "Verified" : 6
-    "Official" : 262
+    "Official" : 264
     "Unofficial" : 225
 ```
 <!-- status-chart:end -->
@@ -62,7 +62,7 @@ Corrections are the most useful contribution: see [CONTRIBUTING.md](CONTRIBUTING
 
 A map is a JSON file with one register per line, so it reads well in any text editor and any language can load it with its JSON parser; editors that support JSON Schema check it as you type.
 
-[COMPATIBILITY.md](COMPATIBILITY.md) lists the tools that read the format and which parts of it each one supports. The main one is [Modbench](https://github.com/nobrega8/modbench), a Modbus client for Windows, Linux and macOS that browses and downloads the maps in this repository directly.
+[COMPATIBILITY.md](COMPATIBILITY.md) lists the tools that read the format and which parts of it each one supports. The main one is [Modbench](https://github.com/nobrega8/modbench), a Modbus client for Windows, Linux and macOS that browses and downloads the maps in this repository directly. [ScanBus-BR](https://github.com/ortegahernandes/ScanBus-BR-Simulator-Modbus), a Modbus simulator and sniffer for Windows and Linux, can search the library too.
 
 Building a tool that reads `.mbmap`? Follow [SPEC.md](SPEC.md), check it against the samples in [`tests/`](tests/), and open a pull request to add it to [COMPATIBILITY.md](COMPATIBILITY.md). Work in progress is welcome in [Show and tell](https://github.com/nobrega8/mbmap-library/discussions/categories/show-and-tell).
 
