@@ -6,8 +6,8 @@
   "models": ["DCRG8"],
   "vendor_website": "lovatoelectric.com",
   "description": "Digital power factor controller (DCRG8 series). Values marked single/three phase depend on how the controller is wired and programmed",
-  "revision": 3,
-  "revised": "2026-10-19",
+  "revision": 4,
+  "revised": "2026-10-29",
   "source": "Lovato Electric, \"DCRG8 Series Modbus Communication Protocol\", doc. I432IGB05_20 (2020-05-20), tables 2-9; from firmware revision 4",
   "notes": [
     "Lovato Electric DCRG8 digital power factor controller.",
@@ -16,7 +16,8 @@
     "Tested on a DCRG8, October 2026, over an RS-485 to RTU-over-TCP gateway (firmware not recorded).",
     "Total cos phi (0000H, signed long, value/1000) is not in this map: its wire address is FFFFH, which a map cannot hold. Read it with FC04 from address 65535, 2 registers. A read of wire address 0 alone is refused (illegal data address).",
     "Table 2: with one voltage and one current wired, the controller returns the first measure (0000H-0010H); with three voltages and three currents, the second (0040H-0062H, 1500H-150EH). The other one reads ND.",
-    "Writing a parameter, as in the manual's example (P02.01 CT primary = 200): FC06 value 2 at 5000H (menu), FC06 value 1 at 5002H (parameter), FC16 value 200 at 5004H, FC06 value 1 at 2F03H (save EEPROM), then FC06 value 4 at 2F03H (reboot). The controller does not answer the last two. To read a parameter, select the menu and parameter the same way, then read 5004H with FC04."
+    "Writing a parameter, as in the manual's example (P02.01 CT primary = 200): FC06 value 2 at 5000H (menu), FC06 value 1 at 5002H (parameter), FC16 value 200 at 5004H, FC06 value 1 at 2F03H (save EEPROM), then FC06 value 4 at 2F03H (reboot). The controller does not answer the last two. To read a parameter, select the menu and parameter the same way, then read 5004H with FC04.",
+    "Cos phi setpoint (3004H) is not in the protocol document. It comes from Node-RED flows that have run for years on several DCRG8 controllers (FC04 read, FC06 write, value x 100, read back after the write). Which setpoint it changes and whether the change survives a power cycle without an EEPROM save (2F03H = 1) are not known. The documented way is the parameter access above with P02.13 (Setpoint cosphi 1, 0.50 IND to 0.50 CAP, instruction manual I340GB06_24)."
   ],
   "protocol": "tcp+rtu",
   "unit_id": 1,
@@ -565,6 +566,7 @@
     {"name": "Event counter", "group": "Events", "area": "holding", "address": 20528, "type": "uint16", "bit": 8, "bits": 8, "access": "R", "description": "Total events stored (max 250)"},
     {"name": "Event record", "group": "Events", "area": "holding", "address": 20530, "type": "string", "length": 43, "access": "R", "description": "86 bytes: date (10), separator, time (12-19), separator, event text from byte 21"},
     {"name": "Command", "group": "Commands", "area": "holding", "address": 12272, "type": "uint16", "access": "W", "enum": "command", "description": "After Setup to default or Restore parameters, send the reboot command (2F03H = 04)", "comment": "Table 3 - commands (FC06)"},
+    {"name": "Cos phi setpoint", "group": "Commands", "area": "holding", "address": 12292, "type": "uint16", "scale": 0.01, "access": "RW", "write_min": 0.8, "write_max": 1.0, "description": "Target power factor, inductive; 0.98 is 98. Not in the protocol document (see notes); only 0.80-1.00 has been used"},
     {"name": "Step activation", "group": "Commands", "area": "holding", "address": 12293, "type": "uint16", "access": "W", "description": "Write the number of the step to activate; ignored during its reconnection time"},
     {"name": "Step de-activation", "group": "Commands", "area": "holding", "address": 12294, "type": "uint16", "access": "W", "description": "Write the number of the step to de-activate"},
     {"name": "Clock year", "group": "Clock", "area": "holding", "address": 10480, "type": "uint16", "access": "RW", "comment": "Table 8 - real time clock"},
