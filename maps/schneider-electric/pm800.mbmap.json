@@ -10,11 +10,18 @@
     "PM870"
   ],
   "vendor_website": "se.com",
-  "description": "Power meter",
-  "revision": 3,
-  "revised": "2026-10-18",
-  "source": "modbusdb.com register tables, retrieved 2026-10-14. Not verified against the manufacturer's documentation",
+  "description": "Power meter (PM810, PM820, PM850, PM870): metering, power quality, min/max, energy, demand, configuration, I/O, alarms, logs and the command interface",
+  "revision": 4,
+  "revised": "2026-10-31",
+  "source": "Schneider Electric (Square D) Register List for PM800 Series Power Meters, firmware 12.7xx (2017-02-03); first converted from modbusdb.com",
   "sources": [
+    {
+      "title": "Register List for PM800 Series Power Meters, firmware 12.7xx",
+      "version": "12.7xx",
+      "date": "2017-02-03",
+      "url": "https://www.se.com/id/en/download/document/PM800_Register_List_v12_7xx/",
+      "note": "register table, scale groups, data types and Commands table: addresses, sizes, types, units, scales and command codes checked"
+    },
     {
       "title": "modbusdb: Schneider Electric PowerLogic PM810",
       "url": "https://modbusdb.com/schneider-electric/powerlogic/pm810/0",
@@ -34,29 +41,23 @@
       "title": "modbusdb: Schneider Electric PowerLogic PM870",
       "url": "https://modbusdb.com/schneider-electric/powerlogic/pm870/0",
       "note": "retrieved 2026-10-14"
-    },
-    {
-      "title": "Register List for PM800 Series Power Meters, firmware 12.7xx",
-      "version": "12.7xx",
-      "date": "2017-02-03",
-      "url": "https://www.se.com/id/en/download/document/PM800_Register_List_v12_7xx/",
-      "note": "checked: addresses and sizes of 1,034 registers, and the 32-bit word order (first register is the least significant)"
     }
   ],
   "notes": [
-    "Schneider Electric PM800.",
-    "Converted automatically from modbusdb.com. Not verified against the manufacturer's documentation.",
-    "Addresses are the register numbers of the manual (Modicon numbering, 1-based).",
+    "Addresses are the register numbers of the register list (Modicon numbering, 1-based).",
     "Registers that exist only on some of the models say so in their description.",
-    "32-bit values (Float, Long) are sent least significant register first, as the register list states; this map therefore uses little word order.",
-    "The Mod10 energy registers (16200 and following) and the 4-register date/time values are not decoded by this map.",
-    "The addresses and sizes were checked against the manufacturer's register list v12.7xx; units, scales and ranges are still those of the original conversion, so the map stays unofficial until they are checked too."
+    "Integer values in scale groups A, B, D, E and F are multiplied by 10 to the power of the matching scale register (3209, 3210, 3212, 3213, 3214), which this map gives as scale_factor.",
+    "32-bit values (Long, Float) are sent least significant register first, as the register list's data type table states; this map therefore uses little word order. The list's own float example (0x4374, 0xA419 = 244.641) reads high word first, so check the float registers (11700 and following) on a device.",
+    "Mod10 energies (1700 and following, 16200 and following) are four registers of 0-9999, least significant first; each is listed separately with its power of ten, and the value is their sum. The same energies are also given as floats at 11800.",
+    "Commands are not registers: write the command code to register 8000 (its table lists the codes) and the parameters to 8001-8015. The earlier map listed the command codes as write-only registers, which overlapped real registers; they are removed.",
+    "Template blocks (min/max, alarm, log and channel templates) are listed by their first register and size; their layout is in the register list.",
+    "The register list's footer reads 'Proprietary Document: Property of Square D Company'; it is published by Schneider Electric as a public register list.",
+    "Written from the manufacturer's register list; not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "little",
   "address_base": 1,
-  "x_status": "unofficial",
-  "x_origin": "modbusdb",
+  "x_status": "official",
   "registers": [
     {
       "name": "Duplicate IP Address Check Register",
@@ -167,7 +168,8 @@
       "address": 1100,
       "type": "uint16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Phase B (1101)",
@@ -175,7 +177,8 @@
       "address": 1101,
       "type": "uint16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Phase C (1102)",
@@ -183,7 +186,8 @@
       "address": 1102,
       "type": "uint16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Neutral (1103)",
@@ -191,7 +195,8 @@
       "address": 1103,
       "type": "uint16",
       "unit": "A",
-      "description": "Scale group B (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group B",
+      "scale_factor": "Scale B - Neutral Amps"
     },
     {
       "name": "Current Ground (1104)",
@@ -199,7 +204,8 @@
       "address": 1104,
       "type": "uint16",
       "unit": "A",
-      "description": "Scale group B (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group B",
+      "scale_factor": "Scale B - Neutral Amps"
     },
     {
       "name": "Current 3-Phase Average (1105)",
@@ -207,35 +213,40 @@
       "address": 1105,
       "type": "uint16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Unbalance Phase A",
       "area": "holding",
       "address": 1107,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Current Unbalance Phase B",
       "area": "holding",
       "address": 1108,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Current Unbalance Phase C",
       "area": "holding",
       "address": 1109,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Current Unbalance Max",
       "area": "holding",
       "address": 1110,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Voltage A-B (1120)",
@@ -243,7 +254,8 @@
       "address": 1120,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage B-C (1121)",
@@ -251,7 +263,8 @@
       "address": 1121,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage C-A (1122)",
@@ -259,7 +272,8 @@
       "address": 1122,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage L-L Average (1123)",
@@ -267,7 +281,8 @@
       "address": 1123,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage A-N (1124)",
@@ -275,7 +290,8 @@
       "address": 1124,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage B-N (1125)",
@@ -283,7 +299,8 @@
       "address": 1125,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage C-N (1126)",
@@ -291,7 +308,8 @@
       "address": 1126,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage N-R",
@@ -299,7 +317,8 @@
       "address": 1127,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group E (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group E",
+      "scale_factor": "Scale E - Neutral Volts"
     },
     {
       "name": "Voltage L-N Average (1128)",
@@ -307,63 +326,72 @@
       "address": 1128,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage Unbalance A-B",
       "area": "holding",
       "address": 1129,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Voltage Unbalance B-C",
       "area": "holding",
       "address": 1130,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Voltage Unbalance C-A",
       "area": "holding",
       "address": 1131,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Voltage Unbalance Max L-L",
       "area": "holding",
       "address": 1132,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Voltage Unbalance A-N",
       "area": "holding",
       "address": 1133,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Voltage Unbalance B-N",
       "area": "holding",
       "address": 1134,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Voltage Unbalance C-N",
       "area": "holding",
       "address": 1135,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Voltage Unbalance Max L-N",
       "area": "holding",
       "address": 1136,
       "type": "uint16",
-      "unit": "%"
+      "unit": "%",
+      "scale": 0.1
     },
     {
       "name": "Real Power Phase A (1140)",
@@ -371,7 +399,8 @@
       "address": 1140,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Real Power Phase B (1141)",
@@ -379,7 +408,8 @@
       "address": 1141,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Real Power Phase C (1142)",
@@ -387,7 +417,8 @@
       "address": 1142,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Real Power Total (1143)",
@@ -395,7 +426,8 @@
       "address": 1143,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Reactive Power Phase A (1144)",
@@ -403,7 +435,8 @@
       "address": 1144,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Reactive Power Phase B (1145)",
@@ -411,7 +444,8 @@
       "address": 1145,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Reactive Power Phase C (1146)",
@@ -419,7 +453,8 @@
       "address": 1146,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Reactive Power Total (1147)",
@@ -427,7 +462,8 @@
       "address": 1147,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Apparent Power Phase A (1148)",
@@ -435,7 +471,8 @@
       "address": 1148,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Apparent Power Phase B (1149)",
@@ -443,7 +480,8 @@
       "address": 1149,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Apparent Power Phase C (1150)",
@@ -451,7 +489,8 @@
       "address": 1150,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Apparent Power Total (1151)",
@@ -459,7 +498,8 @@
       "address": 1151,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "True Power Factor Phase A (1160)",
@@ -697,7 +737,8 @@
       "address": 1230,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code A"
+      "description": "Scale group A; Range: 0-32767. Scale code A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Fundamental Coincident Angle Phase A",
@@ -716,7 +757,8 @@
       "address": 1232,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code A"
+      "description": "Scale group A; Range: 0-32767. Scale code A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Fundamental Coincident Angle Phase B",
@@ -735,7 +777,8 @@
       "address": 1234,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code A"
+      "description": "Scale group A; Range: 0-32767. Scale code A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Fundamental Coincident Angle Phase C",
@@ -754,7 +797,8 @@
       "address": 1236,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group B (see the scale registers); Scaled by the scale register of its group; Range: 0-32767; -32768 if N/A. 4-wire systems and system type 12. Scale code B"
+      "description": "Scale group B; Range: 0-32767; -32768 if N/A. 4-wire systems and system type 12. Scale code B",
+      "scale_factor": "Scale B - Neutral Amps"
     },
     {
       "name": "Current Fundamental Coincident Angle Neutral",
@@ -773,7 +817,8 @@
       "address": 1244,
       "type": "int16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage Fundamental Coincident Angle A-N/A-B",
@@ -792,7 +837,8 @@
       "address": 1246,
       "type": "int16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Voltage B-N (4-wire systems and system type 12); Voltage B-C (3-wire system). Scale code D"
+      "description": "Scale group D; Range: 0-32767. Voltage B-N (4-wire systems and system type 12); Voltage B-C (3-wire system). Scale code D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage Fundamental Coincident Angle B-N/B-C",
@@ -811,7 +857,8 @@
       "address": 1248,
       "type": "int16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Voltage C-N (4-wire system); Voltage C-A (3-wire system). Scale code D"
+      "description": "Scale group D; Range: 0-32767. Voltage C-N (4-wire system); Voltage C-A (3-wire system). Scale code D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage Fundamental Coincident Angle C-N/C-A",
@@ -830,7 +877,8 @@
       "address": 1284,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code A"
+      "description": "Scale group A; Range: 0-32767. Scale code A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Positive Sequence Angle",
@@ -849,7 +897,8 @@
       "address": 1286,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code A"
+      "description": "Scale group A; Range: 0-32767. Scale code A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Negative Sequence Angle",
@@ -868,7 +917,8 @@
       "address": 1288,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code A"
+      "description": "Scale group A; Range: 0-32767. Scale code A",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Zero Sequence Angle",
@@ -887,7 +937,8 @@
       "address": 1290,
       "type": "int16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code D"
+      "description": "Scale group D; Range: 0-32767. Scale code D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage Positive Sequence Angle",
@@ -906,7 +957,8 @@
       "address": 1292,
       "type": "int16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code D"
+      "description": "Scale group D; Range: 0-32767. Scale code D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage Negative Sequence Angle",
@@ -925,7 +977,8 @@
       "address": 1294,
       "type": "int16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767. Scale code D"
+      "description": "Scale group D; Range: 0-32767. Scale code D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage Zero Sequence Angle",
@@ -992,13 +1045,6 @@
       "address": 1310,
       "type": "int16",
       "description": "Block of 10 registers; See Min/Max Template for register layout"
-    },
-    {
-      "name": "Set System Time and Date",
-      "area": "holding",
-      "address": 1311,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "Min/Max Current (Present Month)",
@@ -1081,13 +1127,6 @@
       "description": "Block of 10 registers; See Min/Max Template for register layout"
     },
     {
-      "name": "Enable Revenue Security Switch",
-      "area": "holding",
-      "address": 1411,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
       "name": "Min/Max THD/thd Current (Present Month)",
       "group": "Harmonics",
       "area": "holding",
@@ -1168,33 +1207,12 @@
       "description": "Block of 10 registers; See Min/Max Template for register layout"
     },
     {
-      "name": "Clear All Alarm Counters",
-      "area": "holding",
-      "address": 1515,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
       "name": "Min/Max Real Power Total (Previous Month)",
       "group": "Power",
       "area": "holding",
       "address": 1520,
       "type": "int16",
       "description": "Block of 10 registers; See Min/Max Template for register layout"
-    },
-    {
-      "name": "Acknowledge All Historical Alarms in Alarm History Log",
-      "area": "holding",
-      "address": 1521,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Alarm History Log",
-      "area": "holding",
-      "address": 1522,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "Min/Max Reactive Power Total (Previous Month)",
@@ -1261,14 +1279,6 @@
       "description": "Block of 10 registers; See Min/Max Template for register layout"
     },
     {
-      "name": "Inputs Depressed Key Code",
-      "area": "holding",
-      "address": 1610,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM820, PM850, PM870"
-    },
-    {
       "name": "Min/Max Current Neutral (Present Month Group 2)",
       "group": "Current",
       "area": "holding",
@@ -1293,171 +1303,617 @@
       "description": "Block of 10 registers; See Min/Max Template for register layout"
     },
     {
-      "name": "Energy Real In (1700)",
+      "name": "Energy Real In (1700) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1700,
-      "type": "uint64",
       "unit": "Wh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total real energy into the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total real energy into the load"
     },
     {
-      "name": "Energy Reactive In (1704)",
+      "name": "Energy Real In (1700) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1701,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Real In (1700) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1702,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Real In (1700) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1703,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Reactive In (1704) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1704,
-      "type": "uint64",
       "unit": "varh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total reactive energy into the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total reactive energy into the load"
     },
     {
-      "name": "Energy Real Out (1708)",
+      "name": "Energy Reactive In (1704) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1705,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Reactive In (1704) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1706,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Reactive In (1704) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1707,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Real Out (1708) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1708,
-      "type": "uint64",
       "unit": "Wh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total real energy out of the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total real energy out of the load"
     },
     {
-      "name": "Reset the Power-Fail Counter",
+      "name": "Energy Real Out (1708) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1709,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Real Out (1708) [part 3, x10^8]",
+      "group": "Energy",
       "area": "holding",
       "address": 1710,
-      "type": "uint16",
-      "access": "W"
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
     },
     {
-      "name": "Reset the Active Load Counter",
+      "name": "Energy Real Out (1708) [part 4, x10^12]",
+      "group": "Energy",
       "area": "holding",
       "address": 1711,
-      "type": "uint16",
-      "access": "W"
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
     },
     {
-      "name": "Energy Reactive Out (1712)",
+      "name": "Energy Reactive Out (1712) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1712,
-      "type": "uint64",
       "unit": "varh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total reactive energy out of the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total reactive energy out of the load"
     },
     {
-      "name": "Energy Real Total (signed/absolute) (1716)",
+      "name": "Energy Reactive Out (1712) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1713,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Reactive Out (1712) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1714,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Reactive Out (1712) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1715,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Real Total (signed/absolute) (1716) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1716,
-      "type": "uint64",
       "unit": "Wh",
-      "description": "Mod10, 4 registers; Range: (2). Total Real Energy In Out or In+Out"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (2). Total Real Energy In Out or In+Out"
     },
     {
-      "name": "Energy Reactive Total (signed/absolute) (1720)",
+      "name": "Energy Real Total (signed/absolute) (1716) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1717,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Real Total (signed/absolute) (1716) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1718,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Real Total (signed/absolute) (1716) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1719,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Reactive Total (signed/absolute) (1720) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1720,
-      "type": "uint64",
       "unit": "varh",
-      "description": "Mod10, 4 registers; Range: (2). Total Reactive Energy In Out or In+Out"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (2). Total Reactive Energy In Out or In+Out"
     },
     {
-      "name": "Energy Apparent (1724)",
+      "name": "Energy Reactive Total (signed/absolute) (1720) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1721,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Reactive Total (signed/absolute) (1720) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1722,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Reactive Total (signed/absolute) (1720) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1723,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Apparent (1724) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1724,
-      "type": "uint64",
       "unit": "VAh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total apparent energy"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total apparent energy"
     },
     {
-      "name": "Energy Conditional Real In (1728)",
+      "name": "Energy Apparent (1724) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1725,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Apparent (1724) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1726,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Apparent (1724) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1727,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Real In (1728) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1728,
-      "type": "uint64",
       "unit": "Wh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total accumulated conditional real energy into the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total accumulated conditional real energy into the load"
     },
     {
-      "name": "Energy Conditional Reactive In (1732)",
+      "name": "Energy Conditional Real In (1728) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1729,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Real In (1728) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1730,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Real In (1728) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1731,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Reactive In (1732) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1732,
-      "type": "uint64",
       "unit": "varh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total accumulated conditional reactive energy into the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total accumulated conditional reactive energy into the load"
     },
     {
-      "name": "Energy Conditional Real Out (1736)",
+      "name": "Energy Conditional Reactive In (1732) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1733,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Reactive In (1732) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1734,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Reactive In (1732) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1735,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Real Out (1736) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1736,
-      "type": "uint64",
       "unit": "Wh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total accumulated conditional real energy out of the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total accumulated conditional real energy out of the load"
     },
     {
-      "name": "Energy Conditional Reactive Out (1740)",
+      "name": "Energy Conditional Real Out (1736) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1737,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Real Out (1736) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1738,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Real Out (1736) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1739,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Reactive Out (1740) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1740,
-      "type": "uint64",
       "unit": "varh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total accumulated conditional reactive energy out of the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total accumulated conditional reactive energy out of the load"
     },
     {
-      "name": "Energy Conditional Apparent (1744)",
+      "name": "Energy Conditional Reactive Out (1740) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1741,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Reactive Out (1740) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1742,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Reactive Out (1740) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1743,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Apparent (1744) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1744,
-      "type": "uint64",
       "unit": "VAh",
-      "description": "Mod10, 4 registers; Range: (1). 3-Phase total accumulated conditional apparent energy"
+      "type": "int16",
+      "description": "Mod10 part 1 of 4 (-9999 to 9999): the value is the sum of the 4 parts. Range: (1). 3-Phase total accumulated conditional apparent energy"
     },
     {
-      "name": "Energy Incremental Real In Last Complete Interval (1748)",
+      "name": "Energy Conditional Apparent (1744) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1745,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Apparent (1744) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1746,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Conditional Apparent (1744) [part 4, x10^12]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1747,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 1000000000000,
+      "description": "Mod10 part 4 of 4 (-9999 to 9999): the value is the sum of the 4 parts"
+    },
+    {
+      "name": "Energy Incremental Real In Last Complete Interval (1748) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1748,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Mod10, 3 registers; Range: (3). 3-Phase total accumulated incremental real energy into the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: (3). 3-Phase total accumulated incremental real energy into the load"
     },
     {
-      "name": "Energy Incremental Reactive In Last Complete Interval (1751)",
+      "name": "Energy Incremental Real In Last Complete Interval (1748) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1749,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Real In Last Complete Interval (1748) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1750,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Reactive In Last Complete Interval (1751) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1751,
-      "type": "uint16",
       "unit": "varh",
-      "description": "Mod10, 3 registers; Range: (3). 3-Phase total accumulated incremental reactive energy into the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: (3). 3-Phase total accumulated incremental reactive energy into the load"
     },
     {
-      "name": "Energy Incremental Real Out Last Complete Interval (1754)",
+      "name": "Energy Incremental Reactive In Last Complete Interval (1751) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1752,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Reactive In Last Complete Interval (1751) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1753,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Real Out Last Complete Interval (1754) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1754,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Mod10, 3 registers; Range: (3). 3-Phase total accumulated incremental real energy out of the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: (3). 3-Phase total accumulated incremental real energy out of the load"
     },
     {
-      "name": "Energy Incremental Reactive Out Last Complete Interval (1757)",
+      "name": "Energy Incremental Real Out Last Complete Interval (1754) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1755,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Real Out Last Complete Interval (1754) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1756,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Reactive Out Last Complete Interval (1757) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1757,
-      "type": "uint16",
       "unit": "varh",
-      "description": "Mod10, 3 registers; Range: (3). 3-Phase total accumulated incremental reactive energy out of the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: (3). 3-Phase total accumulated incremental reactive energy out of the load"
     },
     {
-      "name": "Energy Incremental Apparent Last Complete Interval (1760)",
+      "name": "Energy Incremental Reactive Out Last Complete Interval (1757) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1758,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Reactive Out Last Complete Interval (1757) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1759,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Apparent Last Complete Interval (1760) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1760,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Mod10, 3 registers; Range: (3). 3-Phase total accumulated incremental apparent energy"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: (3). 3-Phase total accumulated incremental apparent energy"
+    },
+    {
+      "name": "Energy Incremental Apparent Last Complete Interval (1760) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1761,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Apparent Last Complete Interval (1760) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1762,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
     },
     {
       "name": "Last Complete Interval DateTime",
@@ -1468,85 +1924,265 @@
       "description": "DATETIME, 3 registers; Date/Time of last completed incremental energy interval. See Template for format"
     },
     {
-      "name": "Energy Incremental Real In Present Interval (1767)",
+      "name": "Energy Incremental Real In Present Interval (1767) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1767,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Mod10, 3 registers; Range: (3). 3-Phase total accumulated incremental real energy into the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: (3). 3-Phase total accumulated incremental real energy into the load"
     },
     {
-      "name": "Energy Incremental Reactive In Present Interval (1770)",
+      "name": "Energy Incremental Real In Present Interval (1767) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1768,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Real In Present Interval (1767) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1769,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Reactive In Present Interval (1770) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1770,
-      "type": "uint16",
       "unit": "varh",
-      "description": "Mod10, 3 registers; Range: (3). 3-Phase total accumulated incremental reactive energy into the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: (3). 3-Phase total accumulated incremental reactive energy into the load"
     },
     {
-      "name": "Energy Incremental Real Out Present Interval (1773)",
+      "name": "Energy Incremental Reactive In Present Interval (1770) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1771,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Reactive In Present Interval (1770) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1772,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Real Out Present Interval (1773) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1773,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Mod10, 3 registers; Range: (3). 3-Phase total accumulated incremental real energy out of the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: (3). 3-Phase total accumulated incremental real energy out of the load"
     },
     {
-      "name": "Energy Incremental Reactive Out Present Interval (1776)",
+      "name": "Energy Incremental Real Out Present Interval (1773) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1774,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Real Out Present Interval (1773) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1775,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Reactive Out Present Interval (1776) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1776,
-      "type": "uint16",
       "unit": "varh",
-      "description": "Mod10, 3 registers; Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy out of the load"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy out of the load"
     },
     {
-      "name": "Energy Incremental Apparent Present Interval (1779)",
+      "name": "Energy Incremental Reactive Out Present Interval (1776) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1777,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Reactive Out Present Interval (1776) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1778,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Apparent Present Interval (1779) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1779,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Mod10, 3 registers; Range: 0 – 999999999999. 3-Phase total accumulated incremental apparent energy"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: 0 – 999999999999. 3-Phase total accumulated incremental apparent energy"
     },
     {
-      "name": "Energy Reactive Quadrant 1 (1782)",
+      "name": "Energy Incremental Apparent Present Interval (1779) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1780,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Incremental Apparent Present Interval (1779) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1781,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Reactive Quadrant 1 (1782) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1782,
-      "type": "uint16",
       "unit": "varh",
-      "description": "Mod10, 3 registers; Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy – quadrant 1"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy – quadrant 1"
     },
     {
-      "name": "Energy Reactive Quadrant 2 (1785)",
+      "name": "Energy Reactive Quadrant 1 (1782) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1783,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Reactive Quadrant 1 (1782) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1784,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Reactive Quadrant 2 (1785) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1785,
-      "type": "uint16",
       "unit": "varh",
-      "description": "Mod10, 3 registers; Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy – quadrant 2"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy – quadrant 2"
     },
     {
-      "name": "Energy Reactive Quadrant 3 (1788)",
+      "name": "Energy Reactive Quadrant 2 (1785) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1786,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Reactive Quadrant 2 (1785) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1787,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Reactive Quadrant 3 (1788) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1788,
-      "type": "uint16",
       "unit": "varh",
-      "description": "Mod10, 3 registers; Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy – quadrant 3"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy – quadrant 3"
     },
     {
-      "name": "Energy Reactive Quadrant 4 (1791)",
+      "name": "Energy Reactive Quadrant 3 (1788) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1789,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Reactive Quadrant 3 (1788) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1790,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Reactive Quadrant 4 (1791) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 1791,
-      "type": "uint16",
       "unit": "varh",
-      "description": "Mod10, 3 registers; Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy – quadrant 4"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Range: 0 – 999999999999. 3-Phase total accumulated incremental reactive energy – quadrant 4"
+    },
+    {
+      "name": "Energy Reactive Quadrant 4 (1791) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1792,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Reactive Quadrant 4 (1791) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1793,
+      "unit": "varh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
     },
     {
       "name": "Conditional Energy Control Status",
@@ -2090,7 +2726,8 @@
       "address": 1940,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group; Range: -32767 – 32767. Maximum real 3-phase power demand over the last incremental energy interval"
+      "description": "Scale group F; Range: -32767 – 32767. Maximum real 3-phase power demand over the last incremental energy interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Last Incremental Interval Real Demand Peak DateTime",
@@ -2107,7 +2744,8 @@
       "address": 1945,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group; Range: -32767 – 32767. Maximum reactive 3-phase power demand over the last incremental energy interval"
+      "description": "Scale group F; Range: -32767 – 32767. Maximum reactive 3-phase power demand over the last incremental energy interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Last Incremental Interval Reactive Demand Peak DateTime",
@@ -2124,7 +2762,8 @@
       "address": 1950,
       "type": "uint16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Maximum apparent 3-phase power demand over the last incremental energy interval"
+      "description": "Scale group F; Range: 0 – 32767. Maximum apparent 3-phase power demand over the last incremental energy interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Last Incremental Interval Apparent Demand Peak DateTime",
@@ -2141,7 +2780,8 @@
       "address": 1960,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase A current demand last complete interval"
+      "description": "Scale group A; Range: 0-32767. Phase A current demand last complete interval",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Present Demand Current Phase A",
@@ -2150,7 +2790,8 @@
       "address": 1961,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase A current demand present interval"
+      "description": "Scale group A; Range: 0-32767. Phase A current demand present interval",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Running Average Demand Current Phase A",
@@ -2159,7 +2800,8 @@
       "address": 1962,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase A current demand running average demand calculation of short duration"
+      "description": "Scale group A; Range: 0-32767. Phase A current demand running average demand calculation of short duration",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Peak Demand Current Phase A",
@@ -2168,7 +2810,8 @@
       "address": 1963,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase A peak current demand"
+      "description": "Scale group A; Range: 0-32767. Phase A peak current demand",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Peak Demand DateTime Current Phase A",
@@ -2185,7 +2828,8 @@
       "address": 1970,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase B current demand last complete interval"
+      "description": "Scale group A; Range: 0-32767. Phase B current demand last complete interval",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Present Demand Current Phase B",
@@ -2194,7 +2838,8 @@
       "address": 1971,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase B current demand present interval"
+      "description": "Scale group A; Range: 0-32767. Phase B current demand present interval",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Running Average Demand Current Phase B",
@@ -2203,7 +2848,8 @@
       "address": 1972,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase B current demand running average demand calculation of short duration"
+      "description": "Scale group A; Range: 0-32767. Phase B current demand running average demand calculation of short duration",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Peak Demand Current Phase B",
@@ -2212,7 +2858,8 @@
       "address": 1973,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase B peak current demand"
+      "description": "Scale group A; Range: 0-32767. Phase B peak current demand",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Peak Demand DateTime Current Phase B",
@@ -2229,7 +2876,8 @@
       "address": 1980,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase C current demand last complete interval"
+      "description": "Scale group A; Range: 0-32767. Phase C current demand last complete interval",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Present Demand Current Phase C",
@@ -2238,7 +2886,8 @@
       "address": 1981,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase C current demand present interval"
+      "description": "Scale group A; Range: 0-32767. Phase C current demand present interval",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Running Average Demand Current Phase C",
@@ -2247,7 +2896,8 @@
       "address": 1982,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase C current demand running average demand calculation of short duration"
+      "description": "Scale group A; Range: 0-32767. Phase C current demand running average demand calculation of short duration",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Peak Demand Current Phase C",
@@ -2256,7 +2906,8 @@
       "address": 1983,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. Phase C peak current demand"
+      "description": "Scale group A; Range: 0-32767. Phase C peak current demand",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Peak Demand DateTime Current Phase C",
@@ -2273,7 +2924,8 @@
       "address": 1990,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group B (see the scale registers); Range: 0-32767 (-32768 if N/A). Neutral current demand last complete interval. 4-wire system only"
+      "description": "Scale group B; Range: 0-32767 (-32768 if N/A). Neutral current demand last complete interval. 4-wire system only",
+      "scale_factor": "Scale B - Neutral Amps"
     },
     {
       "name": "Present Demand Current Neutral",
@@ -2282,7 +2934,8 @@
       "address": 1991,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group B (see the scale registers); Range: 0-32767 (-32768 if N/A). Neutral current demand present interval. 4-wire system only"
+      "description": "Scale group B; Range: 0-32767 (-32768 if N/A). Neutral current demand present interval. 4-wire system only",
+      "scale_factor": "Scale B - Neutral Amps"
     },
     {
       "name": "Running Average Demand Current Neutral",
@@ -2291,7 +2944,8 @@
       "address": 1992,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group B (see the scale registers)"
+      "description": "Scale group B",
+      "scale_factor": "Scale B - Neutral Amps"
     },
     {
       "name": "Peak Demand Current Neutral",
@@ -2300,7 +2954,8 @@
       "address": 1993,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group B (see the scale registers); Range: 0-32767 (-32768 if N/A). Neutral peak current demand. 4-wire system only"
+      "description": "Scale group B; Range: 0-32767 (-32768 if N/A). Neutral peak current demand. 4-wire system only",
+      "scale_factor": "Scale B - Neutral Amps"
     },
     {
       "name": "Peak Demand DateTime Current Neutral",
@@ -2317,7 +2972,8 @@
       "address": 2000,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. 3-Phase Average current demand last complete interval"
+      "description": "Scale group A; Range: 0-32767. 3-Phase Average current demand last complete interval",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Present Demand Current 3-Phase Average",
@@ -2326,7 +2982,8 @@
       "address": 2001,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. 3-Phase Average current demand present interval"
+      "description": "Scale group A; Range: 0-32767. 3-Phase Average current demand present interval",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Running Average Demand Current 3-Phase Average",
@@ -2335,7 +2992,8 @@
       "address": 2002,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. 3-Phase Average current demand short sliding block"
+      "description": "Scale group A; Range: 0-32767. 3-Phase Average current demand short sliding block",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Peak Demand Current 3-Phase Average",
@@ -2344,7 +3002,8 @@
       "address": 2003,
       "type": "int16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Range: 0-32767. 3-Phase Average peak current demand"
+      "description": "Scale group A; Range: 0-32767. 3-Phase Average peak current demand",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Peak Demand DateTime Current 3-Phase Average",
@@ -2361,7 +3020,8 @@
       "address": 2150,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers)"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Present Demand Real Power 3-Phase Total",
@@ -2370,7 +3030,8 @@
       "address": 2151,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. 3-Phase total present real power demand for present demand interval"
+      "description": "Scale group F; Range: -32767-32767. 3-Phase total present real power demand for present demand interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Running Average Demand Real Power 3-Phase Total",
@@ -2379,7 +3040,8 @@
       "address": 2152,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. Updated every second"
+      "description": "Scale group F; Range: -32767-32767. Updated every second",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Predicted Demand Real Power 3-Phase Total",
@@ -2388,7 +3050,8 @@
       "address": 2153,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. Predicted real power demand at the end of the present interval"
+      "description": "Scale group F; Range: -32767-32767. Predicted real power demand at the end of the present interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Peak Demand Real Power 3-Phase Total",
@@ -2397,7 +3060,8 @@
       "address": 2154,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767"
+      "description": "Scale group F; Range: -32767-32767",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Peak Demand DateTime Real Power 3-Phase Total",
@@ -2432,7 +3096,8 @@
       "address": 2162,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. Reactive Power Demand at the time of the Peak Real Demand"
+      "description": "Scale group F; Range: -32767-32767. Reactive Power Demand at the time of the Peak Real Demand",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Power Demand Apparent at Peak Demand Real Power",
@@ -2441,7 +3106,8 @@
       "address": 2163,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Range: 0-32767. Apparent Power Demand at the time of the Peak Real Demand"
+      "description": "Scale group F; Range: 0-32767. Apparent Power Demand at the time of the Peak Real Demand",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Last Demand Reactive Power 3-Phase Total",
@@ -2450,7 +3116,8 @@
       "address": 2165,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers)"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Present Demand Reactive Power 3-Phase Total",
@@ -2459,7 +3126,8 @@
       "address": 2166,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. 3-Phase total present real power demand for present demand interval"
+      "description": "Scale group F; Range: -32767-32767. 3-Phase total present real power demand for present demand interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Running Average Demand Reactive Power 3-Phase Total",
@@ -2468,7 +3136,8 @@
       "address": 2167,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers)"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Predicted Demand Reactive Power 3-Phase Total",
@@ -2477,7 +3146,8 @@
       "address": 2168,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. Predicted reactive power demand at the end of the present interval"
+      "description": "Scale group F; Range: -32767-32767. Predicted reactive power demand at the end of the present interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Peak Demand Reactive Power 3-Phase Total",
@@ -2486,7 +3156,8 @@
       "address": 2169,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767"
+      "description": "Scale group F; Range: -32767-32767",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Peak Demand DateTime Reactive Power 3-Phase Total",
@@ -2521,7 +3192,8 @@
       "address": 2177,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. Real Power Demand at the time of the Peak Reactive Demand"
+      "description": "Scale group F; Range: -32767-32767. Real Power Demand at the time of the Peak Reactive Demand",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Power Demand Apparent at Peak Demand Reactive Power",
@@ -2530,7 +3202,8 @@
       "address": 2178,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Range: 0-32767. Apparent Power Demand at the time of the Peak Reactive Demand"
+      "description": "Scale group F; Range: 0-32767. Apparent Power Demand at the time of the Peak Reactive Demand",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Last Demand Apparent Power 3-Phase Total",
@@ -2539,7 +3212,8 @@
       "address": 2180,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers)"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Present Demand Apparent Power 3-Phase Total",
@@ -2548,7 +3222,8 @@
       "address": 2181,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. 3-Phase total present apparent power demand for present demand interval"
+      "description": "Scale group F; Range: -32767-32767. 3-Phase total present apparent power demand for present demand interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Running Average Demand Apparent Power 3-Phase Total",
@@ -2557,7 +3232,8 @@
       "address": 2182,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers)"
+      "description": "Scale group F",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Predicted Demand Apparent Power 3-Phase Total",
@@ -2566,7 +3242,8 @@
       "address": 2183,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. Predicted apparent power demand at the end of the present interval"
+      "description": "Scale group F; Range: -32767-32767. Predicted apparent power demand at the end of the present interval",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Peak Demand Apparent Power 3-Phase Total",
@@ -2575,7 +3252,8 @@
       "address": 2184,
       "type": "int16",
       "unit": "kVA",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. 3-Phase total peak apparent power demand peak"
+      "description": "Scale group F; Range: -32767-32767. 3-Phase total peak apparent power demand peak",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Peak Demand DateTime Apparent Power 3-Phase Total",
@@ -2610,7 +3288,8 @@
       "address": 2192,
       "type": "int16",
       "unit": "kW",
-      "description": "Scale group F (see the scale registers); Range: -32767-32767. Real Power Demand at the time of the Peak Apparent Demand"
+      "description": "Scale group F; Range: -32767-32767. Real Power Demand at the time of the Peak Apparent Demand",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Power Demand Reactive at Peak Demand Apparent Power",
@@ -2619,7 +3298,8 @@
       "address": 2193,
       "type": "int16",
       "unit": "kvar",
-      "description": "Scale group F (see the scale registers); Range: 0-32767. Reactive Power Demand at the time of the Peak Apparent Demand"
+      "description": "Scale group F; Range: 0-32767. Reactive Power Demand at the time of the Peak Apparent Demand",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Consumption Units Code Input Channel 1",
@@ -2929,7 +3609,8 @@
       "address": 2800,
       "type": "uint16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Highest value of Phases A B C or N"
+      "description": "Scale group A; Range: 0 – 32767. Highest value of Phases A B C or N",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Current Lowest Phase Value",
@@ -2938,7 +3619,8 @@
       "address": 2801,
       "type": "uint16",
       "unit": "A",
-      "description": "Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Lowest value of Phases A B C or N"
+      "description": "Scale group A; Range: 0 – 32767. Lowest value of Phases A B C or N",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Voltage L-L Highest Value",
@@ -2947,7 +3629,8 @@
       "address": 2802,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Highest value of Phases A-B BC or C-A"
+      "description": "Scale group D; Range: 0 – 32767. Highest value of Phases A-B BC or C-A",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage L-L Lowest Value",
@@ -2956,7 +3639,8 @@
       "address": 2803,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Lowest value of Phases A-B BC or C-A"
+      "description": "Scale group D; Range: 0 – 32767. Lowest value of Phases A-B BC or C-A",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage L-N Highest Value",
@@ -2965,7 +3649,8 @@
       "address": 2804,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767 (-32768 if N/A). Highest value of Phases A-N B-N or C-N. 4-wire system only"
+      "description": "Scale group D; Range: 0 – 32767 (-32768 if N/A). Highest value of Phases A-N B-N or C-N. 4-wire system only",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage L-N Lowest Value",
@@ -2974,7 +3659,8 @@
       "address": 2805,
       "type": "uint16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767 (-32768 if N/A). Lowest value of Phases A-N B-N or C-N. 4-wire system only"
+      "description": "Scale group D; Range: 0 – 32767 (-32768 if N/A). Lowest value of Phases A-N B-N or C-N. 4-wire system only",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Power Meter Nameplate",
@@ -3690,7 +4376,8 @@
       "type": "int16",
       "unit": "V",
       "access": "RW",
-      "description": "Only on PM850, PM870; Range: 0 – 32767. Used for diagnostics and alarms"
+      "description": "Scale group D; Only on PM850, PM870; Range: 0 – 32767. Used for diagnostics and alarms",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Nominal Circuit Current",
@@ -3700,7 +4387,8 @@
       "type": "int16",
       "unit": "A",
       "access": "RW",
-      "description": "Only on PM850, PM870; Range: 0 – 32767. Used for diagnostics and alarms"
+      "description": "Scale group A; Only on PM850, PM870; Range: 0 – 32767. Used for diagnostics and alarms",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Harmonic Quantity Selection",
@@ -3922,173 +4610,12 @@
       "description": "DATETIME, 3 registers; See Template"
     },
     {
-      "name": "Configure Relay for External Control",
-      "area": "holding",
-      "address": 3310,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Configure Relay for Internal Control",
-      "area": "holding",
-      "address": 3311,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "De-Energize Designated Relay",
-      "area": "holding",
-      "address": 3320,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Energize Designated Relay",
-      "area": "holding",
-      "address": 3321,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Release Specified Relay from Latched Condition",
-      "area": "holding",
-      "address": 3330,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Release All Relays from Latched Condition",
-      "area": "holding",
-      "address": 3331,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Release Relays from Latched Condition per Bitmap",
-      "area": "holding",
-      "address": 3332,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Release Specified Relay from Override Control",
-      "area": "holding",
-      "address": 3340,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
       "name": "Fixed Length Waveform Capture A Percent Complete",
       "area": "holding",
       "address": 3341,
       "type": "int16",
       "unit": "%",
       "description": "Range: 0 – 100"
-    },
-    {
-      "name": "De-Energize All Relays",
-      "area": "holding",
-      "address": 3350,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Energize All Relays",
-      "area": "holding",
-      "address": 3351,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Operation Counter for Specified Relay",
-      "area": "holding",
-      "address": 3361,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset On-Time for Specified Relay",
-      "area": "holding",
-      "address": 3362,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Operation Counter For All Relays",
-      "area": "holding",
-      "address": 3363,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset On-Time For All Relays",
-      "area": "holding",
-      "address": 3364,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Operation Counter for Specified Input",
-      "area": "holding",
-      "address": 3365,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset On-Time for Specified Input",
-      "area": "holding",
-      "address": 3366,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Operation Counter for All Inputs",
-      "area": "holding",
-      "address": 3367,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset On-Time for All Inputs",
-      "area": "holding",
-      "address": 3368,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset All Counters and On-Time for All I/O",
-      "area": "holding",
-      "address": 3369,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Disable Specified Analog Output",
-      "area": "holding",
-      "address": 3370,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Enable Specified Analog Output",
-      "area": "holding",
-      "address": 3371,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Disable All Analog Output",
-      "area": "holding",
-      "address": 3380,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Enable All Analog Output",
-      "area": "holding",
-      "address": 3381,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "RS-485 Comm Port Protocol",
@@ -5002,7 +5529,8 @@
       "address": 3901,
       "type": "int16",
       "unit": "V",
-      "description": "Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "PQ Advanced Voltage Selection for 4-Wire Systems",
@@ -5094,20 +5622,38 @@
       "description": "PACKED_BOOLEAN, 1 register"
     },
     {
-      "name": "EN50160 Count of 10-second Intervals For Present Year",
+      "name": "EN50160 Count of 10-second Intervals For Present Year (3912) [part 1, x10^0]",
       "group": "Counter",
       "area": "holding",
       "address": 3912,
-      "type": "uint32",
-      "description": "Mod10, 2 registers; Range: 0-3162240. NV=Y"
+      "type": "int16",
+      "description": "Mod10 part 1 of 2 (-9999 to 9999): the value is the sum of the 2 parts. Range: 0-3162240. NV=Y"
     },
     {
-      "name": "EN50160 Count of 10-second Intervals For Present Week",
+      "name": "EN50160 Count of 10-second Intervals For Present Year (3912) [part 2, x10^4]",
+      "group": "Counter",
+      "area": "holding",
+      "address": 3913,
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 2 (-9999 to 9999): the value is the sum of the 2 parts"
+    },
+    {
+      "name": "EN50160 Count of 10-second Intervals For Present Week (3914) [part 1, x10^0]",
       "group": "Counter",
       "area": "holding",
       "address": 3914,
-      "type": "uint32",
-      "description": "Mod10, 2 registers; Range: 0-60480. NV=Y"
+      "type": "int16",
+      "description": "Mod10 part 1 of 2 (-9999 to 9999): the value is the sum of the 2 parts. Range: 0-60480. NV=Y"
+    },
+    {
+      "name": "EN50160 Count of 10-second Intervals For Present Week (3914) [part 2, x10^4]",
+      "group": "Counter",
+      "area": "holding",
+      "address": 3915,
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 2 (-9999 to 9999): the value is the sum of the 2 parts"
     },
     {
       "name": "EN50160 Count of 10-minute Intervals For Present Week",
@@ -5361,13 +5907,6 @@
       "description": "Range: 255. Should always be 255. NV=Y"
     },
     {
-      "name": "Reset Min/Max Metered Values",
-      "area": "holding",
-      "address": 4110,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
       "name": "Discrete Output/Alarm Table",
       "group": "IO",
       "area": "holding",
@@ -5375,13 +5914,6 @@
       "type": "int16",
       "access": "RW",
       "description": "Block of 100 registers"
-    },
-    {
-      "name": "Reset Register-Based Disturbance Event Logs",
-      "area": "holding",
-      "address": 4210,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "IO Point Number 1 Standard Discrete Output (S01)",
@@ -5396,91 +5928,6 @@
       "address": 4330,
       "type": "uint16",
       "description": "30 registers; Refer to Discrete Input template. NV=Y"
-    },
-    {
-      "name": "Trigger WFC Requests (All Types)",
-      "area": "holding",
-      "address": 4940,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM850, PM870"
-    },
-    {
-      "name": "Reset All Demands",
-      "area": "holding",
-      "address": 5110,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Current Demand",
-      "area": "holding",
-      "address": 5111,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Power Demand",
-      "area": "holding",
-      "address": 5113,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Input Demand",
-      "area": "holding",
-      "address": 5114,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Generic1 Demand",
-      "area": "holding",
-      "address": 5115,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset All Min/Max Demand",
-      "area": "holding",
-      "address": 5210,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Current Min/Max Demand",
-      "area": "holding",
-      "address": 5211,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Power Min/Max Demand",
-      "area": "holding",
-      "address": 5213,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Input Min/Max Demand",
-      "area": "holding",
-      "address": 5214,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Generic1 Min/Max Demand",
-      "area": "holding",
-      "address": 5215,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset Cumulative Power Demand",
-      "area": "holding",
-      "address": 5217,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "Input Metering Channel 1 Label",
@@ -6126,69 +6573,12 @@
       "description": "Block of 15 registers; Same as 5850 – 5864 except for entry 24"
     },
     {
-      "name": "Preset Accumulated Energies",
-      "area": "holding",
-      "address": 6209,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
       "name": "Active Alarm Log Entry 25",
       "group": "Alarm",
       "area": "holding",
       "address": 6210,
       "type": "int16",
       "description": "Block of 15 registers; Same as 5850 – 5864 except for entry 25"
-    },
-    {
-      "name": "Clear Accumulated Energies",
-      "area": "holding",
-      "address": 6211,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Clear Conditional Energies",
-      "area": "holding",
-      "address": 6212,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Clear Incremental Energies",
-      "area": "holding",
-      "address": 6213,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Clear Input Metering Accumulation",
-      "area": "holding",
-      "address": 6214,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Reset to IEEE or IEC Convention Defaults",
-      "area": "holding",
-      "address": 6215,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Clear Shift Energy Registers",
-      "area": "holding",
-      "address": 6216,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM820, PM850, PM870"
-    },
-    {
-      "name": "Clear Energy Summary Registers",
-      "area": "holding",
-      "address": 6217,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "Number of Unacknowledged Alarms in Active Alarm Log",
@@ -6236,7 +6626,8 @@
       "area": "holding",
       "address": 6261,
       "type": "int16",
-      "description": "Scale group A-F (see the scale registers); Range: 0-32767. Does not apply to digital or unary alarms"
+      "description": "Scale group A-F (see the scale registers); Range: 0-32767. Does not apply to digital or unary alarms",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Dropout Date/Time Entry 1",
@@ -6286,20 +6677,6 @@
       "address": 6318,
       "type": "uint16",
       "description": "17 registers; Same as 6250-6266 except for entry 5"
-    },
-    {
-      "name": "Disable Conditional Energy Accumulation",
-      "area": "holding",
-      "address": 6320,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Enable Conditional Energy Accumulation",
-      "area": "holding",
-      "address": 6321,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "Alarm History Log Entry 6",
@@ -6478,98 +6855,122 @@
       "description": "Range: 0-32767. Number of alarm pickups FIFO'd from the internal active alarm list before a correlating pickup deceived"
     },
     {
-      "name": "Start New Incremental Energy Interval",
-      "area": "holding",
-      "address": 6910,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM820, PM850, PM870"
-    },
-    {
-      "name": "Report Disk Setup",
-      "area": "holding",
-      "address": 7060,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Setup File",
-      "area": "holding",
-      "address": 7110,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Report File Setup",
-      "area": "holding",
-      "address": 7120,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Delete Single File",
-      "area": "holding",
-      "address": 7211,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Clear Multiple Files per Bitmap",
-      "area": "holding",
-      "address": 7220,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Clear Single File",
-      "area": "holding",
-      "address": 7221,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Enable Files per Bitmap",
-      "area": "holding",
-      "address": 7310,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Disable Files per Bitmap",
-      "area": "holding",
-      "address": 7311,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Read File Record",
-      "area": "holding",
-      "address": 7410,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Trigger Data Log Entry per Bitmap",
-      "area": "holding",
-      "address": 7510,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Trigger Single Data Log Entry",
-      "area": "holding",
-      "address": 7511,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
       "name": "Requested Command",
       "group": "Config",
       "area": "holding",
       "address": 8000,
       "type": "int16",
       "access": "RW",
-      "description": "See Commands"
+      "description": "Write a command code; parameters go in 8001-8015. See the Commands table of the register list",
+      "enum": {
+        "1110": "Restart System - Soft",
+        "1115": "Restart System – Hard Reset",
+        "1120": "Restart System – Hard Reset with Memory Clear",
+        "1130": "Set factory default configuration for logs and alarms",
+        "1210": "Reset Communication Channel Counters",
+        "1211": "Display Remote Display Counters",
+        "1212": "Reset Remote Display Counters",
+        "1213": "Reset Email status counters",
+        "1310": "Set System Time and Date, 6 Register format",
+        "1311": "Set System Time and Date, 3 Register format (milliseconds = 0)",
+        "1410": "Disable revenue security switch",
+        "1411": "Enable revenue security switch",
+        "1515": "Clear all Alarm Counters",
+        "1520": "Acknowledge All Active Alarms In Active Alarm Log",
+        "1521": "Acknowledge All Historical Alarms in Alarm History Log",
+        "1522": "Reset Alarm History Log",
+        "1610": "Inputs depressed key code",
+        "1710": "Resets the power-fail counter",
+        "1711": "Resets the Active Load Counter",
+        "2801": "Check Wiring Connection",
+        "3210": "Disable All Alarms",
+        "3220": "Disable Specified Alarms",
+        "3230": "Return Alarm Configuration Data Template In Registers",
+        "3231": "Return Alarm Configuration Data Template In Use",
+        "3240": "Display IO Point Configuration",
+        "3310": "Configure Relay for External Control",
+        "3311": "Configure Relay for Internal Control",
+        "3320": "De-Energize Designated Relay",
+        "3321": "Energize Designated Relay",
+        "3330": "Release Specified Relay from Latched Condition",
+        "3331": "Release All Relays from Latched Condition",
+        "3332": "Release Relays from Latched Condition per bitmap",
+        "3340": "Release Specified Relay from Override Control",
+        "3341": "Place Specified Relay under Override Control",
+        "3350": "De-Energize All Relays",
+        "3351": "Energize All Relays",
+        "3361": "Reset Operation Counter for Specified Relay",
+        "3362": "Reset On-Time for Specified Relay",
+        "3363": "Reset Operation Counter For All Relays",
+        "3364": "Reset On-Time For All Relays",
+        "3365": "Reset Operation Counter for Specified Input",
+        "3366": "Reset On-Time for Specified Input",
+        "3367": "Reset Operation Counter for All Inputs",
+        "3368": "Reset On-Time for All Inputs",
+        "3369": "Reset All Counters and On-Time for All I/O",
+        "3370": "Disable Specified Analog Output",
+        "3371": "Enable Specified Analog Output",
+        "3380": "Disable All Analog Output",
+        "3381": "Enable All Analog Output",
+        "4110": "Reset Min/Max Metered Values",
+        "4210": "Reset Register-Based Disturbance Event Logs",
+        "4940": "Trigger WFC Requests (All Types)",
+        "5110": "Reset All Demands",
+        "5111": "Reset Current Demand",
+        "5113": "Reset Power Demand",
+        "5114": "Reset Input Demand",
+        "5115": "Reset Generic1 Demand",
+        "5210": "Reset All Min/Max Demand",
+        "5211": "Reset Current Min/Max Demand",
+        "5213": "Reset Power Min/Max Demand",
+        "5214": "Reset Input Min/Max Demand",
+        "5215": "Reset Generic1 Min/Max Demand",
+        "5217": "Reset Cumulative Power Demand",
+        "5910": "Start New Demand Interval",
+        "6209": "Preset Accumulated Energies",
+        "6210": "Clear All Energies",
+        "6211": "Clear Accumulated Energies",
+        "6212": "Clear Conditional Energies",
+        "6213": "Clear Incremental Energies",
+        "6214": "Clear Input Metering Accumulation",
+        "6215": "This function will reset the following parameters to IEEE or IEC",
+        "6216": "Clear Shift Energy registers -",
+        "6217": "Clear Energy Summary registers [16202 – 16237]",
+        "6320": "Disable Conditional Energy Accumulation",
+        "6321": "Enable Conditional Energy Accumulation",
+        "6910": "Start New Incremental Energy Interval",
+        "7060": "Report Disk Setup",
+        "7110": "Setup File",
+        "7120": "Report File Setup",
+        "7211": "Delete Single File",
+        "7220": "Clear Multiple Files per bitmap",
+        "7221": "Clear Single File",
+        "7310": "Enable Files per bitmap",
+        "7311": "Disable Files per bitmap",
+        "7410": "Read File Record",
+        "7510": "Trigger Data Log Entry per bitmap",
+        "7511": "Trigger Single Data Log Entry",
+        "9010": "Temporary User Channel Assignment",
+        "9020": "Open Setup Session",
+        "9021": "Close Setup Session",
+        "9030": "Sent by ECC to report email status",
+        "9031": "Send Test Email",
+        "9032": "Sent by ECC to configure Email parameters",
+        "9040": "Save Entire ECC Configuration",
+        "9041": "Save ECC Ethernet Configuration",
+        "9042": "Save ECC Gateway Port Configuration",
+        "9043": "Set Advanced Email Parameters",
+        "9046": "Internal Diagnostic Cmd",
+        "9049": "Save Link Status from ECC",
+        "10000": "Reset Trending Data Parameter of 9999 resets all trending",
+        "10010": "Post Trending Profile",
+        "10020": "Post Trending FIFO",
+        "10030": "Master Meter Initialization",
+        "10200": "Reset Alarm Trending Data",
+        "10201": "Reset Alarm Trending Configuration to Default",
+        "11100": "Reset EN50160 Evaluation",
+        "11200": "Reset ITI/SEMI Evaluation"
+      }
     },
     {
       "name": "Command Parameters",
@@ -6671,7 +7072,8 @@
       "address": 9003,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Only on PM850, PM870; Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Va 10m Minimum",
@@ -6680,7 +7082,8 @@
       "address": 9004,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0-32767",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Va 10m Maximum",
@@ -6689,7 +7092,8 @@
       "address": 9005,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0-32767",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Vb 10m Average",
@@ -6698,7 +7102,8 @@
       "address": 9006,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group"
+      "description": "Only on PM850, PM870; Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Vb 10m Minimum",
@@ -6707,7 +7112,8 @@
       "address": 9007,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0-32767",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Vb 10m Maximum",
@@ -6716,7 +7122,8 @@
       "address": 9008,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0-32767",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Vc 10m Average",
@@ -6725,15 +7132,8 @@
       "address": 9009,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group"
-    },
-    {
-      "name": "Temporary User Channel Assignment",
-      "area": "holding",
-      "address": 9010,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
+      "description": "Only on PM850, PM870; Scale group D",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Vc 10m Minimum",
@@ -6742,7 +7142,8 @@
       "address": 9010,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0-32767",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Vc 10m Maximum",
@@ -6751,22 +7152,8 @@
       "address": 9011,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0-32767"
-    },
-    {
-      "name": "Open Setup Session",
-      "area": "holding",
-      "address": 9020,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Close Setup Session",
-      "area": "holding",
-      "address": 9021,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0-32767",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "Voltage Unbalance 10m Average",
@@ -6859,14 +7246,6 @@
       "description": "Only on PM850, PM870; Range: 0-32767"
     },
     {
-      "name": "Report Email Status (sent by ECC)",
-      "area": "holding",
-      "address": 9030,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
-    },
-    {
       "name": "THD Vc 10m Average",
       "group": "Harmonics",
       "area": "holding",
@@ -6877,14 +7256,6 @@
       "description": "Only on PM850, PM870; Range: 0-32767. Metering register 1213 or 1209. THD includes all harmonics up to the 64th. Portal 53323"
     },
     {
-      "name": "Send Test Email",
-      "area": "holding",
-      "address": 9031,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
-    },
-    {
       "name": "THD Vc 10m Minimum",
       "group": "Harmonics",
       "area": "holding",
@@ -6893,14 +7264,6 @@
       "scale": 0.1,
       "unit": "%",
       "description": "Only on PM850, PM870; Range: 0-32767"
-    },
-    {
-      "name": "Configure Email Parameters (sent by ECC)",
-      "area": "holding",
-      "address": 9032,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
     },
     {
       "name": "THD Vc 10m Maximum",
@@ -6983,14 +7346,6 @@
       "description": "Only on PM850, PM870; Range: 0-32767 (-32768 if N/A). Metering register 13208 or 13592. Portal 53326"
     },
     {
-      "name": "Save Entire ECC Configuration",
-      "area": "holding",
-      "address": 9040,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
-    },
-    {
       "name": "Va H4 10m Minimum",
       "group": "Harmonics",
       "area": "holding",
@@ -6999,14 +7354,6 @@
       "scale": 0.01,
       "unit": "%",
       "description": "Only on PM850, PM870; Range: 0-32767 (-32768 if N/A)"
-    },
-    {
-      "name": "Save ECC Ethernet Configuration",
-      "area": "holding",
-      "address": 9041,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
     },
     {
       "name": "Va H4 10m Maximum",
@@ -7019,14 +7366,6 @@
       "description": "Only on PM850, PM870; Range: 0-32767 (-32768 if N/A)"
     },
     {
-      "name": "Save ECC Gateway Port Configuration",
-      "area": "holding",
-      "address": 9042,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
-    },
-    {
       "name": "Va H5 10m Average",
       "group": "Harmonics",
       "area": "holding",
@@ -7035,14 +7374,6 @@
       "scale": 0.01,
       "unit": "%",
       "description": "Only on PM850, PM870; Range: 0-32767 (-32768 if N/A). Metering register 13210 or 13594. Portal 53327"
-    },
-    {
-      "name": "Set Advanced Email Parameters",
-      "area": "holding",
-      "address": 9043,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
     },
     {
       "name": "Va H5 10m Minimum",
@@ -7075,14 +7406,6 @@
       "description": "Only on PM850, PM870; Range: 0-32767 (-32768 if N/A). Metering register 13212 or 13596. Portal 53328"
     },
     {
-      "name": "Internal Diagnostic Command",
-      "area": "holding",
-      "address": 9046,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
-    },
-    {
       "name": "Va H6 10m Minimum",
       "group": "Harmonics",
       "area": "holding",
@@ -7111,14 +7434,6 @@
       "scale": 0.01,
       "unit": "%",
       "description": "Only on PM850, PM870; Range: 0-32767 (-32768 if N/A). Metering register 13214 or 13598. Portal 53329"
-    },
-    {
-      "name": "Save Link Status from ECC",
-      "area": "holding",
-      "address": 9049,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM810, PM820"
     },
     {
       "name": "Va H7 10m Minimum",
@@ -9127,7 +9442,8 @@
       "address": 9249,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Metering register 1123. Portal 53396"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0 – 32767. Metering register 1123. Portal 53396",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "V 3PH 10m Minimum",
@@ -9136,7 +9452,8 @@
       "address": 9250,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0 – 32767",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "V 3PH 10m Maximum",
@@ -9145,7 +9462,8 @@
       "address": 9251,
       "type": "int16",
       "unit": "V",
-      "description": "Only on PM850, PM870; Scale group D (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767"
+      "description": "Only on PM850, PM870; Scale group D; Range: 0 – 32767",
+      "scale_factor": "Scale D - 3 Phase Volts"
     },
     {
       "name": "KW 3PH 10m Average",
@@ -9154,7 +9472,8 @@
       "address": 9252,
       "type": "int16",
       "unit": "kW",
-      "description": "Only on PM850, PM870; Scale group F (see the scale registers); Scaled by the scale register of its group; Range: -32767 – 32767. Metering register 1143. Portal 53397"
+      "description": "Only on PM850, PM870; Scale group F; Range: -32767 – 32767. Metering register 1143. Portal 53397",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "KW 3PH 10m Minimum",
@@ -9163,7 +9482,8 @@
       "address": 9253,
       "type": "int16",
       "unit": "kW",
-      "description": "Only on PM850, PM870; Scale group F (see the scale registers); Scaled by the scale register of its group; Range: -32767 – 32767"
+      "description": "Only on PM850, PM870; Scale group F; Range: -32767 – 32767",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "KW 3PH 10m Maximum",
@@ -9172,7 +9492,8 @@
       "address": 9254,
       "type": "int16",
       "unit": "kW",
-      "description": "Only on PM850, PM870; Scale group F (see the scale registers); Scaled by the scale register of its group; Range: -32767 – 32767"
+      "description": "Only on PM850, PM870; Scale group F; Range: -32767 – 32767",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "KVAR 3PH 10m Average",
@@ -9181,7 +9502,8 @@
       "address": 9255,
       "type": "int16",
       "unit": "kvar",
-      "description": "Only on PM850, PM870; Scale group F (see the scale registers); Scaled by the scale register of its group; Range: -32767 – 32767. Metering register 1147. Portal 53398"
+      "description": "Only on PM850, PM870; Scale group F; Range: -32767 – 32767. Metering register 1147. Portal 53398",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "KVAR 3PH 10m Minimum",
@@ -9190,7 +9512,8 @@
       "address": 9256,
       "type": "int16",
       "unit": "kvar",
-      "description": "Only on PM850, PM870; Scale group F (see the scale registers); Scaled by the scale register of its group; Range: -32767 – 32767"
+      "description": "Only on PM850, PM870; Scale group F; Range: -32767 – 32767",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "KVAR 3PH 10m Maximum",
@@ -9199,7 +9522,8 @@
       "address": 9257,
       "type": "int16",
       "unit": "kvar",
-      "description": "Only on PM850, PM870; Scale group F (see the scale registers); Scaled by the scale register of its group; Range: -32767 – 32767"
+      "description": "Only on PM850, PM870; Scale group F; Range: -32767 – 32767",
+      "scale_factor": "Scale F - Power"
     },
     {
       "name": "Ia 10m Average",
@@ -9208,7 +9532,8 @@
       "address": 9258,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Metering register 1100. Portal 53399"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767. Metering register 1100. Portal 53399",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ia 10m Minimum",
@@ -9217,7 +9542,8 @@
       "address": 9259,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ia 10m Maximum",
@@ -9226,7 +9552,8 @@
       "address": 9260,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ib 10m Average",
@@ -9235,7 +9562,8 @@
       "address": 9261,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Metering register 1101. Portal 53400"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767. Metering register 1101. Portal 53400",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ib 10m Minimum",
@@ -9244,7 +9572,8 @@
       "address": 9262,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ib 10m Maximum",
@@ -9253,7 +9582,8 @@
       "address": 9263,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ic 10m Average",
@@ -9262,7 +9592,8 @@
       "address": 9264,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767. Metering register 1102. Portal 53401"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767. Metering register 1102. Portal 53401",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ic 10m Minimum",
@@ -9271,7 +9602,8 @@
       "address": 9265,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ic 10m Maximum",
@@ -9280,7 +9612,8 @@
       "address": 9266,
       "type": "int16",
       "unit": "A",
-      "description": "Only on PM850, PM870; Scale group A (see the scale registers); Scaled by the scale register of its group; Range: 0 – 32767"
+      "description": "Only on PM850, PM870; Scale group A; Range: 0 – 32767",
+      "scale_factor": "Scale A - 3 Phase Amps"
     },
     {
       "name": "Ia H3 10m Average",
@@ -10222,20 +10555,6 @@
       "description": "Only on PM870; 8 registers; See Event Template"
     },
     {
-      "name": "Reset Trending Data",
-      "area": "holding",
-      "address": 10000,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
-      "name": "Post Trending Profile",
-      "area": "holding",
-      "address": 10010,
-      "type": "uint16",
-      "access": "W"
-    },
-    {
       "name": "Active Alarm Map (10011)",
       "area": "holding",
       "address": 10011,
@@ -10249,13 +10568,6 @@
       "address": 10011,
       "type": "uint16",
       "description": "Only on PM820, PM850, PM870; PACKED_BOOLEAN, 12 registers; Range: 0x0000-0xFFFF. 0=Inactive;1=Active. Bit00=Alarm#01; Bit01=Alarm#02 etc"
-    },
-    {
-      "name": "Post Trending FIFO",
-      "area": "holding",
-      "address": 10020,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "Active Alarm Status",
@@ -10318,13 +10630,6 @@
       "type": "uint16",
       "access": "RW",
       "description": "PACKED_BOOLEAN, 12 registers"
-    },
-    {
-      "name": "Master Meter Initialization",
-      "area": "holding",
-      "address": 10030,
-      "type": "uint16",
-      "access": "W"
     },
     {
       "name": "Number Of Samples In Relative Threshold Average",
@@ -10935,14 +11240,6 @@
       "description": "20 registers; Standard Speed Alarm Position #001 - See Template 1"
     },
     {
-      "name": "Reset Alarm Trending Configuration to Default",
-      "area": "holding",
-      "address": 10201,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM850, PM870"
-    },
-    {
       "name": "Alarm Position #002",
       "area": "holding",
       "address": 10220,
@@ -11303,14 +11600,6 @@
       "description": "Only on PM870; 20 registers; Disturbance Alarm Position #006 - See Template 1"
     },
     {
-      "name": "Reset EN50160 Evaluation",
-      "area": "holding",
-      "address": 11100,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM850"
-    },
-    {
       "name": "Alarm Position #047",
       "area": "holding",
       "address": 11120,
@@ -11349,14 +11638,6 @@
       "type": "uint16",
       "access": "RW",
       "description": "Only on PM870; 20 registers; Disturbance Alarm Position #011 - See Template 1"
-    },
-    {
-      "name": "Reset ITI/SEMI Evaluation",
-      "area": "holding",
-      "address": 11200,
-      "type": "uint16",
-      "access": "W",
-      "description": "Only on PM850"
     },
     {
       "name": "Alarm Position #052",
@@ -12814,436 +13095,1396 @@
       "description": "Only on PM820, PM850, PM870; Units: See Register 16178"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage Today (16202)",
+      "name": "Energy Real 3-Phase Total Usage Today (16202) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16202,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage Yesterday (16205)",
+      "name": "Energy Real 3-Phase Total Usage Today (16202) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16203,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage Today (16202) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16204,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage Yesterday (16205) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16205,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage This Week (16208)",
+      "name": "Energy Real 3-Phase Total Usage Yesterday (16205) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16206,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage Yesterday (16205) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16207,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage This Week (16208) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16208,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage Last Week (16211)",
+      "name": "Energy Real 3-Phase Total Usage This Week (16208) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16209,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage This Week (16208) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16210,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage Last Week (16211) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16211,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage This Month (16214)",
+      "name": "Energy Real 3-Phase Total Usage Last Week (16211) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16212,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage Last Week (16211) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16213,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage This Month (16214) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16214,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage Last Month (16217)",
+      "name": "Energy Real 3-Phase Total Usage This Month (16214) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16215,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage This Month (16214) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16216,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage Last Month (16217) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16217,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage Today (16220)",
+      "name": "Energy Real 3-Phase Total Usage Last Month (16217) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16218,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage Last Month (16217) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16219,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage Today (16220) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16220,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage Yesterday (16223)",
+      "name": "Energy Apparent 3-Phase Total Usage Today (16220) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16221,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage Today (16220) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16222,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage Yesterday (16223) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16223,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage This Week (16226)",
+      "name": "Energy Apparent 3-Phase Total Usage Yesterday (16223) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16224,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage Yesterday (16223) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16225,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage This Week (16226) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16226,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage Last Week (16229)",
+      "name": "Energy Apparent 3-Phase Total Usage This Week (16226) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16227,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage This Week (16226) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16228,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage Last Week (16229) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16229,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage This Month (16232)",
+      "name": "Energy Apparent 3-Phase Total Usage Last Week (16229) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16230,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage Last Week (16229) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16231,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage This Month (16232) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16232,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage Last Month (16235)",
+      "name": "Energy Apparent 3-Phase Total Usage This Month (16232) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16233,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage This Month (16232) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16234,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage Last Month (16235) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16235,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - First Shift - Today",
+      "name": "Energy Apparent 3-Phase Total Usage Last Month (16235) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16236,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage Last Month (16235) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16237,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Today (16238) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16238,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Second Shift - Today",
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Today (16238) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16239,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Today (16238) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16240,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Today (16241) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16241,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Third Shift - Today",
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Today (16241) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16242,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Today (16241) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16243,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Today (16244) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16244,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - First Shift - Yesterday",
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Today (16244) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16245,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Today (16244) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16246,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Yesterday (16247) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16247,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Second Shift - Yesterday",
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Yesterday (16247) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16248,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Yesterday (16247) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16249,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Yesterday (16250) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16250,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Third Shift - Yesterday",
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Yesterday (16250) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16251,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Yesterday (16250) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16252,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Yesterday (16253) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16253,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - First Shift - This Week",
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Yesterday (16253) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16254,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Yesterday (16253) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16255,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - This Week (16256) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16256,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Second Shift - This Week",
+      "name": "Energy Real 3-Phase Total Usage - First Shift - This Week (16256) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16257,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - This Week (16256) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16258,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - This Week (16259) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16259,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Third Shift - This Week",
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - This Week (16259) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16260,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - This Week (16259) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16261,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - This Week (16262) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16262,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - First Shift - Last Week",
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - This Week (16262) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16263,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - This Week (16262) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16264,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Last Week (16265) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16265,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Second Shift - Last Week",
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Last Week (16265) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16266,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Last Week (16265) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16267,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Last Week (16268) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16268,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Third Shift - Last Week",
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Last Week (16268) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16269,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Last Week (16268) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16270,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Last Week (16271) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16271,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - First Shift - This Month",
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Last Week (16271) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16272,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Last Week (16271) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16273,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - This Month (16274) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16274,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Second Shift - This Month",
+      "name": "Energy Real 3-Phase Total Usage - First Shift - This Month (16274) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16275,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - This Month (16274) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16276,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - This Month (16277) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16277,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Third Shift - This Month",
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - This Month (16277) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16278,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - This Month (16277) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16279,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - This Month (16280) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16280,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - First Shift - Last Month",
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - This Month (16280) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16281,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - This Month (16280) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16282,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Last Month (16283) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16283,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Second Shift - Last Month",
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Last Month (16283) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16284,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - First Shift - Last Month (16283) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16285,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Last Month (16286) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16286,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Real 3-Phase Total Usage - Third Shift - Last Month",
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Last Month (16286) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16287,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Second Shift - Last Month (16286) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16288,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Last Month (16289) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16289,
-      "type": "uint16",
       "unit": "Wh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Today (16292)",
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Last Month (16289) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16290,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Real 3-Phase Total Usage - Third Shift - Last Month (16289) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16291,
+      "unit": "Wh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Today (16292) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16292,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Today (16295)",
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Today (16292) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16293,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Today (16292) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16294,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Today (16295) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16295,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Today (16298)",
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Today (16295) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16296,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Today (16295) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16297,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Today (16298) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16298,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Yesterday (16301)",
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Today (16298) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16299,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Today (16298) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16300,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Yesterday (16301) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16301,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Yesterday (16304)",
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Yesterday (16301) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16302,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Yesterday (16301) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16303,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Yesterday (16304) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16304,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Yesterday (16307)",
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Yesterday (16304) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16305,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Yesterday (16304) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16306,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Yesterday (16307) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16307,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - First Shift - This Week (16310)",
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Yesterday (16307) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16308,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Yesterday (16307) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16309,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - This Week (16310) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16310,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - This Week (16313)",
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - This Week (16310) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16311,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - This Week (16310) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16312,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - This Week (16313) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16313,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - This Week (16316)",
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - This Week (16313) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16314,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - This Week (16313) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16315,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - This Week (16316) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16316,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Last Week (16319)",
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - This Week (16316) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16317,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - This Week (16316) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16318,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Last Week (16319) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16319,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Last Week (16322)",
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Last Week (16319) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16320,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Last Week (16319) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16321,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Last Week (16322) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16322,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Last Week (16325)",
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Last Week (16322) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16323,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Last Week (16322) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16324,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Last Week (16325) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16325,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - First Shift - This Month (16328)",
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Last Week (16325) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16326,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Last Week (16325) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16327,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - This Month (16328) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16328,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - This Month (16331)",
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - This Month (16328) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16329,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - This Month (16328) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16330,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - This Month (16331) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16331,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - This Month (16334)",
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - This Month (16331) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16332,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - This Month (16331) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16333,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - This Month (16334) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16334,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Last Month (16337)",
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - This Month (16334) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16335,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - This Month (16334) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16336,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Last Month (16337) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16337,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Last Month (16340)",
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Last Month (16337) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16338,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - First Shift - Last Month (16337) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16339,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Last Month (16340) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16340,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
     },
     {
-      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Last Month (16343)",
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Last Month (16340) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16341,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Second Shift - Last Month (16340) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16342,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Last Month (16343) [part 1, x10^0]",
       "group": "Energy",
       "area": "holding",
       "address": 16343,
-      "type": "uint16",
       "unit": "VAh",
-      "description": "Only on PM820, PM850, PM870; Mod10, 3 registers; Range: 0 – 999999999999"
+      "type": "int16",
+      "description": "Mod10 part 1 of 3 (-9999 to 9999): the value is the sum of the 3 parts. Only on PM820, PM850, PM870; Range: 0 – 999999999999"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Last Month (16343) [part 2, x10^4]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16344,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 10000,
+      "description": "Mod10 part 2 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
+    },
+    {
+      "name": "Energy Apparent 3-Phase Total Usage - Third Shift - Last Month (16343) [part 3, x10^8]",
+      "group": "Energy",
+      "area": "holding",
+      "address": 16345,
+      "unit": "VAh",
+      "type": "int16",
+      "scale": 100000000,
+      "description": "Mod10 part 3 of 3 (-9999 to 9999): the value is the sum of the 3 parts"
     },
     {
       "name": "Energy Cost - First Shift Today",
