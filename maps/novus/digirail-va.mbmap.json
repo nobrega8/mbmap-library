@@ -1,0 +1,56 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "DigiRail-VA",
+  "models": ["DigiRail-VA"],
+  "vendor_website": "novus.com.br",
+  "description": "Single-phase AC voltage and current transducer (0-300 V, 0-5 A, True RMS) with 4-20 mA / 0-10 V outputs and Modbus RTU over RS485 or USB: voltage, current, powers, power factor and frequency",
+  "revision": 1,
+  "revised": "2026-10-31",
+  "source": "Novus DigiRail-VA manual (Portuguese)",
+  "sources": [
+    {"title": "DigiRail-VA - Manual de Operação", "url": "https://github.com/user-attachments/files/34218847/Manual_DigiRail-VA_PT.pdf", "note": "linked in issue #87; chapter 8 (Modbus commands and register table)"}
+  ],
+  "notes": [
+    "Every value is a holding register. Functions 03, 06 and 16.",
+    "Measurements are given twice: as IEEE 754 floats (registers 0-17, high word first) and as scaled integers (registers 20-28). The peak voltage and peak current are only in the integer block.",
+    "The manual does not give the RS485 factory settings. The connection defaults in this map are the ones it gives for the USB interface (virtual serial port): 115200 bit/s, no parity, 2 stop bits, address 255. Set the RS485 address, baud rate, parity and stop bits with DigiConfig.",
+    "Reactive power is given as a magnitude; register 31 says whether it is inductive or capacitive.",
+    "The manufacturer says the device is not meant for energy billing.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 255,
+  "baudrate": 115200,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {"name": "Voltage", "group": "Measurements", "area": "holding", "address": 0, "type": "float32", "unit": "V", "access": "R", "description": "RMS"},
+    {"name": "Current", "group": "Measurements", "area": "holding", "address": 2, "type": "float32", "unit": "A", "access": "R", "description": "RMS"},
+    {"name": "Active power", "group": "Measurements", "area": "holding", "address": 8, "type": "float32", "unit": "W", "access": "R"},
+    {"name": "Apparent power", "group": "Measurements", "area": "holding", "address": 10, "type": "float32", "unit": "VA", "access": "R"},
+    {"name": "Reactive power", "group": "Measurements", "area": "holding", "address": 12, "type": "float32", "unit": "var", "access": "R", "description": "Magnitude; see Reactive power sign"},
+    {"name": "Power factor", "group": "Measurements", "area": "holding", "address": 14, "type": "float32", "access": "R"},
+    {"name": "Frequency", "group": "Measurements", "area": "holding", "address": 16, "type": "float32", "unit": "Hz", "access": "R"},
+    {"name": "Reactive power sign", "group": "Measurements", "area": "holding", "address": 31, "type": "uint16", "access": "R", "enum": {"0": "Inductive", "1": "Capacitive"}},
+
+    {"name": "Voltage (integer)", "group": "Integer values", "area": "holding", "address": 20, "type": "uint16", "scale": 0.1, "unit": "V", "access": "R"},
+    {"name": "Current (integer)", "group": "Integer values", "area": "holding", "address": 21, "type": "uint16", "scale": 0.01, "unit": "A", "access": "R"},
+    {"name": "Peak voltage", "group": "Integer values", "area": "holding", "address": 22, "type": "uint16", "scale": 0.1, "unit": "V", "access": "R", "description": "Highest peak voltage"},
+    {"name": "Peak current", "group": "Integer values", "area": "holding", "address": 23, "type": "uint16", "scale": 0.01, "unit": "A", "access": "R", "description": "Highest peak current"},
+    {"name": "Active power (integer)", "group": "Integer values", "area": "holding", "address": 24, "type": "uint16", "scale": 0.1, "unit": "W", "access": "R"},
+    {"name": "Apparent power (integer)", "group": "Integer values", "area": "holding", "address": 25, "type": "uint16", "scale": 0.1, "unit": "VA", "access": "R"},
+    {"name": "Reactive power (integer)", "group": "Integer values", "area": "holding", "address": 26, "type": "uint16", "scale": 0.1, "unit": "var", "access": "R"},
+    {"name": "Power factor (integer)", "group": "Integer values", "area": "holding", "address": 27, "type": "int16", "scale": 0.001, "access": "R"},
+    {"name": "Frequency (integer)", "group": "Integer values", "area": "holding", "address": 28, "type": "uint16", "scale": 0.1, "unit": "Hz", "access": "R"},
+
+    {"name": "Serial number", "group": "Identity", "area": "holding", "address": 200, "type": "uint32", "access": "R", "role": "serial"},
+    {"name": "Firmware version", "group": "Identity", "area": "holding", "address": 202, "type": "uint16", "scale": 0.01, "access": "R", "role": "firmware", "description": "204 is version 2.04"}
+  ]
+}
