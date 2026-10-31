@@ -1,0 +1,205 @@
+---
+import { href } from "../lib/base.ts";
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { STATUSES, STATUS_INFO, plural } from "../lib/mbmap.ts";
+import { rawUrl, registry, REPO_URL } from "../lib/registry.ts";
+import { LINKS, MODBENCH_URL, SITE_NAME } from "../lib/site.ts";
+
+const { devices, manufacturers, statusCounts } = registry();
+const example = `{
+  "mbmap": 2,
+  "vendor": "Example Corp",
+  "model": "EM-100",
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "parity": "E",
+  "word_order": "big",
+  "registers": [
+    {"name": "Voltage", "group": "Measurements", "area": "input", "address": 0, "type": "float32", "unit": "V"},
+    {"name": "Active energy", "group": "Energy", "area": "holding", "address": 256, "type": "uint32", "scale": 0.01, "unit": "kWh", "word_order": "little"},
+    {"name": "Reset energy", "group": "Commands", "area": "coil", "address": 0, "type": "bool", "access": "W"}
+  ]
+}`;
+---
+
+<Base
+  title="About MBMap"
+  description="MBMap is an open, community-driven registry of Modbus device maps in one JSON format, readable by any tool. What it is, how the format works and how to contribute."
+  nav="about"
+>
+  <div class="about">
+    <section class="card pad prose">
+      <h1>About {SITE_NAME}</h1>
+      <p class="lead">
+        {SITE_NAME} is an open format and a shared, community-maintained registry of Modbus device maps:
+        {plural(devices.length, "device")} from {plural(manufacturers.length, "manufacturer")} today, all in the public domain.
+      </p>
+
+      <h2>The problem</h2>
+      <p>
+        Reading a Modbus device starts with its register map, and that map usually lives in a PDF manual: a table of
+        addresses, data types, scale factors and byte orders that every engineer types into their own tool by hand. Each
+        tool stores it in its own format, so the same work is repeated for every device, in every tool, by everyone who
+        uses it. Mistakes in the copy (an address off by one, a swapped word order) show up as wrong values on site.
+      </p>
+
+      <h2>What {SITE_NAME} does</h2>
+      <p>
+        A <code>.mbmap.json</code> file describes one device model: who makes it, how to connect to it and what every
+        register means. Write the map once, check it, and any compatible tool can load it with the variables already named,
+        scaled and typed. The registry collects these maps in one place, on
+        <a href={REPO_URL}>GitHub</a>, where anyone can add a device or correct one.
+      </p>
+
+      <h2 id="format">How the format works</h2>
+      <p>
+        A map is a plain JSON document with a <a href={LINKS.schema}>JSON Schema</a>. Top-level keys give the manufacturer,
+        the model and the connection defaults (protocol, unit id, serial settings, byte and word order, address base).
+        Each register has a name, a Modbus area (<code>coil</code>, <code>discrete</code>, <code>input</code>,
+        <code>holding</code>), an address and a type, and may add a unit, a scale, access rights, write limits, translation
+        tables for states and bit fields. One register per line keeps every change a one-line diff.
+      </p>
+      <pre><code>{example}</code></pre>
+      <p>
+        The full rules, including validation codes every reader reports the same way, are in the
+        <a href={LINKS.spec}>specification (SPEC.md)</a>.
+      </p>
+
+      <h2 id="status">How far a map can be trusted</h2>
+      <p>
+        Every map in the library says where it comes from in <code>x_status</code>. It is a library convention, not part of
+        the format, and Modbench shows it next to each map.
+      </p>
+      <ul class="status-list">
+        {
+          STATUSES.map((s) => (
+            <li>
+              <span class={`status ${s}`}>
+                <Icon name={s} /> {STATUS_INFO[s].label}
+              </span>
+              <span>
+                {STATUS_INFO[s].long} <span class="faint">({statusCounts[s]} maps)</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <p>
+        Many unofficial maps were converted from other open catalogues to get the library started, and nobody has checked them
+        against the manufacturer's documentation yet. Whatever the status, the maps are provided as is: check a map against
+        the manufacturer's documentation before you write to a live device.
+      </p>
+
+      <h2 id="modbench">{SITE_NAME} and Modbench</h2>
+      <p>
+        <a href={MODBENCH_URL}>Modbench</a> is a Modbus TCP/RTU client for Windows, Linux and macOS, and the main tool
+        that reads {SITE_NAME} maps. It browses and downloads this library directly, reads and writes a device by register
+        name, checks the device against the map's models and firmware, and can run a simulated device shaped after a map.
+        This website is its companion on the web: the same maps and the same look, for finding a device before you connect to it.
+      </p>
+
+      <h2 id="integrate">Using the maps in your own tool</h2>
+      <p>The format is open and any tool can read it. Everything is served from the repository:</p>
+      <ul>
+        <li><a href={rawUrl("index.json")}><code>index.json</code></a> lists every map with its path, size, SHA-256, status and register count.</li>
+        <li>Each map is at <code>{rawUrl("maps/<vendor>/<model>.mbmap.json")}</code>.</li>
+        <li>
+          A signed copy of the index is published on the <a href={`${REPO_URL}/tree/signed`}><code>signed</code></a> branch,
+          so an app can check that the maps it downloads are the library's (see <a href={`${LINKS.contributing}#signed-index`}>Signed index</a>).
+        </li>
+        <li>The <a href={LINKS.tests}><code>tests/</code></a> folder has sample files and the diagnostics a reader must report, to check an implementation against the spec.</li>
+      </ul>
+      <p>
+        Support part of the format or all of it, then open a pull request to list your tool on the
+        <a href={href("/compatibility")}>compatibility page</a>.
+      </p>
+
+      <h2>An open community project</h2>
+      <p>
+        The maps, the specification and the tools are dedicated to the public domain under <a href={LINKS.license}>CC0 1.0</a>:
+        use them for anything, including commercial products, without asking. The registry grows with contributions from
+        engineers, technicians, integrators and manufacturers: new maps, corrections and tests on real hardware.
+        <a href={href("/contribute")}>Here is how to help</a>.
+      </p>
+    </section>
+
+    <aside class="card pad links" aria-label="Links">
+      <h2 class="key">Links</h2>
+      <ul>
+        <li><a href={REPO_URL}><Icon name="github" /> mbmap-library on GitHub</a></li>
+        <li><a href={LINKS.spec}><Icon name="library" /> Specification (SPEC.md)</a></li>
+        <li><a href={LINKS.schema}><Icon name="raw" /> JSON Schema</a></li>
+        <li><a href={LINKS.contributing}><Icon name="plus" /> CONTRIBUTING.md</a></li>
+        <li><a href={LINKS.example}><Icon name="official" /> Example map</a></li>
+        <li><a href={LINKS.discussions}><Icon name="about" /> Discussions</a></li>
+        <li><a href={MODBENCH_URL}><Icon name="registers" /> Modbench</a></li>
+      </ul>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .about h1 {
+    margin-bottom: 4px;
+  }
+
+  .about .lead {
+    margin-bottom: 8px;
+  }
+
+  .status-list {
+    list-style: none;
+    padding: 0 !important;
+  }
+
+  .status-list li {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 12px;
+  }
+
+  .links {
+    position: sticky;
+    top: calc(var(--bar-h) + 16px);
+  }
+
+  .links ul {
+    margin: 8px -8px 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .links a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  .links a:hover {
+    background: var(--accent-soft);
+  }
+
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+    .links {
+      position: static;
+    }
+    .status-list li {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+</style>

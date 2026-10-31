@@ -1,0 +1,748 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import VendorTile from "../components/VendorTile.astro";
+import { mapFile, registry } from "../lib/registry.ts";
+import { highlightJson } from "../lib/json-highlight.ts";
+import { AREA_NAME, AREA_TAG, STATUSES, STATUS_INFO, plural, typeLabel } from "../lib/mbmap.ts";
+import { LINKS, MODBENCH_URL, SITE_NAME, SUBLINE, TAGLINE } from "../lib/site.ts";
+import { href } from "../lib/base.ts";
+
+const { devices, manufacturers, statusCounts, registerCount } = registry();
+const fmt = (n: number) => n.toLocaleString("en-US");
+
+// The map shown in the hero: the most trusted, most recently revised one, so
+// the example is a real map (verified on a device when there is one).
+const ranked = [...devices].sort(
+  (a, b) =>
+    STATUSES.indexOf(a.status ?? "unofficial") - STATUSES.indexOf(b.status ?? "unofficial") ||
+    (b.info.revised ?? "").localeCompare(a.info.revised ?? "") ||
+    b.registerCount - a.registerCount,
+);
+const featured = ranked.find((d) => d.registerCount >= 8) ?? ranked[0]!;
+const withUnits = featured.info.registers.filter((r) => r.unit).slice(0, 7);
+const shownRegs = withUnits.length >= 4 ? withUnits : featured.info.registers.slice(0, 7);
+
+// An excerpt of the same file, in the layout SPEC.md asks for: one register per line
+const raw = JSON.parse(mapFile(featured).toString("utf8").replace(/^﻿/, ""));
+const headKeys = ["mbmap", "vendor", "model", "protocol", "byte_order", "word_order", "address_base"].filter((k) => k in raw);
+const line = (v: unknown) => JSON.stringify(v).replace(/,"/g, ', "').replace(/":/g, '": ');
+const excerpt =
+  "{\n" +
+  headKeys.map((k) => `  "${k}": ${JSON.stringify(raw[k])},`).join("\n") +
+  `\n  "registers": [\n${(raw.registers as unknown[])
+    .slice(0, 3)
+    .map((r) => `    ${line(r)}`)
+    .join(",\n")},\n    …\n  ]\n}`;
+
+const recent = devices
+  .filter((d) => d.added)
+  .sort((a, b) => b.added!.localeCompare(a.added!) || a.info.vendor.localeCompare(b.info.vendor))
+  .slice(0, 8);
+const topMakers = [...manufacturers]
+  .sort((a, b) => b.devices.length - a.devices.length || a.name.localeCompare(b.name))
+  .slice(0, 12);
+const fmtDate = (s: string) =>
+  new Date(s + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+
+const description = `${TAGLINE}: ${plural(devices.length, "Modbus device map")} from ${plural(manufacturers.length, "manufacturer")} in one open JSON format. Search registers, addresses and data types, and download maps for Modbench or any tool.`;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: `${SITE_NAME} Registry`,
+    url: new URL(href("/"), Astro.site).href,
+    description,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${new URL(href("/devices"), Astro.site).href}?q={query}`,
+      "query-input": "required name=query",
+    },
+  },
+];
+---
+
+<Base title={`${SITE_NAME} — ${TAGLINE}`} fullTitle description={description} nav="home" jsonLd={jsonLd}>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-text">
+      <p class="key eyebrow">Open · Community-driven · Public domain</p>
+      <h1 id="hero-title">{TAGLINE}</h1>
+      <p class="lead">{SUBLINE} Find a device, read its register map and load it into any compatible tool.</p>
+
+      <form class="hero-search" action={href("/devices")} method="get" role="search" id="hero-form">
+        <label class="search-field">
+          <span class="sr-only">Search the registry</span>
+          <Icon name="search" size={17} />
+          <input
+            class="input big"
+            type="search"
+            name="q"
+            id="hero-q"
+            data-page-search
+            placeholder={`Search ${fmt(devices.length)} devices, models or registers`}
+            autocomplete="off"
+            spellcheck="false"
+            role="combobox"
+            aria-expanded="false"
+            aria-controls="hero-results"
+            aria-autocomplete="list"
+          />
+          <kbd>/</kbd>
+        </label>
+        <ul class="hero-results cmd-list" id="hero-results" role="listbox" aria-label="Results" hidden></ul>
+      </form>
+
+      <div class="actions hero-actions">
+        <a class="btn primary big" href={href("/devices")}>Browse all devices <Icon name="next" size={14} /></a>
+        <a class="btn big" href={href("/spec")}>Read the specification</a>
+        <a class="btn big ghost" href={LINKS.repo}><Icon name="github" /> GitHub</a>
+      </div>
+    </div>
+
+    <figure class="card preview">
+      <div class="preview-head">
+        <VendorTile name={featured.info.vendor} slug={featured.vendorSlug} />
+        <div class="preview-title">
+          <a href={featured.url}><b>{featured.info.vendor} {featured.info.model}</b></a>
+          <span class="faint">{plural(featured.registerCount, "register")}{featured.info.revision && ` · rev ${featured.info.revision}`}</span>
+        </div>
+        {
+          featured.status && (
+            <span class={`status ${featured.status}`} title={STATUS_INFO[featured.status].short}>
+              <Icon name={featured.status} /> {STATUS_INFO[featured.status].label}
+            </span>
+          )
+        }
+      </div>
+      <div class="segmented preview-tabs" role="tablist" aria-label="Example view" data-pill>
+        <button type="button" role="tab" class="on" aria-selected="true" aria-controls="pv-table" id="pv-tab-table">Registers</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="pv-json" id="pv-tab-json" tabindex="-1">.mbmap.json</button>
+      </div>
+      <div class="preview-body">
+        <div id="pv-table" role="tabpanel" aria-labelledby="pv-tab-table" class="table-wrap">
+          <table class="table preview-table">
+            <thead><tr><th>Area</th><th>Addr</th><th>Name</th><th>Type</th><th>Unit</th></tr></thead>
+            <tbody>
+              {
+                shownRegs.map((r, i) => (
+                  <tr style={`--i:${i}`}>
+                    <td class="area" title={AREA_NAME[r.area]}>{AREA_TAG[r.area]}</td>
+                    <td class="mono">{r.address}</td>
+                    <td><b>{r.name}</b>{r.group && <span class="grp"> {r.group}</span>}</td>
+                    <td class="mono">{typeLabel(r)}</td>
+                    <td>{r.unit}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+        <pre class="json preview-json" id="pv-json" role="tabpanel" aria-labelledby="pv-tab-json" hidden><code set:html={highlightJson(excerpt)} /></pre>
+      </div>
+      <figcaption class="faint">
+        An excerpt of a real map from the registry. <a href={featured.url}>Open the full map</a>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="stats-band" aria-label="The registry in numbers">
+    <dl class="stats big-stats">
+      <div class="stat"><dt class="key">Devices</dt><dd data-roll={fmt(devices.length)}>{fmt(devices.length)}</dd></div>
+      <div class="stat"><dt class="key">Manufacturers</dt><dd data-roll={fmt(manufacturers.length)}>{fmt(manufacturers.length)}</dd></div>
+      <div class="stat"><dt class="key">Registers</dt><dd data-roll={fmt(registerCount)}>{fmt(registerCount)}</dd></div>
+      {
+        STATUSES.map((s) => (
+          <div class="stat" title={STATUS_INFO[s].short}>
+            <dt class="key">
+              <span class={`dot ${s}`}><Icon name={s} size={13} /></span>
+              {STATUS_INFO[s].label}
+            </dt>
+            <dd data-roll={fmt(statusCounts[s])}>{fmt(statusCounts[s])}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <div class="two">
+    {
+      recent.length > 0 && (
+        <section class="card pad" aria-labelledby="recent-title" data-reveal>
+          <div class="section-row">
+            <h2 id="recent-title">Recently added</h2>
+            <a class="btn ghost" href={href("/devices?sort=added")}>All by date <Icon name="next" size={14} /></a>
+          </div>
+          <ul class="recent">
+            {recent.map((d) => (
+              <li>
+                <a href={d.url}>
+                  <VendorTile name={d.info.vendor} slug={d.vendorSlug} />
+                  <span class="r-text">
+                    <span class="r-model">{d.info.model}</span>
+                    <span class="faint">{d.info.vendor}</span>
+                  </span>
+                  {d.status && (
+                    <span class={`dot ${d.status}`} title={STATUS_INFO[d.status].label}>
+                      <Icon name={d.status} size={14} />
+                    </span>
+                  )}
+                  <time class="faint" datetime={d.added}>{fmtDate(d.added!)}</time>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="card pad" aria-labelledby="makers-title" data-reveal>
+      <div class="section-row">
+        <h2 id="makers-title">Manufacturers</h2>
+        <a class="btn ghost" href={href("/manufacturers")}>All {manufacturers.length} <Icon name="next" size={14} /></a>
+      </div>
+      <ul class="makers">
+        {
+          topMakers.map((m) => (
+            <li>
+              <a href={m.url}>
+                <VendorTile name={m.name} slug={m.slug} />
+                <span class="m-name">{m.name}</span>
+                <span class="faint mono">{m.devices.length}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+
+  <section class="block" aria-labelledby="how-title" data-reveal>
+    <p class="key">How it works</p>
+    <h2 id="how-title" class="big-h2">One file per device. Every register named, typed and scaled.</h2>
+    <ol class="steps">
+      <li class="card pad">
+        <span class="step-n mono">1</span>
+        <Icon name="search" size={18} />
+        <h3>Find the device</h3>
+        <p class="muted">Search by manufacturer, model or a register name. Every device has its own page.</p>
+      </li>
+      <li class="card pad">
+        <span class="step-n mono">2</span>
+        <Icon name="registers" size={18} />
+        <h3>Read the map</h3>
+        <p class="muted">Addresses, Modbus areas, data types, byte and word order, units, scaling and connection defaults.</p>
+      </li>
+      <li class="card pad">
+        <span class="step-n mono">3</span>
+        <Icon name="download" size={18} />
+        <h3>Load it anywhere</h3>
+        <p class="muted">Download the <code>.mbmap.json</code> file, unchanged from GitHub, and open it in Modbench or any compatible tool.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="block" aria-labelledby="trust-title" data-reveal>
+    <p class="key">Trust levels</p>
+    <h2 id="trust-title" class="big-h2">Every map says how far it can be trusted.</h2>
+    <div class="trust">
+      {
+        STATUSES.map((s) => (
+          <a class="card pad trust-card" href={href(`/devices?status=${s}`)}>
+            <span class={`status ${s}`}>
+              <Icon name={s} size={18} /> {STATUS_INFO[s].label}
+            </span>
+            <span class="trust-n mono">{fmt(statusCounts[s])}</span>
+            <p class="muted">{STATUS_INFO[s].long}</p>
+          </a>
+        ))
+      }
+    </div>
+    <p class="faint small">
+      Only verified maps have been tested on a real device. Check any other map against the manufacturer's documentation
+      before you write to a live device.
+    </p>
+  </section>
+
+  <section class="card modbench" aria-labelledby="mb-title" data-reveal>
+    <div class="mb-text">
+      <img src={href("/img/modbench-icon.svg")} width="44" height="44" alt="" />
+      <p class="key">Made for Modbench</p>
+      <h2 id="mb-title" class="big-h2">Open any map in Modbench and start reading.</h2>
+      <p class="muted">
+        Modbench is a free Modbus TCP/RTU client for Windows, Linux and macOS. It browses and downloads this registry
+        directly, reads and writes a device by register name, and checks the device against the map's models and firmware.
+      </p>
+      <div class="actions">
+        <a class="btn primary big" href={MODBENCH_URL}>Get Modbench</a>
+        <a class="btn big" href={href("/compatibility")}>Other compatible tools</a>
+      </div>
+    </div>
+    <picture class="mb-shot">
+      <source srcset={href("/img/modbench-device-map-dark.webp")} media="(prefers-color-scheme: dark)" />
+      <img
+        src={href("/img/modbench-device-map.webp")}
+        width="1600"
+        height="1012"
+        alt="Modbench reading a device with a map from the registry"
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-title" data-reveal>
+    <div class="card pad cta-card">
+      <div>
+        <h2 id="cta-title" class="big-h2">Your device is missing?</h2>
+        <p class="muted">Add a map, correct a register, or tell us a map works on your hardware. It all happens on GitHub, in the open.</p>
+      </div>
+      <div class="actions">
+        <a class="btn primary big" href={href("/contribute")}>Contribute</a>
+        <a class="btn big" href={LINKS.mapRequest}>Request a device</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import "../scripts/home.ts";
+</script>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+    gap: 40px;
+    align-items: center;
+    padding: 28px 0 36px;
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-size: clamp(32px, 4.4vw, 48px);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    max-width: 17ch;
+    text-wrap: balance;
+  }
+
+  .hero .lead {
+    margin-top: 14px;
+    max-width: 46ch;
+    font-size: 16px;
+  }
+
+  .hero-search {
+    position: relative;
+    max-width: 520px;
+    margin-top: 24px;
+  }
+
+  .hero-search .input.big {
+    height: 46px;
+    background: var(--card);
+    box-shadow: var(--e2);
+  }
+
+  .hero-search .input.big:focus {
+    box-shadow: var(--e2), var(--ring-focus);
+  }
+
+  .hero-results {
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    border-radius: 12px;
+    background: var(--card);
+    box-shadow: var(--e3);
+    animation: drop 0.16s var(--ease);
+  }
+
+  @keyframes drop {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
+
+  .hero-actions {
+    margin-top: 18px;
+  }
+
+  .preview {
+    min-width: 0;
+    margin: 0;
+    padding: 16px;
+    animation: float-in 0.5s var(--ease) both;
+  }
+
+  @keyframes float-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  .preview-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .preview-title {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  .preview-title a {
+    text-decoration: none;
+  }
+
+  .preview-tabs {
+    margin-bottom: 8px;
+  }
+
+  .preview-body {
+    min-height: 272px;
+  }
+
+  .preview-table {
+    font-size: 12.5px;
+  }
+
+  .preview-table th,
+  .preview-table td {
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+
+  .preview-table .grp {
+    color: var(--text-3);
+    font-size: 11.5px;
+  }
+
+  .preview-table tbody tr {
+    animation: row-in 0.36s var(--ease) both;
+    animation-delay: calc(0.25s + var(--i) * 0.05s);
+  }
+
+  @keyframes row-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+
+  .preview-json {
+    max-height: 272px;
+    margin: 0;
+    font-size: 11.5px;
+    animation: row-in 0.24s var(--ease);
+  }
+
+  .preview figcaption {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+
+  .stats-band {
+    margin-bottom: 16px;
+  }
+
+  .big-stats .stat {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--card);
+    box-shadow: var(--e2);
+  }
+
+  .big-stats dd {
+    font-size: 26px;
+  }
+
+  .two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .section-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .section-row .btn {
+    gap: 2px;
+    margin-right: -10px;
+  }
+
+  .recent,
+  .makers {
+    margin: 0 -8px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .recent a,
+  .makers a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.14s var(--ease);
+  }
+
+  .recent a:hover,
+  .makers a:hover {
+    background: var(--accent-soft);
+  }
+
+  .r-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  .r-text > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .r-model {
+    font-weight: 600;
+  }
+
+  .r-text .faint,
+  .recent time {
+    font-size: 12px;
+  }
+
+  .recent time {
+    width: 46px;
+    text-align: right;
+  }
+
+  .makers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 8px;
+  }
+
+  .m-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .block {
+    margin-top: 56px;
+  }
+
+  .block > .key {
+    margin: 0 0 6px;
+  }
+
+  .big-h2 {
+    max-width: 30ch;
+    text-wrap: balance;
+    font-size: clamp(22px, 2.6vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.021em;
+    line-height: 1.2;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps li {
+    position: relative;
+    transition: box-shadow 0.2s var(--ease);
+  }
+
+  .step-n {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    color: var(--text-3);
+    font-size: 13px;
+  }
+
+  .steps h3 {
+    margin: 10px 0 4px;
+    font-size: 15px;
+  }
+
+  .steps p {
+    margin: 0;
+    font-size: 13.5px;
+  }
+
+  .trust {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .trust-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-decoration: none;
+    transition:
+      box-shadow 0.2s var(--ease),
+      transform 0.2s var(--ease);
+  }
+
+  .trust-card:hover,
+  .steps li:hover {
+    box-shadow: var(--e3);
+  }
+
+  .trust-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .trust-card .status {
+    font-size: 15px;
+  }
+
+  .trust-n {
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .trust-card p {
+    margin: 0;
+    font-size: 13.5px;
+  }
+
+  .small {
+    margin: 12px 0 0;
+    font-size: 13px;
+  }
+
+  .modbench {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 32px;
+    align-items: center;
+    margin-top: 56px;
+    padding: 32px;
+    overflow: hidden;
+  }
+
+  .mb-text .key {
+    margin: 14px 0 6px;
+  }
+
+  .mb-text .muted {
+    margin: 12px 0 20px;
+    font-size: 14.5px;
+  }
+
+  .mb-text img {
+    border-radius: 10px;
+  }
+
+  .mb-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: var(--e3);
+  }
+
+  .cta {
+    margin-top: 16px;
+  }
+
+  .cta-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    padding: 28px 32px;
+  }
+
+  .cta-card p {
+    margin: 6px 0 0;
+  }
+
+  @media (max-width: 1000px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .modbench {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 820px) {
+    .two,
+    .steps,
+    .trust {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero {
+      padding-top: 8px;
+    }
+    .preview-table th:nth-child(4),
+    .preview-table td:nth-child(4) {
+      display: none;
+    }
+    .modbench,
+    .cta-card {
+      padding: 20px;
+    }
+    .makers {
+      grid-template-columns: 1fr;
+    }
+    .block,
+    .modbench {
+      margin-top: 40px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .preview,
+    .preview-table tbody tr,
+    .preview-json,
+    .hero-results {
+      animation: none;
+    }
+  }
+</style>

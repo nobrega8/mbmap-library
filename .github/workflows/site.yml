@@ -1,0 +1,70 @@
+name: Website
+
+# Builds the registry website (site/) from this commit's maps, SPEC.md and
+# COMPATIBILITY.md, and publishes it on GitHub Pages. Every push to main
+# rebuilds it, so the site always shows the library as it is on main.
+# Pull requests that touch the site only check that it builds.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths: [site/**, .github/workflows/site.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a newer push waits for the running one
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The whole history: the site dates each map from the commit that added it
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: site/.nvmrc
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - id: pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+      # Manufacturer icons are fetched from their websites; keep them between runs
+      - uses: actions/cache@v4
+        with:
+          path: site/.cache/vendor-icons
+          key: vendor-icons-${{ github.run_id }}
+          restore-keys: vendor-icons-
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+        env:
+          SITE_ORIGIN: ${{ steps.pages.outputs.origin || 'https://nobrega8.github.io' }}
+          BASE_PATH: ${{ github.event_name == 'pull_request' && '/mbmap-library' || steps.pages.outputs.base_path }}
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

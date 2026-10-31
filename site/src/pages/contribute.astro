@@ -1,0 +1,191 @@
+---
+import { href } from "../lib/base.ts";
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { STATUS_INFO } from "../lib/mbmap.ts";
+import { LINKS } from "../lib/site.ts";
+
+const cards = [
+  {
+    id: "add",
+    icon: "plus",
+    title: "Add a new device",
+    text: "Write a map from the manufacturer's public documentation, check it with the validator and open a pull request.",
+    links: [
+      { href: `${LINKS.contributing}#adding-a-map`, label: "How to add a map", primary: true },
+      { href: LINKS.example, label: "Example map" },
+    ],
+  },
+  {
+    id: "request",
+    icon: "issue",
+    title: "Request a device",
+    text: "Can't write the map yourself? Ask for it, ideally with a link to the manufacturer's Modbus documentation.",
+    links: [{ href: LINKS.mapRequest, label: "Request a map", primary: true }],
+  },
+  {
+    id: "verify",
+    icon: "verified",
+    title: "Verify a map on real hardware",
+    text: "Read a device with a map and compare the values with its display. Report the result, good or bad, even if you did not write the map.",
+    links: [
+      { href: LINKS.testReport, label: "Report a test", primary: true },
+      { href: `${LINKS.contributing}#reporting-a-test`, label: "What to check" },
+    ],
+  },
+  {
+    id: "correct",
+    icon: "edit",
+    title: "Report or fix incorrect data",
+    text: "A wrong address, type, scale or byte order? Every device page has “Suggest a correction”, which edits the file on GitHub and opens a pull request, and “Report a problem”.",
+    links: [
+      { href: `${LINKS.contributing}#changing-a-map`, label: "Changing a map", primary: true },
+      { href: LINKS.issues, label: "Open issues" },
+    ],
+  },
+  {
+    id: "check",
+    icon: "official",
+    title: "Check an unofficial map",
+    text: "Compare a converted map with the manufacturer's manual, fix what is wrong and record the document you used. It then becomes official.",
+    links: [
+      { href: `${LINKS.contributing}#checking-and-correcting-an-unofficial-map`, label: "How to check one", primary: true },
+      { href: href("/devices?status=unofficial"), label: "Unofficial maps" },
+    ],
+  },
+  {
+    id: "docs",
+    icon: "library",
+    title: "Improve the documentation",
+    text: "Questions about the format, ideas for it, or a tool that reads .mbmap files: start a discussion, or propose a change to the docs.",
+    links: [
+      { href: LINKS.qa, label: "Ask a question", primary: true },
+      { href: LINKS.ideas, label: "Suggest an idea" },
+      { href: LINKS.showAndTell, label: "Show a tool" },
+    ],
+  },
+] as const;
+---
+
+<Base
+  title="Contribute"
+  description="Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."
+  nav="contribute"
+>
+  <header class="page-head">
+    <h1>Contribute</h1>
+    <p class="lead">
+      A good map saves the next person an afternoon with a PDF manual. All maps live in the
+      <a href={LINKS.repo}>mbmap-library</a> repository on GitHub; every contribution goes through it.
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{c.title}</h2>
+          <p class="muted">{c.text}</p>
+          <div class="actions">
+            {c.links.map((l) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{l.label}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">Submitting a map and verifying a map</h2>
+    <p>
+      <strong>Submitting</strong> adds or changes a file: you write the registers from a source, and say which in
+      <code>sources</code>. A map written from the manufacturer's documentation is
+      <span class="status official"><Icon name="official" size={14} /> {STATUS_INFO.official.label}</span>; one copied from
+      another catalogue, a forum or a third-party integration is
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {STATUS_INFO.unofficial.label}</span>.
+    </p>
+    <p>
+      <strong>Verifying</strong> is testing an existing map on a real device: read it, compare the values with the device's
+      display or its own software (at least one value per register group, and the byte and word order of a 32-bit value), and
+      report the device, firmware and connection you used. Only then does a map become
+      <span class="status verified"><Icon name="verified" size={14} /> {STATUS_INFO.verified.label}</span>. Anyone can verify
+      a map; you do not need to be its author. A test that finds problems is just as useful: report it so the map is not
+      marked as verified.
+    </p>
+
+    <h2>Before you open a pull request</h2>
+    <ul>
+      <li>Name the file <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> with lowercase slugs, e.g. <code>maps/acme-meters/pm-200.mbmap.json</code>.</li>
+      <li>Run the validator and fix every error: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>Rebuild the index: <code>python tools/index/build_index.py</code></li>
+      <li>Increase <code>revision</code> when a change affects how a device is read or written.</li>
+    </ul>
+
+    <h2>Rules</h2>
+    <ul>
+      <li><strong>Only public information.</strong> Nothing from documents under NDA or marked confidential.</li>
+      <li><strong>Do not copy manuals.</strong> Addresses, types and units are facts; write descriptions in your own words.</li>
+      <li><strong>No private data.</strong> No IP addresses, serial numbers or site names from a real installation.</li>
+      <li><strong>Prefer accuracy over coverage.</strong> If you are unsure about a register, leave it out or say so.</li>
+    </ul>
+    <p>
+      The full guide is <a href={LINKS.contributing}>CONTRIBUTING.md</a>. By contributing, you agree to release your
+      contribution under <a href={LINKS.license}>CC0 1.0</a>.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .page-head {
+    margin: 4px 0 16px;
+  }
+
+  .page-head .lead {
+    max-width: 72ch;
+  }
+
+  .ways {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 16px;
+  }
+
+  .way {
+    display: flex;
+    flex-direction: column;
+    scroll-margin-top: calc(var(--bar-h) + 16px);
+  }
+
+  .way h2 {
+    margin: 10px 0 4px;
+    font-size: 15px;
+  }
+
+  .way p {
+    flex: 1;
+    margin: 0 0 14px;
+    font-size: 13.5px;
+  }
+
+  .way:target {
+    box-shadow:
+      var(--e2),
+      0 0 0 2px var(--text);
+  }
+
+  .diff {
+    max-width: none;
+    margin-top: 16px;
+  }
+
+  .diff > * {
+    max-width: 80ch;
+  }
+
+  .diff .status {
+    display: inline-flex;
+    vertical-align: -2px;
+  }
+</style>

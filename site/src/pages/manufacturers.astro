@@ -1,0 +1,159 @@
+---
+import { href } from "../lib/base.ts";
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import VendorTile from "../components/VendorTile.astro";
+import { registry } from "../lib/registry.ts";
+import { STATUSES, STATUS_INFO, fold, plural } from "../lib/mbmap.ts";
+
+const { manufacturers, devices } = registry();
+const description = `${plural(manufacturers.length, "manufacturer")} of Modbus devices with open register maps in the MBMap registry, from ${manufacturers[0]?.name} to ${manufacturers.at(-1)?.name}. Browse their ${plural(devices.length, "device map")}.`;
+---
+
+<Base title="Manufacturers" description={description} nav="manufacturers">
+  <header class="page-head">
+    <h1>Manufacturers</h1>
+    <p class="lead">{plural(manufacturers.length, "manufacturer")} with {plural(devices.length, "device map")} in the registry.</p>
+  </header>
+
+  <section class="card pad">
+    <form class="toolbar" onsubmit="return false" role="search">
+      <label class="search-field grow">
+        <span class="sr-only">Search manufacturers</span>
+        <Icon name="search" />
+        <input class="input" type="search" id="m-q" data-page-search placeholder="Search manufacturers" autocomplete="off" spellcheck="false" />
+        <kbd>/</kbd>
+      </label>
+      <label>
+        <span class="sr-only">Sort</span>
+        <select class="input" id="m-sort">
+          <option value="name">Name A–Z</option>
+          <option value="devices">Most devices</option>
+          <option value="verified">Most verified</option>
+          <option value="registers">Most registers</option>
+        </select>
+      </label>
+      <span class="count" id="m-count" aria-live="polite">{plural(manufacturers.length, "manufacturer")}</span>
+    </form>
+
+    <div class="table-wrap">
+      <table class="table makers" id="m-table">
+        <thead>
+          <tr>
+            <th scope="col">Manufacturer</th>
+            <th scope="col" class="r">Devices</th>
+            {STATUSES.map((s) => <th scope="col" class="r c-st" title={STATUS_INFO[s].short}>{STATUS_INFO[s].label}</th>)}
+            <th scope="col" class="r c-regs">Registers</th>
+            <th scope="col" class="c-bar"><span class="sr-only">Status distribution</span></th>
+          </tr>
+        </thead>
+        <tbody id="m-body">
+          {
+            manufacturers.map((m, i) => {
+              const total = m.devices.length;
+              return (
+                <tr
+                  class="linked"
+                  data-i={i}
+                  data-name={fold(`${m.name} ${m.slug}`)}
+                  data-devices={total}
+                  data-verified={m.statusCounts.verified}
+                  data-registers={m.registerCount}
+                >
+                  <td>
+                    <span class="vendor-cell">
+                      <VendorTile name={m.name} slug={m.slug} />
+                      <a class="row-link" href={m.url}>{m.name}</a>
+                    </span>
+                  </td>
+                  <td class="num">{total}</td>
+                  {STATUSES.map((s) => <td class={`num c-st${m.statusCounts[s] ? "" : " zero"}`}>{m.statusCounts[s]}</td>)}
+                  <td class="num c-regs">{m.registerCount.toLocaleString("en-US")}</td>
+                  <td class="c-bar">
+                    <div class="status-bar" aria-hidden="true">
+                      {STATUSES.filter((s) => m.statusCounts[s]).map((s) => <span class={s} style={`flex:${m.statusCounts[s]}`} />)}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="empty" id="m-empty" hidden>
+      <strong>No manufacturer matches</strong>
+      Missing one? <a href={href("/contribute")}>Request or add a map</a>.
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { fold, plural } from "../lib/mbmap.ts";
+
+  const q = document.getElementById("m-q") as HTMLInputElement;
+  const sort = document.getElementById("m-sort") as HTMLSelectElement;
+  const body = document.getElementById("m-body")!;
+  const count = document.getElementById("m-count")!;
+  const empty = document.getElementById("m-empty")!;
+  const table = document.getElementById("m-table")!;
+  const rows = [...body.querySelectorAll<HTMLTableRowElement>("tr")];
+
+  function update() {
+    const words = fold(q.value).split(/\s+/).filter(Boolean);
+    const key = sort.value;
+    const sorted = [...rows].sort((a, b) =>
+      key === "name"
+        ? Number(a.dataset.i) - Number(b.dataset.i)
+        : Number(b.dataset[key]) - Number(a.dataset[key]) || Number(a.dataset.i) - Number(b.dataset.i),
+    );
+    let shown = 0;
+    for (const tr of sorted) {
+      const on = words.every((w) => tr.dataset.name!.includes(w));
+      tr.hidden = !on;
+      if (on) shown++;
+      body.appendChild(tr);
+    }
+    count.textContent = shown === rows.length ? plural(rows.length, "manufacturer") : `${shown} of ${plural(rows.length, "manufacturer")}`;
+    empty.hidden = shown > 0;
+    table.hidden = shown === 0;
+    const p = new URLSearchParams();
+    if (q.value.trim()) p.set("q", q.value.trim());
+    if (key !== "name") p.set("sort", key);
+    history.replaceState(null, "", p.size ? `?${p}` : location.pathname);
+  }
+
+  const p = new URLSearchParams(location.search);
+  q.value = p.get("q") ?? "";
+  sort.value = p.get("sort") ?? "name";
+  if (sort.selectedIndex < 0) sort.value = "name";
+  q.addEventListener("input", update);
+  sort.addEventListener("change", update);
+  if (q.value || sort.value !== "name") update();
+</script>
+
+<style>
+  .page-head {
+    margin: 4px 0 16px;
+  }
+
+  .toolbar {
+    margin-bottom: 8px;
+  }
+
+  .makers .c-bar {
+    width: 140px;
+  }
+
+  .makers td.zero {
+    color: var(--border-strong);
+  }
+
+  @media (max-width: 760px) {
+    .makers .c-st,
+    .makers .c-bar,
+    .makers .c-regs {
+      display: none;
+    }
+  }
+</style>

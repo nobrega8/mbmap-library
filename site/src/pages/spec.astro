@@ -1,0 +1,201 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { renderLibraryMarkdown } from "../lib/markdown.ts";
+import { LINKS } from "../lib/site.ts";
+import { BRANCH, REPO_URL } from "../lib/registry.ts";
+
+const doc = await renderLibraryMarkdown("SPEC.md");
+const toc = doc?.headings.filter((h) => h.depth === 2 || h.depth === 3) ?? [];
+---
+
+<Base
+  title="The .mbmap Format Specification"
+  description="The .mbmap format, version 2: a JSON format for Modbus device register maps. Top-level keys, registers, areas and addresses, data types, byte and word order, and validation."
+  nav="spec"
+>
+  <header class="page-head">
+    <p class="key">Specification</p>
+    <h1>{doc?.title ?? "The .mbmap format"}</h1>
+    <div class="actions">
+      <a class="btn" href={LINKS.spec}><Icon name="github" /> SPEC.md on GitHub</a>
+      <a class="btn" href={LINKS.schema}><Icon name="raw" /> JSON Schema</a>
+      <a class="btn" href={LINKS.example}><Icon name="official" /> Example map</a>
+      <a class="btn" href={`${REPO_URL}/commits/${BRANCH}/SPEC.md`}>History</a>
+    </div>
+  </header>
+
+  {
+    doc ? (
+      <div class="spec">
+        <nav class="toc card" aria-label="Contents">
+          <p class="key">Contents</p>
+          <ol>
+            {toc.map((h) => (
+              <li class={`d${h.depth}`}>
+                <a href={`#${h.slug}`} data-toc={h.slug}>{h.text.replace(/`/g, "")}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        <article class="card pad prose spec-body" set:html={doc.html} />
+      </div>
+    ) : (
+      <section class="card pad empty">
+        <strong>The specification could not be read</strong>
+        Read <a href={LINKS.spec}>SPEC.md</a> on GitHub.
+      </section>
+    )
+  }
+</Base>
+
+<script>
+  // Marks the section being read in the contents
+  const links = new Map<string, HTMLElement>();
+  document.querySelectorAll<HTMLElement>("[data-toc]").forEach((a) => links.set(a.dataset.toc!, a));
+  const heads = [...document.querySelectorAll<HTMLElement>(".spec-body h2[id], .spec-body h3[id]")];
+  let current: HTMLElement | undefined;
+  const mark = () => {
+    const line = innerHeight * 0.25;
+    let id = heads[0]?.id;
+    for (const h of heads) {
+      if (h.getBoundingClientRect().top <= line) id = h.id;
+      else break;
+    }
+    const a = id ? links.get(id) : undefined;
+    if (a === current) return;
+    current?.removeAttribute("aria-current");
+    a?.setAttribute("aria-current", "true");
+    current = a;
+    a?.scrollIntoView({ block: "nearest" });
+  };
+  addEventListener("scroll", mark, { passive: true });
+  mark();
+</script>
+
+<style>
+  .page-head {
+    margin: 4px 0 18px;
+  }
+
+  .page-head .key {
+    margin: 0 0 4px;
+  }
+
+  .page-head .actions {
+    margin-top: 14px;
+  }
+
+  .spec {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .toc {
+    position: sticky;
+    top: calc(var(--bar-h) + 16px);
+    max-height: calc(100vh - var(--bar-h) - 32px);
+    overflow-y: auto;
+    padding: 14px 10px;
+    font-size: 13px;
+  }
+
+  .toc .key {
+    margin: 0 8px 6px;
+  }
+
+  .toc ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .toc a {
+    display: block;
+    padding: 4px 8px;
+    border-radius: 7px;
+    color: var(--text-2);
+    text-decoration: none;
+    transition:
+      background-color 0.14s var(--ease),
+      color 0.14s var(--ease);
+  }
+
+  .toc .d3 a {
+    padding-left: 20px;
+    color: var(--text-3);
+    font-size: 12.5px;
+  }
+
+  .toc a:hover {
+    color: var(--text);
+  }
+
+  .toc a[aria-current] {
+    background: var(--accent-soft);
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .spec-body {
+    max-width: none;
+  }
+
+  .spec-body > :global(*) {
+    max-width: 80ch;
+  }
+
+  .spec-body > :global(.table-wrap),
+  .spec-body > :global(pre) {
+    max-width: none;
+  }
+
+  .spec-body :global(h2),
+  .spec-body :global(h3) {
+    scroll-margin-top: calc(var(--bar-h) + 16px);
+  }
+
+  .spec-body :global(h2) {
+    margin-top: 36px;
+    padding-top: 20px;
+    box-shadow: inset 0 1px 0 var(--border);
+  }
+
+  .spec-body :global(h2:first-child) {
+    padding-top: 0;
+    box-shadow: none;
+  }
+
+  .spec-body :global(.table-wrap) {
+    margin: 0 0 16px;
+  }
+
+  .spec-body :global(.table.md) {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .spec-body :global(.table.md td) {
+    vertical-align: top;
+  }
+
+  .spec-body :global(.table.md td:first-child code) {
+    white-space: nowrap;
+  }
+
+  .spec-body :global(pre.json) {
+    max-height: none;
+  }
+
+  @media (max-width: 960px) {
+    .spec {
+      grid-template-columns: 1fr;
+    }
+    .toc {
+      position: static;
+      max-height: 300px;
+    }
+  }
+</style>

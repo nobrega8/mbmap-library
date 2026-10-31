@@ -1,0 +1,128 @@
+---
+import { href } from "../../lib/base.ts";
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import StatusBar from "../../components/StatusBar.astro";
+import VendorTile from "../../components/VendorTile.astro";
+import { vendorIcons } from "../../lib/vendor-icons.ts";
+import { type Manufacturer, deviceEntry, registry } from "../../lib/registry.ts";
+import { deviceHead, deviceRow } from "../../lib/device-row.ts";
+import { plural } from "../../lib/mbmap.ts";
+import { LINKS } from "../../lib/site.ts";
+
+export const getStaticPaths = (() =>
+  registry().manufacturers.map((m) => ({ params: { vendor: m.slug }, props: { maker: m } }))) satisfies GetStaticPaths;
+
+const { maker: m } = Astro.props as { maker: Manufacturer };
+const total = m.devices.length;
+const models = m.devices.map((d) => d.info.model);
+const shownModels = models.length > 6 ? `${models.slice(0, 6).join(", ")} and ${models.length - 6} more` : models.join(", ");
+const description = `${plural(total, `${m.name} Modbus register map`)} in the MBMap registry: ${shownModels}. Browse registers and download the JSON map files.`;
+const site = m.website ? (/^https?:/.test(m.website) ? m.website : `https://${m.website}`) : null;
+const icons = await vendorIcons();
+const rows = m.devices.map((d) => deviceRow(deviceEntry(d, icons), { vendor: false })).join("");
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Manufacturers", item: new URL(href("/manufacturers"), Astro.site).href },
+      { "@type": "ListItem", position: 2, name: m.name, item: new URL(m.url, Astro.site).href },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${m.name} Modbus register maps`,
+    numberOfItems: total,
+    itemListElement: m.devices.map((d, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: `${m.name} ${d.info.model}`,
+      url: new URL(d.url, Astro.site).href,
+    })),
+  },
+];
+---
+
+<Base title={`${m.name} Modbus Register Maps`} description={description} nav="manufacturers" jsonLd={jsonLd}>
+  <ol class="crumbs">
+    <li><a href={href("/manufacturers")}>Manufacturers</a></li>
+    <li aria-current="page">{m.name}</li>
+  </ol>
+
+  <div class="stack">
+    <header class="card pad maker-head">
+      <div class="maker-title">
+        <VendorTile name={m.name} slug={m.slug} large />
+        <div>
+          <h1>{m.name}</h1>
+          <p class="faint">
+            {plural(total, "device map")} · {plural(m.registerCount, "register")}
+            {site && <> · <a href={site} rel="nofollow">{m.website!.replace(/^https?:\/\//, "")}</a></>}
+          </p>
+        </div>
+      </div>
+      <div class="maker-status">
+        <StatusBar counts={m.statusCounts} />
+      </div>
+    </header>
+
+    <section class="card pad" aria-labelledby="dev-title">
+      <h2 id="dev-title" class="key">Devices</h2>
+      <div class="table-wrap">
+        <table class="table devices">
+          <thead set:html={deviceHead(false)} />
+          <tbody set:html={rows} />
+        </table>
+      </div>
+      <p class="faint more">
+        Missing a {m.name} device? <a href={LINKS.mapRequest}>Request it</a> or <a href={href("/contribute#add")}>add a map</a>.
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .maker-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+  }
+
+  .maker-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .maker-title p {
+    margin: 2px 0 0;
+  }
+
+  .maker-status {
+    flex: 0 1 360px;
+  }
+
+  .maker-status :global(.legend) {
+    margin-top: 8px;
+  }
+
+  h2 {
+    margin-bottom: 4px;
+  }
+
+  .more {
+    margin: 14px 0 0;
+    font-size: 13px;
+  }
+
+  @media (max-width: 760px) {
+    .table.devices :global(.c-model) {
+      grid-column: 1;
+    }
+  }
+</style>

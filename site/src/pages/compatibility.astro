@@ -1,0 +1,79 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { renderLibraryMarkdown } from "../lib/markdown.ts";
+import { LINKS } from "../lib/site.ts";
+
+const html = (await renderLibraryMarkdown("COMPATIBILITY.md"))?.html;
+---
+
+<Base
+  title="Compatible Tools"
+  description="Modbus tools that read .mbmap device maps, including Modbench, and which parts of the MBMap format each one supports."
+  nav="compatibility"
+>
+  <header class="page-head">
+    <h1>Compatibility</h1>
+  </header>
+
+  <section class="card pad">
+    {
+      html ? (
+        <div class="prose wide" set:html={html} />
+      ) : (
+        <div class="empty">
+          <strong>The compatibility list could not be read</strong>
+          See <a href={LINKS.compatibility}>COMPATIBILITY.md</a> on GitHub.
+        </div>
+      )
+    }
+    <p class="faint src">
+      <Icon name="github" size={13} /> From <a href={LINKS.compatibility}>COMPATIBILITY.md</a> in the library. To add a tool,
+      open a pull request that changes that file.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .page-head {
+    margin: 4px 0 16px;
+  }
+
+  .prose.wide {
+    max-width: none;
+  }
+
+  .prose :global(.table-wrap) {
+    margin: 0 0 18px;
+  }
+
+  .prose :global(.table.md) {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .prose :global(.table.md td) {
+    vertical-align: top;
+    min-width: 120px;
+  }
+
+  .prose :global(.table.md td:first-child) {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .prose :global(.table.md img) {
+    display: inline-block;
+    vertical-align: -4px;
+    margin-right: 4px;
+    border-radius: 4px;
+  }
+
+  .src {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 18px 0 0;
+    font-size: 13px;
+  }
+</style>

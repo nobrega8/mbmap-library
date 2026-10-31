@@ -1,0 +1,25 @@
+---
+// The x_status of a map: Modbench's icon and colour, with its label.
+import { type Status, STATUS_INFO } from "../lib/mbmap.ts";
+import Icon from "./Icon.astro";
+
+interface Props {
+  status: Status | null;
+  label?: boolean;
+  size?: number;
+}
+
+const { status, label = true, size = 15 } = Astro.props;
+const info = status ? STATUS_INFO[status] : null;
+---
+
+{
+  status && info ? (
+    <span class={`status ${status}`} title={info.short}>
+      <Icon name={status} size={size} />
+      {label ? <span>{info.label}</span> : <span class="sr-only">{info.label}</span>}
+    </span>
+  ) : (
+    <span class="status faint" title="This map does not say how far it can be trusted">No status</span>
+  )
+}

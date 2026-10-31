@@ -1,0 +1,150 @@
+---
+import "../styles/modbench.css";
+import "../styles/site.css";
+import Icon from "../components/Icon.astro";
+import { LINKS, MODBENCH_URL, SITE_NAME } from "../lib/site.ts";
+import { registry } from "../lib/registry.ts";
+import logo from "../assets/mbmap-logo.svg?raw";
+import interUrl from "../assets/fonts/Inter-Variable.woff2?url";
+import { href } from "../lib/base.ts";
+
+interface Props {
+  /** The page title; " | MBMap" is added unless `fullTitle` is set */
+  title: string;
+  fullTitle?: boolean;
+  description: string;
+  nav?: "home" | "devices" | "manufacturers" | "spec" | "compatibility" | "contribute" | "about";
+  jsonLd?: object[];
+  ogType?: string;
+}
+
+const { title, fullTitle = false, description, nav, jsonLd = [], ogType = "website" } = Astro.props;
+const pageTitle = fullTitle ? title : `${title} | ${SITE_NAME}`;
+const canonical = new URL(Astro.url.pathname.replace(/\/index$|\.html$/, "") || "/", Astro.site).href;
+const { commit, commitDate } = registry();
+const logoSvg = logo.replace(/<\?xml[^>]*>/, "").replace(/ fill="#171717"/, "").replace(/<title>.*?<\/title>/, "");
+
+const tabs = [
+  ["devices", "/devices", "Devices"],
+  ["manufacturers", "/manufacturers", "Manufacturers"],
+  ["spec", "/spec", "Specification"],
+  ["compatibility", "/compatibility", "Compatibility"],
+  ["contribute", "/contribute", "Contribute"],
+  ["about", "/about", "About"],
+] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
+    <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="sitemap" href={href("/sitemap.xml")} />
+    <meta name="theme-color" content="#f2f2f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+    <!-- Theme before first paint, as Modbench's Settings: system, light or dark -->
+    <script is:inline>
+      try {
+        const t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="bar" id="bar">
+      <div class="bar-in">
+        <a class="brand" href={href("/")} aria-label={`${SITE_NAME} registry home`}>
+          <Fragment set:html={logoSvg} />
+          <span>{SITE_NAME} <small>Registry</small></span>
+        </a>
+        <nav class="tabs" id="tabs" aria-label="Main">
+          {tabs.map(([key, path, label]) => (
+            <a href={href(path)} aria-current={nav === key ? "page" : undefined}>{label}</a>
+          ))}
+        </nav>
+        <div class="bar-tools">
+          <button class="btn search-open" type="button" data-cmd-open aria-label="Search maps" aria-keyshortcuts="Control+K Meta+K">
+            <Icon name="search" />
+            <span>Search maps</span>
+            <kbd data-mod>Ctrl K</kbd>
+          </button>
+          <button class="btn icon ghost" type="button" id="theme" title="Theme: system" aria-label="Theme: system">
+            <Icon name="system" />
+          </button>
+          <a class="btn icon ghost" href={LINKS.repo} title="mbmap-library on GitHub" aria-label="mbmap-library on GitHub">
+            <Icon name="github" />
+          </a>
+          <button class="btn icon ghost menu-btn" type="button" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="tabs">
+            <Icon name="menu" />
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="foot">
+      <div class="foot-in">
+        <p>
+          © {new Date().getFullYear()} <a href="https://nobrega.me">Afonso Nóbrega</a>. Maps, spec and tools are
+          public domain (<a href={LINKS.license}>CC0 1.0</a>).
+          {commit && (
+            <>
+              Built from <a href={`${LINKS.repo}/commit/${commit}`} class="mono">{commit.slice(0, 7)}</a>{commitDate && `, ${commitDate}`}.
+            </>
+          )}
+        </p>
+        <nav aria-label="Footer">
+          <a href={LINKS.repo}>GitHub</a>
+          <a href={LINKS.spec}>Specification</a>
+          <a href={LINKS.schema}>JSON Schema</a>
+          <a href={href("/contribute")}>Contribute</a>
+          <a href={MODBENCH_URL}>Modbench</a>
+        </nav>
+      </div>
+    </footer>
+
+    <dialog class="cmd" id="cmd" aria-label="Search maps">
+      <div class="cmd-search">
+        <Icon name="search" size={17} />
+        <input
+          id="cmd-input"
+          type="search"
+          placeholder="Search manufacturer, model or register"
+          autocomplete="off"
+          spellcheck="false"
+          role="combobox"
+          aria-expanded="true"
+          aria-controls="cmd-list"
+          aria-autocomplete="list"
+        />
+        <kbd>Esc</kbd>
+      </div>
+      <ul class="cmd-list" id="cmd-list" role="listbox" aria-label="Results"></ul>
+      <div class="cmd-foot" aria-hidden="true">
+        <span><kbd>↑</kbd> <kbd>↓</kbd> to choose</span>
+        <span><kbd>Enter</kbd> to open</span>
+      </div>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      import "../scripts/shell.ts";
+    </script>
+  </body>
+</html>

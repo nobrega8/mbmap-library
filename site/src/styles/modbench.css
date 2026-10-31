@@ -1,0 +1,492 @@
+/*
+ * Modbench's "STUDIO" tokens and controls, copied unchanged from
+ * modbench/src/app.css so the registry and the app look the same.
+ * Update both together. Web-only additions live in site.css.
+ */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/fonts/Inter-Variable.woff2") format("woff2");
+}
+
+/* ───────────── tokens: rgb triplets, used as rgb(var(--x) / a) ───────────── */
+:root {
+  color-scheme: light;
+
+  --bg-rgb: 242 242 245; /* the ground */
+  --surface-rgb: 255 255 255; /* a card */
+  --surface-2-rgb: 240 240 243; /* sunken cell · chip track */
+  --surface-3-rgb: 230 230 234; /* hover */
+  --fg-rgb: 23 23 23; /* ink */
+  --fg-2-rgb: 92 92 96;
+  --fg-3-rgb: 142 142 147;
+  --edge-rgb: 226 226 230; /* the one hairline: inset separators */
+  --edge-2-rgb: 210 210 215;
+  --alert-rgb: 200 38 38;
+  --alert-fg-rgb: 255 255 255;
+  /* The logo's two arrows, darkened to read on white: blue is what Modbench
+     sends (requests, writes), green what the device answers (replies, live, ok) */
+  --tx-rgb: 21 101 192;
+  --rx-rgb: 19 116 58;
+
+  --e1: 0 1px 2px rgb(17 17 17 / 0.05);
+  --e2: 0 1px 2px rgb(17 17 17 / 0.04), 0 4px 12px -2px rgb(17 17 17 / 0.06);
+  --e3:
+    0 12px 32px -8px rgb(17 17 17 / 0.16), 0 32px 64px -16px rgb(17 17 17 / 0.2);
+  --ring-focus: 0 0 0 3px rgb(var(--fg-rgb) / 0.14);
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --check-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+  /* Chart series, in fixed order; the first two are the logo's blue and green */
+  --series-1: #1565c0;
+  --series-2: #13743a;
+  --series-3: #eb6834;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #9a6b3f;
+  --series-7: #6250d6;
+  --series-8: #e34948;
+
+  /* Map status (x_status) */
+  --status-unofficial: #868c95;
+}
+
+/* Dark (OLED): follows the system unless Settings forces light or dark */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg-rgb: 0 0 0;
+    --surface-rgb: 32 32 35;
+    --surface-2-rgb: 48 48 51;
+    --surface-3-rgb: 62 62 66;
+    --fg-rgb: 245 245 245;
+    --fg-2-rgb: 174 174 178;
+    --fg-3-rgb: 122 122 128;
+    --edge-rgb: 56 56 58;
+    --edge-2-rgb: 72 72 74;
+    --alert-rgb: 248 113 113;
+    --alert-fg-rgb: 17 17 17;
+    --tx-rgb: 74 168 245;
+    --rx-rgb: 34 211 107;
+    --e1: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+    --e2:
+      inset 0 0 0 1px rgb(255 255 255 / 0.09), 0 6px 20px -6px rgb(0 0 0 / 0.6);
+    --e3:
+      inset 0 0 0 1px rgb(255 255 255 / 0.12),
+      0 20px 56px -14px rgb(0 0 0 / 0.8);
+    --ring-focus: 0 0 0 3px rgb(var(--fg-rgb) / 0.22);
+    --check-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%23111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --series-1: #4aa8f5;
+    --series-2: #22d36b;
+    --series-3: #d95926;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #b88a5c;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+    --status-unofficial: #a9afb8;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-rgb: 0 0 0;
+  --surface-rgb: 32 32 35;
+  --surface-2-rgb: 48 48 51;
+  --surface-3-rgb: 62 62 66;
+  --fg-rgb: 245 245 245;
+  --fg-2-rgb: 174 174 178;
+  --fg-3-rgb: 122 122 128;
+  --edge-rgb: 56 56 58;
+  --edge-2-rgb: 72 72 74;
+  --alert-rgb: 248 113 113;
+  --alert-fg-rgb: 17 17 17;
+  --tx-rgb: 74 168 245;
+  --rx-rgb: 34 211 107;
+  --e1: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  --e2:
+    inset 0 0 0 1px rgb(255 255 255 / 0.09), 0 6px 20px -6px rgb(0 0 0 / 0.6);
+  --e3:
+    inset 0 0 0 1px rgb(255 255 255 / 0.12), 0 20px 56px -14px rgb(0 0 0 / 0.8);
+  --ring-focus: 0 0 0 3px rgb(var(--fg-rgb) / 0.22);
+  --check-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%23111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --series-1: #4aa8f5;
+  --series-2: #22d36b;
+  --series-3: #d95926;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #b88a5c;
+  --series-7: #9085e9;
+  --series-8: #e66767;
+  --status-unofficial: #a9afb8;
+}
+
+/* ───────────── named colours used by the components ───────────── */
+:root {
+  --window: rgb(var(--bg-rgb));
+  --card: rgb(var(--surface-rgb));
+  --subtle: rgb(var(--surface-2-rgb));
+  --hover: rgb(var(--surface-3-rgb));
+  --field: rgb(var(--fg-rgb) / 0.06); /* filled control, no stroke */
+  --border: rgb(var(--edge-rgb));
+  --border-strong: rgb(var(--edge-2-rgb));
+  --text: rgb(var(--fg-rgb));
+  --text-2: rgb(var(--fg-2-rgb));
+  --text-3: rgb(var(--fg-3-rgb));
+  /* monochrome: "active / selected / on" is ink, not a colour */
+  --accent: rgb(var(--fg-rgb));
+  --on-accent: rgb(var(--surface-rgb));
+  --accent-soft: rgb(var(--fg-rgb) / 0.06);
+  --cell: rgb(var(--surface-2-rgb));
+  /* edited, not written yet: tinted blue, it is about to be sent */
+  --changed: rgb(var(--tx-rgb) / 0.16);
+  --tx: rgb(var(--tx-rgb));
+  --rx: rgb(var(--rx-rgb));
+  --ok: rgb(var(--rx-rgb));
+  --live: rgb(var(--rx-rgb));
+  /* highlighted registers: amber, green, blue, pink */
+  --hl-1: 217 164 6;
+  --hl-2: 34 160 90;
+  --hl-3: 59 130 246;
+  --hl-4: 219 80 160;
+  --status-verified: var(--rx);
+  --status-official: var(--tx);
+  --bad: rgb(var(--alert-rgb));
+  --warn: rgb(var(--alert-rgb));
+  --lcd: rgb(var(--surface-2-rgb));
+
+  --ui:
+    "Inter", system-ui, -apple-system, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC",
+    sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  font-family: var(--ui);
+  font-size: 13px;
+  line-height: 1.5;
+  font-feature-settings:
+    "cv05" 1,
+    "cv08" 1,
+    "ss03" 1;
+  color: var(--text);
+  background: var(--window);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ───────────── controls ───────────── */
+
+/* A filled control: translucent grey, no stroke, ink ring on focus */
+.input {
+  height: 30px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--field);
+  color: var(--text);
+  min-width: 0;
+  transition:
+    box-shadow 0.14s var(--ease),
+    background-color 0.14s var(--ease);
+}
+
+.input::placeholder {
+  color: var(--text-3);
+}
+
+.input:focus {
+  outline: none;
+  background: var(--card);
+  box-shadow: var(--ring-focus);
+}
+
+.input:disabled {
+  color: var(--text-3);
+  opacity: 0.7;
+}
+
+select.input {
+  appearance: none;
+  padding-right: 30px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-3) 50%),
+    linear-gradient(135deg, var(--text-3) 50%, transparent 50%);
+  background-position:
+    calc(100% - 16px) 15px,
+    calc(100% - 11px) 15px;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+select.input:focus {
+  background-color: var(--card);
+}
+
+select.input option {
+  background: var(--card);
+  color: var(--text);
+}
+
+.num {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field > span {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-3);
+}
+
+/* Buttons: secondary = grey fill; .accent / .primary = the ink fill */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 8px;
+  background: rgb(var(--fg-rgb) / 0.07);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color 0.14s var(--ease),
+    transform 0.1s var(--ease);
+}
+
+.btn:hover:not(:disabled) {
+  background: rgb(var(--fg-rgb) / 0.11);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.975);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn.accent,
+.btn.primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn.accent:hover:not(:disabled),
+.btn.primary:hover:not(:disabled) {
+  background: rgb(var(--fg-rgb) / 0.84);
+}
+
+.btn.danger {
+  background: rgb(var(--alert-rgb) / 0.12);
+  color: rgb(var(--alert-rgb));
+}
+
+.btn.danger:hover:not(:disabled) {
+  background: rgb(var(--alert-rgb));
+  color: rgb(var(--alert-fg-rgb));
+}
+
+/* Square button holding only an icon; give it a title for its name */
+.btn.icon {
+  width: 30px;
+  padding: 0;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--text-2);
+  padding: 0 10px;
+}
+
+.btn.ghost:hover:not(:disabled) {
+  background: rgb(var(--fg-rgb) / 0.06);
+  color: var(--text);
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.check input:not(.switch) {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: rgb(var(--fg-rgb));
+}
+
+/* Numbers are typed, not spun */
+input[type="number"] {
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* Checkbox: a filled grey square that turns ink with a mark */
+input[type="checkbox"]:not(.switch) {
+  appearance: none;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border-radius: 5px;
+  background: rgb(var(--fg-rgb) / 0.12);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background-color 0.14s var(--ease);
+}
+
+input[type="checkbox"]:not(.switch):hover {
+  background-color: rgb(var(--fg-rgb) / 0.18);
+}
+
+input[type="checkbox"]:not(.switch):checked {
+  background: rgb(var(--fg-rgb)) var(--check-mark) center / 14px no-repeat;
+}
+
+input[type="checkbox"]:disabled,
+.switch:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+/* Toggle switch (iOS style): <input type="checkbox" class="switch" role="switch"> */
+.switch {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  border-radius: 999px;
+  background: rgb(var(--fg-rgb) / 0.16);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background-color 0.2s var(--ease);
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  transition: transform 0.2s var(--ease);
+}
+
+.switch:checked {
+  background: rgb(var(--fg-rgb));
+}
+
+.switch:checked::after {
+  transform: translateX(14px);
+  background: rgb(var(--surface-rgb));
+}
+
+/* Segmented control: filled pills on a translucent-grey track */
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: rgb(var(--fg-rgb) / 0.06);
+}
+
+.segmented button {
+  border: 0;
+  background: none;
+  padding: 0 12px;
+  height: 26px;
+  border-radius: 7px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition:
+    background-color 0.14s var(--ease),
+    color 0.14s var(--ease);
+}
+
+.segmented button:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.segmented button.on {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--e1);
+}
+
+.segmented button:disabled:not(.on) {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Small-caps register for column headers and section eyebrows */
+.key {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbars: a slim pill */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border: 3.5px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-3);
+}
+

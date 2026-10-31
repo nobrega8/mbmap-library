@@ -1,0 +1,31 @@
+---
+// How a set of maps divides by status: a thin bar and a legend with counts.
+import { type Status, STATUSES, STATUS_INFO } from "../lib/mbmap.ts";
+import Icon from "./Icon.astro";
+
+interface Props {
+  counts: Record<Status, number>;
+  legend?: boolean;
+}
+
+const { counts, legend = true } = Astro.props;
+const total = STATUSES.reduce((n, s) => n + counts[s], 0);
+---
+
+<div class="status-bar" role="img" aria-label={STATUSES.map((s) => `${counts[s]} ${STATUS_INFO[s].label.toLowerCase()}`).join(", ")}>
+  {STATUSES.filter((s) => counts[s]).map((s) => <span class={s} style={`flex: ${counts[s] / total}`} />)}
+</div>
+{
+  legend && (
+    <ul class="legend">
+      {STATUSES.map((s) => (
+        <li title={STATUS_INFO[s].short}>
+          <span class={`dot ${s}`}>
+            <Icon name={s} size={14} />
+          </span>
+          {STATUS_INFO[s].label} <b>{counts[s]}</b>
+        </li>
+      ))}
+    </ul>
+  )
+}

@@ -1,0 +1,1575 @@
+/*
+ * The registry as a web page, in Modbench's language (modbench.css): cards
+ * that float on the grey ground, filled controls, ink for "selected", small
+ * uppercase headers, monospace for data. Wider and taller than the app, and
+ * the page scrolls instead of the window.
+ */
+
+ *,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --page: 1280px;
+  --gutter: 24px;
+  --radius-card: 14px;
+  --bar-h: 56px;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --gutter: 16px;
+  }
+}
+
+html {
+  font-size: 14px;
+  scroll-padding-top: calc(var(--bar-h) + 12px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--window);
+  color: var(--text);
+}
+
+a {
+  color: inherit;
+}
+
+p a,
+li a,
+dd a,
+td a.link,
+.prose a {
+  text-decoration-color: rgb(var(--fg-rgb) / 0.3);
+  text-underline-offset: 2px;
+}
+
+p a:hover,
+li a:hover,
+dd a:hover,
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--mono);
+}
+
+code {
+  font-size: 0.92em;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--field);
+}
+
+.icon {
+  flex: none;
+  display: block;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  left: 8px;
+  top: -40px;
+  z-index: 10;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.skip:focus {
+  top: 8px;
+}
+
+/* ───────────── top bar: the app's title bar and tabs ───────────── */
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--window);
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+.bar-in {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: var(--page);
+  height: var(--bar-h);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.brand svg {
+  width: 26px;
+  height: 26px;
+  fill: var(--text);
+}
+
+.brand small {
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.tabs a {
+  padding: 6px 12px;
+  border-radius: 9px;
+  color: var(--text-2);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.14s var(--ease),
+    color 0.14s var(--ease);
+}
+
+.tabs a:hover {
+  color: var(--text);
+}
+
+.tabs a[aria-current="page"] {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--e1);
+}
+
+.bar-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.search-open {
+  width: 240px;
+  justify-content: flex-start;
+  color: var(--text-3);
+  font-weight: 400;
+  background: var(--field);
+}
+
+.search-open kbd {
+  margin-left: auto;
+}
+
+kbd {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: rgb(var(--fg-rgb) / 0.06);
+  color: var(--text-3);
+  font-family: var(--ui);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.menu-btn {
+  display: none;
+}
+
+@media (max-width: 1040px) {
+  .search-open {
+    width: 30px;
+    padding: 0;
+    justify-content: center;
+  }
+  .search-open span,
+  .search-open kbd {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .menu-btn {
+    display: inline-flex;
+  }
+  .tabs {
+    display: none;
+    position: absolute;
+    top: var(--bar-h);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px var(--gutter) 12px;
+    background: var(--window);
+    box-shadow:
+      inset 0 -1px 0 var(--border),
+      var(--e2);
+  }
+  .bar.open .tabs {
+    display: flex;
+  }
+  .tabs a {
+    padding: 10px 12px;
+  }
+}
+
+/* ───────────── page ───────────── */
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 24px var(--gutter) 48px;
+}
+
+.card {
+  border-radius: var(--radius-card);
+  background: var(--card);
+  box-shadow: var(--e2);
+}
+
+.pad {
+  padding: 20px 22px;
+}
+
+@media (max-width: 720px) {
+  .pad {
+    padding: 16px;
+  }
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lead {
+  margin: 6px 0 0;
+  color: var(--text-2);
+  font-size: 15px;
+}
+
+.muted {
+  color: var(--text-2);
+}
+
+.faint {
+  color: var(--text-3);
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  color: var(--text-3);
+  font-size: 13px;
+}
+
+.crumbs li + li::before {
+  content: "/";
+  margin-right: 6px;
+  color: var(--border-strong);
+}
+
+.crumbs a {
+  text-decoration: none;
+}
+
+.crumbs a:hover {
+  color: var(--text);
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 10px;
+}
+
+.section-head .key {
+  margin: 0;
+}
+
+.btn {
+  text-decoration: none;
+}
+
+.btn.big {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 9px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.input.big {
+  height: 40px;
+  padding: 0 14px 0 38px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.search-field > .icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+.search-field .input {
+  width: 100%;
+  padding-left: 32px;
+}
+
+.search-field .input.big {
+  padding-left: 38px;
+}
+
+.search-field kbd {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+}
+
+.search-field .input:focus ~ kbd,
+.search-field .input:not(:placeholder-shown) ~ kbd {
+  display: none;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* ───────────── status: Modbench's icons and colours, with a label ───────────── */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status.verified,
+.dot.verified {
+  color: var(--status-verified);
+}
+
+.status.official,
+.dot.official {
+  color: var(--status-official);
+}
+
+.status.unofficial,
+.dot.unofficial {
+  color: var(--status-unofficial);
+}
+
+.status-bar {
+  display: flex;
+  gap: 2px;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--subtle);
+}
+
+.status-bar span {
+  min-width: 3px;
+}
+
+.status-bar .verified {
+  background: var(--status-verified);
+}
+
+.status-bar .official {
+  background: var(--status-official);
+}
+
+.status-bar .unofficial {
+  background: var(--status-unofficial);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend b {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+
+/* A callout, tinted by the status it explains */
+.note {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--subtle);
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+.note .icon {
+  margin-top: 2px;
+}
+
+.note.verified {
+  background: rgb(var(--rx-rgb) / 0.09);
+}
+
+.note.verified .icon {
+  color: var(--status-verified);
+}
+
+.note.official {
+  background: rgb(var(--tx-rgb) / 0.08);
+}
+
+.note.official .icon {
+  color: var(--status-official);
+}
+
+.note.unofficial .icon {
+  color: var(--text-2);
+}
+
+.note p {
+  margin: 0;
+}
+
+.note strong {
+  color: var(--text);
+}
+
+/* ───────────── vendor tile: Modbench's letter icon ───────────── */
+
+.vtile {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--subtle);
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* A favicon stands on its own, with no tile behind it */
+.vtile:has(img) {
+  background: none;
+  border-radius: 0;
+}
+
+.vtile img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.vtile:has(img) > span {
+  display: none;
+}
+
+.vtile.lg {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+/* ───────────── stats: the app's counters ───────────── */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.stat {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--subtle);
+}
+
+.stat dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat dd {
+  margin: 2px 0 0;
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ───────────── tables, as Modbench's library and map ───────────── */
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table tbody tr:hover td {
+  background: var(--accent-soft);
+}
+
+.table .num,
+.table .r {
+  text-align: right;
+}
+
+.table td.num {
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+/* A row that is one link: the link covers the row */
+.table tr.linked {
+  position: relative;
+}
+
+.table tr.linked a.row-link {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.table tr.linked a.row-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.table tr.linked a.row-link:focus-visible {
+  box-shadow: none;
+}
+
+.table tr.linked:has(a.row-link:focus-visible) td {
+  background: var(--accent-soft);
+}
+
+.table tr.linked:has(a.row-link:focus-visible) td:first-child {
+  box-shadow: inset 3px 0 0 var(--text);
+}
+
+.vendor-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.desc-cell {
+  color: var(--text-3);
+  max-width: 0;
+  width: 46%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.also {
+  display: block;
+  max-width: 260px;
+  color: var(--text-3);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+mark {
+  background: rgb(var(--hl-1) / 0.28);
+  color: inherit;
+  border-radius: 2px;
+}
+
+/* Below tablet width the catalogue becomes a list of two-line rows */
+@media (max-width: 760px) {
+  .table.devices thead {
+    display: none;
+  }
+  .table.devices,
+  .table.devices tbody {
+    display: block;
+  }
+  .table.devices tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px 12px;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table.devices td {
+    padding: 0;
+    border: 0;
+  }
+  .table.devices tbody tr:hover td {
+    background: none;
+  }
+  .table.devices .c-vendor {
+    grid-column: 1;
+    color: var(--text-2);
+  }
+  .table.devices .c-status {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: right;
+  }
+  .table.devices .c-model {
+    grid-column: 1 / -1;
+  }
+  .table.devices .desc-cell {
+    grid-column: 1 / -1;
+    max-width: none;
+    width: auto;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .table.devices .c-proto {
+    display: none;
+  }
+  .table.devices .c-regs {
+    grid-column: 2;
+    grid-row: 2;
+    text-align: right;
+  }
+  .table.devices .c-regs::after {
+    content: " regs";
+    color: var(--text-3);
+  }
+  .table.devices .vtile {
+    display: none;
+  }
+}
+
+/* ───────────── toolbars, pagers, empty states ───────────── */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar .grow {
+  flex: 1 1 260px;
+}
+
+.toolbar .count {
+  margin-left: auto;
+  color: var(--text-3);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .toolbar select.input {
+    flex: 1 1 140px;
+  }
+  .toolbar .segmented {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .toolbar .count {
+    margin-left: 0;
+  }
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 12px;
+  color: var(--text-3);
+  font-size: 13px;
+}
+
+.pager[hidden] {
+  display: none;
+}
+
+.pager .btns {
+  display: flex;
+  gap: 6px;
+}
+
+.empty {
+  padding: 36px 12px;
+  text-align: center;
+  color: var(--text-2);
+}
+
+.empty strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.empty[hidden] {
+  display: none;
+}
+
+/* ───────────── definition lists: Settings' grouped rows ───────────── */
+
+.facts {
+  display: grid;
+  grid-template-columns: minmax(120px, max-content) 1fr;
+  margin: 0;
+  font-size: 13px;
+}
+
+.facts dt,
+.facts dd {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.facts dt {
+  padding-right: 18px;
+  color: var(--text-3);
+}
+
+.facts dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.facts > :nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.facts .def {
+  margin-left: 6px;
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+/* ───────────── prose (about, contribute, compatibility) ───────────── */
+
+.prose {
+  max-width: 72ch;
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+.prose h2 {
+  margin: 28px 0 8px;
+}
+
+.prose h2:first-child {
+  margin-top: 0;
+}
+
+.prose h3 {
+  margin: 20px 0 6px;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  margin: 0 0 12px;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 20px;
+}
+
+.prose li + li {
+  margin-top: 4px;
+}
+
+.prose pre {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--subtle);
+  overflow-x: auto;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+}
+
+/* ───────────── footer ───────────── */
+
+.foot {
+  box-shadow: inset 0 1px 0 var(--border);
+  color: var(--text-3);
+  font-size: 13px;
+}
+
+.foot-in {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 20px var(--gutter) 28px;
+}
+
+.foot nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.foot a {
+  text-decoration: none;
+}
+
+.foot a:hover {
+  color: var(--text);
+}
+
+.foot p {
+  margin: 0;
+}
+
+/* ───────────── command menu: Modbench's ⌘K dialog ───────────── */
+
+.cmd {
+  width: min(600px, calc(100vw - 32px));
+  margin: 10vh auto auto;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--e3);
+  overflow: hidden;
+}
+
+.cmd[open] {
+  animation: rise 0.2s var(--ease);
+}
+
+.cmd::backdrop {
+  background: rgb(0 0 0 / 0.32);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+.cmd-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 14px;
+  color: var(--text-3);
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+.cmd-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.cmd-list {
+  max-height: min(420px, 60vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+}
+
+.cmd-group {
+  padding: 10px 10px 4px;
+}
+
+.cmd-item a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: var(--text-2);
+  text-decoration: none;
+}
+
+.cmd-item[aria-selected="true"] a {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.cmd-item a:focus-visible {
+  box-shadow: none;
+}
+
+.cmd-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.cmd-title {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.cmd-sub {
+  color: var(--text-3);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cmd-foot {
+  display: flex;
+  gap: 14px;
+  padding: 8px 14px;
+  color: var(--text-3);
+  font-size: 12px;
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+.cmd .empty {
+  padding: 24px 12px;
+}
+
+/* ───────────── toast (copy confirmations) ───────────── */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 50;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 500;
+  box-shadow: var(--e3);
+  transform: translate(-50%, 12px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.18s var(--ease),
+    transform 0.18s var(--ease);
+}
+
+.toast.on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ───────────── scrollbars and motion, as the app ───────────── */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border: 3.5px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ───────────── register table: Modbench's device map ───────────── */
+
+.table.regs {
+  table-layout: fixed;
+  min-width: 920px;
+}
+
+.regs th.c-area {
+  width: 52px;
+}
+.regs th.c-address {
+  width: 96px;
+}
+.regs th.c-name {
+  width: 30%;
+}
+.regs th.c-type {
+  width: 148px;
+}
+.regs th.c-access {
+  width: 64px;
+}
+.regs th.c-unit {
+  width: 64px;
+}
+.regs th.c-scale {
+  width: 96px;
+}
+
+.regs td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.regs .mono {
+  font-size: 12.5px;
+}
+
+.regs .c-desc {
+  color: var(--text-3);
+}
+
+.regs .c-access,
+.regs .c-scale {
+  color: var(--text-2);
+}
+
+.area {
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.c-addr {
+  position: relative;
+}
+
+.copy {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-3);
+  vertical-align: middle;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 0.14s var(--ease),
+    background-color 0.14s var(--ease);
+}
+
+tr:hover .copy,
+.copy:focus-visible {
+  opacity: 1;
+}
+
+.copy:hover {
+  background: var(--field);
+  color: var(--text);
+}
+
+@media (hover: none) {
+  .copy {
+    opacity: 1;
+  }
+}
+
+.reg-name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reg-name .nm {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reg-name .grp {
+  flex: none;
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.reg-name[aria-expanded="true"] .nm {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.tag {
+  flex: none;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--field);
+  color: var(--text-3);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+tr.open td {
+  background: var(--accent-soft);
+}
+
+.reg-detail > td {
+  padding: 0 !important;
+  white-space: normal !important;
+  background: var(--subtle);
+}
+
+.table tbody tr.reg-detail:hover td {
+  background: var(--subtle);
+}
+
+.detail-in {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  padding: 10px 16px 14px 62px;
+}
+
+.detail-in .facts {
+  flex: 1 1 380px;
+  max-width: 640px;
+}
+
+.detail-in .facts dt,
+.detail-in .facts dd {
+  padding: 4px 0;
+}
+
+.enum {
+  flex: 0 1 320px;
+  min-width: 0;
+}
+
+.enum .key {
+  margin: 4px 0 2px;
+}
+
+.enum .table td {
+  padding: 3px 8px;
+  white-space: normal;
+}
+
+.enum .table tbody tr:hover td {
+  background: none;
+}
+
+.enum .table td.mono {
+  width: 80px;
+  color: var(--text-2);
+}
+
+/* Phones: each register becomes a small card instead of a wide row */
+@media (max-width: 720px) {
+  .table.regs {
+    min-width: 0;
+    table-layout: auto;
+  }
+  .table.regs thead {
+    display: none;
+  }
+  .table.regs,
+  .table.regs tbody {
+    display: block;
+  }
+  .table.regs tbody tr:not(.reg-detail) {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 0 8px;
+    padding: 8px 2px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table.regs td {
+    padding: 0;
+    border: 0;
+    background: none !important;
+  }
+  .regs .c-area {
+    grid-row: 1;
+    grid-column: 1;
+    align-self: center;
+  }
+  .regs .c-addr {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .regs .c-name {
+    grid-row: 1;
+    grid-column: 3;
+  }
+  .regs .c-type,
+  .regs .c-access,
+  .regs .c-unit,
+  .regs .c-scale {
+    grid-row: 2;
+    display: inline;
+    font-size: 12px;
+  }
+  .regs .c-type {
+    grid-column: 1 / 3;
+  }
+  .regs .c-access,
+  .regs .c-unit,
+  .regs .c-scale {
+    display: none;
+  }
+  .regs .c-desc {
+    grid-row: 2;
+    grid-column: 3;
+    font-size: 12px;
+  }
+  .regs .copy {
+    display: none;
+  }
+  .table.regs .reg-detail {
+    display: block;
+  }
+  .table.regs .reg-detail > td {
+    display: block;
+  }
+  .detail-in {
+    padding: 10px 12px 12px;
+  }
+}
+
+/* ───────────── raw JSON ───────────── */
+
+pre.json {
+  max-height: 70vh;
+  margin: 10px 0 0;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--subtle);
+  overflow: auto;
+  font-size: 12.5px;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+pre.json:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+.json .k {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.json .s {
+  color: var(--rx);
+}
+
+.json .n {
+  color: var(--tx);
+}
+
+.json .b {
+  color: var(--series-7);
+}
+
+.json .p {
+  color: var(--text-3);
+}
+
+/* ───────────── motion: Modbench's sliding pill, rolling digits, reveals ───────────── */
+
+/* A pill that slides under the selected option (motion.ts slidePill) */
+.sliding {
+  position: relative;
+  isolation: isolate;
+}
+
+.sliding > .pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 7px;
+  background: var(--card);
+  box-shadow: var(--e1);
+  pointer-events: none;
+  transition:
+    transform 0.28s var(--ease),
+    width 0.28s var(--ease),
+    height 0.28s var(--ease),
+    opacity 0.15s var(--ease);
+}
+
+.sliding > button.on,
+.sliding > a[aria-current="page"] {
+  background: transparent;
+  box-shadow: none;
+}
+
+.tabs.sliding > .pill {
+  border-radius: 9px;
+}
+
+/* Numbers that roll like an odometer (Modbench's DigitRoll) */
+.roll {
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+}
+
+.roll .col {
+  display: inline-block;
+  height: 1.25em;
+  line-height: 1.25em;
+  overflow: hidden;
+}
+
+.roll .strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.9s var(--ease);
+}
+
+/* Content that rises into view (revealIn: fade, short rise, un-blur) */
+.reveal {
+  opacity: 0;
+  transform: translateY(6px);
+  filter: blur(4px);
+  transition:
+    opacity 0.4s var(--ease),
+    transform 0.4s var(--ease),
+    filter 0.4s var(--ease);
+}
+
+.reveal.shown {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Register details open with a short fade and lift (fieldIn) */
+.reg-detail .detail-in {
+  animation: field-in 0.22s var(--ease);
+}
+
+@keyframes field-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* Loading placeholders (Modbench's Skeleton) */
+.bone {
+  position: relative;
+  display: block;
+  height: 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  background: rgb(var(--fg-rgb) / 0.06);
+  overflow: hidden;
+}
+
+.bone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(var(--fg-rgb) / 0.06), transparent);
+  transform: translateX(-100%);
+  animation: sweep 1.8s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Pages cross-fade into each other; the top bar stays put */
+@view-transition {
+  navigation: auto;
+}
+
+.bar {
+  view-transition-name: bar;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.18s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
