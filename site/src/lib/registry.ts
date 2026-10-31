@@ -35,7 +35,7 @@ export interface Device {
   url: string;
   sha256: string;
   size: number;
-  /** Date the file was first added to the library (YYYY-MM-DD), from git */
+  /** When the file was first added to the library (ISO 8601, UTC), from git */
   added: string | null;
   info: MapInfo;
   status: Status | null;
@@ -121,7 +121,8 @@ function addedDates(dir: string, warnings: string[]): Map<string, string> {
     const log = git(dir, "log", "--no-renames", "--diff-filter=A", "--name-only", "--format=@%cI", "--", "maps");
     let date = "";
     for (const line of log.split("\n")) {
-      if (line.startsWith("@")) date = line.slice(1, 11);
+      // In UTC, so the timestamps sort as strings
+      if (line.startsWith("@")) date = new Date(line.slice(1)).toISOString();
       // newest first, so the last date seen for a path is its first addition
       else if (line.endsWith(".mbmap.json")) dates.set(line, date);
     }

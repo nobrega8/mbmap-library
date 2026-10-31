@@ -43,7 +43,7 @@ const topMakers = [...manufacturers]
   .sort((a, b) => b.devices.length - a.devices.length || a.name.localeCompare(b.name))
   .slice(0, 12);
 const fmtDate = (s: string) =>
-  new Date(s + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+  new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 
 const description = `${TAGLINE}: ${plural(devices.length, "Modbus device map")} from ${plural(manufacturers.length, "manufacturer")} in one open JSON format. Search registers, addresses and data types, and download maps for Modbench or any tool.`;
 const jsonLd = [
@@ -186,7 +186,7 @@ const jsonLd = [
                       <Icon name={d.status} size={14} />
                     </span>
                   )}
-                  <time class="faint" datetime={d.added}>{fmtDate(d.added!)}</time>
+                  <time class="faint" datetime={d.added} title={fmtDate(d.added!)} data-relative>{fmtDate(d.added!)}</time>
                 </a>
               </li>
             ))}
@@ -536,8 +536,9 @@ const jsonLd = [
   }
 
   .recent time {
-    width: 46px;
+    flex: none;
     text-align: right;
+    white-space: nowrap;
   }
 
   .makers {

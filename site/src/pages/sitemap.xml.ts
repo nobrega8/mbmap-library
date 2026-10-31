@@ -17,7 +17,7 @@ export const GET: APIRoute = ({ site }) => {
     url(href("/contribute")),
     url(href("/about")),
     ...manufacturers.map((m) => url(m.url)),
-    ...devices.map((d) => url(d.url, d.info.revised ?? d.added)),
+    ...devices.map((d) => url(d.url, d.info.revised ?? d.added?.slice(0, 10))),
   ];
   return new Response(
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`,

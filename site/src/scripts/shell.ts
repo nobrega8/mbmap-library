@@ -6,6 +6,7 @@ import { icon } from "../lib/icons.ts";
 import { href } from "../lib/base.ts";
 import { registerLink, vendorTile } from "../lib/device-row.ts";
 import { slidePill } from "./motion.ts";
+import "./relative-time.ts";
 
 document.querySelectorAll<HTMLElement>(".tabs, [data-pill], .segmented").forEach(slidePill);
 import {
