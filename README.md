@@ -18,6 +18,8 @@
 
 An open library of Modbus register maps in the [`.mbmap` format](SPEC.md), a JSON format with a [JSON Schema](schema/mbmap-2.schema.json).
 
+Browse and search every map, its registers and its connection settings on the website: **[nobrega8.github.io/mbmap-library](https://nobrega8.github.io/mbmap-library/)**.
+
 Each file describes one device model: the manufacturer, how to connect to it and what every register means. Load a map into a compatible tool and you get the device's variables, already named, scaled and typed, without typing addresses from a PDF manual.
 
 ## Layout
