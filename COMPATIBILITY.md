@@ -18,7 +18,7 @@ Legend: **Yes** supported · **Kept** read and written back, not shown · **—*
 |---|---|---|---|
 | Format version 2, JSON (§2, §3) | Yes | Yes: maps from this library | Yes: pasted as JSON |
 | Format version 1, CSV (§10, deprecated) | Yes: opens it with a warning and converts it to version 2 | — | — |
-| All types: `bool`, 16/32/64-bit integers, `float32`, `float64`, `string` (§6) | Yes | Yes: the type of the first register is used | Yes, except `string`: labelled only |
+| All types: `bool`, 16/32/64-bit integers, `float32`, `float64`, `string` (§6) | Yes | Yes: the type of the first register is used | Yes: labelled only |
 | `byte_order` and `word_order`, per file and per register (§6) | Yes, and the user can override the byte order of a map | Yes: the byte order of the first register is used | Yes |
 | `address_base` 0 and 1 (§5) | Yes | — | Yes |
 | Connection defaults: `protocol`, `unit_id`, `port`, `baudrate`, `parity`, `databits`, `stopbits` (§3) | Yes: filled in when the map is opened | — | — |
