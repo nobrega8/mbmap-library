@@ -6,11 +6,12 @@
   "models": ["EXM-3112"],
   "vendor_website": "electools.com.br",
   "description": "Modbus RTU extension module with 12 digital inputs and 12 relay outputs: input and relay states, pulse counters, status, channel settings, local DI-to-relay switching and a master watchdog",
-  "revision": 2,
-  "revised": "2026-11-04",
+  "revision": 3,
+  "revised": "2026-11-08",
   "source": "Electools Linha Extensão Modbus register map for the EXM-3112 (attached to issue #112)",
   "sources": [
-    {"title": "Electools Linha Extensão Modbus - Mapa de Registradores Modbus RTU (EXM-3112)", "date": "2026-11-03", "url": "https://github.com/user-attachments/files/34334442/Mapa.Modbus.EXM3112.pdf", "note": "linked in issue #112"}
+    {"title": "Electools Linha Extensão Modbus - Mapa de Registradores Modbus RTU (EXM-3112)", "date": "2026-11-03", "url": "https://github.com/user-attachments/files/34334442/Mapa.Modbus.EXM3112.pdf", "note": "linked in issue #112"},
+    {"title": "Mapa Modbus EXM (corrected)", "date": "2026-11-07", "url": "https://github.com/user-attachments/files/34527796/Mapa.Modbus.EXM.pdf", "note": "serial format codes, channel count layout and register 128 access; attached to test report #139"}
   ],
   "notes": [
     "Functions: FC01, FC05 and FC15 for coils, FC02 for discrete inputs, FC04 for input registers, FC03, FC06 and FC16 for holding registers. Addresses are 0-based, as sent on the wire.",
@@ -18,9 +19,8 @@
     "Factory defaults: 9600 bit/s, 8E1. The Modbus address is 1 unless the ADDR1/2/4 DIP switches are set (1-7); when they are, they always take precedence over register 1792.",
     "The document does not say whether changed settings apply at once. Coil 240 saves the configuration to flash.",
     "The factory reset (coil 242) does not restore the input inversion, DirectSwitch, idle state, output inversion or watchdog enable, timeout and action settings: those are kept in FRAM.",
-    "The document gives no serial format codes other than 2 (8E1) and no bit layout for the channel count register (1840).",
-    "The document marks register 128 (relay state bitmap) as read/write, but its text says it is read-only in this firmware and that relays are written through the coils. It is read-only here.",
-    "The document says it was confirmed on real hardware. Written from that document; this map has not been tested on a device."
+    "Register 128 (relay state bitmap) is read-only: the first document marked it read/write, but a write returns exception 3 and the corrected document marks it read-only. Relays are written through the coils.",
+    "Tested on an EXM-3112, firmware V1.00 (hardware v1.0), November 2026: identity, uptime, digital inputs, relays and their bitmap, debounce and pulse width. A pulse counter past 65535 was not tested."
   ],
   "protocol": "rtu",
   "unit_id": 1,
@@ -31,14 +31,14 @@
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "official",
+  "x_status": "verified",
   "enums": {
     "baud_rate": {"0": "2400", "1": "4800", "2": "9600", "3": "19200", "4": "38400", "5": "57600", "6": "115200"},
     "output_mode": {"0": "Level", "1": "Pulse"},
     "off_on": {"0": "Off", "1": "On"},
     "watchdog_action": {"0": "Fail-safe outputs", "1": "Reboot"},
     "float_word_order": {"0": "ABCD", "1": "CDAB"},
-    "serial_format": {"2": "8E1"},
+    "serial_format": {"0": "8N1", "1": "8N2", "2": "8E1", "3": "8O1"},
     "model": {"3112": "EXM-3112"}
   },
   "registers": [
@@ -152,7 +152,7 @@
 
     {"name": "Modbus address", "group": "Communication", "area": "holding", "address": 1792, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 247, "description": "The DIP switches take precedence when set"},
     {"name": "Baud rate", "group": "Communication", "area": "holding", "address": 1793, "type": "uint16", "access": "RW", "enum": "baud_rate", "write_min": 0, "write_max": 6},
-    {"name": "Serial format", "group": "Communication", "area": "holding", "address": 1794, "type": "uint16", "access": "RW", "enum": "serial_format", "description": "Parity and stop bits code; the document only gives code 2"},
+    {"name": "Serial format", "group": "Communication", "area": "holding", "address": 1794, "type": "uint16", "access": "RW", "enum": "serial_format", "description": "Parity and stop bits"},
     {"name": "Float word order", "group": "Communication", "area": "holding", "address": 1795, "type": "uint16", "access": "RW", "enum": "float_word_order", "write_min": 0, "write_max": 1, "description": "Configuration only: this model has no float32 registers"},
 
     {"name": "Model code", "group": "Identity", "area": "holding", "address": 1808, "type": "uint16", "access": "R", "enum": "model", "role": "model", "reference": 3112},
@@ -160,6 +160,9 @@
     {"name": "Firmware version", "group": "Identity", "area": "holding", "address": 1810, "type": "uint16", "scale": 0.01, "access": "R", "role": "firmware", "description": "100 is V1.00"},
     {"name": "Serial number", "group": "Identity", "area": "holding", "address": 1811, "type": "uint16", "access": "R", "role": "serial", "description": "CRC16 of the MCU's unique ID"},
     {"name": "Module label", "group": "Identity", "area": "holding", "address": 1824, "type": "string", "length": 10, "access": "RW", "description": "Up to 20 ASCII characters; default EXM3112"},
-    {"name": "Channel count", "group": "Identity", "area": "holding", "address": 1840, "type": "uint16", "access": "R", "description": "Channels present per type (DI/DO/AI/AO), packed; the bit layout is not documented"}
+    {"name": "Digital input count", "group": "Identity", "area": "holding", "address": 1840, "type": "uint16", "bit": 12, "bits": 4, "access": "R", "reference": 12},
+    {"name": "Digital output count", "group": "Identity", "area": "holding", "address": 1840, "type": "uint16", "bit": 8, "bits": 4, "access": "R", "reference": 12},
+    {"name": "Analogue input count", "group": "Identity", "area": "holding", "address": 1840, "type": "uint16", "bit": 4, "bits": 4, "access": "R"},
+    {"name": "Analogue output count", "group": "Identity", "area": "holding", "address": 1840, "type": "uint16", "bit": 0, "bits": 4, "access": "R"}
   ]
 }
