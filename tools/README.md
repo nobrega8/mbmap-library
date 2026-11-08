@@ -7,7 +7,7 @@ Scripts that work with `.mbmap.json` files. Run them from the root of the reposi
 | Folder | What it does |
 |---|---|
 | [`validate/`](validate/) | Checks maps against [SPEC.md](../SPEC.md) (`validate.py`) and runs the sample files in `tests/` (`run_tests.py`) |
-| [`index/`](index/) | Rebuilds `index.json` and the status chart in the README (`build_index.py`) |
+| [`index/`](index/) | Rebuilds `index.json` and the status chart in the READMEs (`build_index.py`) |
 | [`revisions/`](revisions/) | Checks that a changed map increases its `revision` (`check_revisions.py`) |
 | [`migrate/`](migrate/) | Converts version 1 `.mbmap` files to version 2 JSON |
 | [`export/`](export/) | Exports a map to other software: Ignition tags |

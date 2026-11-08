@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Builds index.json: one entry per map in maps/, read by apps to browse the library.
 
-    python tools/index/build_index.py           # rewrite index.json and the README status chart
+    python tools/index/build_index.py           # rewrite index.json and the status chart in the READMEs
     python tools/index/build_index.py --check   # fail if either is out of date
 """
 
@@ -15,6 +15,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 INDEX = ROOT / "index.json"
 README = ROOT / "README.md"
+# Translated READMEs: the chart title and the label of each status in that language.
+TRANSLATIONS = {
+    ROOT / "docs/readme/README_ES.md": ("Mapas por estado", ("Verificado", "Oficial", "No oficial")),
+    ROOT / "docs/readme/README_ZHS.md": ("按状态统计的映射", ("已验证", "官方", "非官方")),
+    ROOT / "docs/readme/README_JP.md": ("ステータス別マップ数", ("検証済み", "公式", "非公式")),
+}
 CHART_START = "<!-- status-chart:start -->"
 CHART_END = "<!-- status-chart:end -->"
 # verified: tested on a device; official: official source, not tested;
@@ -87,9 +93,10 @@ def build() -> str:
     return json.dumps({"mbmap_index": 1, "vendors": vendors, "maps": entries}, indent=2, ensure_ascii=False) + "\n"
 
 
-def readme_with_chart(index_text: str) -> str:
-    """README.md with the pie chart of map statuses between the chart markers refreshed."""
-    readme = README.read_text(encoding="utf-8")
+def readme_with_chart(index_text: str, path: Path = README, title: str = "Maps by status",
+                      labels: tuple[str, ...] | None = None) -> str:
+    """The README at path with the pie chart of map statuses between the chart markers refreshed."""
+    readme = path.read_text(encoding="utf-8")
     start, end = readme.find(CHART_START), readme.find(CHART_END)
     if start < 0 or end < start:
         return readme
@@ -97,10 +104,19 @@ def readme_with_chart(index_text: str) -> str:
     for e in json.loads(index_text)["maps"]:
         if e["status"] in counts:
             counts[e["status"]] += 1
-    lines = ["```mermaid", "pie showData", "    title Maps by status"]
-    lines += [f'    "{s.capitalize()}" : {n}' for s, n in counts.items() if n]
+    names = dict(zip(STATUSES, labels or [s.capitalize() for s in STATUSES]))
+    lines = ["```mermaid", "pie showData", f"    title {title}"]
+    lines += [f'    "{names[s]}" : {n}' for s, n in counts.items() if n]
     lines.append("```")
     return readme[: start + len(CHART_START)] + "\n" + "\n".join(lines) + "\n" + readme[end:]
+
+
+def readmes(index_text: str) -> dict[Path, str]:
+    """Every README that carries the status chart, with its refreshed text."""
+    out = {README: readme_with_chart(index_text)}
+    for path, (title, labels) in TRANSLATIONS.items():
+        out[path] = readme_with_chart(index_text, path, title, labels)
+    return out
 
 
 def status_errors() -> list[str]:
@@ -121,19 +137,22 @@ def main() -> int:
     if errors:
         return 1
     text = build()
-    readme = readme_with_chart(text)
+    fresh = readmes(text)
     if "--check" in sys.argv[1:]:
         current = INDEX.read_text(encoding="utf-8") if INDEX.exists() else ""
         if current != text:
             print("index.json is out of date: run python tools/index/build_index.py")
             return 1
-        if README.read_text(encoding="utf-8") != readme:
-            print("The status chart in README.md is out of date: run python tools/index/build_index.py")
-            return 1
+        for path, readme in fresh.items():
+            if path.read_text(encoding="utf-8") != readme:
+                print(f"The status chart in {path.relative_to(ROOT).as_posix()} is out of date: "
+                      "run python tools/index/build_index.py")
+                return 1
         print("index.json is up to date")
         return 0
     INDEX.write_bytes(text.encode("utf-8"))
-    README.write_bytes(readme.encode("utf-8"))
+    for path, readme in fresh.items():
+        path.write_bytes(readme.encode("utf-8"))
     print(f"index.json: {len(json.loads(text)['maps'])} map(s)")
     return 0
 
