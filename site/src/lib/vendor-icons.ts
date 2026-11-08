@@ -1,6 +1,7 @@
 // Manufacturer icons, found as Modbench finds them (src-tauri/src/online.rs):
 // the icon links of the vendor_website home page, best first, then the usual
-// favicon paths, on the host with and without "www.". Fetched at build time
+// favicon paths, on the host with and without "www.", then a public favicon
+// service for sites that refuse automated requests. Fetched at build time
 // and served from the site, so visitors never contact the vendors' sites.
 // Cached in .cache/vendor-icons; a site without an icon is asked again after
 // RETRY_MISSING. MBMAP_ICONS=0 skips the network (offline builds).
@@ -136,6 +137,22 @@ async function fetchIcon(home: URL): Promise<Uint8Array | null> {
   for (const v of variants) {
     const found = await iconFromSite(v);
     if (found) return found;
+  }
+  return iconFromService(home.hostname.replace(/^www\./, ""));
+}
+
+/**
+ * The icon from a public favicon service, for sites that refuse automated
+ * requests (403 to non-browser clients, bot challenges) or are down. Both
+ * answer 404 with a placeholder when they have no icon, which get() rejects.
+ */
+async function iconFromService(host: string): Promise<Uint8Array | null> {
+  for (const url of [
+    `https://icons.duckduckgo.com/ip3/${host}.ico`,
+    `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64`,
+  ]) {
+    const r = await get(new URL(url), MAX_ICON_BYTES);
+    if (r && imageType(r.body)) return r.body;
   }
   return null;
 }
