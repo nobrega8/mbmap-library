@@ -1,0 +1,87 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Therma",
+  "model": "TH 9000",
+  "models": ["TH 9000", "TH9000"],
+  "vendor_website": "therma.com.br",
+  "description": "Thyristor power controller: status and faults, phase currents, input and output voltage, power, energy, load resistance, control settings, fault log and clock",
+  "revision": 1,
+  "revised": "2026-11-08",
+  "source": "Therma Manual de Operação, Controladores de Potência Microprocessados TH 9000, 12th edition (2026-01-08)",
+  "sources": [
+    {"title": "Manual de Operação - Controladores de Potência Microprocessados TH 9000", "version": "12ª edição", "date": "2026-01-08", "url": "https://github.com/user-attachments/files/34523034/MANUAL-DE-OPERACAO-TH-9000-12a-Edicao-08-01-2026.pdf", "note": "chapter Comunicação Serial RS 485 - Modbus RTU; attached to issue #123"}
+  ],
+  "notes": [
+    "Modbus RTU on the drive's RS-485 port (terminals 18-20). Registers are numbered from 1, as in the manual (40001 is register 1).",
+    "Factory settings: address 1 (1 to 63), 9600 bit/s, no parity. The manual does not give the stop bits; 1 is assumed. The optional operator panel (IHM) has its own address and serial settings.",
+    "The energy counter is two words, low word first (40013 low, 40014 high).",
+    "After writing register 36 or 34/35, the date and time (and the fault code) can be read from registers 38-44. To set the clock, write registers 39-44 and then register 37.",
+    "Written from the manual; this map has not been tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "enums": {
+    "fault": {"0": "No fault", "1": "Thyristor overtemperature", "2": "Overcurrent (above 1.5 x rated)", "3": "Overcurrent on 3 phases", "4": "Thyristor overcurrent L1", "5": "Thyristor overcurrent L2", "6": "Thyristor overcurrent L3", "8": "SCR short circuit L1-L2", "9": "SCR short circuit L2-L3", "10": "SCR short circuit L3-L1", "11": "Line L1 open", "12": "Line L2 open", "13": "Line L3 open", "14": "No load (current below 5%)", "15": "Unbalanced load", "16": "No voltage on L1 or L2"}
+  },
+  "registers": [
+    {"name": "Operating mode", "group": "Status", "area": "holding", "address": 1, "type": "uint16", "enum": {"0": "Local", "1": "Remote"}},
+    {"name": "Rated current", "group": "Status", "area": "holding", "address": 2, "type": "uint16", "unit": "A"},
+    {"name": "Controlled phases", "group": "Status", "area": "holding", "address": 3, "type": "uint16"},
+    {"name": "Controller status", "group": "Status", "area": "holding", "address": 4, "type": "uint16", "enum": {"0": "Running", "1": "Drive blocked", "2": "Demand limit active", "3": "Fault"}},
+    {"name": "Fault", "group": "Status", "area": "holding", "address": 5, "type": "uint16", "enum": "fault"},
+
+    {"name": "Control output", "group": "Measurements", "area": "holding", "address": 6, "type": "uint16", "unit": "%"},
+    {"name": "Current L1", "group": "Measurements", "area": "holding", "address": 7, "type": "uint16", "unit": "A"},
+    {"name": "Current L2", "group": "Measurements", "area": "holding", "address": 8, "type": "uint16", "unit": "A"},
+    {"name": "Current L3", "group": "Measurements", "area": "holding", "address": 9, "type": "uint16", "unit": "A"},
+    {"name": "Input voltage", "group": "Measurements", "area": "holding", "address": 10, "type": "uint16", "unit": "V"},
+    {"name": "Output voltage", "group": "Measurements", "area": "holding", "address": 11, "type": "uint16", "unit": "V"},
+    {"name": "Power", "group": "Measurements", "area": "holding", "address": 12, "type": "uint16", "unit": "kW"},
+    {"name": "Energy", "group": "Measurements", "area": "holding", "address": 13, "type": "uint32", "word_order": "little", "unit": "kWh", "description": "Low word first"},
+    {"name": "Load resistance R", "group": "Measurements", "area": "holding", "address": 45, "type": "uint16", "scale": 0.001, "unit": "Ω", "description": "Load voltage / load current; 65535 when the current is 0"},
+    {"name": "Load resistance S", "group": "Measurements", "area": "holding", "address": 46, "type": "uint16", "scale": 0.001, "unit": "Ω", "description": "Load voltage / load current; 65535 when the current is 0"},
+    {"name": "Load resistance T", "group": "Measurements", "area": "holding", "address": 47, "type": "uint16", "scale": 0.001, "unit": "Ω", "description": "Load voltage / load current; 65535 when the current is 0"},
+
+    {"name": "Fault reset", "group": "Commands", "area": "holding", "address": 17, "type": "uint16", "access": "W", "description": "Write 0 or 1 to reset"},
+    {"name": "Reset energy", "group": "Commands", "area": "holding", "address": 32, "type": "uint16", "access": "W", "description": "Write 0 or 1 to reset the kWh reading"},
+
+    {"name": "Control signal", "group": "Settings", "area": "holding", "address": 18, "type": "uint16", "enum": {"0": "0-20 mA", "1": "4-20 mA", "2": "0-5 V", "3": "1-5 V", "4": "0-10 V", "5": "Modbus"}, "access": "RW"},
+    {"name": "Cycle time", "group": "Settings", "area": "holding", "address": 19, "type": "uint16", "enum": {"0": "0.25 s", "1": "0.5 s", "2": "1 s", "3": "2 s", "4": "4 s"}, "access": "RW"},
+    {"name": "Load type", "group": "Settings", "area": "holding", "address": 20, "type": "uint16", "enum": {"0": "Resistive", "1": "Inductive"}, "access": "RW"},
+    {"name": "Mains frequency", "group": "Settings", "area": "holding", "address": 21, "type": "uint16", "enum": {"0": "60 Hz", "1": "50 Hz"}, "access": "RW"},
+    {"name": "Ramp", "group": "Settings", "area": "holding", "address": 22, "type": "uint16", "enum": {"0": "Off", "1": "Up and down", "2": "At start-up"}, "access": "RW"},
+    {"name": "Ramp time", "group": "Settings", "area": "holding", "address": 23, "type": "uint16", "unit": "s", "access": "RW", "write_min": 0, "write_max": 999},
+    {"name": "Output limit", "group": "Settings", "area": "holding", "address": 24, "type": "uint16", "unit": "%", "access": "RW", "write_min": 0, "write_max": 100, "description": "Percent of the rated current"},
+    {"name": "Demand limit", "group": "Settings", "area": "holding", "address": 25, "type": "uint16", "unit": "%", "access": "RW", "write_min": 0, "write_max": 100, "description": "Percent of the rated current"},
+    {"name": "Current limit", "group": "Settings", "area": "holding", "address": 26, "type": "uint16", "unit": "%", "access": "RW", "write_min": 0, "write_max": 100, "description": "Percent of the rated current"},
+    {"name": "Phase unbalance limit", "group": "Settings", "area": "holding", "address": 27, "type": "uint16", "unit": "%", "access": "RW", "write_min": 0, "write_max": 100, "description": "Percent of the rated current"},
+    {"name": "Modbus control", "group": "Settings", "area": "holding", "address": 28, "type": "uint16", "unit": "%", "access": "RW", "write_min": 0, "write_max": 100, "description": "Control value when the control signal is Modbus, in percent of the rated current"},
+
+    {"name": "Drive address", "group": "Communication", "area": "holding", "address": 29, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 63},
+    {"name": "Drive baud rate", "group": "Communication", "area": "holding", "address": 30, "type": "uint16", "enum": {"0": "2400", "1": "4800", "2": "9600", "3": "19200"}, "access": "RW"},
+    {"name": "Drive parity", "group": "Communication", "area": "holding", "address": 31, "type": "uint16", "enum": {"0": "None", "1": "Odd", "2": "Even"}, "access": "RW"},
+
+    {"name": "Show first fault record", "group": "Fault log", "area": "holding", "address": 33, "type": "uint16", "access": "W", "description": "Write 0 or 1; the record is then in registers 38-44"},
+    {"name": "Next fault record", "group": "Fault log", "area": "holding", "address": 34, "type": "uint16", "access": "W", "description": "Write 0 or 1"},
+    {"name": "Previous fault record", "group": "Fault log", "area": "holding", "address": 35, "type": "uint16", "access": "W", "description": "Write 0 or 1"},
+    {"name": "Fault record code", "group": "Fault log", "area": "holding", "address": 38, "type": "uint16", "enum": "fault"},
+
+    {"name": "Read clock", "group": "Clock", "area": "holding", "address": 36, "type": "uint16", "access": "W", "description": "Write 0 or 1 to load the drive's date and time into registers 39-44"},
+    {"name": "Set clock", "group": "Clock", "area": "holding", "address": 37, "type": "uint16", "access": "W", "description": "Write 0 or 1 to set the drive's clock from registers 39-44"},
+    {"name": "Day", "group": "Clock", "area": "holding", "address": 39, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 31},
+    {"name": "Month", "group": "Clock", "area": "holding", "address": 40, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 12},
+    {"name": "Year", "group": "Clock", "area": "holding", "address": 41, "type": "uint16", "offset": 1900, "access": "RW", "write_min": 1970, "write_max": 2100},
+    {"name": "Hour", "group": "Clock", "area": "holding", "address": 42, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 23},
+    {"name": "Minute", "group": "Clock", "area": "holding", "address": 43, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 59},
+    {"name": "Second", "group": "Clock", "area": "holding", "address": 44, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 59}
+  ]
+}

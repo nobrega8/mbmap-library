@@ -1,0 +1,62 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Altus",
+  "model": "Optidrive P2",
+  "models": ["Optidrive P2", "ODP-2"],
+  "vendor_website": "altus.com.br",
+  "description": "Variable speed drive: control word, speed and torque reference, ramp time, status and trip code, output frequency, current, torque and power, inputs, DC bus and temperature",
+  "revision": 1,
+  "revised": "2026-11-08",
+  "source": "Optidrive P2 Guia do usuário, version 3.10, section 9.2 (Modbus RTU)",
+  "sources": [
+    {"title": "Guia do usuário do Optidrive P2", "version": "3.10", "url": "https://github.com/user-attachments/files/34522355/optidrive_p2_guia_do_usuario.pdf", "note": "sections 8.4.7 and 9.2; attached to issue #120"}
+  ],
+  "notes": [
+    "Modbus RTU on the RJ45 connector (pin 7 RS485-, pin 8 RS485+). FC03, FC06, and FC16 for registers 1-4 only. Registers are numbered from 1, as in the guide.",
+    "Factory settings: address 1 (P5-01, up to 63; P5-16 allows higher addresses), 115200 bit/s (P5-03), no parity and 1 stop bit (P5-04).",
+    "Registers 1 and 2 control the drive only when P1-12 = 4 (Modbus RTU) and no fieldbus option module is fitted. Register 4 needs fieldbus ramp control (P5-07 = 1). Registers 6-24 can always be read.",
+    "Every user parameter is also a register: P1-01 is register 101, Px-yy is register x*100 + yy. Values with one decimal place are sent multiplied by 10. P5-01, P5-03 and P5-04 cannot be changed over Modbus. Only P1-01 is listed here as an example.",
+    "The Optidrive P2 is made by Invertek Drives and sold by Altus in Brazil. Written from the user guide; this map has not been tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 115200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {"name": "Run", "group": "Control", "area": "holding", "address": 1, "type": "bool", "bit": 0, "access": "RW", "description": "1 = run, 0 = stop"},
+    {"name": "Fast stop", "group": "Control", "area": "holding", "address": 1, "type": "bool", "bit": 1, "access": "RW", "description": "1 = stop with the second deceleration ramp"},
+    {"name": "Reset", "group": "Control", "area": "holding", "address": 1, "type": "bool", "bit": 2, "access": "RW", "description": "1 = reset an active trip; set back to 0 after the fault clears"},
+    {"name": "Coast stop", "group": "Control", "area": "holding", "address": 1, "type": "bool", "bit": 3, "access": "RW", "description": "1 = coast to stop"},
+    {"name": "Speed reference", "group": "Control", "area": "holding", "address": 2, "type": "int16", "scale": 0.1, "unit": "Hz", "access": "RW", "description": "Needs P1-12 = 4"},
+    {"name": "Torque reference", "group": "Control", "area": "holding", "address": 3, "type": "int16", "scale": 0.1, "unit": "%", "access": "RW"},
+    {"name": "Ramp time", "group": "Control", "area": "holding", "address": 4, "type": "uint16", "scale": 0.01, "unit": "s", "access": "RW", "write_min": 0, "write_max": 600, "description": "Acceleration and deceleration time; used when fieldbus ramp control is enabled"},
+
+    {"name": "Running", "group": "Status", "area": "holding", "address": 6, "type": "bool", "bit": 0, "enum": {"0": "Stopped", "1": "Running"}},
+    {"name": "Tripped", "group": "Status", "area": "holding", "address": 6, "type": "bool", "bit": 1, "enum": {"0": "OK", "1": "Tripped"}},
+    {"name": "Inhibited", "group": "Status", "area": "holding", "address": 6, "type": "bool", "bit": 3, "enum": {"0": "Ready", "1": "Inhibited"}},
+    {"name": "Maintenance due", "group": "Status", "area": "holding", "address": 6, "type": "bool", "bit": 4},
+    {"name": "Standby", "group": "Status", "area": "holding", "address": 6, "type": "bool", "bit": 5},
+    {"name": "Load monitor alarm", "group": "Status", "area": "holding", "address": 6, "type": "bool", "bit": 7},
+    {"name": "Trip code", "group": "Status", "area": "holding", "address": 6, "type": "uint16", "bit": 8, "bits": 8, "description": "Number of the active trip; see the fault list in the user guide"},
+
+    {"name": "Output frequency", "group": "Measurements", "area": "holding", "address": 7, "type": "int16", "scale": 0.1, "unit": "Hz"},
+    {"name": "Output current", "group": "Measurements", "area": "holding", "address": 8, "type": "uint16", "scale": 0.1, "unit": "A"},
+    {"name": "Output torque", "group": "Measurements", "area": "holding", "address": 9, "type": "int16", "scale": 0.1, "unit": "%"},
+    {"name": "Output power", "group": "Measurements", "area": "holding", "address": 10, "type": "uint16", "scale": 0.01, "unit": "kW"},
+    {"name": "Digital inputs", "group": "Measurements", "area": "holding", "address": 11, "type": "uint16", "description": "Bit 0 = digital input 1, and so on"},
+    {"name": "Analogue input 1", "group": "Measurements", "area": "holding", "address": 20, "type": "uint16", "scale": 0.1, "unit": "%"},
+    {"name": "Analogue input 2", "group": "Measurements", "area": "holding", "address": 21, "type": "uint16", "scale": 0.1, "unit": "%"},
+    {"name": "Pre-ramp speed reference", "group": "Measurements", "area": "holding", "address": 22, "type": "int16", "description": "Internal frequency setpoint; the guide gives no scale"},
+    {"name": "DC bus voltage", "group": "Measurements", "area": "holding", "address": 23, "type": "uint16", "unit": "V"},
+    {"name": "Heatsink temperature", "group": "Measurements", "area": "holding", "address": 24, "type": "int16", "unit": "°C"},
+
+    {"name": "Maximum frequency", "group": "Parameters", "area": "holding", "address": 101, "type": "uint16", "scale": 0.1, "unit": "Hz", "access": "RW", "description": "P1-01"}
+  ]
+}

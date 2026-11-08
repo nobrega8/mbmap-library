@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Líder Balanças",
+  "model": "LD1050 LCD",
+  "models": ["LD1050 LCD", "LD1050"],
+  "vendor_website": "liderbalancas.com.br",
+  "description": "Digital weighing indicator: net weight and tare, as whole numbers and as floats",
+  "revision": 1,
+  "revised": "2026-11-08",
+  "source": "Líder Balanças Indicador Digital LD2051 Manual do Usuário v2.5, Modbus chapter (shared with the LD1050 LCD)",
+  "sources": [
+    {"title": "Indicador Digital LD2051 - Manual do Usuário", "version": "2.5", "url": "https://www.liderbalancas.com.br/wp-content/uploads/produtos/manual/260083279.pdf", "note": "Protocolo Modbus chapter and the F3 serial settings; linked in issue #145"}
+  ],
+  "notes": [
+    "The Modbus protocol is optional. Modbus RTU or ASCII on RS-232 (F300 = 4 or 5) or RS-485 (F315), and Modbus TCP or RTU over TCP on the LD1050 LCD network board (F300 = 11 or 12). FC03 only. Addresses are 0-based, as sent on the wire; the manual's InduSoft example numbers them from 1 (84 for 0x53).",
+    "Factory serial settings: 9600 bit/s, 8 data bits, no parity, 1 stop bit (F301/F304, F308, F309). The address (F302) is 1 to 255; the manual gives no default.",
+    "32-bit values are sent low word first: the manual's example frames read 500 as 01 F4 00 00 and 0.5 as 00 00 3F 00.",
+    "The manual is written for the LD2051 and gives the same Modbus registers for the LD1050 LCD. Written from the manual; this map has not been tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "unit_id": 1,
+  "port": 502,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {"name": "Net weight (integer)", "group": "Weight", "area": "holding", "address": 83, "type": "int32", "description": "Net weight without the decimal point: 0.5 kg with three decimals reads 500"},
+    {"name": "Tare (integer)", "group": "Weight", "area": "holding", "address": 85, "type": "int32", "description": "Tare without the decimal point"},
+    {"name": "Net weight", "group": "Weight", "area": "holding", "address": 87, "type": "float32"},
+    {"name": "Tare", "group": "Weight", "area": "holding", "address": 89, "type": "float32"}
+  ]
+}

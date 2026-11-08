@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Metaltex",
+  "model": "IF10",
+  "models": ["IF10", "IF-10"],
+  "vendor_website": "metaltex.com.br",
+  "description": "Frequency inverter: frequency, current, speed, DC bus and output voltage, power, run state, alarms, run and stop commands and frequency command",
+  "revision": 1,
+  "revised": "2026-11-08",
+  "source": "Metaltex Manual de Operação IF10, chapter 9 (Modbus RTU)",
+  "sources": [
+    {"title": "Manual de Operação - IF10", "url": "https://github.com/user-attachments/files/34523197/m_if10.pdf", "note": "sections 7.8 and 9; attached to issue #126"}
+  ],
+  "notes": [
+    "Modbus RTU on RS-485 (terminals RS+ and RS-). FC03 reads and FC06 writes; coils are not supported. Addresses are 0-based, as sent on the wire.",
+    "Factory settings: 9600 bit/s (P700 = 1), 8N1 RTU (P701 = 3), address 1 (P702).",
+    "To control the inverter over Modbus set P101 = 5 (frequency from the serial link) and P102 = 2 (run and stop from the serial link).",
+    "The manual lists the reverse command as 0006H next to the decimal value 4; the map uses 4, which fits the bit pattern of the other commands (forward 8, reset 16).",
+    "Written from the manual; this map has not been tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {"name": "Frequency setpoint", "group": "Measurements", "area": "holding", "address": 1, "type": "uint16", "scale": 0.01, "unit": "Hz", "description": "P001"},
+    {"name": "Output frequency", "group": "Measurements", "area": "holding", "address": 2, "type": "uint16", "scale": 0.1, "unit": "Hz", "description": "P002"},
+    {"name": "Output current", "group": "Measurements", "area": "holding", "address": 3, "type": "uint16", "scale": 0.1, "unit": "A", "description": "P003"},
+    {"name": "Motor speed", "group": "Measurements", "area": "holding", "address": 4, "type": "uint16", "unit": "rpm", "description": "P004"},
+    {"name": "DC bus voltage", "group": "Measurements", "area": "holding", "address": 5, "type": "uint16", "scale": 0.1, "unit": "V", "description": "P005"},
+    {"name": "Output voltage", "group": "Measurements", "area": "holding", "address": 9, "type": "uint16", "scale": 0.1, "unit": "V", "description": "P009"},
+    {"name": "Power", "group": "Measurements", "area": "holding", "address": 20, "type": "uint16", "scale": 0.1, "unit": "kW", "description": "P020"},
+
+    {"name": "Run state", "group": "Status", "area": "holding", "address": 28, "type": "uint16", "enum": {"0": "Stop", "1": "Forward", "2": "Reverse"}, "description": "P028"},
+
+    {"name": "Undercurrent (UC)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 0, "description": "P027"},
+    {"name": "Overcurrent (OC)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 1, "description": "P027"},
+    {"name": "Communication error (NF)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 2, "description": "P027"},
+    {"name": "Output phase loss (LO)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 3, "description": "P027"},
+    {"name": "Overvoltage (OU)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 4, "description": "P027"},
+    {"name": "Undervoltage (LU)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 6, "description": "P027"},
+    {"name": "Motor overload (OL)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 7, "description": "P027"},
+    {"name": "Overtorque (OT)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 8, "description": "P027"},
+    {"name": "Overheating (OH)", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 9, "description": "P027"},
+    {"name": "4 mA signal error", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 10, "description": "P027"},
+    {"name": "Alarm active", "group": "Alarms", "area": "holding", "address": 27, "type": "bool", "bit": 15, "description": "P027"},
+
+    {"name": "Command", "group": "Control", "area": "holding", "address": 8192, "type": "uint16", "access": "W", "enum": {"0": "No action", "1": "Stop", "2": "Run", "3": "Jog", "4": "Reverse", "8": "Forward", "16": "Reset alarms"}, "description": "Cannot be read. Needs P102 = 2. After a jog, send stop before run"},
+    {"name": "Frequency command", "group": "Control", "area": "holding", "address": 8193, "type": "uint16", "scale": 0.01, "unit": "Hz", "access": "RW", "description": "Needs P101 = 5"}
+  ]
+}
