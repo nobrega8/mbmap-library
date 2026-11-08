@@ -7,22 +7,29 @@
     "XY-MD02"
   ],
   "description": "RS485 temperature and humidity transmitter with an SHT20 sensor, Modbus RTU",
-  "revision": 1,
-  "revised": "2026-10-20",
+  "revision": 2,
+  "revised": "2026-11-08",
   "source": "XY-MD02 Modbus RTU RS485 SHT20 Temperature Humidity Transmitter manual",
   "sources": [
     {
       "title": "XY-MD02 Modbus RTU RS485 SHT20 Temperature Humidity Transmitter manual",
       "note": "Modbus protocol tables and examples"
+    },
+    {
+      "title": "Test report on an XY-MD02",
+      "date": "2026-11-08",
+      "url": "https://github.com/nobrega8/mbmap-library/issues/161",
+      "note": "baud rate encoding, correction scale and stop bits"
     }
   ],
   "notes": [
     "Function codes 0x03, 0x04, 0x06 and 0x10. Temperature and humidity are input registers (FC04); the settings are holding registers (FC03 read, FC06 or FC10 write).",
     "Addresses are the ones in the manual's frames: temperature is read from address 0x0001 (frame 01 04 00 01 00 01).",
-    "The manual's register table gives the baud rate as 0 = 9600, 1 = 14400, 2 = 19200, but its write example sets 0x2580 (9600) in that register. Which one the device takes is not confirmed; the labels follow the table.",
-    "The manual does not give the corrections' encoding. The serial settings table of its UART protocol section (9600, 8 data bits, 1 stop bit, no parity) is used as the default here; the Modbus section does not repeat them.",
-    "An older conversion of the Omni Console library lists the factory defaults as 8N2 (2 stop bits). The manual gives 1 stop bit, which is used here; neither is confirmed on a device.",
-    "Written from the manufacturer's manual; not tested on a device."
+    "The baud rate register holds the rate itself in bit/s (9600 reads 9600), as in the manual's write example; the 0/1/2 codes in the manual's register table are wrong.",
+    "The temperature correction is in tenths of a degree: writing 10 raised the reading by about 1 °C. The humidity correction was not tested and is taken to work the same way. The manual's range of -10 to 10 is therefore -100 to 100 on the wire.",
+    "Factory defaults: 9600 bit/s, 8N1, address 1. The device uses 1 stop bit, but it also answers a master set to 2.",
+    "A new address or baud rate applies only after the device is powered off and on again.",
+    "Tested on an XY-MD02, firmware not shown, November 2026: temperature (including -1.8 °C, read as 0xFFEE), humidity, the address and baud rate registers, the serial settings and the temperature correction. The humidity correction was not tested."
   ],
   "protocol": "rtu",
   "unit_id": 1,
@@ -31,16 +38,13 @@
   "databits": 8,
   "stopbits": 1,
   "address_base": 0,
-  "x_status": "official",
-  "enums": {
-    "baud_rate": {"0": "9600", "1": "14400", "2": "19200"}
-  },
+  "x_status": "verified",
   "registers": [
     {"name": "Temperature", "group": "Measurement", "area": "input", "address": 1, "type": "int16", "scale": 0.1, "unit": "°C", "access": "R", "description": "Signed value in tenths of a degree (0x0131 is 30.5 °C, 0xFF33 is -20.5 °C)"},
     {"name": "Humidity", "group": "Measurement", "area": "input", "address": 2, "type": "uint16", "scale": 0.1, "unit": "%RH", "access": "R", "description": "Relative humidity in tenths of a percent (0x0222 is 54.6 %RH)"},
-    {"name": "Device address", "group": "Configuration", "area": "holding", "address": 257, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 247, "description": "Modbus slave address, default 1"},
-    {"name": "Baud rate", "group": "Configuration", "area": "holding", "address": 258, "type": "uint16", "access": "RW", "enum": "baud_rate", "description": "The register table lists 0, 1 and 2; the manual's write example uses 0x2580 (9600) instead, see the notes"},
-    {"name": "Temperature correction", "group": "Configuration", "area": "holding", "address": 259, "type": "int16", "access": "RW", "write_min": -10, "write_max": 10, "unit": "°C", "description": "Range -10 to 10 °C in the manual; how the value is encoded (whole degrees or tenths) is not stated"},
-    {"name": "Humidity correction", "group": "Configuration", "area": "holding", "address": 260, "type": "int16", "access": "RW", "write_min": -10, "write_max": 10, "unit": "%RH", "description": "Range -10 to 10 %RH in the manual; how the value is encoded (whole percent or tenths) is not stated"}
+    {"name": "Device address", "group": "Configuration", "area": "holding", "address": 257, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 247, "description": "Modbus slave address, default 1. Applies after a power cycle"},
+    {"name": "Baud rate", "group": "Configuration", "area": "holding", "address": 258, "type": "uint16", "unit": "bit/s", "access": "RW", "description": "The rate itself, for example 9600 or 19200. Applies after a power cycle"},
+    {"name": "Temperature correction", "group": "Configuration", "area": "holding", "address": 259, "type": "int16", "scale": 0.1, "unit": "°C", "access": "RW", "write_min": -10, "write_max": 10, "description": "Added to the measured temperature, in steps of 0.1 °C"},
+    {"name": "Humidity correction", "group": "Configuration", "area": "holding", "address": 260, "type": "int16", "scale": 0.1, "unit": "%RH", "access": "RW", "write_min": -10, "write_max": 10, "description": "Added to the measured humidity, in steps of 0.1 %RH"}
   ]
 }
