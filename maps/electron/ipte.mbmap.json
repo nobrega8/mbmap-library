@@ -1,0 +1,80 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Electron do Brasil",
+  "model": "IPTE",
+  "models": [
+    "IPTE"
+  ],
+  "vendor_website": "electron.com.br",
+  "description": "Transformer tap position indicator, Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-09",
+  "source": "Electron do Brasil, Mapa de Registradores MODBUS RTU, Indicador de Posição IPTE",
+  "sources": [
+    {
+      "title": "Mapa de Registradores MODBUS RTU, Indicador de Posição IPTE",
+      "url": "https://electron.com.br/api/downloads/file/mapa_de_registradores_modbus_rtu_ipte.pdf"
+    }
+  ],
+  "notes": [
+    "All registers are holding registers. The document numbers them 1 to 68 and calls the type Holding Register (40.000), so the addresses are 1-based (address on the wire = number minus 1). The document does not say so explicitly: if a read fails, try address_base 0.",
+    "The document allows 1200 to 57600 bps, 8 data bits, no parity and 1 stop bit. It does not give a default baud rate or slave address: 9600 and 1 are placeholders; the slave address is in register 59.",
+    "The Escala column is unclear for the tap position registers (8 to 11 show -1000 or -100 with a range of -50 to 50). They are given here as raw values without scaling: check against the display before applying a scale.",
+    "Register 7 (commands) and register 16 (faults) are bit fields, one entry per bit. The command bits are write-only.",
+    "Registers 56 and 58 both report the communication protocol, with the labels the document gives for each (DNP 3.0 or Modbus RTU).",
+    "The serial number is two registers (62 MSB, 63 LSB), up to 0x98967F. The encoding of the equipment version (68) is not stated, so it has no firmware role.",
+    "Register 67 (equipment model) shows 71 as its value, used here as the model identifier.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "address_base": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "x_status": "official",
+  "enums": {
+    "tap_display_mode": {"0": "Numeric", "1": "Alphanumeric"},
+    "pot_init_mode": {"0": "Position from 0 ohm", "1": "Position from the initial resistance"},
+    "analog_output": {"0": "0 to 1 mA", "1": "0 to 5 mA", "2": "0 to 10 mA", "3": "0 to 20 mA", "4": "4 to 20 mA"},
+    "protocol": {"0": "DNP 3.0", "1": "Modbus RTU"},
+    "parity": {"0": "No parity", "1": "Last bit sent is 1", "2": "Last bit sent is 0"},
+    "protection": {"0": "Disabled", "1": "Enabled"}
+  },
+  "registers": [
+    {"name": "Initial tap position", "group": "Settings", "area": "holding", "address": 1, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 999},
+    {"name": "Final tap position", "group": "Settings", "area": "holding", "address": 2, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 999},
+    {"name": "Resistive step", "group": "Settings", "area": "holding", "address": 3, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 999},
+    {"name": "Tap display mode", "group": "Settings", "area": "holding", "address": 4, "type": "uint16", "access": "RW", "enum": "tap_display_mode", "description": "How the tap position is shown on the IPTE display"},
+    {"name": "Potentiometer reading mode", "group": "Settings", "area": "holding", "address": 5, "type": "uint16", "access": "RW", "enum": "pot_init_mode", "description": "Where the potentiometer crown reading starts"},
+    {"name": "Analog output type", "group": "Settings", "area": "holding", "address": 6, "type": "uint16", "access": "RW", "enum": "analog_output"},
+    {"name": "Reset minimum position reached", "group": "Commands", "area": "holding", "address": 7, "type": "bool", "bit": 0, "access": "W", "description": "Write 1 to reset the minimum tap position reached"},
+    {"name": "Reset maximum position reached", "group": "Commands", "area": "holding", "address": 7, "type": "bool", "bit": 1, "access": "W", "description": "Write 1 to reset the maximum tap position reached"},
+    {"name": "Reset equipment", "group": "Commands", "area": "holding", "address": 7, "type": "bool", "bit": 2, "access": "W", "description": "Write 1 to reset the equipment"},
+    {"name": "Tap position", "group": "Measurement", "area": "holding", "address": 8, "type": "int16", "access": "R", "description": "Range -50 to 50"},
+    {"name": "Minimum tap position reached", "group": "Measurement", "area": "holding", "address": 9, "type": "int16", "access": "R", "description": "Range -50 to 50"},
+    {"name": "Maximum tap position reached", "group": "Measurement", "area": "holding", "address": 10, "type": "int16", "access": "R", "description": "Range -50 to 50"},
+    {"name": "Previous tap position", "group": "Measurement", "area": "holding", "address": 11, "type": "int16", "access": "R", "description": "Range -50 to 50"},
+    {"name": "Position change delay", "group": "Settings", "area": "holding", "address": 12, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 240, "description": "Time between a position change and the signal on the equipment"},
+    {"name": "Time left for position change", "group": "Measurement", "area": "holding", "address": 13, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 240},
+    {"name": "Crown fault", "group": "Status", "area": "holding", "address": 16, "type": "bool", "bit": 0, "access": "R"},
+    {"name": "Maximum tap fault", "group": "Status", "area": "holding", "address": 16, "type": "bool", "bit": 1, "access": "R"},
+    {"name": "Minimum tap fault", "group": "Status", "area": "holding", "address": 16, "type": "bool", "bit": 2, "access": "R"},
+    {"name": "Communication protocol (register 56)", "group": "Device", "area": "holding", "address": 56, "type": "uint16", "access": "R", "enum": "protocol"},
+    {"name": "Parity", "group": "Device", "area": "holding", "address": 57, "type": "uint16", "access": "R", "enum": "parity"},
+    {"name": "Communication protocol", "group": "Device", "area": "holding", "address": 58, "type": "uint16", "access": "R", "enum": "protocol"},
+    {"name": "Serial network address", "group": "Device", "area": "holding", "address": 59, "type": "uint16", "access": "R", "description": "Range 1 to 254"},
+    {"name": "Parameter protection", "group": "Settings", "area": "holding", "address": 60, "type": "uint16", "access": "RW", "enum": "protection", "description": "Protection against changing parameters"},
+    {"name": "Password reminder", "group": "Device", "area": "holding", "address": 61, "type": "uint16", "access": "R"},
+    {"name": "Serial number", "group": "Device", "area": "holding", "address": 62, "type": "uint32", "access": "R", "role": "serial", "description": "Registers 62 (MSB) and 63 (LSB), up to 0x98967F"},
+    {"name": "Calibration day", "group": "Device", "area": "holding", "address": 64, "type": "uint16", "access": "R", "description": "Range 1 to 31"},
+    {"name": "Calibration month", "group": "Device", "area": "holding", "address": 65, "type": "uint16", "access": "R", "description": "Range 1 to 12"},
+    {"name": "Calibration year", "group": "Device", "area": "holding", "address": 66, "type": "uint16", "access": "R", "description": "Range 19 to 99"},
+    {"name": "Equipment model", "group": "Device", "area": "holding", "address": 67, "type": "uint16", "access": "R", "enum": {"71": "IPTE"}, "role": "model"},
+    {"name": "Equipment version", "group": "Device", "area": "holding", "address": 68, "type": "uint16", "access": "R", "description": "Range 0x00 to 0xFFFF; the encoding is not stated"}
+  ]
+}
