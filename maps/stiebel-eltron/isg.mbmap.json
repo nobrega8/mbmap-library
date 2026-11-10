@@ -1,0 +1,1307 @@
+{
+ "mbmap": 2,
+ "vendor": "Stiebel Eltron",
+ "model": "ISG web / ISG plus",
+ "models": [
+  "ISG web",
+  "ISG plus"
+ ],
+ "vendor_website": "stiebel-eltron.com",
+ "description": "Internet Service Gateway ISG web and ISG plus with the Modbus TCP/IP software extension: heat pump manager WPM 3 and WPM 3i system values, parameters, status and energy data",
+ "revision": 1,
+ "revised": "2026-11-10",
+ "source": "Stiebel Eltron, Software documentation Modbus TCP/IP (Software extension for Internet Service Gateway), WPM 3 / WPM 3i chapter and chapter 10",
+ "sources": [
+  {
+   "title": "Software documentation Modbus TCP/IP: Software extension for Internet Service Gateway",
+   "date": "2026-06",
+   "url": "https://www.stiebel-eltron.com/content/dam/ste/cdbassets/current/commissioning_manual/commissioning_manual_doc-00081716.pdf",
+   "note": "linked in issue #200; chapter 7 (WPM 3 and WPM 3i), chapter 10 (SG Ready); no version is printed, the PDF was generated in June 2026"
+  }
+ ],
+ "notes": [
+  "Addresses are the numbers of the manufacturer's tables (for example 501 for 30501). The document says the ISG is one-based and that an offset of 1 may be needed depending on the client, so address_base is 1: the address on the wire is the number minus 1. If a read returns the neighbouring value, try address_base 0.",
+  "The register tables differ per controller: the manufacturer publishes separate tables for WPMsystem, WPM 3 / WPM 3i, LWZ (05.1, 07.1) Plus (ISG Connect only), integral ventilation units and WPM G (WPE-I). This map follows only the WPM 3 / WPM 3i tables plus the SG Ready registers; the numbers in other tables can mean something else.",
+  "Not every object exists on every device. An object that is not available reads 32768 (0x8000), shown here as a sentinel.",
+  "Temperatures and most setpoints are integers with a 0.1 scale; the values with data type 7 (pressures, heating curve slope, volume flow) use 0.01. Energy totals are split: total energy = MWh register × 1000 + kWh register (0-999).",
+  "The per-heat-pump values (addresses 542-583, 3523 onward), the cooling-circuit setpoints of WPMsystem, the fixed-value mode (1508), the reset registers (1520, 1521) and the power-limitation registers (4250 onward) are not in this map.",
+  "Default connection: IP 192.168.0.126 when connected directly, TCP port 502, slave ID 1 (cannot be changed). Modbus TCP/IP needs the Basic service package and cannot be combined with other ISG software interfaces, apart from read access next to the EMI extension.",
+  "Written from the manufacturer's document; not tested on a device."
+ ],
+ "protocol": "tcp",
+ "unit_id": 1,
+ "port": 502,
+ "byte_order": "big",
+ "word_order": "big",
+ "address_base": 1,
+ "x_status": "official",
+ "enums": {
+  "operating_mode": {
+   "0": "Emergency operation",
+   "1": "Standby",
+   "2": "Program",
+   "3": "Comfort",
+   "4": "Eco",
+   "5": "Hot water only"
+  },
+  "fault": {
+   "0": "No fault",
+   "1": "Fault"
+  },
+  "bus_status": {
+   "0": "OK",
+   "-1": "Fault",
+   "-2": "Fault",
+   "-3": "CAN error",
+   "-4": "Line error"
+  },
+  "off_on": {
+   "0": "Off",
+   "1": "On"
+  },
+  "sg_input": {
+   "0": "Not switched",
+   "1": "Switched"
+  },
+  "sg_state": {
+   "1": "1: no start, frost protection only",
+   "2": "2: normal operation",
+   "3": "3: forced operation, raised heating/hot water temperatures",
+   "4": "4: maximum heating and hot water temperatures"
+  }
+ },
+ "sentinels": {
+  "int16": {
+   "-32768": "Not available"
+  },
+  "uint16": {
+   "0x8000": "Not available"
+  }
+ },
+ "registers": [
+  {
+   "name": "Actual temperature FE7",
+   "group": "System values",
+   "area": "input",
+   "address": 501,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Setpoint temperature FE7",
+   "group": "System values",
+   "area": "input",
+   "address": 502,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Actual temperature FEK",
+   "group": "System values",
+   "area": "input",
+   "address": 503,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Setpoint temperature FEK",
+   "group": "System values",
+   "area": "input",
+   "address": 504,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Room humidity",
+   "group": "System values",
+   "area": "input",
+   "address": 505,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "%",
+   "access": "R"
+  },
+  {
+   "name": "Dew point temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 506,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Outside temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 507,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Actual temperature heating circuit 1",
+   "group": "System values",
+   "area": "input",
+   "address": 508,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Setpoint temperature heating circuit 1 (WPM 3i)",
+   "group": "System values",
+   "area": "input",
+   "address": 509,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Only WPM 3i; WPM 3 uses address 510"
+  },
+  {
+   "name": "Setpoint temperature heating circuit 1 (WPM 3)",
+   "group": "System values",
+   "area": "input",
+   "address": 510,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Only WPM 3; WPM 3i uses address 509"
+  },
+  {
+   "name": "Actual temperature heating circuit 2",
+   "group": "System values",
+   "area": "input",
+   "address": 511,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Setpoint temperature heating circuit 2",
+   "group": "System values",
+   "area": "input",
+   "address": 512,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Flow temperature, heat pump",
+   "group": "System values",
+   "area": "input",
+   "address": 513,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Only with a flow/return module (MFG)"
+  },
+  {
+   "name": "Flow temperature, booster heater",
+   "group": "System values",
+   "area": "input",
+   "address": 514,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Only with a flow/return module (MFG)"
+  },
+  {
+   "name": "Return temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 516,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Fixed setpoint temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 517,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Buffer actual temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 518,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Buffer setpoint temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 519,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Heating pressure",
+   "group": "System values",
+   "area": "input",
+   "address": 520,
+   "type": "int16",
+   "scale": 0.01,
+   "unit": "bar",
+   "access": "R",
+   "description": "Only with a flow/return module (MFG)"
+  },
+  {
+   "name": "Volume flow",
+   "group": "System values",
+   "area": "input",
+   "address": 521,
+   "type": "int16",
+   "scale": 0.01,
+   "unit": "l/min",
+   "access": "R",
+   "description": "Only with a flow/return module (MFG). The older document revisions list this with one decimal (scale 0.1); the current one lists two decimals"
+  },
+  {
+   "name": "Hot water actual temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 522,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Hot water setpoint temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 523,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Cooling fan actual temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 524,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Cooling"
+  },
+  {
+   "name": "Cooling fan setpoint temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 525,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Cooling"
+  },
+  {
+   "name": "Cooling surface actual temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 526,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Cooling"
+  },
+  {
+   "name": "Cooling surface setpoint temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 527,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Cooling"
+  },
+  {
+   "name": "Solar collector temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 528,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Solar buffer temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 529,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Solar runtime",
+   "group": "System values",
+   "area": "input",
+   "address": 530,
+   "type": "uint16",
+   "scale": 1,
+   "unit": "h",
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "External heat generator actual temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 531,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "External heat generator setpoint temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 532,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "K",
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Heating operating limit",
+   "group": "System values",
+   "area": "input",
+   "address": 533,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Lower outside-temperature limit for heating"
+  },
+  {
+   "name": "Hot water operating limit",
+   "group": "System values",
+   "area": "input",
+   "address": 534,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "Lower outside-temperature limit for hot water"
+  },
+  {
+   "name": "External heat generator runtime",
+   "group": "System values",
+   "area": "input",
+   "address": 535,
+   "type": "uint16",
+   "scale": 1,
+   "unit": "h",
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Source temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 536,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Source temperature, minimum",
+   "group": "System values",
+   "area": "input",
+   "address": 537,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R"
+  },
+  {
+   "name": "Source pressure",
+   "group": "System values",
+   "area": "input",
+   "address": 538,
+   "type": "int16",
+   "scale": 0.01,
+   "unit": "bar",
+   "access": "R"
+  },
+  {
+   "name": "Hot gas temperature",
+   "group": "System values",
+   "area": "input",
+   "address": 539,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "High pressure",
+   "group": "System values",
+   "area": "input",
+   "address": 540,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "bar",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "Low pressure",
+   "group": "System values",
+   "area": "input",
+   "address": 541,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "bar",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "Operating mode",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1501,
+   "type": "uint16",
+   "access": "RW",
+   "enum": "operating_mode",
+   "write_min": 0,
+   "write_max": 5
+  },
+  {
+   "name": "Comfort temperature, heating circuit 1",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1502,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "description": "Room setpoint for heating",
+   "write_min": 5,
+   "write_max": 30
+  },
+  {
+   "name": "Eco temperature, heating circuit 1",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1503,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "description": "Room setpoint for heating",
+   "write_min": 5,
+   "write_max": 30
+  },
+  {
+   "name": "Heating curve slope, heating circuit 1",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1504,
+   "type": "int16",
+   "scale": 0.01,
+   "access": "RW",
+   "write_min": 0,
+   "write_max": 3
+  },
+  {
+   "name": "Comfort temperature, heating circuit 2",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1505,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "description": "Room setpoint for heating",
+   "write_min": 5,
+   "write_max": 30
+  },
+  {
+   "name": "Eco temperature, heating circuit 2",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1506,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "description": "Room setpoint for heating",
+   "write_min": 5,
+   "write_max": 30
+  },
+  {
+   "name": "Heating curve slope, heating circuit 2",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1507,
+   "type": "int16",
+   "scale": 0.01,
+   "access": "RW",
+   "write_min": 0,
+   "write_max": 3
+  },
+  {
+   "name": "Heating bivalence temperature",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1509,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "description": "Mind the operating limits of the heat pump",
+   "write_min": -40,
+   "write_max": 40
+  },
+  {
+   "name": "Hot water comfort temperature",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1510,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "write_min": 10,
+   "write_max": 60
+  },
+  {
+   "name": "Hot water eco temperature",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1511,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "write_min": 10,
+   "write_max": 60
+  },
+  {
+   "name": "Hot water stages",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1512,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Mind the number of connected heat pumps",
+   "write_min": 0,
+   "write_max": 6
+  },
+  {
+   "name": "Hot water bivalence temperature",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1513,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "write_min": -40,
+   "write_max": 40
+  },
+  {
+   "name": "Surface cooling flow setpoint",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1514,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "write_min": 7,
+   "write_max": 25
+  },
+  {
+   "name": "Cooling flow hysteresis",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1515,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "K",
+   "access": "RW",
+   "description": "Cooling",
+   "write_min": 1,
+   "write_max": 5
+  },
+  {
+   "name": "Surface cooling room setpoint",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1516,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "write_min": 20,
+   "write_max": 30
+  },
+  {
+   "name": "Fan cooling flow setpoint",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1517,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "write_min": 7,
+   "write_max": 25
+  },
+  {
+   "name": "Fan cooling flow hysteresis",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1518,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "K",
+   "access": "RW",
+   "write_min": 1,
+   "write_max": 5
+  },
+  {
+   "name": "Fan cooling room setpoint",
+   "group": "Operating modes and setpoints",
+   "area": "holding",
+   "address": 1519,
+   "type": "int16",
+   "scale": 0.1,
+   "unit": "°C",
+   "access": "RW",
+   "write_min": 20,
+   "write_max": 30
+  },
+  {
+   "name": "Heating circuit 1 pump",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 0,
+   "access": "R"
+  },
+  {
+   "name": "Heating circuit 2 pump",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 1,
+   "access": "R"
+  },
+  {
+   "name": "Heat-up program active",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 2,
+   "access": "R"
+  },
+  {
+   "name": "Electric emergency/booster heating",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 3,
+   "access": "R"
+  },
+  {
+   "name": "Heating",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 4,
+   "access": "R"
+  },
+  {
+   "name": "Hot water heating",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 5,
+   "access": "R"
+  },
+  {
+   "name": "Compressor running",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 6,
+   "access": "R"
+  },
+  {
+   "name": "Summer mode",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 7,
+   "access": "R"
+  },
+  {
+   "name": "Cooling mode",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 8,
+   "access": "R"
+  },
+  {
+   "name": "Defrost",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 9,
+   "access": "R"
+  },
+  {
+   "name": "Silent mode 1",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 10,
+   "access": "R",
+   "description": "Status word; WPM 3i has no silent mode"
+  },
+  {
+   "name": "Silent mode 2 (off)",
+   "group": "System status",
+   "area": "input",
+   "address": 2501,
+   "type": "bool",
+   "bit": 11,
+   "access": "R",
+   "description": "Status word; WPM 3i has no silent mode"
+  },
+  {
+   "name": "Utility lock released (EVU)",
+   "group": "System status",
+   "area": "input",
+   "address": 2502,
+   "type": "bool",
+   "bit": 0,
+   "access": "R"
+  },
+  {
+   "name": "Compressor 1 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 0,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Compressor 2 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 1,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Compressor 3 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 2,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Compressor 4 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 3,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Compressor 5 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 4,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Compressor 6 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 5,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Buffer charge pump 1 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 6,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Buffer charge pump 2 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 7,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Buffer charge pump 3 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 8,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Buffer charge pump 4 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 9,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Buffer charge pump 5 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 10,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Buffer charge pump 6 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 11,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Booster heater 1 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 12,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Booster heater 2 running",
+   "group": "System status",
+   "area": "input",
+   "address": 2503,
+   "type": "bool",
+   "bit": 13,
+   "access": "R",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "Fatal fault",
+   "group": "System status",
+   "area": "input",
+   "address": 2504,
+   "type": "uint16",
+   "access": "R",
+   "enum": "fault",
+   "description": "System fault flag; acknowledge faults only on the ISG service interface"
+  },
+  {
+   "name": "Bus status",
+   "group": "System status",
+   "area": "input",
+   "address": 2505,
+   "type": "int16",
+   "access": "R",
+   "enum": "bus_status",
+   "description": "Zero or negative; the document lists it as unsigned but gives negative values"
+  },
+  {
+   "name": "Defrost initiated",
+   "group": "System status",
+   "area": "input",
+   "address": 2506,
+   "type": "uint16",
+   "access": "R",
+   "enum": "off_on",
+   "description": "WPM 3 only"
+  },
+  {
+   "name": "ISG version, extension",
+   "group": "System status",
+   "area": "input",
+   "address": 2570,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "ISG version, major",
+   "group": "System status",
+   "area": "input",
+   "address": 2571,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "ISG version, minor",
+   "group": "System status",
+   "area": "input",
+   "address": 2572,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "ISG version, revision",
+   "group": "System status",
+   "area": "input",
+   "address": 2573,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "Compressor heat output, all heat pumps, heating, today",
+   "group": "Energy",
+   "area": "input",
+   "address": 3501,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "Daily value"
+  },
+  {
+   "name": "Compressor heat output, all heat pumps, heating, total (kWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3502,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "Total = MWh part × 1000 + kWh part (kWh part 0-999)"
+  },
+  {
+   "name": "Compressor heat output, all heat pumps, heating, total (MWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3503,
+   "type": "uint16",
+   "unit": "MWh",
+   "access": "R",
+   "description": "Total = MWh part × 1000 + kWh part"
+  },
+  {
+   "name": "Compressor heat output, all heat pumps, hot water, today",
+   "group": "Energy",
+   "area": "input",
+   "address": 3504,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "Daily value"
+  },
+  {
+   "name": "Compressor heat output, all heat pumps, hot water, total (kWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3505,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "Total = MWh part × 1000 + kWh part (kWh part 0-999)"
+  },
+  {
+   "name": "Compressor heat output, all heat pumps, hot water, total (MWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3506,
+   "type": "uint16",
+   "unit": "MWh",
+   "access": "R",
+   "description": "Total = MWh part × 1000 + kWh part"
+  },
+  {
+   "name": "Booster heater heat output, heating, total (kWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3507,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "All heat pumps; total = MWh part × 1000 + kWh part"
+  },
+  {
+   "name": "Booster heater heat output, heating, total (MWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3508,
+   "type": "uint16",
+   "unit": "MWh",
+   "access": "R",
+   "description": "All heat pumps"
+  },
+  {
+   "name": "Booster heater heat output, hot water, total (kWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3509,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "All heat pumps; total = MWh part × 1000 + kWh part"
+  },
+  {
+   "name": "Booster heater heat output, hot water, total (MWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3510,
+   "type": "uint16",
+   "unit": "MWh",
+   "access": "R",
+   "description": "All heat pumps"
+  },
+  {
+   "name": "Compressor electrical consumption, all heat pumps, heating, today",
+   "group": "Energy",
+   "area": "input",
+   "address": 3511,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "Daily value"
+  },
+  {
+   "name": "Compressor electrical consumption, all heat pumps, heating, total (kWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3512,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "Total = MWh part × 1000 + kWh part (kWh part 0-999)"
+  },
+  {
+   "name": "Compressor electrical consumption, all heat pumps, heating, total (MWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3513,
+   "type": "uint16",
+   "unit": "MWh",
+   "access": "R",
+   "description": "Total = MWh part × 1000 + kWh part"
+  },
+  {
+   "name": "Compressor electrical consumption, all heat pumps, hot water, today",
+   "group": "Energy",
+   "area": "input",
+   "address": 3514,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "Daily value"
+  },
+  {
+   "name": "Compressor electrical consumption, all heat pumps, hot water, total (kWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3515,
+   "type": "uint16",
+   "unit": "kWh",
+   "access": "R",
+   "description": "Total = MWh part × 1000 + kWh part (kWh part 0-999)"
+  },
+  {
+   "name": "Compressor electrical consumption, all heat pumps, hot water, total (MWh part)",
+   "group": "Energy",
+   "area": "input",
+   "address": 3516,
+   "type": "uint16",
+   "unit": "MWh",
+   "access": "R",
+   "description": "Total = MWh part × 1000 + kWh part"
+  },
+  {
+   "name": "Compressor heating runtime",
+   "group": "Energy",
+   "area": "input",
+   "address": 3517,
+   "type": "uint16",
+   "unit": "h",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "Compressor hot water runtime",
+   "group": "Energy",
+   "area": "input",
+   "address": 3518,
+   "type": "uint16",
+   "unit": "h",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "Compressor cooling runtime",
+   "group": "Energy",
+   "area": "input",
+   "address": 3519,
+   "type": "uint16",
+   "unit": "h",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "Booster heater 1 runtime",
+   "group": "Energy",
+   "area": "input",
+   "address": 3520,
+   "type": "uint16",
+   "unit": "h",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "Booster heater 2 runtime",
+   "group": "Energy",
+   "area": "input",
+   "address": 3521,
+   "type": "uint16",
+   "unit": "h",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "Booster heater 1/2 runtime",
+   "group": "Energy",
+   "area": "input",
+   "address": 3522,
+   "type": "uint16",
+   "unit": "h",
+   "access": "R",
+   "description": "WPM 3i only"
+  },
+  {
+   "name": "SG Ready enabled",
+   "group": "Energy management",
+   "area": "holding",
+   "address": 4001,
+   "type": "uint16",
+   "access": "RW",
+   "enum": "off_on",
+   "write_min": 0,
+   "write_max": 1,
+   "description": "Switches the SG Ready function on or off"
+  },
+  {
+   "name": "SG Ready input 1",
+   "group": "Energy management",
+   "area": "holding",
+   "address": 4002,
+   "type": "uint16",
+   "access": "RW",
+   "enum": "sg_input",
+   "write_min": 0,
+   "write_max": 1,
+   "description": "Together with input 2 selects the operating state"
+  },
+  {
+   "name": "SG Ready input 2",
+   "group": "Energy management",
+   "area": "holding",
+   "address": 4003,
+   "type": "uint16",
+   "access": "RW",
+   "enum": "sg_input",
+   "write_min": 0,
+   "write_max": 1
+  },
+  {
+   "name": "SG Ready operating state",
+   "group": "Energy management",
+   "area": "input",
+   "address": 5001,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sg_state"
+  }
+ ]
+}

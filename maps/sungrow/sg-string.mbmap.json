@@ -1,0 +1,1062 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Sungrow",
+  "model": "SG string inverters (RT / CX)",
+  "models": [
+    "SG100CX / SG100CX-JP",
+    "SG10RT",
+    "SG10RT-P2",
+    "SG110CX",
+    "SG110CX-P2",
+    "SG125CX-P2",
+    "SG12RT",
+    "SG12RT-P2",
+    "SG15RT",
+    "SG15RT-P2",
+    "SG17RT",
+    "SG17RT-P2",
+    "SG20RT",
+    "SG20RT-P2",
+    "SG22RT",
+    "SG23RT",
+    "SG23RT-P2",
+    "SG25CX-P2",
+    "SG25CX-SA",
+    "SG25RT",
+    "SG25RT-P2",
+    "SG3.0RT",
+    "SG3.0RT-P2",
+    "SG30CX",
+    "SG30CX-P2",
+    "SG33CX",
+    "SG33CX-P2",
+    "SG36CX-P2",
+    "SG36CX-US",
+    "SG4.0RT",
+    "SG4.0RT-P2",
+    "SG40CX",
+    "SG40CX-P2",
+    "SG49.5CX-JP",
+    "SG5.0RT",
+    "SG5.0RT-P2",
+    "SG50CX",
+    "SG50CX-P2",
+    "SG6.0RT",
+    "SG6.0RT-P2",
+    "SG60CX-US",
+    "SG7.0RT",
+    "SG7.0RT-P2",
+    "SG75CX",
+    "SG75CX-P2",
+    "SG8.0RT",
+    "SG8.0RT-P2"
+  ],
+  "vendor_website": "sungrowpower.com",
+  "description": "Three-phase and single-phase PV string inverters, SG RT and SG CX series (and P2 variants)",
+  "revision": 1,
+  "revised": "2026-11-10",
+  "source": "Sungrow, Communication Protocol of PV Grid-Connected String Inverters V1.1.53 (TI_20230117)",
+  "sources": [
+    {
+      "title": "Communication Protocol of PV Grid-Connected String Inverters",
+      "version": "V1.1.53",
+      "date": "2023-01-17",
+      "url": "https://shop.kpenergy.fi/globalassets/product-sheets/inverters/sungrow/130675/ti_20230117_communication-protocol-of--residential-and-commerical-pv-grid-connected-inverter_v1.1.53_en.pdf",
+      "note": "sections 3.1, 3.2 and appendices 1 and 5; document marked Public; linked in issue #185"
+    }
+  ],
+  "notes": [
+    "Addresses are the protocol addresses of the manual; the wire address is one less (address_base 1).",
+    "Read-only data are input registers (FC04); settings are holding registers (FC03/06/16). Input 5000 and holding 5000 are different registers.",
+    "32-bit values are sent low word first.",
+    "A register the model does not have returns 0xFFFF (16-bit) or 0xFFFFFFFF (32-bit).",
+    "Only the registers common to the RT and CX series are listed. Meter, MPPT 13-16, strings 25-32, fault time, country, curve and dispatch registers are not included.",
+    "Which MPPT inputs and strings exist, and the setting ranges, depend on the model (appendix 5 of the manual)."
+  ],
+  "protocol": "tcp+rtu",
+  "unit_id": 1,
+  "port": 502,
+  "baudrate": 9600,
+  "parity": "N",
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Protocol number",
+      "group": "Device",
+      "area": "input",
+      "address": 4950,
+      "type": "uint32"
+    },
+    {
+      "name": "Protocol version",
+      "group": "Device",
+      "area": "input",
+      "address": 4952,
+      "type": "uint32"
+    },
+    {
+      "name": "ARM software version",
+      "group": "Device",
+      "area": "input",
+      "address": 4954,
+      "type": "string",
+      "length": 15,
+      "role": "firmware"
+    },
+    {
+      "name": "DSP software version",
+      "group": "Device",
+      "area": "input",
+      "address": 4969,
+      "type": "string",
+      "length": 15
+    },
+    {
+      "name": "Serial number",
+      "group": "Device",
+      "area": "input",
+      "address": 4990,
+      "type": "string",
+      "length": 10,
+      "role": "serial"
+    },
+    {
+      "name": "Device type code",
+      "group": "Device",
+      "area": "input",
+      "address": 5000,
+      "type": "uint16",
+      "enum": {
+        "0x243D": "SG3.0RT",
+        "0x243E": "SG4.0RT",
+        "0x2430": "SG5.0RT",
+        "0x2431": "SG6.0RT",
+        "0x243C": "SG7.0RT",
+        "0x2432": "SG8.0RT",
+        "0x2433": "SG10RT",
+        "0x2434": "SG12RT",
+        "0x2435": "SG15RT",
+        "0x2436": "SG17RT",
+        "0x2437": "SG20RT",
+        "0x2438": "SG22RT",
+        "0x243B": "SG23RT",
+        "0x2439": "SG25RT",
+        "0x244D": "SG3.0RT-P2",
+        "0x244E": "SG4.0RT-P2",
+        "0x2440": "SG5.0RT-P2",
+        "0x2441": "SG6.0RT-P2",
+        "0x244C": "SG7.0RT-P2",
+        "0x2442": "SG8.0RT-P2",
+        "0x2443": "SG10RT-P2",
+        "0x2444": "SG12RT-P2",
+        "0x2445": "SG15RT-P2",
+        "0x2446": "SG17RT-P2",
+        "0x2447": "SG20RT-P2",
+        "0x244B": "SG23RT-P2",
+        "0x2449": "SG25RT-P2",
+        "0x2C10": "SG30CX",
+        "0x2C00": "SG33CX",
+        "0x2C0A": "SG36CX-US",
+        "0x2C01": "SG40CX",
+        "0x2C02": "SG50CX",
+        "0x2C0B": "SG60CX-US",
+        "0x2C21": "SG49.5CX-JP",
+        "0x2C06": "SG110CX",
+        "0x2C12": "SG100CX / SG100CX-JP",
+        "0x2C15": "SG25CX-SA",
+        "0x2C22": "SG75CX",
+        "0x2C33": "SG25CX-P2",
+        "0x2C34": "SG30CX-P2",
+        "0x2C35": "SG33CX-P2",
+        "0x2C36": "SG36CX-P2",
+        "0x2C37": "SG40CX-P2",
+        "0x2C32": "SG50CX-P2",
+        "0x2C2D": "SG125CX-P2",
+        "0x2C40": "SG110CX-P2",
+        "0x2C3F": "SG75CX-P2"
+      },
+      "role": "model",
+      "description": "Model code from the protocol's device table"
+    },
+    {
+      "name": "Nominal active power",
+      "group": "Device",
+      "area": "input",
+      "address": 5001,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "Output type",
+      "group": "Device",
+      "area": "input",
+      "address": 5002,
+      "type": "uint16",
+      "enum": {
+        "0": "Two-phase",
+        "1": "3P4L",
+        "2": "3P3L"
+      },
+      "description": "Tells whether registers 5019-5021 hold phase voltages (1) or line voltages (2)"
+    },
+    {
+      "name": "Daily energy yield",
+      "group": "Energy",
+      "area": "input",
+      "address": 5003,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Total energy yield",
+      "group": "Energy",
+      "area": "input",
+      "address": 5004,
+      "type": "uint32",
+      "unit": "kWh",
+      "description": "Whole kWh; 5144 has 0.1 kWh resolution on newer models"
+    },
+    {
+      "name": "Total running time",
+      "group": "Device",
+      "area": "input",
+      "address": 5006,
+      "type": "uint32",
+      "unit": "h"
+    },
+    {
+      "name": "Internal temperature",
+      "group": "Device",
+      "area": "input",
+      "address": 5008,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Total apparent power",
+      "group": "AC",
+      "area": "input",
+      "address": 5009,
+      "type": "uint32",
+      "unit": "VA",
+      "description": "Only on models that support it; 0xFFFFFFFF otherwise"
+    },
+    {
+      "name": "MPPT 1 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5011,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "MPPT 1 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5012,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 2 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5013,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 2 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5014,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 3 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5015,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 3 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5016,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 4 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5115,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 4 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5116,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 5 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5117,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 5 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5118,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 6 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5119,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 6 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5120,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 7 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5121,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 7 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5122,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 8 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5123,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 8 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5124,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 9 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5130,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 9 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5131,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 10 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5132,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 10 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5133,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 11 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5134,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 11 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5135,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "MPPT 12 voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5136,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "0xFFFF when the model has no such input"
+    },
+    {
+      "name": "MPPT 12 current",
+      "group": "DC",
+      "area": "input",
+      "address": 5137,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Total DC power",
+      "group": "DC",
+      "area": "input",
+      "address": 5017,
+      "type": "uint32",
+      "unit": "W"
+    },
+    {
+      "name": "Voltage A",
+      "group": "AC",
+      "area": "input",
+      "address": 5019,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Phase voltage or line voltage, depending on output type (5002)"
+    },
+    {
+      "name": "Voltage B",
+      "group": "AC",
+      "area": "input",
+      "address": 5020,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Phase voltage or line voltage, depending on output type (5002)"
+    },
+    {
+      "name": "Voltage C",
+      "group": "AC",
+      "area": "input",
+      "address": 5021,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Phase voltage or line voltage, depending on output type (5002)"
+    },
+    {
+      "name": "Current A",
+      "group": "AC",
+      "area": "input",
+      "address": 5022,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Current B",
+      "group": "AC",
+      "area": "input",
+      "address": 5023,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Current C",
+      "group": "AC",
+      "area": "input",
+      "address": 5024,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Total active power",
+      "group": "AC",
+      "area": "input",
+      "address": 5031,
+      "type": "uint32",
+      "unit": "W"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "AC",
+      "area": "input",
+      "address": 5033,
+      "type": "int32",
+      "unit": "var"
+    },
+    {
+      "name": "Power factor",
+      "group": "AC",
+      "area": "input",
+      "address": 5035,
+      "type": "int16",
+      "scale": 0.001,
+      "description": "Positive leading, negative lagging"
+    },
+    {
+      "name": "Grid frequency",
+      "group": "AC",
+      "area": "input",
+      "address": 5036,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "description": "Older models; RT and newer models use 5148 with finer resolution"
+    },
+    {
+      "name": "Work state",
+      "group": "Status",
+      "area": "input",
+      "address": 5038,
+      "type": "uint16",
+      "enum": {
+        "0x0": "Run",
+        "0x8000": "Stop",
+        "0x1300": "Key stop",
+        "0x1500": "Emergency stop",
+        "0x1400": "Standby",
+        "0x1200": "Initial standby",
+        "0x1600": "Starting",
+        "0x9100": "Alarm run",
+        "0x8100": "Derating run",
+        "0x8200": "Dispatch run",
+        "0x5500": "Fault",
+        "0x2500": "Communication fault",
+        "0x1111": "Uninitialized"
+      }
+    },
+    {
+      "name": "Fault/alarm code",
+      "group": "Status",
+      "area": "input",
+      "address": 5045,
+      "type": "uint16",
+      "description": "Valid only while the work state is Fault or Alarm run; code list is in the manufacturer's appendix"
+    },
+    {
+      "name": "Nominal reactive power",
+      "group": "Device",
+      "area": "input",
+      "address": 5049,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "kvar"
+    },
+    {
+      "name": "Array insulation resistance",
+      "group": "DC",
+      "area": "input",
+      "address": 5071,
+      "type": "uint16",
+      "unit": "kΩ",
+      "description": "0xFFFF means invalid"
+    },
+    {
+      "name": "Daily running time",
+      "group": "Device",
+      "area": "input",
+      "address": 5113,
+      "type": "uint16",
+      "unit": "min"
+    },
+    {
+      "name": "Monthly energy yield",
+      "group": "Energy",
+      "area": "input",
+      "address": 5128,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Total energy yield (high resolution)",
+      "group": "Energy",
+      "area": "input",
+      "address": 5144,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "RT series and some other models"
+    },
+    {
+      "name": "Negative voltage to ground",
+      "group": "DC",
+      "area": "input",
+      "address": 5146,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Bus voltage",
+      "group": "DC",
+      "area": "input",
+      "address": 5147,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Grid frequency (fine)",
+      "group": "AC",
+      "area": "input",
+      "address": 5148,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "RT series and some other models"
+    },
+    {
+      "name": "String 1 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7013,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A",
+      "description": "Available only if the hardware reports string currents; the number of strings depends on the model"
+    },
+    {
+      "name": "String 2 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7014,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 3 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7015,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 4 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7016,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 5 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7017,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 6 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7018,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 7 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7019,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 8 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7020,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 9 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7021,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 10 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7022,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 11 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7023,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 12 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7024,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 13 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7025,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 14 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7026,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 15 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7027,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 16 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7028,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 17 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7029,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 18 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7030,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 19 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7031,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 20 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7032,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 21 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7033,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 22 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7034,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 23 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7035,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "String 24 current",
+      "group": "Strings",
+      "area": "input",
+      "address": 7036,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "Clock year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 5000,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 5001,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock day",
+      "group": "Clock",
+      "area": "holding",
+      "address": 5002,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 5003,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock minute",
+      "group": "Clock",
+      "area": "holding",
+      "address": 5004,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock second",
+      "group": "Clock",
+      "area": "holding",
+      "address": 5005,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Start/stop",
+      "group": "Control",
+      "area": "holding",
+      "address": 5006,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0xCF": "Start",
+        "0xCE": "Stop"
+      }
+    },
+    {
+      "name": "Power limitation switch",
+      "group": "Control",
+      "area": "holding",
+      "address": 5007,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0xAA": "Enabled",
+        "0x55": "Disabled"
+      }
+    },
+    {
+      "name": "Power limitation setting",
+      "group": "Control",
+      "area": "holding",
+      "address": 5008,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Percent of nominal power; used when the limitation switch is enabled; range depends on the model"
+    },
+    {
+      "name": "Installed PV power",
+      "group": "Control",
+      "area": "holding",
+      "address": 5016,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "kW"
+    },
+    {
+      "name": "Power factor setting",
+      "group": "Control",
+      "area": "holding",
+      "address": 5019,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.001,
+      "description": "Range -1.000 to -0.800 or 0.800 to 1.000; used when reactive mode (5036) is 0xA1"
+    },
+    {
+      "name": "Active power overload",
+      "group": "Control",
+      "area": "holding",
+      "address": 5020,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0xAA": "Enabled",
+        "0x55": "Disabled"
+      }
+    },
+    {
+      "name": "Reactive power adjustment mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 5036,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0x55": "Off",
+        "0xA1": "Power factor setting",
+        "0xA2": "Reactive power percentage",
+        "0xA3": "Q(P) curve",
+        "0xA4": "Q(U) curve"
+      }
+    },
+    {
+      "name": "Reactive power percentage setting",
+      "group": "Control",
+      "area": "holding",
+      "address": 5037,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "-100.0 to 100.0; used when reactive mode is 0xA2"
+    },
+    {
+      "name": "Power limitation adjustment",
+      "group": "Control",
+      "area": "holding",
+      "address": 5039,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "kW",
+      "description": "Power limit in kW; range depends on the model"
+    },
+    {
+      "name": "Reactive power adjustment",
+      "group": "Control",
+      "area": "holding",
+      "address": 5040,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "kvar",
+      "description": "Reactive power in kvar; range depends on the model"
+    }
+  ]
+}
