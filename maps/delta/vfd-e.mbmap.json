@@ -1,0 +1,515 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Delta",
+  "model": "VFD-E",
+  "models": [
+    "VFD-E"
+  ],
+  "vendor_website": "deltaww.com",
+  "description": "Delta VFD-E compact drive (RS-485 Modbus): control and status words, output measurements, and the main motor and communication parameters",
+  "revision": 1,
+  "revised": "2026-11-10",
+  "source": "Delta VFD-E Series User Manual, SW PW V1.11 / CTL V2.11, June 2008 (04EE)",
+  "sources": [
+    {
+      "title": "Delta VFD-E Series User Manual",
+      "version": "SW PW V1.11 / CTL V2.11 (04EE)",
+      "date": "2008-06",
+      "url": "https://archive.org/details/manualsbase-id-376314",
+      "note": "chapter 4, group 9 communication parameters and section 3.5 address list; also on deltaww.com"
+    }
+  ],
+  "notes": [
+    "The drive answers the Modbus functions 03 (read), 06 (write one register) and 10 (write several); a parameter GG.nn is the holding register 0xGGnn (Pr.04.01 is 0x0401), and only one parameter can be read per request.",
+    "Factory serial format is ASCII 7N2 at 9600 bit/s, station 1 (Pr.09.04 = 0). This map assumes RTU 8N2 (Pr.09.04 = 3), so set that parameter on the drive first; the baud rate and station are not changed by it.",
+    "The manual's address list gives units only for current and voltages (one decimal). The 0.01 Hz scale of the frequency registers follows Pr.01.00 and the other frequency parameters, which have two decimals.",
+    "The control word (0x2000) and fault bits (0x2002) are write-only; they are listed as bit fields of the same register. To start, write run and direction together in one 0x2000 write.",
+    "To control the drive over the link set Pr.02.00 = 3 (frequency) and Pr.02.01 = 3 or 4 (run command). Only the most used parameters are listed; any other parameter can be added by its GG.nn address.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "run_cmd": {
+      "0": "No function",
+      "1": "Stop",
+      "2": "Run",
+      "3": "Jog + run"
+    },
+    "dir_cmd": {
+      "0": "No function",
+      "1": "Forward",
+      "2": "Reverse",
+      "3": "Change direction"
+    },
+    "accdec_cmd": {
+      "0": "1st accel/decel",
+      "1": "2nd accel/decel"
+    },
+    "error_code": {
+      "0": "No error",
+      "1": "Over-current (oc)",
+      "2": "Over-voltage (ov)",
+      "3": "IGBT overheat (oH1)",
+      "4": "Power board overheat (oH2)",
+      "5": "Overload (oL)",
+      "6": "Overload 1 (oL1)",
+      "7": "Overload 2 (oL2)",
+      "8": "External fault (EF)",
+      "9": "Over-current during acceleration (ocA)",
+      "10": "Over-current during deceleration (ocd)",
+      "11": "Over-current at steady speed (ocn)",
+      "12": "Ground fault (GFF)",
+      "13": "Low voltage (Lv)",
+      "14": "Phase loss (PHL)",
+      "15": "Base block",
+      "16": "Auto accel/decel failure (cFA)",
+      "17": "Software protection (codE)",
+      "18": "Power board CPU write failure (CF1.0)",
+      "19": "Power board CPU read failure (CF2.0)",
+      "20": "CC/OC hardware protection failure (HPF1)",
+      "21": "OV hardware protection failure (HPF2)",
+      "22": "GFF hardware protection failure (HPF3)",
+      "23": "OC hardware protection failure (HPF4)",
+      "24": "U-phase error (cF3.0)",
+      "25": "V-phase error (cF3.1)",
+      "26": "W-phase error (cF3.2)",
+      "27": "DC bus error (cF3.3)",
+      "28": "IGBT overheat (cF3.4)",
+      "29": "Power board overheat (cF3.5)",
+      "30": "Control board CPU write failure (cF1.1)",
+      "31": "Control board CPU write failure (cF2.1)",
+      "32": "ACI signal error (AErr)",
+      "33": "Reserved",
+      "34": "Motor PTC overheat (PtC1)"
+    },
+    "run_state": {
+      "0": "Stopped",
+      "1": "Decelerating to stop",
+      "2": "Standby",
+      "3": "Running"
+    },
+    "dir_state": {
+      "0": "Forward",
+      "1": "Reverse to forward",
+      "2": "Forward to reverse",
+      "3": "Reverse"
+    },
+    "identity": {
+      "0": "0.2 kW, 115/230 V",
+      "2": "0.4 kW, 115/230 V",
+      "4": "0.75 kW, 115/230 V",
+      "6": "1.5 kW, 115/230 V",
+      "8": "2.2 kW, 115/230 V",
+      "10": "3.7 kW, 115/230 V",
+      "12": "5.5 kW, 115/230 V",
+      "14": "7.5 kW, 115/230 V",
+      "3": "0.4 kW, 460 V",
+      "5": "0.75 kW, 460 V",
+      "7": "1.5 kW, 460 V",
+      "9": "2.2 kW, 460 V",
+      "11": "3.7 kW, 460 V",
+      "13": "5.5 kW, 460 V",
+      "15": "7.5 kW, 460 V",
+      "17": "11 kW, 460 V"
+    },
+    "freq_source": {
+      "0": "Keypad / UP-DOWN",
+      "1": "AVI 0-10 V",
+      "2": "ACI 4-20 mA or AVI2",
+      "3": "RS-485 / USB",
+      "4": "Keypad potentiometer",
+      "5": "CANopen"
+    },
+    "op_source": {
+      "0": "Keypad",
+      "1": "External terminals, keypad STOP enabled",
+      "2": "External terminals, keypad STOP disabled",
+      "3": "RS-485 / USB, keypad STOP enabled",
+      "4": "RS-485 / USB, keypad STOP disabled",
+      "5": "CANopen"
+    },
+    "baud": {
+      "0": "4800 bit/s",
+      "1": "9600 bit/s",
+      "2": "19200 bit/s",
+      "3": "38400 bit/s"
+    },
+    "fault_treat": {
+      "0": "Warn and keep running",
+      "1": "Warn and ramp to stop",
+      "2": "Warn and coast to stop",
+      "3": "No warning, keep running"
+    },
+    "protocol": {
+      "0": "ASCII 7N2",
+      "1": "ASCII 7E1",
+      "2": "ASCII 7O1",
+      "3": "RTU 8N2",
+      "4": "RTU 8E1",
+      "5": "RTU 8O1",
+      "6": "RTU 8N1",
+      "7": "RTU 8E2",
+      "8": "RTU 8O2",
+      "9": "ASCII 7N1",
+      "10": "ASCII 7E2",
+      "11": "ASCII 7O2"
+    }
+  },
+  "registers": [
+    {
+      "name": "Run command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 0,
+      "bits": 2,
+      "enum": "run_cmd",
+      "description": "Bits 1-0 of the command word: stop or run."
+    },
+    {
+      "name": "Direction command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 4,
+      "bits": 2,
+      "enum": "dir_cmd",
+      "description": "Bits 5-4 of the command word."
+    },
+    {
+      "name": "Accel/decel selection",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 6,
+      "bits": 2,
+      "enum": "accdec_cmd",
+      "description": "Bits 7-6 of the command word: acceleration and deceleration set to use."
+    },
+    {
+      "name": "Frequency command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2001",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Frequency set point written through the serial link, in 0.01 Hz (5000 = 50.00 Hz). Used when the master frequency source is RS-485 (Pr.02.00 = 3)."
+    },
+    {
+      "name": "External fault",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "W",
+      "bit": 0,
+      "bits": 1,
+      "description": "Bit 0: 1 raises an external fault (EF)."
+    },
+    {
+      "name": "Fault reset",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "W",
+      "bit": 1,
+      "bits": 1,
+      "description": "Bit 1: 1 resets the drive after a fault."
+    },
+    {
+      "name": "Error code",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2100",
+      "type": "uint16",
+      "access": "R",
+      "enum": "error_code",
+      "description": "Last fault of the drive; 0 means no fault."
+    },
+    {
+      "name": "Run state",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 2,
+      "enum": "run_state",
+      "description": "Bits 1-0 of the status word: RUN/STOP LED state."
+    },
+    {
+      "name": "Jog active",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 2,
+      "bits": 1,
+      "description": "Bit 2: 1 while a jog command is active."
+    },
+    {
+      "name": "Direction state",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 3,
+      "bits": 2,
+      "enum": "dir_state",
+      "description": "Bits 4-3 of the status word."
+    },
+    {
+      "name": "Frequency from communication",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 1,
+      "description": "Bit 8: 1 when the master frequency comes from the serial interface."
+    },
+    {
+      "name": "Frequency from analog",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 9,
+      "bits": 1,
+      "description": "Bit 9: 1 when the master frequency comes from an analog signal."
+    },
+    {
+      "name": "Run command from communication",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 10,
+      "bits": 1,
+      "description": "Bit 10: 1 when the operation command comes from the serial interface."
+    },
+    {
+      "name": "Frequency command (readback)",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2102",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Frequency set point in use."
+    },
+    {
+      "name": "Output frequency",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2103",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Output frequency of the drive."
+    },
+    {
+      "name": "Output current",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2104",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "Output current."
+    },
+    {
+      "name": "DC bus voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2108",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "DC bus voltage."
+    },
+    {
+      "name": "Output voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2109",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Output voltage."
+    },
+    {
+      "name": "IGBT temperature",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210A",
+      "type": "uint16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Temperature of the IGBT."
+    },
+    {
+      "name": "Identity code",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0000",
+      "type": "uint16",
+      "access": "R",
+      "enum": "identity",
+      "description": "Pr.00.00: model code of the drive, which gives its power and rated voltage class."
+    },
+    {
+      "name": "Rated current",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0001",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "Pr.00.01: rated current of the drive."
+    },
+    {
+      "name": "Parameter reset",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0002",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.00.02: 0 = parameters can be written, 1 = read-only, 9 = reset to factory settings (50 Hz base), 10 = reset to factory settings (60 Hz base)."
+    },
+    {
+      "name": "Maximum output frequency",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0100",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Pr.01.00."
+    },
+    {
+      "name": "Acceleration time 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0109",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "Pr.01.09. The unit is 0.1 s or 0.01 s depending on Pr.01.19."
+    },
+    {
+      "name": "Deceleration time 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x010A",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "Pr.01.10. The unit is 0.1 s or 0.01 s depending on Pr.01.19."
+    },
+    {
+      "name": "Master frequency source",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0200",
+      "type": "uint16",
+      "access": "RW",
+      "enum": "freq_source",
+      "description": "Pr.02.00."
+    },
+    {
+      "name": "Operation command source",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0201",
+      "type": "uint16",
+      "access": "RW",
+      "enum": "op_source",
+      "description": "Pr.02.01."
+    },
+    {
+      "name": "Communication address",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0900",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09.00: Modbus station address of the drive (1 to 254)."
+    },
+    {
+      "name": "Transmission speed",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0901",
+      "type": "uint16",
+      "access": "RW",
+      "enum": "baud",
+      "description": "Pr.09.01."
+    },
+    {
+      "name": "Transmission fault treatment",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0902",
+      "type": "uint16",
+      "access": "RW",
+      "enum": "fault_treat",
+      "description": "Pr.09.02."
+    },
+    {
+      "name": "Time-out detection",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0903",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "Pr.09.03: 0 disables the check."
+    },
+    {
+      "name": "Communication protocol",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0904",
+      "type": "uint16",
+      "access": "RW",
+      "enum": "protocol",
+      "description": "Pr.09.04: Modbus mode and frame format."
+    }
+  ]
+}

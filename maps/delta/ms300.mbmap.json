@@ -1,0 +1,467 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Delta",
+  "model": "MS300",
+  "models": [
+    "VFD-MS300",
+    "MS300"
+  ],
+  "vendor_website": "deltaww.com",
+  "description": "Delta MS300 compact drive (built-in RS-485 Modbus): control and status words, output measurements, and the main communication parameters",
+  "revision": 1,
+  "revised": "2026-11-10",
+  "source": "Delta MS300 Series User Manual, chapter 12 section 9 (Modbus), and MS300 High Speed Model User Manual",
+  "sources": [
+    {
+      "title": "Delta Standard Compact Drive MS300 Series User Manual",
+      "version": "chapter 12, section 12.9 (Modbus)",
+      "url": "https://www.forum.linuxcnc.org/media/kunena/attachments/33560/MS300-Manual1.pdf",
+      "note": "2000H-2101H address list checked against the standard-model manual page (12.1-09-8)"
+    },
+    {
+      "title": "Delta MS300 (High Speed Model) User Manual",
+      "date": "2021",
+      "url": "https://www.wolfautomation.com/content/delta-ms300-highspd-userman-21.pdf",
+      "note": "chapter 12 address list, 2102H onward, and Pr.09 parameters; same Modbus layout"
+    }
+  ],
+  "notes": [
+    "A parameter GG-nn is the holding register 0xGGnn (Pr.04-01 is 0x0401). Functions 03, 06 and 10 are supported.",
+    "Factory serial format is ASCII 7N2 at 9.6 kbit/s, station 1 (Pr.09-04 = 1). This map assumes RTU 8N2 (Pr.09-04 = 13), so set that parameter first.",
+    "The control word (0x2000) and the fault word (0x2002) are write-only; they are listed as bit fields. To start the drive, write run and direction in one 0x2000 write.",
+    "To control the drive over the link set the frequency source (Pr.00-20) and the operation source (Pr.00-21) to RS-485, then write 0x2001 or Pr.09-10.",
+    "The registers from 0x2102 on were read from the MS300 High Speed Model manual, which shares the layout of the standard model; the extra registers of the 0x2200 block are not listed. Pr.09-01 (baud rate) is not listed because its raw scale is not stated clearly in the manual.",
+    "Written from the manufacturer's manuals; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "unofficial",
+  "enums": {
+    "run_cmd": {
+      "0": "No function",
+      "1": "Stop",
+      "2": "Run",
+      "3": "Jog + run"
+    },
+    "dir_cmd": {
+      "0": "No function",
+      "1": "Forward",
+      "2": "Reverse",
+      "3": "Change direction"
+    },
+    "accdec_cmd": {
+      "0": "1st accel/decel",
+      "1": "2nd accel/decel",
+      "2": "3rd accel/decel",
+      "3": "4th accel/decel"
+    },
+    "op_src_cmd": {
+      "0": "No function",
+      "1": "Keypad",
+      "2": "Set by Pr.00-21",
+      "3": "Change operation source"
+    },
+    "run_state": {
+      "0": "Stopped",
+      "1": "Decelerating",
+      "2": "Standby",
+      "3": "Running"
+    },
+    "dir_state": {
+      "0": "Forward",
+      "1": "Reverse to forward",
+      "2": "Reverse",
+      "3": "Forward to reverse"
+    },
+    "protocol": {
+      "1": "ASCII 7N2",
+      "2": "ASCII 7E1",
+      "3": "ASCII 7O1",
+      "4": "ASCII 7E2",
+      "5": "ASCII 7O2",
+      "6": "ASCII 8N1",
+      "7": "ASCII 8N2",
+      "8": "ASCII 8E1",
+      "9": "ASCII 8O1",
+      "10": "ASCII 8E2",
+      "11": "ASCII 8O2",
+      "12": "RTU 8N1",
+      "13": "RTU 8N2",
+      "14": "RTU 8E1",
+      "15": "RTU 8O1",
+      "16": "RTU 8E2",
+      "17": "RTU 8O2"
+    }
+  },
+  "registers": [
+    {
+      "name": "Run command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 0,
+      "bits": 2,
+      "enum": "run_cmd",
+      "description": "Bits 1-0 of the command word: stop or run."
+    },
+    {
+      "name": "Direction command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 4,
+      "bits": 2,
+      "enum": "dir_cmd",
+      "description": "Bits 5-4 of the command word."
+    },
+    {
+      "name": "Accel/decel selection",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 6,
+      "bits": 2,
+      "enum": "accdec_cmd",
+      "description": "Bits 7-6 of the command word: acceleration and deceleration set to use."
+    },
+    {
+      "name": "Use bits 6-11 of command word",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 12,
+      "bits": 1,
+      "description": "Bit 12: 1 enables the accel/decel selection and the multi-speed step in bits 6-11 of the command word."
+    },
+    {
+      "name": "Speed step command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 8,
+      "bits": 4,
+      "description": "Bits 11-8 of the command word: 0 = master speed, 1 to 15 = multi-step speed 1 to 15. Takes effect when bit 12 is set."
+    },
+    {
+      "name": "Operation source command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "bit": 13,
+      "bits": 2,
+      "enum": "op_src_cmd",
+      "description": "Bits 14-13 of the command word."
+    },
+    {
+      "name": "Frequency command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2001",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Frequency set point in 0.01 Hz (5000 = 50.00 Hz)."
+    },
+    {
+      "name": "External fault",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "W",
+      "bit": 0,
+      "bits": 1,
+      "description": "Bit 0: 1 raises an external fault (EF)."
+    },
+    {
+      "name": "Fault reset",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "W",
+      "bit": 1,
+      "bits": 1,
+      "description": "Bit 1: 1 resets the drive after a fault."
+    },
+    {
+      "name": "Base block",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "W",
+      "bit": 2,
+      "bits": 1,
+      "description": "Bit 2: 1 turns B.B. on (outputs blocked)."
+    },
+    {
+      "name": "Error code",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2100",
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 8,
+      "description": "Low byte of the register: fault code, 0 when there is no fault (codes as in the manual's fault table)."
+    },
+    {
+      "name": "Warning code",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2100",
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "description": "High byte of the register: warning code, 0 when there is no warning."
+    },
+    {
+      "name": "Run state",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 2,
+      "enum": "run_state",
+      "description": "Bits 1-0 of the status word."
+    },
+    {
+      "name": "Jog active",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 2,
+      "bits": 1,
+      "description": "Bit 2: 1 while a jog command is active."
+    },
+    {
+      "name": "Direction state",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 3,
+      "bits": 2,
+      "enum": "dir_state",
+      "description": "Bits 4-3 of the status word."
+    },
+    {
+      "name": "Frequency from communication",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 1,
+      "description": "Bit 8: 1 when the master frequency comes from the serial interface."
+    },
+    {
+      "name": "Frequency from analog",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 9,
+      "bits": 1,
+      "description": "Bit 9: 1 when the master frequency comes from an analog signal."
+    },
+    {
+      "name": "Run command from communication",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 10,
+      "bits": 1,
+      "description": "Bit 10: 1 when the operation command comes from the serial interface."
+    },
+    {
+      "name": "Parameters locked",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 11,
+      "bits": 1,
+      "description": "Bit 11: 1 when the parameters are locked."
+    },
+    {
+      "name": "Frequency command (readback)",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2102",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Frequency set point in use."
+    },
+    {
+      "name": "Output frequency",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2103",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Output frequency of the drive."
+    },
+    {
+      "name": "Output current",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2104",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "A",
+      "description": "Output current, two decimals. Above 655.35 A the decimal point shifts to one decimal; the high byte of 0x211F says which."
+    },
+    {
+      "name": "DC bus voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2105",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "DC bus voltage."
+    },
+    {
+      "name": "Output voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2106",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Output voltage."
+    },
+    {
+      "name": "Multi-speed step",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2107",
+      "type": "uint16",
+      "access": "R",
+      "description": "Step number of the multi-step speed operation now running."
+    },
+    {
+      "name": "Counter value",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2109",
+      "type": "uint16",
+      "access": "R",
+      "description": "Value of the internal counter."
+    },
+    {
+      "name": "Power factor angle",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210A",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°",
+      "description": "Power factor angle."
+    },
+    {
+      "name": "Output torque",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210B",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Output torque as a percentage of rated."
+    },
+    {
+      "name": "Motor speed",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210C",
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm",
+      "description": "Actual motor speed."
+    },
+    {
+      "name": "Output current decimals",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x211F",
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "description": "High byte: decimal places used by the output current display (see 0x2104)."
+    },
+    {
+      "name": "Communication frequency",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x090A",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Pr.09-10: master frequency used when the frequency source is RS-485. Scaled like the frequency command."
+    },
+    {
+      "name": "Communication address",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0900",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-00: Modbus station address of the drive (1 to 254)."
+    },
+    {
+      "name": "Communication protocol",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0904",
+      "type": "uint16",
+      "access": "RW",
+      "enum": "protocol",
+      "description": "Pr.09-04: Modbus mode and frame format of COM1."
+    }
+  ]
+}
