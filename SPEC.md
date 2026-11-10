@@ -188,6 +188,8 @@ Each item of `registers` is an object. `name`, `area`, `address` and `type` are 
 | `firmware_min` | version string (§3.2) | | Oldest firmware that has this register |
 | `firmware_max` | version string (§3.2) | | Newest firmware that has this register |
 | `role` | `"model"`, `"firmware"`, `"serial"` | | This register identifies the device (§4.7) |
+| `read_alone` | boolean | `false` | The register is read in a request of its own (§4.9) |
+| `read_group` | non-empty string | | The register is read only together with registers of the same group (§4.9) |
 | `description` | string | | Free text |
 | `comment` | string | | Free note about the register, for people editing the map |
 
@@ -345,6 +347,21 @@ Each field is an object. `name` is always required. `role` and the keys below de
 - **No value:** an answer that is shorter than a field needs, an exception answer, a missing object, or a device that does not support the function gives no value. The check is **unknown** (§9), not a mismatch.
 - **Several sources:** `identify` and registers with a `role` can both be present. When both give a value for the same role, a tool **SHOULD** use the registers and **MAY** use `identify` for the roles that no register gives.
 
+### 4.9 Reading in separate requests
+
+A reader normally joins neighbouring registers into one request. Some devices refuse a request that runs across the border between two internal tables, even though every register in it exists. Two optional keys limit how registers are joined:
+
+- **`read_alone`**: `true` means the register is read in a request that holds no other register. Bit fields and other registers that occupy the same words count as the same register.
+- **`read_group`**: a name. Registers with the same name **MAY** be read in one request, and a request **MUST NOT** hold registers of different groups or a register without a group. Registers without `read_group` are joined as before.
+
+```json
+{"name": "Digital input status", "area": "holding", "address": 768, "type": "uint16", "read_group": "status"},
+{"name": "Active tariff", "area": "holding", "address": 769, "type": "uint16", "read_group": "status"},
+{"name": "Firmware", "area": "holding", "address": 770, "type": "uint16", "read_alone": true}
+```
+
+When both keys are present, `read_alone` wins. The keys only limit joining: a reader is free to make more requests than needed, and `max_read_registers` and `max_read_bits` still apply. They affect only how the registers are requested, not what they mean, so a reader that does not know them reads the same registers, joined as it always did. That is why they need no new `mbmap` version (§8): on a device that refuses the joined request, an older reader fails exactly as it would without the keys.
+
 ## 5. Areas and addresses
 
 | `area` | Unit | Read | Write | Allowed `access` |
@@ -433,6 +450,7 @@ Readers **SHOULD** report every problem with one of the codes below and a [JSON 
 | `duplicate-name` | warning | A `name` is used more than once by registers whose firmware ranges overlap (§3.2) |
 | `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Registers that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`), nor registers whose firmware ranges do not overlap |
 | `firmware-outside-map` | warning | A register's firmware range has no version in common with the file's, so it never applies |
+| `bad-read` | error | `read_group` is an empty string |
 | `unknown-key` | warning | A register has a key that is not in this spec and does not start with `x_` |
 | `unused-write-limit` | warning | `write_min` or `write_max` is set on a register where it has no effect (`bool`, `string`, or `access` `"R"`) |
 | `unused-bit` | warning | `bit` is set on a register where it has no effect (any type but `bool`, unless `bits` is also set on a `uint16`) |

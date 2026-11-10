@@ -624,6 +624,18 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
                     ck.error(here, "bad-byte-order", f'{key} must be "big" or "little", not {value!r}')
                 else:
                     reg_order[key] = value
+            elif key == "read_alone":
+                if isinstance(value, bool):
+                    row[key] = "true" if value else "false"
+                else:
+                    wrong_type(here, "a boolean", value)
+            elif key == "read_group":
+                if not isinstance(value, str):
+                    wrong_type(here, "a string", value)
+                elif not value.strip():
+                    ck.error(here, "bad-read", "read_group must not be empty")
+                else:
+                    row[key] = value
             elif key in V2_VERSION_KEYS or key == "role":
                 if isinstance(value, str):
                     row[key] = value
