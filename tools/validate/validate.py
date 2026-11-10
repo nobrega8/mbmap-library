@@ -384,6 +384,55 @@ def v2_table(ck: Checker, at: str, value: object, code: str, lo: int | None = No
     return True
 
 
+IDENTIFY_TYPES = ("uint8", "uint16", "string")
+
+
+def check_identify(ck: Checker, at: str, value: object, meta: dict[str, str]) -> None:
+    """The `identify` block: fields of the Report Slave ID (FC17) answer (SPEC.md 4.8)."""
+    if not isinstance(value, dict):
+        ck.error(at, "bad-json-type", f"expected an object, found {json_kind(value)}")
+        return
+    if value.get("function") != 17 or isinstance(value.get("function"), bool):
+        ck.error(child(at, "function"), "bad-identify", "function must be 17 (Report Slave ID)")
+    fields = value.get("fields")
+    if not isinstance(fields, list) or not fields:
+        ck.error(child(at, "fields"), "bad-identify", "fields must be a non-empty array")
+        return
+    roles: set[str] = set()
+    for i, field in enumerate(fields):
+        here = child(child(at, "fields"), i)
+        if not isinstance(field, dict):
+            ck.error(here, "bad-identify", "a field must be an object")
+            continue
+        name = field.get("name")
+        if not isinstance(name, str) or not name.strip():
+            ck.error(child(here, "name"), "bad-identify", "a field needs a non-empty name")
+        offset = field.get("offset")
+        if not isinstance(offset, int) or isinstance(offset, bool) or offset < 0:
+            ck.error(child(here, "offset"), "bad-identify", "offset must be a whole number from 0")
+        typ = field.get("type")
+        if typ not in IDENTIFY_TYPES:
+            ck.error(child(here, "type"), "bad-identify", 'type must be "uint8", "uint16" or "string"')
+        length = field.get("length")
+        if typ == "string" and (not isinstance(length, int) or isinstance(length, bool) or length < 1):
+            ck.error(child(here, "length"), "bad-identify", "a string field needs a length in bytes, from 1")
+        role = field.get("role")
+        if role is not None:
+            if role not in ROLES:
+                ck.error(child(here, "role"), "bad-identify", 'role must be "model", "firmware" or "serial"')
+            elif role in roles and role != "firmware":
+                ck.error(child(here, "role"), "bad-identify", f'only one field can have the role "{role}"')
+            roles.add(str(role))
+        enum = field.get("enum")
+        if isinstance(enum, str):
+            if f"enum_{enum}" not in meta:
+                ck.error(child(here, "enum"), "bad-identify", f"no enum table named {enum!r}")
+        elif isinstance(enum, dict):
+            v2_table(ck, child(here, "enum"), enum, "bad-identify")
+        elif enum is not None:
+            ck.error(child(here, "enum"), "bad-identify", "enum must be a table name or an object")
+
+
 def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
     try:
         doc = json.loads(text, object_pairs_hook=no_duplicates, parse_constant=not_json_constant)
@@ -493,9 +542,13 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
         elif key == "registers":
             if not isinstance(value, list):
                 wrong_type(at, "an array", value)
+        elif key == "identify":
+            pass  # checked after the loop, once every enum table is known
         else:
             meta[key] = as_text(value)  # x_ and unknown keys
     meta["byte_order"] = JOIN_ORDER[order["byte_order"], order["word_order"]]
+    if "identify" in doc:
+        check_identify(ck, "/identify", doc["identify"], meta)
     lo, hi = (parse_version(meta.get(k, "")) for k in V2_VERSION_KEYS)
     if lo and hi and max_before_min(hi, lo):
         ck.error("/firmware_min", "bad-firmware-range",

@@ -46,9 +46,36 @@
       "propertyNames": { "enum": ["int16", "uint16", "int32", "uint32", "int64", "uint64"] },
       "additionalProperties": { "$ref": "#/$defs/table" }
     },
+    "identify": { "$ref": "#/$defs/identify" },
     "registers": { "type": "array", "items": { "$ref": "#/$defs/register" } }
   },
   "$defs": {
+    "identify": {
+      "description": "Fields of the Report Slave ID (FC17) answer that identify the device (SPEC.md 4.8).",
+      "type": "object",
+      "required": ["function", "fields"],
+      "properties": {
+        "function": { "const": 17 },
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name", "offset", "type"],
+            "properties": {
+              "name": { "$ref": "#/$defs/text" },
+              "offset": { "type": "integer", "minimum": 0 },
+              "type": { "enum": ["uint8", "uint16", "string"] },
+              "length": { "type": "integer", "minimum": 1 },
+              "role": { "enum": ["model", "firmware", "serial"] },
+              "enum": { "anyOf": [{ "type": "string" }, { "$ref": "#/$defs/table" }] }
+            },
+            "if": { "properties": { "type": { "const": "string" } }, "required": ["type"] },
+            "then": { "required": ["length"] }
+          }
+        }
+      }
+    },
     "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
     "order": { "enum": ["big", "little"] },
     "version": {
