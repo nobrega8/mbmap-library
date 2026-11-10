@@ -1,0 +1,1318 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Siemens",
+  "model": "SINAMICS V20",
+  "models": [
+    "SINAMICS V20",
+    "V20"
+  ],
+  "vendor_website": "siemens.com",
+  "description": "SINAMICS V20 compact drive (built-in RS485, Modbus RTU): control and status words, setpoints, diagnostics, faults and PID registers",
+  "revision": 1,
+  "revised": "2026-11-10",
+  "source": "Siemens, \"SINAMICS V20 Inverter Operating Instructions\", 01/2018, A5E34559884-009, section 7.2 MODBUS communication, Mapping table; https://cache.industry.siemens.com/dl/files/193/109756193/att_942991/v1/V20_op_instr_0118_en-US.pdf",
+  "sources": [
+    {
+      "title": "SINAMICS V20 Inverter Operating Instructions",
+      "version": "A5E34559884-009",
+      "date": "2018-01",
+      "url": "https://cache.industry.siemens.com/dl/files/193/109756193/att_942991/v1/V20_op_instr_0118_en-US.pdf",
+      "note": "section 7.2 MODBUS communication, Mapping table"
+    }
+  ],
+  "notes": [
+    "Set P0700 = 5 (USS/MODBUS on RS485), P2023 = 2 (Modbus) and power-cycle the inverter; P2021 sets the station address (1 to 247), P2010 the baud rate, P2034 the parity (default even) and P2035 the stop bits (default 1).",
+    "Addresses are the manual's register numbers: register 0 is 40001, so the map uses holding addresses 0-based. Only function codes 3, 6 and 16 are supported.",
+    "Two register blocks overlap in function. 40001-40062 is the older compatible block; 40100-40111 is the process-data block (control word, setpoint, status word, actual value) and 40200 onward is the parameter-data block.",
+    "Values with a scale factor in the manual are already multiplied by it on the wire (frequency 50.00 Hz reads 5000). Setpoint and actual-value percentages (40003, 40044) and the process-data words 40101 and 40111 are relative to the reference frequency P2000; for the process words 0x4000 = 100 %.",
+    "Registers 40014/40015 and 40200-40203 write BICO inputs: only 0 or 1 is accepted and it replaces the previous connection. Digital outputs 3-4 and digital inputs 5-6 exist only with the optional I/O Extension Module.",
+    "The manual lists no register with a fixed value, so the map has no reference values.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "E",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Watchdog time",
+      "group": "Communication",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "unit": "ms",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535
+    },
+    {
+      "name": "Watchdog action",
+      "group": "Communication",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Frequency setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "Speed setpoint HSW as a percentage of the reference frequency (P2000); 0.00 to 100.00."
+    },
+    {
+      "name": "Run enable",
+      "group": "Control",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Control word bit 3 (STW:3)."
+    },
+    {
+      "name": "Forward/reverse command",
+      "group": "Control",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Control word bit 11 (STW:11): 0 = forward, 1 = reverse."
+    },
+    {
+      "name": "Start command",
+      "group": "Control",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Control word bit 0 (STW:0): 1 = start."
+    },
+    {
+      "name": "Fault acknowledgment",
+      "group": "Control",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Control word bit 7 (STW:7)."
+    },
+    {
+      "name": "PID setpoint reference",
+      "group": "PID",
+      "area": "holding",
+      "address": 7,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "write_min": -200,
+      "write_max": 200
+    },
+    {
+      "name": "PID enable",
+      "group": "PID",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Reads r0055.8; writing sets P2200 statically to 0 or 1 (BICO)."
+    },
+    {
+      "name": "Current limit",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "write_min": 10,
+      "write_max": 400
+    },
+    {
+      "name": "Acceleration time",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 650
+    },
+    {
+      "name": "Deceleration time",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 650
+    },
+    {
+      "name": "Digital output 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Reads r0747.0; writing sets P0731 statically to 0 or 1 (BICO). HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital output 2",
+      "group": "I/O",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Reads r0747.1; writing sets P0732 statically to 0 or 1 (BICO). HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Reference frequency",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 550
+    },
+    {
+      "name": "PID upper limit",
+      "group": "PID",
+      "area": "holding",
+      "address": 16,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "write_min": -200,
+      "write_max": 200
+    },
+    {
+      "name": "PID lower limit",
+      "group": "PID",
+      "area": "holding",
+      "address": 17,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "write_min": -200,
+      "write_max": 200
+    },
+    {
+      "name": "Proportional gain",
+      "group": "PID",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65
+    },
+    {
+      "name": "Integral gain",
+      "group": "PID",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 60
+    },
+    {
+      "name": "Differential gain",
+      "group": "PID",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 60
+    },
+    {
+      "name": "Feedback gain",
+      "group": "PID",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 500
+    },
+    {
+      "name": "Low pass",
+      "group": "PID",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 60
+    },
+    {
+      "name": "Frequency output",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R",
+      "description": "r0024."
+    },
+    {
+      "name": "Speed",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 24,
+      "type": "int16",
+      "unit": "RPM",
+      "access": "R",
+      "description": "r0022."
+    },
+    {
+      "name": "Current filtered",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "r0027."
+    },
+    {
+      "name": "Torque",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 26,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Nm",
+      "access": "R",
+      "description": "r0031."
+    },
+    {
+      "name": "Actual power",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 27,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "r0032."
+    },
+    {
+      "name": "Total kWh",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "unit": "kWh",
+      "access": "R",
+      "description": "r0039."
+    },
+    {
+      "name": "DC bus voltage",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "r0026."
+    },
+    {
+      "name": "Reference",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 30,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R",
+      "description": "r0020."
+    },
+    {
+      "name": "Rated power",
+      "group": "Identity",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "r0206."
+    },
+    {
+      "name": "Voltage output",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "r0025."
+    },
+    {
+      "name": "Forward/reverse state",
+      "group": "Status",
+      "area": "holding",
+      "address": 33,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word bit 14 (ZSW:14): FWD / REV."
+    },
+    {
+      "name": "Stop/run state",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word bit 2 (ZSW:2): STOP / RUN."
+    },
+    {
+      "name": "Run at maximum frequency",
+      "group": "Status",
+      "area": "holding",
+      "address": 35,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word bit 10 (ZSW:10): MAX / NO."
+    },
+    {
+      "name": "Control mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word bit 9 (ZSW:9): SERIAL / LOCAL."
+    },
+    {
+      "name": "Enabled",
+      "group": "Status",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word bit 0 (ZSW:0): ON / OFF."
+    },
+    {
+      "name": "Ready to run",
+      "group": "Status",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word bit 1 (ZSW:1): READY / OFF."
+    },
+    {
+      "name": "Analog input 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 39,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0754[0]."
+    },
+    {
+      "name": "Analog input 2",
+      "group": "I/O",
+      "area": "holding",
+      "address": 40,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0754[1]."
+    },
+    {
+      "name": "Analog output 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 41,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0774[0]."
+    },
+    {
+      "name": "Actual frequency",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 43,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "Actual speed HIW as a percentage of the reference frequency."
+    },
+    {
+      "name": "PID setpoint output",
+      "group": "PID",
+      "area": "holding",
+      "address": 44,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2250."
+    },
+    {
+      "name": "PID output",
+      "group": "PID",
+      "area": "holding",
+      "address": 45,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2294."
+    },
+    {
+      "name": "PID feedback",
+      "group": "PID",
+      "area": "holding",
+      "address": 46,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2266."
+    },
+    {
+      "name": "Digital input 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 47,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.0. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 2",
+      "group": "I/O",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.1. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 3",
+      "group": "I/O",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.2. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 4",
+      "group": "I/O",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.3. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Fault state",
+      "group": "Status",
+      "area": "holding",
+      "address": 53,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word bit 3 (ZSW:3): FAULT / OFF."
+    },
+    {
+      "name": "Last fault",
+      "group": "Faults",
+      "area": "holding",
+      "address": 54,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[0]."
+    },
+    {
+      "name": "Fault 1",
+      "group": "Faults",
+      "area": "holding",
+      "address": 55,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[1]."
+    },
+    {
+      "name": "Fault 2",
+      "group": "Faults",
+      "area": "holding",
+      "address": 56,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[2]."
+    },
+    {
+      "name": "Fault 3",
+      "group": "Faults",
+      "area": "holding",
+      "address": 57,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[3]."
+    },
+    {
+      "name": "Warning state",
+      "group": "Status",
+      "area": "holding",
+      "address": 58,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word bit 7 (ZSW:7): WARN / OK."
+    },
+    {
+      "name": "Last warning",
+      "group": "Faults",
+      "area": "holding",
+      "address": 59,
+      "type": "uint16",
+      "access": "R",
+      "description": "r2110."
+    },
+    {
+      "name": "Inverter version",
+      "group": "Identity",
+      "area": "holding",
+      "address": 60,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R",
+      "description": "r0018 (firmware version)."
+    },
+    {
+      "name": "Inverter model",
+      "group": "Identity",
+      "area": "holding",
+      "address": 61,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0201 (power unit code number)."
+    },
+    {
+      "name": "Control word (STW)",
+      "group": "Process data",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Process data 1 (PZD 1), written to the control word STW. Start = 0x047F, stop (OFF1) = 0x047E, fault acknowledge = 0x04FE then 0x047E, reverse start = 0x0C7F."
+    },
+    {
+      "name": "Speed setpoint (HSW)",
+      "group": "Process data",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Process data 2 (PZD 2): main setpoint HSW, 0x4000 (16384) = 100 % of the reference frequency (P2000)."
+    },
+    {
+      "name": "Status word (ZSW)",
+      "group": "Process data",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "R",
+      "description": "Process data 1 (PZD 1): status word ZSW."
+    },
+    {
+      "name": "Actual speed (HIW)",
+      "group": "Process data",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "description": "Process data 2 (PZD 2): main actual value HIW, 0x4000 (16384) = 100 % of the reference frequency (P2000)."
+    },
+    {
+      "name": "Digital output 1 (register 40200)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 199,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Reads r0747.0; writing sets P0731 statically to 0 or 1 (BICO). HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital output 2 (register 40201)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 200,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Reads r0747.1; writing sets P0732 statically to 0 or 1 (BICO). HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital output 3",
+      "group": "I/O",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Only with the optional I/O Extension Module. Reads r0747.2; writing sets P0733 (BICO). HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital output 4",
+      "group": "I/O",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Only with the optional I/O Extension Module. Reads r0747.3; writing sets P0734 (BICO). HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Analog output 1 (register 40220)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 219,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0774[0]."
+    },
+    {
+      "name": "Digital input 1 (register 40240)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 239,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.0. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 2 (register 40241)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 240,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.1. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 3 (register 40242)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 241,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.2. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 4 (register 40243)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 242,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.3. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 5",
+      "group": "I/O",
+      "area": "holding",
+      "address": 243,
+      "type": "uint16",
+      "access": "R",
+      "description": "Only with the optional I/O Extension Module. r0722.4. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 6",
+      "group": "I/O",
+      "area": "holding",
+      "address": 244,
+      "type": "uint16",
+      "access": "R",
+      "description": "Only with the optional I/O Extension Module. r0722.5. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Analog input 1 (register 40260)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 259,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0754[0]."
+    },
+    {
+      "name": "Analog input 2 (register 40261)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 260,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0754[1]."
+    },
+    {
+      "name": "Inverter model (register 40300)",
+      "group": "Identity",
+      "area": "holding",
+      "address": 299,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0201 (power unit code number)."
+    },
+    {
+      "name": "Inverter version (register 40301)",
+      "group": "Identity",
+      "area": "holding",
+      "address": 300,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R",
+      "description": "r0018 (firmware version)."
+    },
+    {
+      "name": "Rated power (register 40320)",
+      "group": "Identity",
+      "area": "holding",
+      "address": 319,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "r0206."
+    },
+    {
+      "name": "Current limit (register 40321)",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 320,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "write_min": 10,
+      "write_max": 400
+    },
+    {
+      "name": "Acceleration time (register 40322)",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 321,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 650
+    },
+    {
+      "name": "Deceleration time (register 40323)",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 322,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 650
+    },
+    {
+      "name": "Reference frequency (register 40324)",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 323,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 650
+    },
+    {
+      "name": "Fixed frequency 1",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 324,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "description": "P1001."
+    },
+    {
+      "name": "Fixed frequency 2",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 325,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "description": "P1002."
+    },
+    {
+      "name": "Fixed frequency 3",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 326,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "description": "P1003."
+    },
+    {
+      "name": "Fixed frequency 4",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 327,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "description": "P1004."
+    },
+    {
+      "name": "Fixed setpoint 1",
+      "group": "PID",
+      "area": "holding",
+      "address": 329,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "P2889."
+    },
+    {
+      "name": "Fixed setpoint 2",
+      "group": "PID",
+      "area": "holding",
+      "address": 330,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "P2890."
+    },
+    {
+      "name": "Reference (register 40340)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 339,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R",
+      "description": "r0020."
+    },
+    {
+      "name": "Speed (register 40341)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 340,
+      "type": "int16",
+      "unit": "RPM",
+      "access": "R",
+      "description": "r0022."
+    },
+    {
+      "name": "Frequency output (register 40342)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 341,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R",
+      "description": "r0024."
+    },
+    {
+      "name": "Voltage output (register 40343)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 342,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "r0025."
+    },
+    {
+      "name": "DC bus voltage (register 40344)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 343,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "r0026."
+    },
+    {
+      "name": "Current filtered (register 40345)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 344,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "r0027."
+    },
+    {
+      "name": "Torque (register 40346)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 345,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Nm",
+      "access": "R",
+      "description": "r0031."
+    },
+    {
+      "name": "Actual power (register 40347)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 346,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "r0032."
+    },
+    {
+      "name": "Total kWh (register 40348)",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 347,
+      "type": "uint16",
+      "unit": "kWh",
+      "access": "R",
+      "description": "r0039."
+    },
+    {
+      "name": "Hand/auto",
+      "group": "Status",
+      "area": "holding",
+      "address": 348,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0807: HAND / AUTO."
+    },
+    {
+      "name": "Current unfiltered",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 349,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "r0068."
+    },
+    {
+      "name": "Fault 1 (register 40400)",
+      "group": "Faults",
+      "area": "holding",
+      "address": 399,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[0]."
+    },
+    {
+      "name": "Fault 2 (register 40401)",
+      "group": "Faults",
+      "area": "holding",
+      "address": 400,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[1]."
+    },
+    {
+      "name": "Fault 3 (register 40402)",
+      "group": "Faults",
+      "area": "holding",
+      "address": 401,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[2]."
+    },
+    {
+      "name": "Fault 4",
+      "group": "Faults",
+      "area": "holding",
+      "address": 402,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[3]."
+    },
+    {
+      "name": "Fault 5",
+      "group": "Faults",
+      "area": "holding",
+      "address": 403,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[4]."
+    },
+    {
+      "name": "Fault 6",
+      "group": "Faults",
+      "area": "holding",
+      "address": 404,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[5]."
+    },
+    {
+      "name": "Fault 7",
+      "group": "Faults",
+      "area": "holding",
+      "address": 405,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[6]."
+    },
+    {
+      "name": "Fault 8",
+      "group": "Faults",
+      "area": "holding",
+      "address": 406,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[7]."
+    },
+    {
+      "name": "Warning",
+      "group": "Faults",
+      "area": "holding",
+      "address": 407,
+      "type": "uint16",
+      "access": "R",
+      "description": "r2110[0]."
+    },
+    {
+      "name": "Parameter error code",
+      "group": "Parameter access",
+      "area": "holding",
+      "address": 498,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PID enable (register 40500)",
+      "group": "PID",
+      "area": "holding",
+      "address": 499,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Reads r0055.8; writing sets P2200 statically to 0 or 1 (BICO)."
+    },
+    {
+      "name": "PID setpoint reference (register 40501)",
+      "group": "PID",
+      "area": "holding",
+      "address": 500,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "P2240."
+    },
+    {
+      "name": "Low pass (register 40510)",
+      "group": "PID",
+      "area": "holding",
+      "address": 509,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "RW",
+      "description": "P2265."
+    },
+    {
+      "name": "Feedback gain (register 40511)",
+      "group": "PID",
+      "area": "holding",
+      "address": 510,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "P2269."
+    },
+    {
+      "name": "Proportional gain (register 40512)",
+      "group": "PID",
+      "area": "holding",
+      "address": 511,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "P2280."
+    },
+    {
+      "name": "Integral gain (register 40513)",
+      "group": "PID",
+      "area": "holding",
+      "address": 512,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "P2285."
+    },
+    {
+      "name": "Differential gain (register 40514)",
+      "group": "PID",
+      "area": "holding",
+      "address": 513,
+      "type": "uint16",
+      "access": "RW",
+      "description": "P2274."
+    },
+    {
+      "name": "PID upper limit (register 40515)",
+      "group": "PID",
+      "area": "holding",
+      "address": 514,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "P2291."
+    },
+    {
+      "name": "PID lower limit (register 40516)",
+      "group": "PID",
+      "area": "holding",
+      "address": 515,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "P2292."
+    },
+    {
+      "name": "PID setpoint output (register 40520)",
+      "group": "PID",
+      "area": "holding",
+      "address": 519,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2250."
+    },
+    {
+      "name": "PID feedback (register 40521)",
+      "group": "PID",
+      "area": "holding",
+      "address": 520,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2266."
+    },
+    {
+      "name": "PID output (register 40522)",
+      "group": "PID",
+      "area": "holding",
+      "address": 521,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2294."
+    },
+    {
+      "name": "Parameter number",
+      "group": "Parameter access",
+      "area": "holding",
+      "address": 549,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Parameter number for indirect parameter access."
+    },
+    {
+      "name": "Parameter index",
+      "group": "Parameter access",
+      "area": "holding",
+      "address": 550,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Parameter index for indirect parameter access."
+    },
+    {
+      "name": "Parameter write value, upper word",
+      "group": "Parameter access",
+      "area": "holding",
+      "address": 553,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535
+    },
+    {
+      "name": "Parameter write value, lower word",
+      "group": "Parameter access",
+      "area": "holding",
+      "address": 554,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 65535
+    },
+    {
+      "name": "Parameter read value, upper word",
+      "group": "Parameter access",
+      "area": "holding",
+      "address": 557,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Parameter read value, lower word",
+      "group": "Parameter access",
+      "area": "holding",
+      "address": 558,
+      "type": "uint16",
+      "access": "R"
+    }
+  ]
+}

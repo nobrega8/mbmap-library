@@ -1,0 +1,620 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Siemens",
+  "model": "SINAMICS G120 (CU240B-2 / CU240E-2)",
+  "models": [
+    "SINAMICS G120",
+    "G120",
+    "CU240B-2",
+    "CU240E-2"
+  ],
+  "vendor_website": "siemens.com",
+  "description": "SINAMICS G120 inverter with CU240B-2 or CU240E-2 Control Unit (RS485, Modbus RTU): process data, I/O, converter data, diagnostics, faults and technology controller registers",
+  "revision": 1,
+  "revised": "2026-11-10",
+  "source": "Siemens, \"SINAMICS G120 Inverter with CU240B-2 and CU240E-2 Control Units Operating Instructions\", 01/2011, FW 4.4, A5E02299792B AB, section 6.2.3 Communication over Modbus RTU, table 6-30; https://pogoni.etf.bg.ac.rs/PLC_PLUS/Control_Units_CU240B-2_and_CU240E-2_en-US.pdf",
+  "sources": [
+    {
+      "title": "SINAMICS G120 Inverter with CU240B-2 and CU240E-2 Control Units, Operating Instructions",
+      "version": "A5E02299792B AB, FW 4.4",
+      "date": "2011-01",
+      "url": "https://pogoni.etf.bg.ac.rs/PLC_PLUS/Control_Units_CU240B-2_and_CU240E-2_en-US.pdf",
+      "note": "section 6.2.3, Table 6-30 Assigning the Modbus register to the parameters of the Control Unit (copy of the Siemens manual hosted by a university; the Siemens support site refused automated download)"
+    }
+  ],
+  "notes": [
+    "Set p2030 = 2 (fieldbus protocol Modbus) with the macro P0015 = 21; the address comes from the DIP switches or p2021 (1 to 247, effective after a power cycle), the baud rate from p2020 (factory 19200 bit/s). The Control Unit is a Modbus RTU slave with even parity.",
+    "Addresses are the manual's register numbers minus 40001 (40100 is address 99). Only function codes 3 (read) and 6 (write single register) are used; reading more than 125 registers or crossing the edge of a register block returns an exception.",
+    "Valid holding registers run from 40001 to 40522. The manual says 40001-40065 are compatible with the Micromaster MM436 but does not list them, so only 40100 onward is mapped.",
+    "The process data registers 40100, 40101, 40110 and 40111 are monitored by p2040 (factory 100 ms): the drive raises alarm F1910 (setpoint timeout) if they are not accessed within that time. The p2000 reference speed scales the setpoint and actual value words (0x4000 = 100 %).",
+    "Written from the manual of the CU240B-2/CU240E-2 for firmware 4.4. The CU230P-2 and later firmware use the same Modbus RTU interface, but their manuals were not checked, so the map may differ from them.",
+    "The manual lists no register with a fixed value, so the map has no reference values.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "databits": 8,
+  "parity": "E",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Control word (STW)",
+      "group": "Process data",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Process data 1: control word 1 (STW1). Start = 0x047F, OFF1 = 0x047E."
+    },
+    {
+      "name": "Main setpoint (HSW)",
+      "group": "Process data",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Process data 2: main setpoint, 0x4000 (16384) = 100 % of the reference speed (p2000)."
+    },
+    {
+      "name": "Status word (ZSW)",
+      "group": "Process data",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "R",
+      "description": "Process data 1: status word 1 (ZSW1)."
+    },
+    {
+      "name": "Main actual value (HIW)",
+      "group": "Process data",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "description": "Process data 2: main actual value, 0x4000 (16384) = 100 % of the reference speed (p2000)."
+    },
+    {
+      "name": "Digital output 0",
+      "group": "I/O",
+      "area": "holding",
+      "address": 199,
+      "type": "uint16",
+      "access": "RW",
+      "description": "p0730, r0747.0. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital output 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 200,
+      "type": "uint16",
+      "access": "RW",
+      "description": "p0731, r0747.1. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital output 2",
+      "group": "I/O",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "access": "RW",
+      "description": "p0732, r0747.2. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Analog output 0",
+      "group": "I/O",
+      "area": "holding",
+      "address": 219,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0774.0."
+    },
+    {
+      "name": "Analog output 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 220,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0774.1."
+    },
+    {
+      "name": "Digital input 0",
+      "group": "I/O",
+      "area": "holding",
+      "address": 239,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.0. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 240,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.1. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 2",
+      "group": "I/O",
+      "area": "holding",
+      "address": 241,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.2. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 3",
+      "group": "I/O",
+      "area": "holding",
+      "address": 242,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.3. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 4",
+      "group": "I/O",
+      "area": "holding",
+      "address": 243,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.4. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Digital input 5",
+      "group": "I/O",
+      "area": "holding",
+      "address": 244,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0722.5. HIGH = 1, LOW = 0."
+    },
+    {
+      "name": "Analog input 0",
+      "group": "I/O",
+      "area": "holding",
+      "address": 259,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0755[0]."
+    },
+    {
+      "name": "Analog input 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 260,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0755[1]."
+    },
+    {
+      "name": "Analog input 2",
+      "group": "I/O",
+      "area": "holding",
+      "address": 261,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0755[2]."
+    },
+    {
+      "name": "Analog input 3",
+      "group": "I/O",
+      "area": "holding",
+      "address": 262,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r0755[3]."
+    },
+    {
+      "name": "Power unit number",
+      "group": "Identity",
+      "area": "holding",
+      "address": 299,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0200 (power unit code number)."
+    },
+    {
+      "name": "Converter firmware version",
+      "group": "Identity",
+      "area": "holding",
+      "address": 300,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R",
+      "description": "r0018. The manual gives the scaling factor as 0.0001 but the range as 0.00 to 327.67; the factor 100 of the V20 table is used here."
+    },
+    {
+      "name": "Rated power of the power unit",
+      "group": "Identity",
+      "area": "holding",
+      "address": 319,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "r0206."
+    },
+    {
+      "name": "Current limit",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 320,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "description": "p0640."
+    },
+    {
+      "name": "Ramp-up time",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 321,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "RW",
+      "description": "p1120."
+    },
+    {
+      "name": "Ramp-down time",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 322,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "RW",
+      "description": "p1121."
+    },
+    {
+      "name": "Reference speed",
+      "group": "Drive settings",
+      "area": "holding",
+      "address": 323,
+      "type": "uint16",
+      "unit": "RPM",
+      "access": "RW",
+      "description": "p2000."
+    },
+    {
+      "name": "Speed setpoint",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 339,
+      "type": "int16",
+      "unit": "RPM",
+      "access": "R",
+      "description": "r0020."
+    },
+    {
+      "name": "Speed actual value",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 340,
+      "type": "int16",
+      "unit": "RPM",
+      "access": "R",
+      "description": "r0022."
+    },
+    {
+      "name": "Output frequency",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 341,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R",
+      "description": "r0024."
+    },
+    {
+      "name": "Output voltage",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 342,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "r0025."
+    },
+    {
+      "name": "DC link voltage",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 343,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "r0026."
+    },
+    {
+      "name": "Actual value of current",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 344,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "r0027."
+    },
+    {
+      "name": "Actual torque value",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 345,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "Nm",
+      "access": "R",
+      "description": "r0031."
+    },
+    {
+      "name": "Actual active power",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 346,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "r0032."
+    },
+    {
+      "name": "Energy consumption",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 347,
+      "type": "uint16",
+      "unit": "kWh",
+      "access": "R",
+      "description": "r0039."
+    },
+    {
+      "name": "Control priority",
+      "group": "Status",
+      "area": "holding",
+      "address": 348,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0807: HAND / AUTO."
+    },
+    {
+      "name": "Fault number 0",
+      "group": "Faults",
+      "area": "holding",
+      "address": 399,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[0]."
+    },
+    {
+      "name": "Fault number 1",
+      "group": "Faults",
+      "area": "holding",
+      "address": 400,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[1]."
+    },
+    {
+      "name": "Fault number 2",
+      "group": "Faults",
+      "area": "holding",
+      "address": 401,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[2]."
+    },
+    {
+      "name": "Fault number 3",
+      "group": "Faults",
+      "area": "holding",
+      "address": 402,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[3]."
+    },
+    {
+      "name": "Fault number 4",
+      "group": "Faults",
+      "area": "holding",
+      "address": 403,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[4]."
+    },
+    {
+      "name": "Fault number 5",
+      "group": "Faults",
+      "area": "holding",
+      "address": 404,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[5]."
+    },
+    {
+      "name": "Fault number 6",
+      "group": "Faults",
+      "area": "holding",
+      "address": 405,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[6]."
+    },
+    {
+      "name": "Fault number 7",
+      "group": "Faults",
+      "area": "holding",
+      "address": 406,
+      "type": "uint16",
+      "access": "R",
+      "description": "r0947[7]."
+    },
+    {
+      "name": "Alarm number",
+      "group": "Faults",
+      "area": "holding",
+      "address": 407,
+      "type": "uint16",
+      "access": "R",
+      "description": "r2110[0]."
+    },
+    {
+      "name": "Parameter error code",
+      "group": "Parameter access",
+      "area": "holding",
+      "address": 498,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Technology controller enable",
+      "group": "PID",
+      "area": "holding",
+      "address": 499,
+      "type": "uint16",
+      "access": "RW",
+      "description": "p2200, r2349.0."
+    },
+    {
+      "name": "Technology controller setpoint (MOP)",
+      "group": "PID",
+      "area": "holding",
+      "address": 500,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "p2240."
+    },
+    {
+      "name": "Technology controller actual value filter time constant",
+      "group": "PID",
+      "area": "holding",
+      "address": 509,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "RW",
+      "description": "p2265."
+    },
+    {
+      "name": "Technology controller actual value scaling",
+      "group": "PID",
+      "area": "holding",
+      "address": 510,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "p2269."
+    },
+    {
+      "name": "Technology controller proportional gain",
+      "group": "PID",
+      "area": "holding",
+      "address": 511,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "p2280."
+    },
+    {
+      "name": "Technology controller integral time",
+      "group": "PID",
+      "area": "holding",
+      "address": 512,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "p2285."
+    },
+    {
+      "name": "Technology controller D time constant",
+      "group": "PID",
+      "area": "holding",
+      "address": 513,
+      "type": "uint16",
+      "access": "RW",
+      "description": "p2274."
+    },
+    {
+      "name": "Technology controller upper limit",
+      "group": "PID",
+      "area": "holding",
+      "address": 514,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "p2291."
+    },
+    {
+      "name": "Technology controller lower limit",
+      "group": "PID",
+      "area": "holding",
+      "address": 515,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "p2292."
+    },
+    {
+      "name": "Technology controller setpoint after ramp",
+      "group": "PID",
+      "area": "holding",
+      "address": 519,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2250."
+    },
+    {
+      "name": "Technology controller actual value after filter",
+      "group": "PID",
+      "area": "holding",
+      "address": 520,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2266."
+    },
+    {
+      "name": "Technology controller output",
+      "group": "PID",
+      "area": "holding",
+      "address": 521,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "r2294."
+    }
+  ]
+}
