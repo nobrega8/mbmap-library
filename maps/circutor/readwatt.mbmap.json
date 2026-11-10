@@ -1,0 +1,46 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Circutor",
+  "model": "ReadWatt",
+  "vendor_website": "circutor.com",
+  "description": "Optical pulse sensor that sticks onto the pulse LED of an energy meter and totalises its pulses over Modbus RTU (RS-485 and RS-232)",
+  "revision": 1,
+  "revised": "2026-11-10",
+  "source": "Circutor, \"ReadWatt pulse sensor, Instruction manual\", M018B01-10-22A",
+  "sources": [{"title": "ReadWatt Pulse sensor, Instruction manual", "version": "M018B01-10-22A", "date": "2022-01", "url": "https://docs.circutor.com/docs/M018B01-10.pdf", "note": "section 4.3, tables 4 and 5"}],
+  "notes": [
+    "Read with FC03 or FC04 and write with FC10; a request must cover the full size of each variable.",
+    "Both ports share one baud rate (9600, 19200 or 38400, 8N1). At start-up the LED flashes 1, 2 or 3 times to show 9600, 19200 or 38400.",
+    "The manual does not give the unit of the pulse and count registers, the word order of the 64-bit values or the format of the firmware version, so those are left as plain counts with the usual big-endian layout.",
+    "A broadcast write (address 0) to 0x0BBA changes the address and baud rate of a unit whose address is unknown. It needs the serial number and is not mapped here (manual 4.3.5)."
+  ],
+  "protocol": "rtu",
+  "unit_id": 10,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "baudrate": {"0": "9600", "1": "19200", "2": "38400"}
+  },
+  "registers": [
+    {"name": "Pulse register", "group": "Counters", "area": "holding", "address": "0x0600", "type": "uint64", "access": "R", "description": "Total pulses read from the meter LED"},
+    {"name": "Count register", "group": "Counters", "area": "holding", "address": "0x0604", "type": "uint64", "access": "R", "description": "Counter totalised with the output pulse weight"},
+    {"name": "Count register (writable)", "group": "Counters", "area": "holding", "address": "0x07D0", "type": "uint64", "access": "RW", "description": "Same kind of counter, which can be written to preset it"},
+    {"name": "Modbus address", "group": "Settings", "area": "holding", "address": "0x0008", "type": "uint16", "access": "RW", "description": "Default 10"},
+    {"name": "Baud rate", "group": "Settings", "area": "holding", "address": "0x010C", "type": "uint16", "access": "RW", "enum": "baudrate", "description": "Default 0 (9600); shared by RS-232 and RS-485"},
+    {"name": "Maximum pulse width", "group": "Settings", "area": "holding", "address": "0x0106", "type": "uint16", "unit": "ms", "access": "RW", "description": "Default 250 ms"},
+    {"name": "Minimum pulse width", "group": "Settings", "area": "holding", "address": "0x0107", "type": "uint16", "unit": "ms", "access": "RW", "description": "Default 2 ms"},
+    {"name": "Output count weight", "group": "Settings", "area": "holding", "address": "0x0108", "type": "uint16", "access": "RW", "description": "Value added to the count register for each output pulse. Default 10"},
+    {"name": "Optical pulse to count ratio", "group": "Settings", "area": "holding", "address": "0x0109", "type": "uint16", "access": "RW", "description": "Ratio between the optical pulses and the count register. Default 1000"},
+    {"name": "Transformation ratio", "group": "Settings", "area": "holding", "address": "0x010A", "type": "uint16", "access": "RW", "description": "Voltage ratio times current ratio of a medium-voltage installation; 1 for direct measurement. Default 1"},
+    {"name": "Output pulse width", "group": "Settings", "area": "holding", "address": "0x010B", "type": "uint16", "unit": "ms", "access": "RW", "description": "Width of the pulse on the open-collector output. Default 100 ms; 2 to 250 ms"},
+    {"name": "Serial number", "group": "Info", "area": "holding", "address": "0x0060", "type": "uint32", "access": "R", "role": "serial", "description": "Printed in decimal on the label"},
+    {"name": "Firmware version", "group": "Info", "area": "holding", "address": "0x0050", "type": "string", "length": 3, "access": "R", "description": "Three registers (6 bytes); the format is not documented"}
+  ]
+}
