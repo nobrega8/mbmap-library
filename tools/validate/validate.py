@@ -387,13 +387,20 @@ def v2_table(ck: Checker, at: str, value: object, code: str, lo: int | None = No
 IDENTIFY_TYPES = ("uint8", "uint16", "string")
 
 
+def is_whole(value: object, low: int, high: int | None = None) -> bool:
+    return (isinstance(value, int) and not isinstance(value, bool)
+            and value >= low and (high is None or value <= high))
+
+
 def check_identify(ck: Checker, at: str, value: object, meta: dict[str, str]) -> None:
-    """The `identify` block: fields of the Report Slave ID (FC17) answer (SPEC.md 4.8)."""
+    """The `identify` block: Report Slave ID (FC17) or Read Device Identification (FC43), SPEC.md 4.8."""
     if not isinstance(value, dict):
         ck.error(at, "bad-json-type", f"expected an object, found {json_kind(value)}")
         return
-    if value.get("function") != 17 or isinstance(value.get("function"), bool):
-        ck.error(child(at, "function"), "bad-identify", "function must be 17 (Report Slave ID)")
+    function = value.get("function")
+    if function not in (17, 43) or isinstance(function, bool):
+        ck.error(child(at, "function"), "bad-identify", "function must be 17 (Report Slave ID) or 43 (Read Device Identification)")
+        function = None
     fields = value.get("fields")
     if not isinstance(fields, list) or not fields:
         ck.error(child(at, "fields"), "bad-identify", "fields must be a non-empty array")
@@ -407,15 +414,22 @@ def check_identify(ck: Checker, at: str, value: object, meta: dict[str, str]) ->
         name = field.get("name")
         if not isinstance(name, str) or not name.strip():
             ck.error(child(here, "name"), "bad-identify", "a field needs a non-empty name")
-        offset = field.get("offset")
-        if not isinstance(offset, int) or isinstance(offset, bool) or offset < 0:
-            ck.error(child(here, "offset"), "bad-identify", "offset must be a whole number from 0")
-        typ = field.get("type")
-        if typ not in IDENTIFY_TYPES:
-            ck.error(child(here, "type"), "bad-identify", 'type must be "uint8", "uint16" or "string"')
-        length = field.get("length")
-        if typ == "string" and (not isinstance(length, int) or isinstance(length, bool) or length < 1):
-            ck.error(child(here, "length"), "bad-identify", "a string field needs a length in bytes, from 1")
+        if function == 43:
+            if not is_whole(field.get("object"), 0, 255):
+                ck.error(child(here, "object"), "bad-identify", "object must be a whole number from 0 to 255")
+            for key in ("offset", "type", "length"):
+                if key in field:
+                    ck.error(child(here, key), "bad-identify", f"{key} is only used with function 17")
+        elif function == 17:
+            if not is_whole(field.get("offset"), 0):
+                ck.error(child(here, "offset"), "bad-identify", "offset must be a whole number from 0")
+            typ = field.get("type")
+            if typ not in IDENTIFY_TYPES:
+                ck.error(child(here, "type"), "bad-identify", 'type must be "uint8", "uint16" or "string"')
+            if typ == "string" and not is_whole(field.get("length"), 1):
+                ck.error(child(here, "length"), "bad-identify", "a string field needs a length in bytes, from 1")
+            if "object" in field:
+                ck.error(child(here, "object"), "bad-identify", "object is only used with function 43")
         role = field.get("role")
         if role is not None:
             if role not in ROLES:
@@ -424,7 +438,9 @@ def check_identify(ck: Checker, at: str, value: object, meta: dict[str, str]) ->
                 ck.error(child(here, "role"), "bad-identify", f'only one field can have the role "{role}"')
             roles.add(str(role))
         enum = field.get("enum")
-        if isinstance(enum, str):
+        if enum is not None and function == 43:
+            ck.error(child(here, "enum"), "bad-identify", "enum is only used with function 17")
+        elif isinstance(enum, str):
             if f"enum_{enum}" not in meta:
                 ck.error(child(here, "enum"), "bad-identify", f"no enum table named {enum!r}")
         elif isinstance(enum, dict):

@@ -51,30 +51,59 @@
   },
   "$defs": {
     "identify": {
-      "description": "Fields of the Report Slave ID (FC17) answer that identify the device (SPEC.md 4.8).",
+      "description": "How to read the device identity with Report Slave ID (FC17) or Read Device Identification (FC43) (SPEC.md 4.8).",
       "type": "object",
       "required": ["function", "fields"],
       "properties": {
-        "function": { "const": 17 },
+        "function": { "enum": [17, 43] },
         "fields": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["name", "offset", "type"],
+            "required": ["name"],
             "properties": {
               "name": { "$ref": "#/$defs/text" },
               "offset": { "type": "integer", "minimum": 0 },
               "type": { "enum": ["uint8", "uint16", "string"] },
               "length": { "type": "integer", "minimum": 1 },
+              "object": { "type": "integer", "minimum": 0, "maximum": 255 },
               "role": { "enum": ["model", "firmware", "serial"] },
               "enum": { "anyOf": [{ "type": "string" }, { "$ref": "#/$defs/table" }] }
-            },
-            "if": { "properties": { "type": { "const": "string" } }, "required": ["type"] },
-            "then": { "required": ["length"] }
+            }
           }
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "function": { "const": 17 } }, "required": ["function"] },
+          "then": {
+            "properties": {
+              "fields": {
+                "items": {
+                  "required": ["offset", "type"],
+                  "not": { "required": ["object"] },
+                  "if": { "properties": { "type": { "const": "string" } }, "required": ["type"] },
+                  "then": { "required": ["length"] }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "function": { "const": 43 } }, "required": ["function"] },
+          "then": {
+            "properties": {
+              "fields": {
+                "items": {
+                  "required": ["object"],
+                  "not": { "anyOf": [{ "required": ["offset"] }, { "required": ["type"] }, { "required": ["length"] }, { "required": ["enum"] }] }
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
     "order": { "enum": ["big", "little"] },

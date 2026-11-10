@@ -90,7 +90,7 @@ A **table** maps raw values to labels: an object whose keys are integers written
 | `max_read_bits` | integer `1`–`2000` | `2000` | Largest block the device accepts per read (FC01/02) |
 | `enums` | object: name → table | | Named translation tables (§4.1). Names use `a`–`z`, `0`–`9` and `_` |
 | `sentinels` | object: type → table | | Reserved raw values per integer type (§4.2) |
-| `identify` | object | | How to read the device identity from the Report Slave ID (FC17) answer (§4.8) |
+| `identify` | object | | How to read the device identity with Report Slave ID (FC17) or Read Device Identification (FC43) (§4.8) |
 | `registers` | array of register objects | | The registers (§4) |
 
 Connection values are **defaults**: the user can still change them when connecting.
@@ -296,9 +296,9 @@ Some devices, notably SunSpec inverters and meters, send a separate exponent reg
 
 At most one register **MAY** have the role `"model"` and at most one `"serial"`. A register with a role **MUST** be readable. Registers with a role are ordinary registers otherwise: they are read and shown like the others, and can also have a `reference`.
 
-### 4.8 Identity from Report Slave ID (FC17)
+### 4.8 Identity from the device (FC17, FC43)
 
-Some devices report what they are with function 17 (Report Slave ID) and have no identity register. `identify` describes the fields of that answer, so a tool can send FC17 and check the map as it does with the registers of §4.7 (§9).
+Some devices report what they are with a function of their own and have no identity register. `identify` says which function to send and where the identity is in the answer, so a tool can check the map as it does with the registers of §4.7 (§9). A map has at most one `identify`.
 
 ```json
 "enums": {"type_codes": {"0x41": "DMG610", "0x57": "DMG620"}},
@@ -312,25 +312,38 @@ Some devices report what they are with function 17 (Report Slave ID) and have no
 }
 ```
 
+```json
+"identify": {
+  "function": 43,
+  "fields": [
+    {"name": "Vendor name", "object": 0},
+    {"name": "Product code", "object": 1, "role": "model"},
+    {"name": "Revision", "object": 2, "role": "firmware"}
+  ]
+}
+```
+
 | Key | JSON type | Default | Meaning |
 |---|---|---|---|
-| `function` | integer `17` | | Modbus function used. Only `17` is defined |
+| `function` | `17` or `43` | | `17`: Report Slave ID. `43`: Read Device Identification (encapsulated interface transport, MEI type `0x0E`) |
 | `fields` | non-empty array of field objects | | The values to take from the answer |
 
-Each field is an object. `name`, `offset` and `type` are required.
+Each field is an object. `name` is always required. `role` and the keys below depend on `function`.
 
 | Key | JSON type | Default | Meaning |
 |---|---|---|---|
 | `name` | non-empty string | | Name shown to people |
-| `offset` | integer ≥ 0 | | Position of the field, in bytes, in the data of the answer. Offset `0` is the first byte after the byte count, so the data are the bytes a device lists after "byte count" in its manual |
-| `type` | `"uint8"`, `"uint16"`, `"string"` | | `uint16` is big-endian. `string` is ASCII, with trailing NUL and space characters trimmed |
-| `length` | integer ≥ 1 | | Length in bytes. Required for `string`, ignored otherwise |
 | `role` | `"model"`, `"firmware"`, `"serial"` | | Meaning of the value, as for registers (§4.7). At most one `"model"` and one `"serial"` |
-| `enum` | table name or inline table | | Translates a number into a label (§4.1). A model code is best given a label, which is then compared with `models` |
+| `offset` | integer ≥ 0 | | **FC17 only, required.** Position of the field, in bytes, in the data of the answer. Offset `0` is the first byte after the byte count, so the data are the bytes a device lists after "byte count" in its manual |
+| `type` | `"uint8"`, `"uint16"`, `"string"` | | **FC17 only, required.** `uint16` is big-endian. `string` is ASCII, with trailing NUL and space characters trimmed |
+| `length` | integer ≥ 1 | | **FC17 only.** Length in bytes. Required for `string` |
+| `enum` | table name or inline table | | **FC17 only.** Translates a number into a label (§4.1). A model code is best given a label, which is then compared with `models` |
+| `object` | integer 0–255 | | **FC43 only, required.** Object id: `0x00` VendorName, `0x01` ProductCode, `0x02` MajorMinorRevision, `0x03` VendorUrl, `0x04` ProductName, `0x05` ModelName, `0x06` UserApplicationName, `0x80`–`0xFF` defined by the device |
 
-- A device answers FC17 on a unit id, not on a register address, so `address_base` does not apply.
-- An answer that is shorter than a field needs, an exception answer, or a device that does not support FC17 gives no value: the check is **unknown** (§9), not a mismatch.
-- `identify` and registers with a `role` can both be present. When both give a value for the same role, a tool **SHOULD** use the registers and **MAY** use `identify` for the roles that no register gives.
+- **FC43:** the value of an object is an ASCII string, with trailing NUL and space characters trimmed. A tool asks for the access level (basic, regular or extended) that includes every object the fields name, and follows the "more follows" flag until it has them. For `"firmware"` the first version string in the text is used, as for a string register (§4.7).
+- **Both functions:** a device answers on a unit id, not on a register address, so `address_base` does not apply.
+- **No value:** an answer that is shorter than a field needs, an exception answer, a missing object, or a device that does not support the function gives no value. The check is **unknown** (§9), not a mismatch.
+- **Several sources:** `identify` and registers with a `role` can both be present. When both give a value for the same role, a tool **SHOULD** use the registers and **MAY** use `identify` for the roles that no register gives.
 
 ## 5. Areas and addresses
 
@@ -415,7 +428,7 @@ Readers **SHOULD** report every problem with one of the codes below and a [JSON 
 | `bad-firmware-range` | error | `firmware_min` is after `firmware_max`, in the file or a register |
 | `bad-source` | error | An item of `sources` is not an object with a non-empty `title`, or has a `version`, `date`, `url` or `note` of the wrong form |
 | `bad-role` | error | `role` is not `"model"`, `"firmware"` or `"serial"`, is set on a register that cannot be read, or `"model"` or `"serial"` is used more than once |
-| `bad-identify` | error | `identify` is not valid (§4.8): `function` is not `17`, `fields` is empty, or a field lacks a `name`, has a negative `offset`, an unknown `type`, a `string` without `length`, a `role` that is unknown or repeated for `"model"` or `"serial"`, or an `enum` that names no table or is not a valid table |
+| `bad-identify` | error | `identify` is not valid (§4.8): `function` is not `17` or `43`, `fields` is empty, or a field lacks a `name`, has a `role` that is unknown or repeated for `"model"` or `"serial"`, or breaks the rules of its function (FC17: `offset` missing or negative, `type` missing or unknown, `string` without `length`, an `enum` that names no table or is not a valid table, an `object`; FC43: `object` missing or outside 0–255, an `offset`, `type`, `length` or `enum`) |
 | `no-rows` | warning | `registers` is empty |
 | `duplicate-name` | warning | A `name` is used more than once by registers whose firmware ranges overlap (§3.2) |
 | `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Registers that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`), nor registers whose firmware ranges do not overlap |
@@ -438,7 +451,7 @@ The [JSON Schema](schema/mbmap-2.schema.json) checks the structure, the JSON typ
 
 ## 9. Checking a map against the connected device
 
-A tool that reads the identity registers (§4.7), or the Report Slave ID answer described by `identify` (§4.8), of the connected device **SHOULD** compare them with the map, so the user does not trust values from a map written for another model or firmware. It can also let the user state the model or firmware by hand when the device does not report them.
+A tool that reads the identity registers (§4.7), or the identity answer described by `identify` (§4.8), of the connected device **SHOULD** compare them with the map, so the user does not trust values from a map written for another model or firmware. It can also let the user state the model or firmware by hand when the device does not report them.
 
 Each check has one of three outcomes:
 
