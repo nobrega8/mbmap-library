@@ -139,6 +139,30 @@ export const PROTOCOL_NAME: Record<string, string> = {
 
 export const PARITY_NAME: Record<string, string> = { N: "None", E: "Even", O: "Odd" };
 
+/** What a `role` says a register (or an identify field) holds (SPEC.md section 4.7). */
+export const ROLE_INFO: Record<string, { label: string; long: string }> = {
+  model: { label: "Model", long: "The model name or code. A tool compares it with the models of this map." },
+  firmware: { label: "Firmware", long: "The firmware version. A tool checks it against the firmware range of the map." },
+  serial: { label: "Serial number", long: "The serial number. A tool may show it, but never compares it." },
+};
+
+/** The two functions an identify block can use (SPEC.md section 4.8). */
+export const IDENTIFY_FUNCTION: Record<number, { code: string; name: string }> = {
+  17: { code: "FC17", name: "Report Slave ID" },
+  43: { code: "FC43", name: "Read Device Identification" },
+};
+
+/** FC43 object ids with a standard meaning. */
+export const OBJECT_NAME: Record<number, string> = {
+  0: "VendorName",
+  1: "ProductCode",
+  2: "MajorMinorRevision",
+  3: "VendorUrl",
+  4: "ProductName",
+  5: "ModelName",
+  6: "UserApplicationName",
+};
+
 export function plural(n: number, one: string, many = one + "s"): string {
   return `${n.toLocaleString("en-US")} ${n === 1 ? one : many}`;
 }

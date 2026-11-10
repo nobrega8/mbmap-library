@@ -6,16 +6,20 @@ import Icon from "../../../components/Icon.astro";
 import StatusBadge from "../../../components/StatusBadge.astro";
 import VendorTile from "../../../components/VendorTile.astro";
 import { type Device, otherModels as others, rawUrl, registry } from "../../../lib/registry.ts";
-import { REGISTER_COLUMNS, REGISTER_PAGE, registerRow } from "../../../lib/register-row.ts";
+import { REGISTER_COLUMNS, REGISTER_PAGE, registerRow, roleTitle } from "../../../lib/register-row.ts";
 import {
   AREAS,
   AREA_NAME,
   AREA_TAG,
+  IDENTIFY_FUNCTION,
+  OBJECT_NAME,
   PARITY_NAME,
   PROTOCOL_NAME,
+  ROLE_INFO,
   STATUS_INFO,
   orderTag,
   plural,
+  typeLabel,
 } from "../../../lib/mbmap.ts";
 import { LINKS, SITE_NAME, deviceLinks } from "../../../lib/site.ts";
 
@@ -83,6 +87,23 @@ const jsonLd = [
   },
 ];
 
+// Identity: registers with a role (SPEC.md section 4.7) and the identify block (section 4.8)
+const identityRegisters = info.registers.filter((r) => r.role);
+const identify = info.identify;
+const identityRoles = [
+  ...new Set([...identityRegisters.map((r) => r.role!), ...(identify?.fields.flatMap((f) => (f.role ? [f.role] : [])) ?? [])]),
+].sort((a, b) => Object.keys(ROLE_INFO).indexOf(a) - Object.keys(ROLE_INFO).indexOf(b));
+const hasIdentity = identityRegisters.length > 0 || !!identify;
+const roleLabel = (role: string) => ROLE_INFO[role]?.label ?? role;
+const where = (f: NonNullable<typeof identify>["fields"][number]) =>
+  f.object != null
+    ? `object ${f.object}${OBJECT_NAME[f.object] ? ` (${OBJECT_NAME[f.object]})` : ""}`
+    : f.offset != null
+      ? `byte ${f.offset}, ${f.type ?? "?"}${f.length != null ? ` × ${f.length}` : ""}`
+      : "";
+const labels = (t: [string, string][]) =>
+  t.slice(0, 3).map(([k, v]) => `${k} = ${v}`).join(", ") + (t.length > 3 ? `, +${t.length - 3} more` : "");
+
 const statusNote = d.status ? STATUS_INFO[d.status].long : "This map does not say whether it was tested or where it comes from.";
 const groups = [...d.groups].sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
 const accessCounts = { R: 0, W: 0, RW: 0 };
@@ -115,6 +136,7 @@ for (const r of info.registers) accessCounts[r.access]++;
         <li><span class="mono">{d.registerCount.toLocaleString("en-US")}</span> registers</li>
         {said("protocol") && <li>{PROTOCOL_NAME[info.protocol]}</li>}
         {info.revision && <li>Revision <span class="mono">{info.revision}</span>{info.revised && <span class="faint"> · {info.revised}</span>}</li>}
+        {hasIdentity && <li title="A tool can check which device is connected">Identity: {identityRoles.map(roleLabel).join(", ").toLowerCase()}</li>}
       </ul>
       <div class={`note ${d.status ?? "unofficial"}`}>
         <Icon name={d.status === "verified" ? "verified" : "warning"} size={15} />
@@ -196,6 +218,62 @@ for (const r of info.registers) accessCounts[r.access]++;
           {info.vendorWebsite && <><dt>Manufacturer</dt><dd><a href={/^https?:/.test(info.vendorWebsite) ? info.vendorWebsite : `https://${info.vendorWebsite}`} rel="nofollow">{info.vendorWebsite.replace(/^https?:\/\//, "")}</a></dd></>}
         </dl>
       </section>
+
+      {
+        hasIdentity && (
+          <section class="card pad span" aria-labelledby="id-title" id="identity">
+            <h2 id="id-title" class="key">Device identity</h2>
+            <p class="faint small">
+              What a tool can read to check that this map fits the connected device (SPEC.md section 4.7{identify && " and 4.8"}).
+              {identityRegisters.length > 0 && " Registers with a role are read like any other register."}
+            </p>
+            {identityRegisters.length > 0 && (
+              <div class="table-wrap id-wrap">
+                <table class="table id-table">
+                  <caption class="id-cap">Registers</caption>
+                  <thead>
+                    <tr><th scope="col">Role</th><th scope="col">Register</th><th scope="col">Address</th><th scope="col">Type</th><th scope="col">Values</th></tr>
+                  </thead>
+                  <tbody>
+                    {identityRegisters.map((r) => (
+                      <tr>
+                        <td><span class="tag role" title={roleTitle(r.role!)}>{roleLabel(r.role!)}</span></td>
+                        <td>{r.name}</td>
+                        <td class="mono">{r.area} {r.address}</td>
+                        <td class="mono">{typeLabel(r)}</td>
+                        <td class="faint">{r.enumTable ? labels(r.enumTable) : ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {identify && (
+              <div class="table-wrap id-wrap">
+                <table class="table id-table">
+                  <caption class="id-cap">
+                    From the device with <span class="mono">{IDENTIFY_FUNCTION[identify.func].code}</span> {IDENTIFY_FUNCTION[identify.func].name}
+                    <span class="faint"> · answered by unit ID, not by a register address</span>
+                  </caption>
+                  <thead>
+                    <tr><th scope="col">Role</th><th scope="col">Field</th><th scope="col">Where in the answer</th><th scope="col">Values</th></tr>
+                  </thead>
+                  <tbody>
+                    {identify.fields.map((f) => (
+                      <tr>
+                        <td>{f.role ? <span class="tag role" title={roleTitle(f.role)}>{roleLabel(f.role)}</span> : <span class="faint">—</span>}</td>
+                        <td>{f.name}</td>
+                        <td class="mono">{where(f)}</td>
+                        <td class="faint">{f.enumTable ? labels(f.enumTable) : ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )
+      }
 
       {
         (info.sources.length > 0 || info.source || info.notes.length > 0) && (
