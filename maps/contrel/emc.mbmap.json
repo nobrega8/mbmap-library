@@ -6,8 +6,8 @@
   "models": ["EMC series"],
   "vendor_website": "contrel.it",
   "description": "Multifunction electrical meter",
-  "revision": 2,
-  "revised": "2026-10-18",
+  "revision": 3,
+  "revised": "2026-11-10",
   "source": "Contrel EMC series communication protocol, instruction manual IM154-U v0.94",
   "sources": [
     {"title": "EMC series electrical multifunction meter communication protocol", "version": "IM154-U v0.94", "note": "register tables, pages 8-11"}
@@ -18,7 +18,8 @@
     "The meter answers at most 32 registers (16 values) per read; a read must not split a value.",
     "Energy T1 is the total or time band 1 counter and T2 the partial or time band 2 counter, depending on the energy mode. Meters without these functions only have T1.",
     "The model and firmware are reported by Report Slave ID (FC17), not by a register: slave ID 0x50, firmware in data bytes 19-20, options in bytes 17-18.",
-    "The manual does not give the scale of the power factor and cos phi registers."
+    "The manual does not give the scale of the power factor and cos phi registers. On a device they read as thousandths (574 = 0.574, equal to active / apparent power), so the map scales them by 0.001.",
+    "Tested on an EMM-µD3h-485 (EMM-µD3), read over a Modbus TCP gateway, unit ID 220, November 2026: all 80 registers read without errors. Checked: voltages, currents, power, energy (T1, T2 empty), frequency, status, settings and the 32-bit word order (big). The Max voltage L1-L3 registers (0x1072-0x1076) read 105145, 1009514 and 675279 with 226 V on the line, so they do not fit any scale and were not verified. Temperature, hour counter and neutral current read 0 on this meter."
   ],
   "protocol": "rtu",
   "byte_order": "big",
@@ -30,7 +31,7 @@
     "do_mode_2": {"1": "Reactive energy pulses", "2": "Three-phase alarm", "3": "Max/min L1-L2-L3 alarm", "4": "Remote control"},
     "do_control": {"0x000055AA": "Off", "0x010055AA": "On"}
   },
-  "x_status": "official",
+  "x_status": "verified",
   "registers": [
     {"name": "System voltage", "group": "Measurements", "area": "holding", "address": "0x1000", "type": "uint32", "unit": "V", "description": "Three-phase system voltage"},
     {"name": "Voltage L1-N", "group": "Measurements", "area": "holding", "address": "0x1002", "type": "uint32", "unit": "V"},
@@ -43,14 +44,14 @@
     {"name": "Current L1", "group": "Measurements", "area": "holding", "address": "0x1010", "type": "uint32", "scale": 0.001, "unit": "A", "description": "Sent in mA"},
     {"name": "Current L2", "group": "Measurements", "area": "holding", "address": "0x1012", "type": "uint32", "scale": 0.001, "unit": "A", "description": "Sent in mA"},
     {"name": "Current L3", "group": "Measurements", "area": "holding", "address": "0x1014", "type": "uint32", "scale": 0.001, "unit": "A", "description": "Sent in mA"},
-    {"name": "System power factor", "group": "Measurements", "area": "holding", "address": "0x1016", "type": "int32", "description": "Scale not given in the manual"},
-    {"name": "Power factor L1", "group": "Measurements", "area": "holding", "address": "0x1018", "type": "int32", "description": "Scale not given in the manual"},
-    {"name": "Power factor L2", "group": "Measurements", "area": "holding", "address": "0x101A", "type": "int32", "description": "Scale not given in the manual"},
-    {"name": "Power factor L3", "group": "Measurements", "area": "holding", "address": "0x101C", "type": "int32", "description": "Scale not given in the manual"},
-    {"name": "System cos phi", "group": "Measurements", "area": "holding", "address": "0x101E", "type": "int32", "description": "Scale not given in the manual"},
-    {"name": "Cos phi L1", "group": "Measurements", "area": "holding", "address": "0x1020", "type": "int32", "description": "Scale not given in the manual"},
-    {"name": "Cos phi L2", "group": "Measurements", "area": "holding", "address": "0x1022", "type": "int32", "description": "Scale not given in the manual"},
-    {"name": "Cos phi L3", "group": "Measurements", "area": "holding", "address": "0x1024", "type": "int32", "description": "Scale not given in the manual"},
+    {"name": "System power factor", "group": "Measurements", "area": "holding", "address": "0x1016", "type": "int32", "scale": 0.001, "description": "Raw value divided by 1000 (574 = 0.574); the manual does not give the scale, checked against active / apparent power on a device"},
+    {"name": "Power factor L1", "group": "Measurements", "area": "holding", "address": "0x1018", "type": "int32", "scale": 0.001, "description": "Raw value divided by 1000 (574 = 0.574); the manual does not give the scale, checked against active / apparent power on a device"},
+    {"name": "Power factor L2", "group": "Measurements", "area": "holding", "address": "0x101A", "type": "int32", "scale": 0.001, "description": "Raw value divided by 1000 (574 = 0.574); the manual does not give the scale, checked against active / apparent power on a device"},
+    {"name": "Power factor L3", "group": "Measurements", "area": "holding", "address": "0x101C", "type": "int32", "scale": 0.001, "description": "Raw value divided by 1000 (574 = 0.574); the manual does not give the scale, checked against active / apparent power on a device"},
+    {"name": "System cos phi", "group": "Measurements", "area": "holding", "address": "0x101E", "type": "int32", "scale": 0.001, "description": "Raw value divided by 1000 (574 = 0.574); the manual does not give the scale, checked against active / apparent power on a device"},
+    {"name": "Cos phi L1", "group": "Measurements", "area": "holding", "address": "0x1020", "type": "int32", "scale": 0.001, "description": "Raw value divided by 1000 (574 = 0.574); the manual does not give the scale, checked against active / apparent power on a device"},
+    {"name": "Cos phi L2", "group": "Measurements", "area": "holding", "address": "0x1022", "type": "int32", "scale": 0.001, "description": "Raw value divided by 1000 (574 = 0.574); the manual does not give the scale, checked against active / apparent power on a device"},
+    {"name": "Cos phi L3", "group": "Measurements", "area": "holding", "address": "0x1024", "type": "int32", "scale": 0.001, "description": "Raw value divided by 1000 (574 = 0.574); the manual does not give the scale, checked against active / apparent power on a device"},
     {"name": "System apparent power", "group": "Measurements", "area": "holding", "address": "0x1026", "type": "uint32", "unit": "VA"},
     {"name": "Apparent power L1", "group": "Measurements", "area": "holding", "address": "0x1028", "type": "uint32", "unit": "VA"},
     {"name": "Apparent power L2", "group": "Measurements", "area": "holding", "address": "0x102A", "type": "uint32", "unit": "VA"},
