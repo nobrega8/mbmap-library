@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "AEPH do Brasil",
+  "model": "MATRIX",
+  "models": [
+    "MATRIX"
+  ],
+  "vendor_website": "aephdobrasil.com.br",
+  "description": "Weighing indicator: displayed weight with status (gross or net, stable, negative, overload), tare and remote tare, zero and print commands",
+  "revision": 1,
+  "revised": "2026-11-10",
+  "source": "AEPH do Brasil MATRIX manual, chapter 22 (Modbus RTU protocol)",
+  "sources": [
+    {
+      "title": "Manual MATRIX, indicador universal de pesagem",
+      "version": "2.0",
+      "date": "2018",
+      "url": "https://www.aephdobrasil.com.br/storage/files/2023/01/matrix-1674438293.pdf",
+      "note": "chapter 22 (Modbus RTU protocol); linked in issue #146"
+    }
+  ],
+  "notes": [
+    "Modbus RTU (slave); set PR = rtU on the indicator. FC03 reads and FC06 writes holding registers. Addresses are 0-based, as sent on the wire.",
+    "The manual asks for 19200 bit/s, 8 data bits, no parity, 2 stop bits. The address (END) is 1 to 99.",
+    "Weight and tare are 17-bit values split over two registers: the high byte of the first register holds the status (or the decimal places), its lowest bit is bit 16 of the value, and the second register holds bits 0-15. They are given here as separate registers because the format has no type for this layout.",
+    "The manual's register list gives the weight and tare registers as 0x0010 and 0x0012, but its example frames read them at 10 (0x000A) and 12 (0x000C); this map follows the frames.",
+    "The command values follow the manual's example frames (1 = tare, 2 = zero, 3 = clear tare, 4 = print); the text next to the frames disagrees in places.",
+    "Written from the manual; this map has not been tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "decimal_point": {"0": "No decimals", "1": "0.0", "2": "0.00", "3": "0.000", "4": "0.0000"}
+  },
+  "registers": [
+    {"name": "Weight", "group": "Weight", "area": "holding", "address": 11, "type": "uint16", "description": "Bits 0-15 of the displayed weight; bit 16 is in the first register. Weight = bit 16 x 65536 + this value, with the decimal point and sign given by the status"},
+    {"name": "Weight bit 16", "group": "Weight", "area": "holding", "address": 10, "type": "bool", "bit": 0},
+    {"name": "Weight decimal point", "group": "Weight", "area": "holding", "address": 10, "type": "uint16", "bit": 8, "bits": 3, "enum": "decimal_point"},
+    {"name": "Negative weight", "group": "Weight", "area": "holding", "address": 10, "type": "bool", "bit": 11},
+    {"name": "Stable weight", "group": "Weight", "area": "holding", "address": 10, "type": "bool", "bit": 12},
+    {"name": "A/D saturation", "group": "Weight", "area": "holding", "address": 10, "type": "bool", "bit": 13},
+    {"name": "Overload", "group": "Weight", "area": "holding", "address": 10, "type": "bool", "bit": 14},
+    {"name": "Gross weight", "group": "Weight", "area": "holding", "address": 10, "type": "bool", "bit": 15, "enum": {"0": "Net", "1": "Gross"}},
+    {"name": "Tare", "group": "Tare", "area": "holding", "address": 13, "type": "uint16", "description": "Bits 0-15 of the tare; bit 16 is in the first register"},
+    {"name": "Tare bit 16", "group": "Tare", "area": "holding", "address": 12, "type": "bool", "bit": 0},
+    {"name": "Tare decimal point", "group": "Tare", "area": "holding", "address": 12, "type": "uint16", "bit": 8, "bits": 3, "enum": "decimal_point"},
+    {"name": "Remote command", "group": "Commands", "area": "holding", "address": 2, "type": "uint16", "access": "W", "enum": {"1": "Tare", "2": "Zero", "3": "Clear tare", "4": "Print"}}
+  ]
+}
