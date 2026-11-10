@@ -10,8 +10,8 @@
   ],
   "vendor_website": "lovatoelectric.com",
   "description": "Digital multimeter",
-  "revision": 1,
-  "revised": "2026-10-14",
+  "revision": 2,
+  "revised": "2026-11-10",
   "source": "Lovato Electric, DMG series Modbus communication protocol, I317 I GB 02_22",
   "sources": [
     {
@@ -27,14 +27,15 @@
     "Function 03 and 04 both read the measurements. 32- and 64-bit values are sent high word first.",
     "DMG610 and DMG615 have a built-in RS-485 port; DMG620 has Ethernet (Modbus TCP). DMG600 has no communication port.",
     "The model is reported by function 17 (Report Slave ID).",
-    "Max (HI), min (LO), average and max demand values, harmonics, I/O and setup parameters (tables 4-8 of the manual) are not listed here."
+    "Max (HI), min (LO), average and max demand values, harmonics, I/O and setup parameters (tables 4-8 of the manual) are not listed here.",
+    "Tested on a DMG6 (model not specified; DMG610, DMG615 or DMG620) read over a Modbus TCP gateway, unit ID 81, November 2026: all 54 registers read without errors. Checked: voltages, currents (current and power agree: 293284 VA / 231.15 V = 1268.8 A), power, power factor, THD, neutral current, asymmetry, the 64-bit energy counters, hour meters and the word order (big). Frequency read 50030, so its scale is 0.001 (50.03 Hz), not 0.01 as this map had before."
   ],
   "protocol": "tcp+rtu",
   "unit_id": 1,
   "byte_order": "big",
   "word_order": "big",
   "address_base": 1,
-  "x_status": "official",
+  "x_status": "verified",
   "registers": [
     {"name": "Voltage L1-N", "group": "Measurements", "area": "holding", "address": 2, "type": "uint32", "scale": 0.01, "unit": "V"},
     {"name": "Voltage L2-N", "group": "Measurements", "area": "holding", "address": 4, "type": "uint32", "scale": 0.01, "unit": "V"},
@@ -57,7 +58,7 @@
     {"name": "Power factor L1", "group": "Measurements", "area": "holding", "address": 38, "type": "int32", "scale": 0.0001},
     {"name": "Power factor L2", "group": "Measurements", "area": "holding", "address": 40, "type": "int32", "scale": 0.0001},
     {"name": "Power factor L3", "group": "Measurements", "area": "holding", "address": 42, "type": "int32", "scale": 0.0001},
-    {"name": "Frequency", "group": "Measurements", "area": "holding", "address": 50, "type": "uint32", "scale": 0.01, "unit": "Hz"},
+    {"name": "Frequency", "group": "Measurements", "area": "holding", "address": 50, "type": "uint32", "scale": 0.001, "unit": "Hz"},
     {"name": "Equivalent phase voltage", "group": "Measurements", "area": "holding", "address": 52, "type": "uint32", "scale": 0.01, "unit": "V"},
     {"name": "Equivalent line voltage", "group": "Measurements", "area": "holding", "address": 54, "type": "uint32", "scale": 0.01, "unit": "V"},
     {"name": "Equivalent current", "group": "Measurements", "area": "holding", "address": 56, "type": "uint32", "scale": 0.0001, "unit": "A"},
