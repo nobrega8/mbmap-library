@@ -30,6 +30,8 @@ Legend: **Yes** supported · **Kept** read and written back, not shown · **—*
 | Write limits, `write_min` and `write_max` (§4.5) | Yes: values outside them are refused before writing | — | — |
 | Reference values (§4.6) | Yes: match, mismatch and failed checks are shown | — | — |
 | Identity registers, `role`, and `models` (§4.7, §9) | Yes: the device is checked against the map's models and firmware | — | — |
+| Identity from the device, `identify` with FC17 or FC43 (§4.8, §9) | — | — | — |
+| Separate read requests, `read_alone` and `read_group` (§4.9) | — | — | — |
 | Firmware ranges, per map and per register (§3.2, §9) | Yes: once the firmware is known, only its registers are read | — | — |
 | `revision` and `revised` (§3.1) | Yes: shown with the map | — | — |
 | `source`, `sources`, `notes`, `comment` (§3.3, §2) | Kept | Notes and descriptions: included when a map is saved as TXT or RTF | — |
