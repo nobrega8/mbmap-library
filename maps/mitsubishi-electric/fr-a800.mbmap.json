@@ -1,0 +1,1540 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Mitsubishi Electric",
+  "model": "FR-A800",
+  "models": [
+    "FR-A800",
+    "FR-A820",
+    "FR-A840",
+    "FR-A842",
+    "FR-A846",
+    "FR-A800-GF"
+  ],
+  "vendor_website": "mitsubishielectric.com",
+  "description": "FREQROL-A800 high-performance inverter with Modbus RTU on the RS-485 terminals",
+  "revision": 1,
+  "revised": "2026-11-10",
+  "source": "Mitsubishi Electric FR-A800 Instruction Manual (Detailed) IB(NA)-0600503ENG-N (2312), MODBUS RTU communication specification",
+  "sources": [
+    {
+      "title": "FR-A800 Instruction Manual (Detailed), IB(NA)-0600503ENG-N (2312)",
+      "url": "https://dl.mitsubishielectric.com/dl/fa/document/manual/inv/ib0600503eng/ib0600503engn.pdf",
+      "note": "Section 5.15.6, MODBUS RTU communication specification (registers on pages 713 to 716); monitor register numbers in section 5.11 (page 464 onwards); linked in issue #189"
+    }
+  ],
+  "notes": [
+    "The manual numbers the registers 40001 and up; this map uses address_base 1, so address 201 is register 40201 and goes on the wire as 200.",
+    "Registers: 40002 to 40015 system environment variables, 40201 and up the real-time monitor, 40501 to 40508 the fault history, 41000 plus the parameter number for Pr. 0 to 999 (Pr. 1 is 41001), 44000 plus the number for Pr. 1000 to 1999, 44001 and up the product profile.",
+    "Register 40009 holds the control input instruction when written and the inverter status when read; 40010 sets the operation mode when written and gives the mode status when read, so each is listed twice with a different access.",
+    "Write the set frequency to 40014 (RAM) for continuous changes and to 40015 (EEPROM) only for values to keep; the EEPROM has a limited number of writes. Pr. 342 = 1 sends parameter writes to RAM only.",
+    "MODBUS RTU is available on the RS-485 terminals only, not on the PU connector, and the inverter must be in the NET operation mode to accept commands (Pr. 79, Pr. 340). Pr. 549 = 1 selects MODBUS RTU. Reset the inverter after changing the communication parameters.",
+    "With a communication option installed and Pr. 550 = 9999 (initial value), commands sent through the RS-485 terminals are invalid.",
+    "Initial values: Pr. 332 = 96 (9600 bit/s), Pr. 334 = 2 (even parity, 1 stop bit). The initial station number Pr. 331 = 0 is broadcast and the inverter does not answer, so the unit_id here is 1, which must be set in Pr. 331. MODBUS RTU always uses 8 data bits.",
+    "Monitor values depend on the inverter capacity (0.01 or 0.1 steps for current, power and energy, see the register descriptions) and on Pr. 37, Pr. 144 and Pr. 811 for speed units. Negative values need Pr. 1018. A 32-bit parameter or monitor value above 0xFFFF is returned as 0xFFFF.",
+    "Only a selection of parameters and monitor items is listed (those that need an option or a control mode are mostly left out); any parameter can be reached at 41000 plus its number. The analog calibration parameters C2 to C45 use special registers in the 41900, 42000 and 43900 ranges (see the manual). The fault list holds the data codes with a known panel indication; other codes read in the fault history are listed in section 6.4 of the manual.",
+    "Not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "data_bits": 8,
+  "parity": "E",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "enums": {
+    "mode_read": {
+      "0": "EXT",
+      "1": "PU",
+      "2": "EXT JOG",
+      "3": "PU JOG",
+      "4": "NET",
+      "5": "PU + EXT"
+    },
+    "mode_write": {
+      "16": "EXT",
+      "17": "PU",
+      "20": "NET"
+    },
+    "speed": {
+      "3": "300 bit/s",
+      "6": "600 bit/s",
+      "12": "1200 bit/s",
+      "24": "2400 bit/s",
+      "48": "4800 bit/s",
+      "96": "9600 bit/s",
+      "192": "19200 bit/s",
+      "384": "38400 bit/s",
+      "576": "57600 bit/s",
+      "768": "76800 bit/s",
+      "1152": "115200 bit/s"
+    },
+    "parity": {
+      "0": "None, stop bits per Pr. 333",
+      "1": "Odd, 1 stop bit",
+      "2": "Even, 1 stop bit"
+    },
+    "stop_bits": {
+      "0": "1 stop bit",
+      "1": "2 stop bits",
+      "10": "1 stop bit",
+      "11": "2 stop bits"
+    },
+    "protocol": {
+      "0": "Mitsubishi inverter protocol (computer link)",
+      "1": "MODBUS RTU"
+    },
+    "fault": {
+      "0": "No fault",
+      "16": "E.OC1",
+      "17": "E.OC2",
+      "18": "E.OC3",
+      "20": "E.SCF",
+      "32": "E.OV1",
+      "33": "E.OV2",
+      "34": "E.OV3",
+      "48": "E.THT",
+      "49": "E.THM",
+      "64": "E.FIN",
+      "80": "E.IPF",
+      "81": "E.UVT",
+      "82": "E.ILF",
+      "96": "E.OLT",
+      "97": "E.SOT",
+      "98": "E.LUP",
+      "99": "E.LDN",
+      "112": "E.BE",
+      "128": "E.GF",
+      "129": "E.LF",
+      "144": "E.OHT",
+      "145": "E.PTC",
+      "160": "E.OPT",
+      "172": "E.PE6",
+      "176": "E.PE",
+      "177": "E.PUE",
+      "178": "E.RET",
+      "179": "E.PE2",
+      "192": "E.CPU",
+      "193": "E.CTE",
+      "194": "E.P24",
+      "196": "E.CDO",
+      "197": "E.IOH",
+      "198": "E.SER",
+      "199": "E.AIE",
+      "200": "E.USB",
+      "201": "E.SAF",
+      "208": "E.OS",
+      "210": "E.ECT",
+      "224": "E.EF",
+      "225": "E.IAH",
+      "228": "E.LCI",
+      "229": "E.PCH",
+      "230": "E.PID"
+    }
+  },
+  "registers": [
+    {
+      "name": "Inverter reset",
+      "group": "Commands",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write any value to reset the inverter (no reply is sent)"
+    },
+    {
+      "name": "Parameter clear",
+      "group": "Commands",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 38490,
+      "write_max": 38490,
+      "description": "Write 0x965A; the communication parameters are not cleared"
+    },
+    {
+      "name": "All parameter clear",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 39338,
+      "write_max": 39338,
+      "description": "Write 0x99AA; the communication parameters are not cleared"
+    },
+    {
+      "name": "Parameter clear (alternative)",
+      "group": "Commands",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 23190,
+      "write_max": 23190,
+      "description": "Write 0x5A96; the communication parameters are not cleared"
+    },
+    {
+      "name": "All parameter clear (alternative)",
+      "group": "Commands",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 43673,
+      "write_max": 43673,
+      "description": "Write 0xAA99; the communication parameters are not cleared"
+    },
+    {
+      "name": "Control input instruction",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "W",
+      "description": "Written value: bit 0 stop, 1 forward (STF), 2 reverse (STR), 3 RH, 4 RM, 5 RL, 6 JOG, 7 RT, 8 AU, 9 CS, 10 MRS, 11 STP, 12 RES. Reading the same register gives the inverter status"
+    },
+    {
+      "name": "Stop command",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 0
+    },
+    {
+      "name": "Forward rotation command",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 1
+    },
+    {
+      "name": "Reverse rotation command",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 2
+    },
+    {
+      "name": "RH high-speed command",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 3,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "RM middle-speed command",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 4,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "RL low-speed command",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 5,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "Jog operation selection (JOG)",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 6,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "Second function selection (RT)",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 7,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "Terminal 4 input selection (AU)",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 8,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "Automatic restart selection (CS)",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 9,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "Output stop (MRS)",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 10,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "Start self-holding selection (STP)",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 11,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "Inverter reset (RES)",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "W",
+      "bit": 12,
+      "description": "Takes the function set by Pr. 180 to Pr. 189"
+    },
+    {
+      "name": "Running (RUN)",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 0,
+      "description": "Output terminal function; follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "During forward rotation",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "During reverse rotation",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Up to frequency (SU)",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 3,
+      "description": "Output terminal function; follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Overload warning (OL)",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 4,
+      "description": "Output terminal function; follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Instantaneous power failure / undervoltage (IPF)",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 5,
+      "description": "Output terminal function; follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Output frequency detection (FU)",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 6,
+      "description": "Output terminal function; follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Fault (ABC1)",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 7,
+      "description": "Output terminal function; follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "ABC2",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 8,
+      "description": "Output terminal function; follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Safety monitor output",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Fault occurrence",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Operation mode status",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "enum": "mode_read"
+    },
+    {
+      "name": "Operation mode setting",
+      "group": "Control",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "W",
+      "enum": "mode_write",
+      "description": "Writing is limited by Pr. 79 and Pr. 340"
+    },
+    {
+      "name": "Set frequency (RAM)",
+      "group": "Control",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Written to RAM; use for frequent changes. Unit follows Pr. 37, Pr. 144 and Pr. 811 (r/min when a speed display is set)"
+    },
+    {
+      "name": "Set frequency (EEPROM)",
+      "group": "Control",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "W",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Written to EEPROM; same unit as register 14. Limited number of writes"
+    },
+    {
+      "name": "Output frequency/speed",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 201,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Negative values are returned only when Pr. 1018 is set; unit follows Pr. 37, Pr. 144 and Pr. 811"
+    },
+    {
+      "name": "Output current",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "A",
+      "description": "0.01 A up to FR-A820-03160 and FR-A840-01800, 0.1 A above"
+    },
+    {
+      "name": "Output voltage",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Set frequency/motor speed setting",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Operation speed",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 206,
+      "type": "int16",
+      "access": "R",
+      "unit": "r/min",
+      "description": "Negative values are returned only when Pr. 1018 is set"
+    },
+    {
+      "name": "Motor torque",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 207,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Rated torque is 100 %; 0 % under V/F control"
+    },
+    {
+      "name": "Converter output voltage",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 208,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "DC bus voltage"
+    },
+    {
+      "name": "Regenerative brake duty",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 209,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Electronic thermal O/L relay load factor",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 210,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Thermal operation level is 100 %"
+    },
+    {
+      "name": "Output current peak value",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 211,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "A",
+      "description": "Reset at every start-up; 0.01 A up to FR-A820-03160 and FR-A840-01800, 0.1 A above"
+    },
+    {
+      "name": "Converter output voltage peak value",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 212,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Reset at every start-up"
+    },
+    {
+      "name": "Input power",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 213,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kW",
+      "description": "0.01 kW up to FR-A820-03160 and FR-A840-01800, 0.1 kW above"
+    },
+    {
+      "name": "Output power",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 214,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kW",
+      "description": "0.01 kW up to FR-A820-03160 and FR-A840-01800, 0.1 kW above"
+    },
+    {
+      "name": "Load meter",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 217,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Torque current as a percentage of Pr. 56"
+    },
+    {
+      "name": "Motor excitation current",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 218,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "A",
+      "description": "0.01 A up to FR-A820-03160 and FR-A840-01800, 0.1 A above"
+    },
+    {
+      "name": "Cumulative energization time",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 220,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h",
+      "description": "Counts 0 to 65535 h and wraps; wraps are counted in Pr. 563"
+    },
+    {
+      "name": "Actual operation time",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 223,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h",
+      "description": "Counts 0 to 65535 h and wraps; wraps are counted in Pr. 564; reset with Pr. 171"
+    },
+    {
+      "name": "Motor load factor",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 224,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Output current as a percentage of the inverter rated current"
+    },
+    {
+      "name": "Cumulative energy",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 225,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "0.01 kWh up to FR-A820-03160 and FR-A840-01800, 0.1 kWh above; reset with Pr. 170"
+    },
+    {
+      "name": "Torque command",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 232,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Negative values are returned only when Pr. 1018 is set; Vector control"
+    },
+    {
+      "name": "Torque current command",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 233,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Negative values are returned only when Pr. 1018 is set; Vector control"
+    },
+    {
+      "name": "Motor output",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 234,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kW",
+      "description": "0.01 kW up to FR-A820-03160 and FR-A840-01800, 0.1 kW above"
+    },
+    {
+      "name": "Torque (signed)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 236,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Negative values are returned only when Pr. 1018 is set; positive for driving torque, negative for regenerative torque"
+    },
+    {
+      "name": "Station number (RS-485 terminals)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 243,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Station number (PU)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 244,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PID set point",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 252,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "PID measured value",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 253,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "PID deviation",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 254,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Negative values are returned only when Pr. 1018 is set"
+    },
+    {
+      "name": "Motor thermal load factor",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 261,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "E.THM occurs at 100 %"
+    },
+    {
+      "name": "Inverter thermal load factor",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 262,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "E.THT occurs at 100 %"
+    },
+    {
+      "name": "PTC thermistor resistance",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 264,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kOhm",
+      "description": "Valid only when Pr. 561 is not 9999"
+    },
+    {
+      "name": "PID measured value 2",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 267,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Shown while PID control is enabled (Pr. 128 is not 0)"
+    },
+    {
+      "name": "Emergency drive status",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 268,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Remote output value 1",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 287,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Pr. 656"
+    },
+    {
+      "name": "Remote output value 2",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 288,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Pr. 657"
+    },
+    {
+      "name": "Remote output value 3",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 289,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Pr. 658; Negative values are returned only when Pr. 1018 is set"
+    },
+    {
+      "name": "Remote output value 4",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 290,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Pr. 659"
+    },
+    {
+      "name": "PID manipulated amount",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 291,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Negative values are returned only when Pr. 1018 is set"
+    },
+    {
+      "name": "Second PID set point",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 292,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Second PID measured value",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 293,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Second PID deviation",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 294,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Negative values are returned only when Pr. 1018 is set"
+    },
+    {
+      "name": "Second PID measured value 2",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 295,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Second PID manipulated amount",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 296,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Negative values are returned only when Pr. 1018 is set"
+    },
+    {
+      "name": "Dancer main set speed",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 297,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Control circuit temperature",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 298,
+      "type": "int16",
+      "access": "R",
+      "unit": "degC",
+      "description": "Negative values are returned only when Pr. 1018 is set; 0 to 100 degC, or -20 to 100 degC with a sign"
+    },
+    {
+      "name": "Cumulative energy 32-bit (lower 16 bits)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 277,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "Low word; the full value is the high word (278) x 65536 + this word"
+    },
+    {
+      "name": "Cumulative energy 32-bit (upper 16 bits)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 278,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh"
+    },
+    {
+      "name": "Cumulative energy 32-bit, 0.01 kWh (lower 16 bits)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 279,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.01,
+      "description": "Low word; 0.01 kWh up to FR-A820-03160 and FR-A840-01800, 0.1 kWh above; the full value is the high word (280) x 65536 + this word"
+    },
+    {
+      "name": "Cumulative energy 32-bit, 0.01 kWh (upper 16 bits)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 280,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.01
+    },
+    {
+      "name": "Input STF",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Input STR",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Input AU",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Input RT",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Input RL",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Input RM",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Input RH",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Input JOG",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Input MRS",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Input STP",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Input RES",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Input CS",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "Input S2",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 14,
+      "description": "Safety stop input"
+    },
+    {
+      "name": "Input S1",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 215,
+      "type": "bool",
+      "access": "R",
+      "bit": 15,
+      "description": "Safety stop input"
+    },
+    {
+      "name": "Output RUN",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 216,
+      "type": "bool",
+      "access": "R",
+      "bit": 0,
+      "description": "Output terminal status; function follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Output SU",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 216,
+      "type": "bool",
+      "access": "R",
+      "bit": 1,
+      "description": "Output terminal status; function follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Output IPF",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 216,
+      "type": "bool",
+      "access": "R",
+      "bit": 2,
+      "description": "Output terminal status; function follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Output OL",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 216,
+      "type": "bool",
+      "access": "R",
+      "bit": 3,
+      "description": "Output terminal status; function follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Output FU",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 216,
+      "type": "bool",
+      "access": "R",
+      "bit": 4,
+      "description": "Output terminal status; function follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Output ABC1",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 216,
+      "type": "bool",
+      "access": "R",
+      "bit": 5,
+      "description": "Output terminal status; function follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Output ABC2",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 216,
+      "type": "bool",
+      "access": "R",
+      "bit": 6,
+      "description": "Output terminal status; function follows Pr. 190 to Pr. 196"
+    },
+    {
+      "name": "Output SO",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 216,
+      "type": "bool",
+      "access": "R",
+      "bit": 7,
+      "description": "Safety monitor output"
+    },
+    {
+      "name": "Option input terminal status 1",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 258,
+      "type": "uint16",
+      "access": "R",
+      "description": "FR-A8AX inputs X0 (bit 0) to X15 (bit 15); all 0 when the option is not installed"
+    },
+    {
+      "name": "Option input terminal status 2",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 259,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 is DY of the FR-A8AX; all 0 when the option is not installed"
+    },
+    {
+      "name": "Option output terminal status",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 260,
+      "type": "uint16",
+      "access": "R",
+      "description": "FR-A8AY/FR-A8AR outputs Y0 to Y6 (bits 0 to 6) and RA1 to RA3 (bits 7 to 9); all 0 when the option is not installed"
+    },
+    {
+      "name": "Fault record 1 (latest)",
+      "group": "Alarms and faults",
+      "area": "holding",
+      "address": 501,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "fault",
+      "description": "Low byte is the fault data code. Writing any value clears the fault history"
+    },
+    {
+      "name": "Fault record 2",
+      "group": "Alarms and faults",
+      "area": "holding",
+      "address": 502,
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "Fault record 3",
+      "group": "Alarms and faults",
+      "area": "holding",
+      "address": 503,
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "Fault record 4",
+      "group": "Alarms and faults",
+      "area": "holding",
+      "address": 504,
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "Fault record 5",
+      "group": "Alarms and faults",
+      "area": "holding",
+      "address": 505,
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "Fault record 6",
+      "group": "Alarms and faults",
+      "area": "holding",
+      "address": 506,
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "Fault record 7",
+      "group": "Alarms and faults",
+      "area": "holding",
+      "address": 507,
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "Fault record 8",
+      "group": "Alarms and faults",
+      "area": "holding",
+      "address": 508,
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "Maximum frequency (Pr. 1)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1001,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Minimum frequency (Pr. 2)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1002,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Base frequency (Pr. 3)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1003,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Acceleration time (Pr. 7)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1007,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "0.1 s steps when Pr. 21 = 0 (0.01 s steps when Pr. 21 = 1)"
+    },
+    {
+      "name": "Deceleration time (Pr. 8)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1008,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "0.1 s steps when Pr. 21 = 0 (0.01 s steps when Pr. 21 = 1)"
+    },
+    {
+      "name": "Electronic thermal O/L relay (Pr. 9)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1009,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "A",
+      "description": "Rated motor current; the increment is 0.01 A for the smaller capacities and 0.1 A for the larger ones (see the manual)"
+    },
+    {
+      "name": "Speed display (Pr. 37)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1037,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = frequency display, 1 to 9998 = speed display at 60 Hz"
+    },
+    {
+      "name": "Operation panel main monitor selection (Pr. 52)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1052,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Parameter write selection (Pr. 77)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1077,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = write only when stopped, 1 = no write, 2 = write in any mode"
+    },
+    {
+      "name": "Reverse rotation prevention selection (Pr. 78)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1078,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = both directions, 1 = reverse prevented, 2 = forward prevented"
+    },
+    {
+      "name": "Operation mode selection (Pr. 79)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1079,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Selects the operation mode; see the Pr. 79 table in the manual"
+    },
+    {
+      "name": "RS-485 communication station number (Pr. 331)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1331,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 247,
+      "description": "0 = broadcast (no reply), 1 to 247 = station number; reset the inverter after changing"
+    },
+    {
+      "name": "RS-485 communication speed (Pr. 332)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1332,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "speed",
+      "description": "Setting x 100 = bit/s"
+    },
+    {
+      "name": "RS-485 communication stop bit length / data length (Pr. 333)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1333,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "stop_bits",
+      "description": "With MODBUS RTU the stop bit length is set by Pr. 334 (the data length is fixed at 8 bits)"
+    },
+    {
+      "name": "RS-485 communication parity check selection (Pr. 334)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1334,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "parity"
+    },
+    {
+      "name": "Communication startup mode selection (Pr. 340)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1340,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = start in the mode set by Pr. 79, 1 = network mode, 2 = network mode (PU mode on restart), 10 and 12 = network mode, operation mode switchable from the panel"
+    },
+    {
+      "name": "Communication EEPROM write selection (Pr. 342)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1342,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = parameters written by communication go to EEPROM and RAM, 1 = RAM only"
+    },
+    {
+      "name": "Communication error count (Pr. 343)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1343,
+      "type": "uint16",
+      "access": "R",
+      "description": "Cleared on a power reset or inverter reset"
+    },
+    {
+      "name": "Stop mode selection at communication error (Pr. 502)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1502,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 4, 11 or 12; see the manual"
+    },
+    {
+      "name": "MODBUS RTU communication check time interval (Pr. 539)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1539,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "0 = communication allowed but output shut off in the NET operation mode, 0.1 to 999.8 s = signal-loss detection time, 9999 = no check"
+    },
+    {
+      "name": "Protocol selection (Pr. 549)",
+      "group": "Serial interface",
+      "area": "holding",
+      "address": 1549,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "protocol",
+      "description": "Set to 1 for MODBUS RTU; reset the inverter after changing"
+    },
+    {
+      "name": "Model (characters 1-2)",
+      "group": "Product profile",
+      "area": "holding",
+      "address": 4001,
+      "type": "uint16",
+      "access": "R",
+      "reference": 18002,
+      "description": "ASCII, 'FR' on every model"
+    },
+    {
+      "name": "Model (characters 3-4)",
+      "group": "Product profile",
+      "area": "holding",
+      "address": 4002,
+      "type": "uint16",
+      "access": "R",
+      "reference": 11585,
+      "description": "ASCII, '-A' on the FR-A800 series"
+    },
+    {
+      "name": "Model (characters 5-20)",
+      "group": "Product profile",
+      "area": "holding",
+      "address": 4003,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "ASCII, blank (0x20) padded, for example '840-1' for an FR-A840-1 inverter"
+    },
+    {
+      "name": "Capacity",
+      "group": "Product profile",
+      "area": "holding",
+      "address": 4011,
+      "type": "string",
+      "access": "R",
+      "length": 3,
+      "description": "ASCII in 0.1 kW steps, blank padded"
+    }
+  ]
+}
