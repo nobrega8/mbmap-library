@@ -11,8 +11,8 @@
   ],
   "vendor_website": "se.com",
   "description": "Power meter",
-  "revision": 3,
-  "revised": "2026-10-18",
+  "revision": 4,
+  "revised": "2026-11-10",
   "source": "Schneider Electric, PM2000 series firmware, revision history and Modbus register map, LCD v01.05.03",
   "sources": [
     {
@@ -29,7 +29,9 @@
     "Values the meter cannot provide read as the N/A value of their data type (0xFFFF, 0xFFFFFFFF, 0x8000 or a float NaN).",
     "Power factor registers are four-quadrant values from -2 to 2, not plain power factors: 0° = 1, 90° = 0, 180° = -1, 270° = 2. Above 1, the power factor is 2 minus the value and leading; below -1 it is -2 minus the value and leading; otherwise it is the value, lagging (unity at ±1).",
     "The register list does not state the order of the two registers of a 32-bit value; this map uses the order of the PM5000 family (most significant register first). If the values look wrong on a device, try little word order.",
-    "Registers that exist only on some of the models say so in their description."
+    "Registers that exist only on some of the models say so in their description.",
+    "Tested on two PM2130, both firmware 1.2.1.34 (register 1637 reads 1021), read over a Modbus TCP gateway, November 2026: on the first all 2418 registers read without errors, 367 of them as the N/A value (registers of other models, such as the phase energies of the PM2220 / PM2230, the multi-tariff energies, and unused setup). Checked: identification, setup, currents, voltages, frequency, power (L1 + L2 + L3 active power = total on both, -46.36 kW and 120.40 kW), power factor, and the 64-bit accumulated energies; 32-bit floats read correctly with most significant register first. On the second, 2412 registers read; alarm log entries 16 and 17 (11307-11315) got no response from the gateway. Both meters answer FC17 with illegal function.",
+    "The integer power factors at 3196 and 3197 are sign-magnitude: bit 15 is the sign and bits 0-14 are thousandths (0x814F = -0.335 with the float at -0.336; on the second meter 3196 read 0x03AA = 0.938 and 3197 0x83AA, the float copy at 3194 being negative). The map reads the magnitude only; the sign is not decoded. Not tested: the models other than the PM2130."
   ],
   "protocol": "rtu",
   "unit_id": 1,
@@ -40,7 +42,7 @@
   "byte_order": "big",
   "word_order": "big",
   "address_base": 1,
-  "x_status": "official",
+  "x_status": "verified",
   "registers": [
     {
       "name": "Meter Name",
@@ -111,7 +113,8 @@
       "area": "holding",
       "address": 130,
       "type": "uint32",
-      "access": "R"
+      "access": "R",
+      "role": "serial"
     },
     {
       "name": "Date of Manufacture",
@@ -2249,16 +2252,22 @@
       "group": "Meter Data (Basic)",
       "area": "holding",
       "address": 3196,
-      "type": "int16",
+      "type": "uint16",
+      "bit": 0,
+      "bits": 15,
+      "scale": 0.001,
       "access": "R",
-      "description": "Range: - 1 to 1. IEC standard, MSB bit 1 represent -ve Sign"
+      "description": "Range: - 1 to 1. IEC standard, MSB bit 1 represent -ve Sign. Raw value divided by 1000 (937 = 0.937); the sign bit is not decoded"
     },
     {
       "name": "Power Factor, Alternate Format: Power Factor Total (3197)",
       "group": "Meter Data (Basic)",
       "area": "holding",
       "address": 3197,
-      "type": "int16",
+      "type": "uint16",
+      "bit": 0,
+      "bits": 15,
+      "scale": 0.001,
       "access": "R",
       "description": "Range: - 1 to 1. IEEE standard, MSB bit 1 represents -ve sign"
     },
