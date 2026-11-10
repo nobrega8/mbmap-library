@@ -55,6 +55,25 @@ export interface Register {
   comment?: string;
 }
 
+export interface IdentifyField {
+  name: string;
+  role?: string;
+  /** FC17: byte position in the data of the answer */
+  offset?: number;
+  type?: string;
+  length?: number;
+  /** FC43: object id */
+  object?: number;
+  enumName?: string;
+  enumTable?: [string, string][];
+}
+
+export interface Identify {
+  /** 17 (Report Slave ID) or 43 (Read Device Identification) */
+  func: 17 | 43;
+  fields: IdentifyField[];
+}
+
 export interface MapInfo {
   vendor: string;
   model: string;
@@ -85,6 +104,7 @@ export interface MapInfo {
   maxReadRegisters: number;
   maxReadBits: number;
   enumCount: number;
+  identify?: Identify;
   registers: Register[];
   /** Registers left out because a required key was missing or wrong */
   skipped: number;
@@ -182,6 +202,37 @@ function register(raw: unknown, i: number, map: MapInfo, enums: Json): Register 
   return r;
 }
 
+function identifyBlock(raw: unknown, enums: Json): Identify | undefined {
+  if (!isObject(raw)) return undefined;
+  const func = raw.function === 17 || raw.function === 43 ? raw.function : undefined;
+  if (!func || !Array.isArray(raw.fields)) return undefined;
+  const fields = raw.fields.filter(isObject).flatMap((f): IdentifyField[] => {
+    const name = str(f.name);
+    if (!name) return [];
+    const out: IdentifyField = { name };
+    const role = str(f.role);
+    if (role) out.role = role;
+    const offset = parseInteger(f.offset);
+    if (offset != null) out.offset = offset;
+    const type = str(f.type);
+    if (type) out.type = type;
+    const length = parseInteger(f.length);
+    if (length != null) out.length = length;
+    const object = parseInteger(f.object);
+    if (object != null) out.object = object;
+    if (typeof f.enum === "string") {
+      out.enumName = f.enum;
+      const t = table(enums[f.enum]);
+      if (t) out.enumTable = t;
+    } else {
+      const t = table(f.enum);
+      if (t) out.enumTable = t;
+    }
+    return [out];
+  });
+  return fields.length ? { func, fields } : undefined;
+}
+
 /** Normalises a parsed map. Throws only when the file is not a map at all. */
 export function normalizeMap(doc: unknown): MapInfo {
   if (!isObject(doc)) throw new Error("not a JSON object");
@@ -238,6 +289,7 @@ export function normalizeMap(doc: unknown): MapInfo {
     maxReadRegisters: intIn(doc.max_read_registers, 1, 125, 125),
     maxReadBits: intIn(doc.max_read_bits, 1, 2000, 2000),
     enumCount: Object.keys(enums).length,
+    identify: identifyBlock(doc.identify, enums),
     registers: [],
     skipped: 0,
   };

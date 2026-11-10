@@ -7,6 +7,7 @@ import {
   AREA_FUNCTIONS,
   AREA_NAME,
   AREA_TAG,
+  ROLE_INFO,
   hex,
   modicon,
   registerCount,
@@ -28,13 +29,19 @@ function scaleText(r: Register): string {
   return parts.join(" ");
 }
 
+/** Tooltip of a role tag. */
+export function roleTitle(role: string): string {
+  const info = ROLE_INFO[role];
+  return info ? `Identifies the device: ${info.long}` : "Identifies the device";
+}
+
 export function registerRow(r: Register, query = ""): string {
   const mark = (s: string) => (query ? highlight(s, query) : escapeHtml(s));
   const group = r.group ? ` <span class="grp">${mark(r.group)}</span>` : "";
   const desc = r.description ?? "";
   const tags = [
     r.enumTable ? `<span class="tag" title="Has a translation table">enum</span>` : "",
-    r.role ? `<span class="tag" title="Identifies the device">${escapeHtml(r.role)}</span>` : "",
+    r.role ? `<span class="tag role" title="${escapeHtml(roleTitle(r.role))}">${escapeHtml(ROLE_INFO[r.role]?.label ?? r.role)}</span>` : "",
     r.firmwareMin || r.firmwareMax ? `<span class="tag" title="Only some firmware versions">fw</span>` : "",
   ].join("");
   return `<tr data-i="${r.i}">
@@ -80,7 +87,11 @@ export function registerDetail(r: Register, addressBase: number, columns: number
     add("Write limits", `${r.writeMin ?? "—"} to ${r.writeMax ?? "—"}${r.unit ? ` ${escapeHtml(r.unit)}` : ""}`);
   if (r.firmwareMin || r.firmwareMax)
     add("Firmware", `${r.firmwareMin ? `from ${escapeHtml(r.firmwareMin)}` : ""}${r.firmwareMin && r.firmwareMax ? " " : ""}${r.firmwareMax ? `up to ${escapeHtml(r.firmwareMax)}` : ""}`);
-  add("Role", r.role && `Identifies the device: <span class="mono">${escapeHtml(r.role)}</span>`);
+  add(
+    "Role",
+    r.role &&
+      `<span class="mono">${escapeHtml(r.role)}</span> <span class="faint">${escapeHtml(ROLE_INFO[r.role]?.long ?? "Identifies the device.")}</span>`,
+  );
   add("Reference value", r.reference && `<span class="mono">${escapeHtml(r.reference)}</span>`);
   add("Group", r.group && escapeHtml(r.group));
   add("Description", r.description && escapeHtml(r.description));
