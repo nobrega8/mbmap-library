@@ -3,32 +3,29 @@
   "mbmap": 2,
   "vendor": "Entes",
   "model": "EMK-01",
-  "models": ["EMK-01"],
+  "models": [
+    "EMK-01"
+  ],
   "vendor_website": "entes.com.tr",
   "description": "4-phase power quality analyser — per-phase V/I/P/Q/S/CosPhi/PF, voltage & current THD, 3-/4-phase totals, frequency, temperature, energy (IEEE-754 float, Big-Endian).",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/entes-emk01.toml; Source: Entes EMK-01 Register Table (embedded documentation, FC03 section). Not verified against the manufacturer's documentation",
+  "revision": 3,
+  "revised": "2026-11-10",
+  "sources": [
+    {
+      "title": "EMK-01 Modbus Register Table",
+      "date": "2020-03",
+      "url": "https://www.entes.com.tr/uploads/files/EMK-01_Modbus_Register_Table.pdf",
+      "note": "manufacturer's register table (FC03 section)"
+    }
+  ],
   "notes": [
-    "Entes EMK-01.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Entes EMK-01 — Modbus register map for Omni Console",
-    "|",
-    "| Source: Entes EMK-01 Register Table (embedded documentation, FC03 section)",
-    "| - 4-phase (3-phase + N) power quality analyser, RS485 Modbus RTU.",
-    "| - Holding registers (FC03/read, FC16/write).",
-    "| - IEEE-754 float (32-bit, 2 registers) and long64 (64-bit, 4 registers), Big-Endian (MSW first).",
-    "| - Protocol address = table address − 40001 (standard Modicon 4xxxx convention).",
-    "| - Measurement block: table 40001–40425+ (protocol 0–424+).",
-    "| - Energy block: float at table 55024–55034 (protocol 15023–15033).",
-    "| - Factory defaults: slave=1, baud configurable (check unit)."
+    "Addresses are the table addresses (4xxxx) minus 40001. Only the main measurements and energy counters are mapped; min/max, harmonic and record sections of the table are not included.",
+    "The table says the device is big-endian but gives no word order for the 64-bit energies. Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
+  "x_status": "official",
   "registers": [
     {"name": "Voltage L1", "area": "holding", "address": 0, "type": "float32", "unit": "V", "access": "R"},
     {"name": "Voltage L2", "area": "holding", "address": 2, "type": "float32", "unit": "V", "access": "R"},
@@ -81,6 +78,12 @@
     {"name": "Total apparent power (L1..L4)", "area": "holding", "address": 160, "type": "float32", "unit": "VA", "access": "R"},
     {"name": "Total reactive power consumption (L1..L4)", "area": "holding", "address": 168, "type": "float32", "unit": "var", "access": "R"},
     {"name": "Temperature", "area": "holding", "address": 296, "type": "float32", "unit": "°C", "access": "R"},
+    {"name": "Consumed active energy (64-bit)", "area": "holding", "address": 14999, "type": "int64", "scale": 0.1, "unit": "kWh"},
+    {"name": "Consumed inductive reactive energy (64-bit)", "area": "holding", "address": 15003, "type": "int64", "scale": 0.1, "unit": "kvarh"},
+    {"name": "Consumed capacitive reactive energy (64-bit)", "area": "holding", "address": 15007, "type": "int64", "scale": 0.1, "unit": "kvarh"},
+    {"name": "Supplied active energy (64-bit)", "area": "holding", "address": 15011, "type": "int64", "scale": 0.1, "unit": "kWh"},
+    {"name": "Supplied inductive reactive energy (64-bit)", "area": "holding", "address": 15015, "type": "int64", "scale": 0.1, "unit": "kvarh"},
+    {"name": "Supplied capacitive reactive energy (64-bit)", "area": "holding", "address": 15019, "type": "int64", "scale": 0.1, "unit": "kvarh"},
     {"name": "Consumed active energy", "area": "holding", "address": 15023, "type": "float32", "unit": "kWh", "access": "R"},
     {"name": "Consumed inductive reactive energy", "area": "holding", "address": 15025, "type": "float32", "unit": "kvarh", "access": "R"},
     {"name": "Consumed capacitive reactive energy", "area": "holding", "address": 15027, "type": "float32", "unit": "kvarh", "access": "R"},

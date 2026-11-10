@@ -6,28 +6,20 @@
   "models": ["UMG 96-EL"],
   "vendor_website": "janitza.com",
   "description": "Energy analyzer",
-  "revision": 2,
-  "revised": "2026-10-18",
+  "revision": 3,
+  "revised": "2026-11-10",
   "firmware": "1.1.0",
-  "source": "modbusdb.com register tables, retrieved 2026-10-14. Not verified against the manufacturer's documentation",
-  "sources": [
-    {
-      "title": "modbusdb: Janitza Multifunctional Energy Analyzer UMG 96-EL",
-      "url": "https://modbusdb.com/janitza/multifunctional-energy-analyzer/umg-96-el/1-1-0",
-      "note": "retrieved 2026-10-14"
-    }
-  ],
+  "source": "Janitza electronics, \"UMG 96-EL Modbus address list and Formulary\", from firmware 1.1.0, 07/2026, Doc. no. 2.067.007.2.b",
+  "sources": [{"title": "UMG 96-EL Modbus address list and Formulary (PDF and table)", "url": "https://assets.janitza.com/ce18jq9ih0x6/7f15tgoe10gR8li83FGy1C/4e034c88ae3d78ea6ed1929d1dde9a24/janitza-mal-umg96el-en.zip", "note": "zip with the Formulary (PDF) and the address table (xlsx)", "version": "From firmware 1.1.0, 07/2026, Doc. no. 2.067.007.2.b"}],
   "notes": [
-    "Janitza UMG 96-EL.",
-    "Converted automatically from modbusdb.com. Not verified against the manufacturer's documentation.",
-    "The 'short' readings use the scale given in the source table (x10 = 0.1).",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Addresses are the protocol addresses of the address list; values are big-endian. The device also serves them little-endian at the address + 32768.",
+    "Readings of type short are multiplied by 10, 100 or 1000 in the device (see scale); they do not include the transformer ratios, unlike the float readings.",
+    "The text registers 25000 and 25128 are given a length of 128 registers (the gap between them); the address list does not state the length."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbusdb",
+  "x_status": "official",
   "registers": [
     {"name": "Current transformer I1, primary", "group": "Configuration parameters", "area": "holding", "address": 10, "type": "float32", "unit": "A", "access": "RW", "description": "Range 0 .. 1000000"},
     {"name": "Current transformer I1, sec", "group": "Configuration parameters", "area": "holding", "address": 12, "type": "float32", "unit": "A", "access": "RW", "description": "Range 1 .. 5"},
@@ -3310,7 +3302,7 @@
     {"name": "THD, I3 (Frequently required measured values)", "group": "Frequently required measured values", "area": "holding", "address": 19120, "type": "float32", "unit": "%"},
     {"name": "MQTT Connection Status; 0=disabled, 1=disconnected, 2=connected, 3=init", "group": "Configuration parameters", "area": "holding", "address": 21300, "type": "uint16"},
     {"name": "Error code of last MQTT error", "group": "Configuration parameters", "area": "holding", "address": 21301, "type": "uint16"},
-    {"name": "Device name", "group": "Configuration parameters", "area": "holding", "address": 25000, "type": "string", "length": 1, "access": "RW", "description": "Range 0 .. 0"},
-    {"name": "Device description", "group": "Configuration parameters", "area": "holding", "address": 25128, "type": "string", "length": 1, "access": "RW", "description": "Range 0 .. 0"}
+    {"name": "Device name", "group": "Configuration parameters", "area": "holding", "address": 25000, "type": "string", "length": 128, "access": "RW", "description": "Range 0 .. 0"},
+    {"name": "Device description", "group": "Configuration parameters", "area": "holding", "address": 25128, "type": "string", "length": 128, "access": "RW", "description": "Range 0 .. 0"}
   ]
 }
