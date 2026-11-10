@@ -16,7 +16,8 @@
     "addresses are wire addresses, as the FC06/FC16 examples show.",
     "Values are the read-out digits without the decimal point, so no scale or unit is given: they depend on the meter.",
     "Mode switch 1 (OFF-OFF): 19200 8N1 on the Modbus side, 300 baud auto-switching on the meter side.",
-    "Meter n's 24 values start at 0x100 * (n - 1). With more than one meter, set Meter count and each IEC address."
+    "Meter n's 24 values start at 0x100 * (n - 1). With more than one meter, set Meter count and each IEC address.",
+    "Tested on an LKM141 / LKM144 with one meter, November 2026. Checked: the 32-bit word order (big), the meter 1 values at 0-46 (time, date, energies, maximum demand), the settings at 128-133, and the monitoring registers (IEC read counter, uptime, both firmware words, IEC addresses). The gateway stopped answering during a full-map read, after 45 of 261 registers. Instantaneous values (current, voltage, power factor, frequency) read 0 on the meter in use, so their scaling was not checked."
   ],
   "protocol": "rtu",
   "unit_id": 1,
@@ -30,7 +31,7 @@
   "enums": {
     "reading_method": {"0": "Method 1: full table + BCC (obsolete)", "1": "Method 2: line by line"}
   },
-  "x_status": "official",
+  "x_status": "verified",
   "registers": [
     {"name": "M1 Time (0.9.1)", "group": "Meter 1", "area": "holding", "address": 0, "type": "uint32", "access": "R", "description": "OBIS 0.9.1. hhmmss as digits (10:25:07 reads 102507). 0 if not in the read-out"},
     {"name": "M1 Date (0.9.2)", "group": "Meter 1", "area": "holding", "address": 2, "type": "uint32", "access": "R", "description": "OBIS 0.9.2. yymmdd as digits (22-09-14 reads 220914). 0 if not in the read-out"},
