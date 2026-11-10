@@ -20,6 +20,7 @@ TRANSLATIONS = {
     ROOT / "docs/readme/README_ES.md": ("Mapas por estado", ("Verificado", "Oficial", "No oficial")),
     ROOT / "docs/readme/README_ZHS.md": ("按状态统计的映射", ("已验证", "官方", "非官方")),
     ROOT / "docs/readme/README_JP.md": ("ステータス別マップ数", ("検証済み", "公式", "非公式")),
+    ROOT / "docs/readme/README_RU.md": ("Карты по статусу", ("Проверена", "Официальная", "Неофициальная")),
 }
 CHART_START = "<!-- status-chart:start -->"
 CHART_END = "<!-- status-chart:end -->"

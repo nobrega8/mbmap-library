@@ -7,7 +7,7 @@
 
 # mbmap-library
 
-[English](../../README.md) · [Español](README_ES.md) · [简体中文](README_ZHS.md) · **日本語**
+[English](../../README.md) · [Español](README_ES.md) · [简体中文](README_ZHS.md) · **日本語** · [Русский](README_RU.md)
 
 [![Validate maps](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml/badge.svg)](https://github.com/nobrega8/mbmap-library/actions/workflows/validate.yml)
 [![Maps](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnobrega8%2Fmbmap-library%2Fmain%2Findex.json&query=%24.maps.length&label=maps&color=blue)](../../index.json)
