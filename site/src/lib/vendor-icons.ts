@@ -138,7 +138,13 @@ async function fetchIcon(home: URL): Promise<Uint8Array | null> {
     const found = await iconFromSite(v);
     if (found) return found;
   }
-  return iconFromService(home.hostname.replace(/^www\./, ""));
+  // The services know some sites only under "www." and others only without it
+  const bare = home.hostname.replace(/^www\./, "");
+  for (const host of new Set([home.hostname, bare, `www.${bare}`])) {
+    const found = await iconFromService(host);
+    if (found) return found;
+  }
+  return null;
 }
 
 /**
