@@ -41,7 +41,7 @@ const recent = devices
   .slice(0, 8);
 const topMakers = [...manufacturers]
   .sort((a, b) => b.devices.length - a.devices.length || a.name.localeCompare(b.name))
-  .slice(0, 12);
+  .slice(0, 16);
 const fmtDate = (s: string) =>
   new Date(s).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 
@@ -195,7 +195,7 @@ const jsonLd = [
       )
     }
 
-    <section class="card pad" aria-labelledby="makers-title" data-reveal>
+    <section class="card pad fill" aria-labelledby="makers-title" data-reveal>
       <div class="section-row">
         <h2 id="makers-title">Manufacturers</h2>
         <a class="btn ghost" href={href("/manufacturers")}>All {manufacturers.length} <Icon name="next" size={14} /></a>
@@ -545,6 +545,14 @@ const jsonLd = [
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 8px;
+    /* The rows share the height the card gets beside "Recently added" */
+    grid-auto-rows: 1fr;
+    flex: 1;
+  }
+
+  .fill {
+    display: flex;
+    flex-direction: column;
   }
 
   .m-name {
@@ -719,6 +727,9 @@ const jsonLd = [
   }
 
   @media (max-width: 820px) {
+    .makers li:nth-child(n + 13) {
+      display: none;
+    }
     .two,
     .steps,
     .trust {
