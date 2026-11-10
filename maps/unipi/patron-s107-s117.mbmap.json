@@ -2,47 +2,53 @@
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
   "vendor": "Unipi technology",
-  "model": "Unipi Axon S155",
+  "model": "Unipi Patron S107 / S117",
   "models": [
-    "S155",
-    "Axon S155",
-    "Unipi Axon S155"
+    "Unipi Patron S107",
+    "Unipi Patron S117"
   ],
   "vendor_website": "www.unipi.technology",
-  "description": "Unipi Axon S155 PLC: 4 digital inputs, 4 digital outputs, 1 analog input, 1 analog output, 1 RS485 line, 1-Wire bus",
+  "description": "Modbus TCP PLC unit with 4 digital inputs, 4 digital outputs, 1 analog output and 1 analog input",
+  "x_status": "official",
   "revision": 1,
-  "source": "unipi-axon-s155-modbus-registers.xlsx, Unipi knowledge base page https://kb.unipi.technology/en:hw:04-extensions:downloads",
+  "revised": "2026-11-10",
+  "source": "Patron S107 Modbus map v2.0, Unipi technology; Patron S117 Modbus map v2.0, Unipi technology, Unipi knowledge base page https://kb.unipi.technology/en:hw:04-extensions:downloads",
   "sources": [
     {
-      "title": "Axon S155 Modbus registers (unipi-axon-s155-modbus-registers.xlsx)",
-      "url": "https://kb.unipi.technology/_media/en:files:products:unipi-axon-s155-modbus-registers.xlsx",
-      "note": "Sheets Registers - group 1, Coils - group 1, Description; listed on https://kb.unipi.technology/en:hw:04-extensions:downloads"
+      "title": "Patron S107 Modbus map",
+      "version": "2.0",
+      "url": "https://kb.unipi.technology/_media/files:products:patron:unipi-patron-s107-modbus-map-v2.0.pdf",
+      "note": "Registers and Coils sheets"
+    },
+    {
+      "title": "Patron S117 Modbus map",
+      "version": "2.0",
+      "url": "https://kb.unipi.technology/_media/files:products:patron:unipi-patron-s117-modbus-map-v2.0.pdf",
+      "note": "Registers and Coils sheets"
     }
   ],
   "notes": [
-    "Addresses are those of the column 'Via Unit 0' (Modbus TCP unit id 0); the column 'Via Unit 1' gives the same addresses for this single-group model.",
-    "Unipi Axon and Neuron use Modbus TCP. By default the Modbus server listens only on the loopback interface; it can be opened to other interfaces by changing its systemd script (Description sheet). The TCP port and the unit id used here are not stated in the spreadsheet: 502 is the Modbus default.",
-    "Registers marked Reserved or Obsolete in the spreadsheet, and those named (Internal), are left out. Multi-register values are big-endian (most significant register first). The spreadsheet types Real as a two-register floating point value, read here as float32; its Description sheet text about half and single precision is ambiguous.",
-    "Coils (suffix (coil)) repeat digital inputs, outputs and some settings that also appear as bits of holding registers. Analog values are in the unit selected by the analog input or output configuration register; the spreadsheet gives no unit for them."
+    "Registers are 0-based and use the Unit 0 addresses of the document, which cover every section of the device. Multi-register values (32-bit counters, serial number, floats) are read here with the most significant register first, as the document states.",
+    "Reserved, obsolete and internal registers, and registers reachable only through a section unit (Unit 1 to 3), are left out.",
+    "The documents of S107, S117 list identical registers, so they share this map."
   ],
   "protocol": "tcp",
-  "port": 502,
   "unit_id": 0,
+  "port": 502,
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
   "enums": {
-    "ao_mode": {
-      "0": "Voltage 0 – 10V",
-      "1": "Current 0 – 20mA",
-      "3": "Resistance 0 – 2kΩ"
-    },
     "ai_mode_ui": {
-      "0": "Voltage 0 – 10V",
-      "1": "Current 0 – 20mA"
+      "0": "Voltage 0-10 V",
+      "1": "Current 0-20 mA"
+    },
+    "ao_mode": {
+      "0": "Voltage 0-10 V",
+      "1": "Current 0-20 mA",
+      "3": "Resistance 0-2 kohm"
     }
   },
-  "x_status": "official",
   "registers": [
     {
       "name": "Digital Input 1.1",
@@ -50,7 +56,8 @@
       "area": "holding",
       "address": 0,
       "type": "bool",
-      "bit": 0
+      "bit": 0,
+      "access": "R"
     },
     {
       "name": "Digital Input 1.2",
@@ -58,7 +65,8 @@
       "area": "holding",
       "address": 0,
       "type": "bool",
-      "bit": 1
+      "bit": 1,
+      "access": "R"
     },
     {
       "name": "Digital Input 1.3",
@@ -66,7 +74,8 @@
       "area": "holding",
       "address": 0,
       "type": "bool",
-      "bit": 2
+      "bit": 2,
+      "access": "R"
     },
     {
       "name": "Digital Input 1.4",
@@ -74,7 +83,8 @@
       "area": "holding",
       "address": 0,
       "type": "bool",
-      "bit": 3
+      "bit": 3,
+      "access": "R"
     },
     {
       "name": "Digital Output 1.1",
@@ -114,10 +124,12 @@
     },
     {
       "name": "VRefInt of MCU",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 5,
-      "type": "uint16"
+      "type": "uint16",
+      "access": "R",
+      "description": "Reference voltage of the MCU (raw)"
     },
     {
       "name": "MWD Enable",
@@ -143,7 +155,8 @@
       "area": "holding",
       "address": 8,
       "type": "uint32",
-      "access": "RW"
+      "access": "RW",
+      "description": "Pulse counter; writable to reset"
     },
     {
       "name": "Counter of Digital Input 1.2",
@@ -151,7 +164,8 @@
       "area": "holding",
       "address": 10,
       "type": "uint32",
-      "access": "RW"
+      "access": "RW",
+      "description": "Pulse counter; writable to reset"
     },
     {
       "name": "Counter of Digital Input 1.3",
@@ -159,7 +173,8 @@
       "area": "holding",
       "address": 12,
       "type": "uint32",
-      "access": "RW"
+      "access": "RW",
+      "description": "Pulse counter; writable to reset"
     },
     {
       "name": "Counter of Digital Input 1.4",
@@ -167,7 +182,8 @@
       "area": "holding",
       "address": 14,
       "type": "uint32",
-      "access": "RW"
+      "access": "RW",
+      "description": "Pulse counter; writable to reset"
     },
     {
       "name": "PWM Duty Cycle of DO 1.1",
@@ -175,7 +191,8 @@
       "area": "holding",
       "address": 16,
       "type": "uint16",
-      "access": "RW"
+      "access": "RW",
+      "description": "PWM duty cycle of the digital output"
     },
     {
       "name": "PWM Duty Cycle of DO 1.2",
@@ -183,7 +200,8 @@
       "area": "holding",
       "address": 17,
       "type": "uint16",
-      "access": "RW"
+      "access": "RW",
+      "description": "PWM duty cycle of the digital output"
     },
     {
       "name": "PWM Duty Cycle of DO 1.3",
@@ -191,7 +209,8 @@
       "area": "holding",
       "address": 18,
       "type": "uint16",
-      "access": "RW"
+      "access": "RW",
+      "description": "PWM duty cycle of the digital output"
     },
     {
       "name": "PWM Duty Cycle of DO 1.4",
@@ -199,7 +218,8 @@
       "area": "holding",
       "address": 19,
       "type": "uint16",
-      "access": "RW"
+      "access": "RW",
+      "description": "PWM duty cycle of the digital output"
     },
     {
       "name": "User LED 1.1",
@@ -310,117 +330,89 @@
       "access": "RW"
     },
     {
-      "name": "RS485 TERMIOS CFlags 1.1",
-      "group": "RS485 and Modbus configuration",
-      "area": "holding",
-      "address": 500,
-      "type": "uint16",
-      "access": "RW"
-    },
-    {
-      "name": "RS485 TERMIOS LFlags 1.1",
-      "group": "RS485 and Modbus configuration",
-      "area": "holding",
-      "address": 501,
-      "type": "uint16",
-      "access": "RW"
-    },
-    {
-      "name": "RS485 TERMIOS IFlags 1.1",
-      "group": "RS485 and Modbus configuration",
-      "area": "holding",
-      "address": 502,
-      "type": "uint16",
-      "access": "RW"
-    },
-    {
-      "name": "RS485 TERMIOS LDisc 1.1",
-      "group": "RS485 and Modbus configuration",
-      "area": "holding",
-      "address": 503,
-      "type": "uint16",
-      "access": "RW"
-    },
-    {
-      "name": "RS485 ModBus Timeout 1.1",
-      "group": "RS485 and Modbus configuration",
-      "area": "holding",
-      "address": 504,
-      "type": "uint16",
-      "access": "RW"
-    },
-    {
       "name": "Firmware Version",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1000,
-      "type": "uint16"
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware",
+      "description": "Firmware version of the section (raw number)"
     },
     {
       "name": "Number of DIs",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1001,
       "type": "uint16",
       "bit": 0,
-      "bits": 8
+      "bits": 8,
+      "access": "R"
     },
     {
       "name": "Number of DOs",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1001,
       "type": "uint16",
       "bit": 8,
-      "bits": 8
+      "bits": 8,
+      "access": "R"
     },
     {
       "name": "Number of internal RS485 lines",
-      "group": "RS485 and Modbus configuration",
+      "group": "Info",
       "area": "holding",
       "address": 1002,
       "type": "uint16",
       "bit": 0,
-      "bits": 4
+      "bits": 4,
+      "access": "R"
     },
     {
       "name": "Number of AOs",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1002,
       "type": "uint16",
       "bit": 4,
-      "bits": 4
+      "bits": 4,
+      "access": "R"
     },
     {
       "name": "Number of AIs",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1002,
       "type": "uint16",
       "bit": 8,
-      "bits": 8
+      "bits": 8,
+      "access": "R"
     },
     {
       "name": "Firmware ID",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1003,
-      "type": "uint16"
+      "type": "uint16",
+      "access": "R"
     },
     {
       "name": "Hardware ID",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1004,
-      "type": "uint16"
+      "type": "uint16",
+      "access": "R"
     },
     {
       "name": "PCB Serial Number",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1005,
-      "type": "uint32"
+      "type": "uint32",
+      "access": "R",
+      "role": "serial"
     },
     {
       "name": "RS485 RX queue not empty",
@@ -459,7 +451,7 @@
       "access": "RW"
     },
     {
-      "name": "Group MasterWatchDog (MWD) Timeout (in 1ms)",
+      "name": "MWD Timeout (in 1ms)",
       "group": "Watchdog",
       "area": "holding",
       "address": 1008,
@@ -469,54 +461,60 @@
     },
     {
       "name": "VRef of MCU",
-      "group": "Device information",
+      "group": "Info",
       "area": "holding",
       "address": 1009,
-      "type": "uint16"
+      "type": "uint16",
+      "access": "R",
+      "description": "Reference voltage of the MCU (raw)"
     },
     {
       "name": "Debounce time (in 100us) for DI 1.1",
-      "group": "DirectSwitch and debounce",
+      "group": "Settings",
       "area": "holding",
       "address": 1010,
       "type": "uint16",
       "access": "RW",
-      "scale": 100,
-      "unit": "µs"
+      "scale": 0.1,
+      "unit": "ms",
+      "description": "Raw unit is 100 us"
     },
     {
       "name": "Debounce time (in 100us) for DI 1.2",
-      "group": "DirectSwitch and debounce",
+      "group": "Settings",
       "area": "holding",
       "address": 1011,
       "type": "uint16",
       "access": "RW",
-      "scale": 100,
-      "unit": "µs"
+      "scale": 0.1,
+      "unit": "ms",
+      "description": "Raw unit is 100 us"
     },
     {
       "name": "Debounce time (in 100us) for DI 1.3",
-      "group": "DirectSwitch and debounce",
+      "group": "Settings",
       "area": "holding",
       "address": 1012,
       "type": "uint16",
       "access": "RW",
-      "scale": 100,
-      "unit": "µs"
+      "scale": 0.1,
+      "unit": "ms",
+      "description": "Raw unit is 100 us"
     },
     {
       "name": "Debounce time (in 100us) for DI 1.4",
-      "group": "DirectSwitch and debounce",
+      "group": "Settings",
       "area": "holding",
       "address": 1013,
       "type": "uint16",
       "access": "RW",
-      "scale": 100,
-      "unit": "µs"
+      "scale": 0.1,
+      "unit": "ms",
+      "description": "Raw unit is 100 us"
     },
     {
       "name": "Enable DirectSwitch on DI 1.1",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1014,
       "type": "bool",
@@ -525,7 +523,7 @@
     },
     {
       "name": "Enable DirectSwitch on DI 1.2",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1014,
       "type": "bool",
@@ -534,7 +532,7 @@
     },
     {
       "name": "Enable DirectSwitch on DI 1.3",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1014,
       "type": "bool",
@@ -543,7 +541,7 @@
     },
     {
       "name": "Enable DirectSwitch on DI 1.4",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1014,
       "type": "bool",
@@ -552,7 +550,7 @@
     },
     {
       "name": "Invert DirectSwitch Polarity on DI 1.1",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1015,
       "type": "bool",
@@ -561,7 +559,7 @@
     },
     {
       "name": "Invert DirectSwitch Polarity on DI 1.2",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1015,
       "type": "bool",
@@ -570,7 +568,7 @@
     },
     {
       "name": "Invert DirectSwitch Polarity on DI 1.3",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1015,
       "type": "bool",
@@ -579,7 +577,7 @@
     },
     {
       "name": "Invert DirectSwitch Polarity on DI 1.4",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1015,
       "type": "bool",
@@ -588,7 +586,7 @@
     },
     {
       "name": "Enable DirectSwitch Toggle on DI 1.1",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1016,
       "type": "bool",
@@ -597,7 +595,7 @@
     },
     {
       "name": "Enable DirectSwitch Toggle on DI 1.2",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1016,
       "type": "bool",
@@ -606,7 +604,7 @@
     },
     {
       "name": "Enable DirectSwitch Toggle on DI 1.3",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1016,
       "type": "bool",
@@ -615,7 +613,7 @@
     },
     {
       "name": "Enable DirectSwitch Toggle on DI 1.4",
-      "group": "DirectSwitch and debounce",
+      "group": "DirectSwitch",
       "area": "holding",
       "address": 1016,
       "type": "bool",
@@ -623,7 +621,7 @@
       "access": "RW"
     },
     {
-      "name": "PWM Group prescaler",
+      "name": "Section PWM prescaler",
       "group": "PWM",
       "area": "holding",
       "address": 1017,
@@ -631,7 +629,7 @@
       "access": "RW"
     },
     {
-      "name": "PWM Group cycle length",
+      "name": "Section PWM cycle length",
       "group": "PWM",
       "area": "holding",
       "address": 1018,
@@ -639,8 +637,8 @@
       "access": "RW"
     },
     {
-      "name": "Analog Output Configuration(U/I/R-measure) 1.1",
-      "group": "Analog outputs",
+      "name": "Analog Output Configuration 1.1",
+      "group": "Analog",
       "area": "holding",
       "address": 1019,
       "type": "uint16",
@@ -649,7 +647,7 @@
     },
     {
       "name": "Analog Output Voltage deviation 1.1",
-      "group": "Analog outputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1020,
       "type": "uint16",
@@ -657,7 +655,7 @@
     },
     {
       "name": "Analog Output Voltage offset 1.1",
-      "group": "Analog outputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1021,
       "type": "uint16",
@@ -665,7 +663,7 @@
     },
     {
       "name": "Analog Output Current deviation 1.1",
-      "group": "Analog outputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1022,
       "type": "uint16",
@@ -673,15 +671,15 @@
     },
     {
       "name": "Analog Output Current offset 1.1",
-      "group": "Analog outputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1023,
       "type": "uint16",
       "access": "RW"
     },
     {
-      "name": "Analog Input Configuration(U/I) 1.1",
-      "group": "Analog inputs",
+      "name": "Analog Input Configuration 1.1",
+      "group": "Analog",
       "area": "holding",
       "address": 1024,
       "type": "uint16",
@@ -690,7 +688,7 @@
     },
     {
       "name": "Analog Input Voltage deviation 1.1",
-      "group": "Analog inputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1025,
       "type": "uint16",
@@ -698,7 +696,7 @@
     },
     {
       "name": "Analog Input Voltage offset 1.1",
-      "group": "Analog inputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1026,
       "type": "uint16",
@@ -706,7 +704,7 @@
     },
     {
       "name": "Analog Input Current deviation 1.1",
-      "group": "Analog inputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1027,
       "type": "uint16",
@@ -714,7 +712,7 @@
     },
     {
       "name": "Analog Input Current offset 1.1",
-      "group": "Analog inputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1028,
       "type": "uint16",
@@ -722,7 +720,7 @@
     },
     {
       "name": "Analog Input/Output Voltage deviation (input side) 1.1",
-      "group": "Analog inputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1029,
       "type": "uint16",
@@ -730,7 +728,7 @@
     },
     {
       "name": "Analog Input/Output Voltage offset (input side) 1.1",
-      "group": "Analog inputs",
+      "group": "Analog",
       "area": "holding",
       "address": 1030,
       "type": "uint16",
@@ -738,18 +736,39 @@
     },
     {
       "name": "Analog Output value 1.1",
-      "group": "Analog outputs",
+      "group": "Analog",
       "area": "holding",
       "address": 3000,
       "type": "float32",
-      "access": "RW"
+      "access": "RW",
+      "description": "Value in the unit of the configured mode (V, mA or ohm)"
     },
     {
       "name": "Analog Input value 1.1",
-      "group": "Analog inputs",
+      "group": "Analog",
       "area": "holding",
       "address": 3002,
-      "type": "float32"
+      "type": "float32",
+      "access": "R",
+      "description": "Value in the unit of the configured mode (V, mA or ohm)"
+    },
+    {
+      "name": "Storage - Erase cycles used [%]",
+      "group": "Storage",
+      "area": "holding",
+      "address": 4000,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Storage - Good blocks [%]",
+      "group": "Storage",
+      "area": "holding",
+      "address": 4001,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
     },
     {
       "name": "Digital Output 1.1 (coil)",
@@ -788,31 +807,35 @@
       "group": "Digital inputs",
       "area": "coil",
       "address": 4,
-      "type": "bool"
+      "type": "bool",
+      "access": "R"
     },
     {
       "name": "Digital Input 1.2 (coil)",
       "group": "Digital inputs",
       "area": "coil",
       "address": 5,
-      "type": "bool"
+      "type": "bool",
+      "access": "R"
     },
     {
       "name": "Digital Input 1.3 (coil)",
       "group": "Digital inputs",
       "area": "coil",
       "address": 6,
-      "type": "bool"
+      "type": "bool",
+      "access": "R"
     },
     {
       "name": "Digital Input 1.4 (coil)",
       "group": "Digital inputs",
       "area": "coil",
       "address": 7,
-      "type": "bool"
+      "type": "bool",
+      "access": "R"
     },
     {
-      "name": "User Programmable LED 1.1 (coil)",
+      "name": "User Programmable LED 1.1",
       "group": "LEDs",
       "area": "coil",
       "address": 8,
@@ -820,7 +843,7 @@
       "access": "RW"
     },
     {
-      "name": "User Programmable LED 1.2 (coil)",
+      "name": "User Programmable LED 1.2",
       "group": "LEDs",
       "area": "coil",
       "address": 9,
@@ -828,7 +851,7 @@
       "access": "RW"
     },
     {
-      "name": "User Programmable LED 1.3 (coil)",
+      "name": "User Programmable LED 1.3",
       "group": "LEDs",
       "area": "coil",
       "address": 10,
@@ -836,7 +859,7 @@
       "access": "RW"
     },
     {
-      "name": "User Programmable LED 1.4 (coil)",
+      "name": "User Programmable LED 1.4",
       "group": "LEDs",
       "area": "coil",
       "address": 11,
@@ -844,131 +867,39 @@
       "access": "RW"
     },
     {
-      "name": "MWD reset indication (coil)",
-      "group": "Watchdog",
+      "name": "MWD reset indication",
+      "group": "Commands",
       "area": "coil",
       "address": 1000,
       "type": "bool",
-      "access": "RW"
+      "access": "RW",
+      "description": "Clears the MWD reboot indication"
     },
     {
-      "name": "Enable/Disable 1Wire Bus (coil)",
-      "group": "1-Wire",
+      "name": "Enable/Disable 1Wire Bus",
+      "group": "Commands",
       "area": "coil",
       "address": 1001,
       "type": "bool",
-      "access": "RW"
+      "access": "RW",
+      "description": "Enable or disable the 1-Wire bus"
     },
     {
-      "name": "Reset group MCU (coil)",
-      "group": "Device information",
+      "name": "Reset section MCU",
+      "group": "Commands",
       "area": "coil",
       "address": 1002,
-      "type": "bool"
+      "type": "bool",
+      "access": "W"
     },
     {
-      "name": "Save current configuration and use on startup (coil)",
-      "group": "Device information",
+      "name": "Save current configuration and use on startup",
+      "group": "Commands",
       "area": "coil",
       "address": 1003,
       "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Enable DirectSwitch on DI 1.1 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1007,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Enable DirectSwitch on DI 1.2 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1008,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Enable DirectSwitch on DI 1.3 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1009,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Enable DirectSwitch on DI 1.4 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1010,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Invert DirectSwitch Polarity on DI 1.1 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1011,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Invert DirectSwitch Polarity on DI 1.2 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1012,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Invert DirectSwitch Polarity on DI 1.3 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1013,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Invert DirectSwitch Polarity on DI 1.4 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1014,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Enable DirectSwitch Toggle Mode on DI 1.1 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1015,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Enable DirectSwitch Toggle Mode on DI 1.2 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1016,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Enable DirectSwitch Toggle Mode on DI 1.3 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1017,
-      "type": "bool",
-      "access": "RW"
-    },
-    {
-      "name": "Enable DirectSwitch Toggle Mode on DI 1.4 (coil)",
-      "group": "DirectSwitch and debounce",
-      "area": "coil",
-      "address": 1018,
-      "type": "bool",
-      "access": "RW"
+      "access": "W",
+      "description": "Stores the current configuration so it is used at startup"
     }
   ]
 }
