@@ -1,0 +1,364 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Webasto",
+  "model": "NEXT",
+  "vendor_website": "webasto.com",
+  "description": "EV charging station with a Modbus TCP server for energy management systems",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Webasto, Modbus Specification Webasto NEXT, register list revision 3.00 (2022-04-27)",
+  "sources": [
+    {
+      "title": "Modbus Specification Webasto NEXT (Webasto_NEXT_Modbus_Register_1-00_external_V3)",
+      "version": "3.00",
+      "date": "2022-04-27",
+      "note": "All registers in the document belong to the master device TQ-DM100"
+    }
+  ],
+  "notes": [
+    "Modbus TCP, port 502, unit ID 255. Each wallbox needs its own IP address on the subnet and the energy manager is the Modbus client. All registers are holding registers.",
+    "Two-register values are listed in the document as address + address+1 (for example 1020+1021); the word order is not stated and big is assumed.",
+    "The register list is under the master device 'TQ-DM100'. Webasto Live has a setting for its register address set (the TQ-DM100 set is one of the options); this document is only for the NEXT, so the Live is not covered by it.",
+    "Write-only registers (5000 charge power, 5004 charge current, 5006 start or cancel) are marked W. Safe current and the communication timeout apply if the energy manager stops writing the life bit (6000).",
+    "Webasto gives no support for this document; the manufacturer's notice says problems that arise from using it are the customer's responsibility."
+  ],
+  "protocol": "tcp",
+  "port": 502,
+  "unit_id": 255,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "cp_state": {
+      "0": "No vehicle attached",
+      "1": "Vehicle attached, no permission (preparing)",
+      "3": "Charging",
+      "4": "Charging paused",
+      "7": "Charging error",
+      "8": "Charging station reserved"
+    },
+    "charge_state": {
+      "0": "Idle",
+      "1": "Charging"
+    },
+    "evse_state": {
+      "0": "Starting",
+      "1": "Running",
+      "2": "Error"
+    },
+    "cable_state": {
+      "0": "No cable attached",
+      "1": "Cable attached (no car attached)",
+      "2": "Cable attached (car attached)",
+      "3": "Cable attached (car attached) and lock active"
+    },
+    "errors": {
+      "0": "No error",
+      "1": "Relay welded closed",
+      "2": "Internal aux voltage",
+      "3": "Control pilot communication",
+      "4": "Grid over-voltage",
+      "5": "Grid under-voltage",
+      "6": "Over-current drawn by the car",
+      "7": "VAC frequency",
+      "8": "Ground missing or resistance too high",
+      "9": "Residual current monitor self test",
+      "10": "Over-temperature",
+      "11": "Proximity pilot",
+      "12": "Shutter",
+      "13": "Three phase check",
+      "14": "PWR internal error",
+      "15": "Negative control pilot out of range",
+      "16": "DC residual current"
+    },
+    "session_cmd": {
+      "0": "No action",
+      "1": "Start charging session",
+      "2": "Cancel charging session"
+    }
+  },
+  "registers": [
+    {
+      "name": "Charge point state",
+      "group": "Status",
+      "area": "holding",
+      "address": 1000,
+      "type": "uint16",
+      "access": "R",
+      "enum": "cp_state"
+    },
+    {
+      "name": "Charge state",
+      "group": "Status",
+      "area": "holding",
+      "address": 1001,
+      "type": "uint16",
+      "access": "R",
+      "enum": "charge_state"
+    },
+    {
+      "name": "EVSE state",
+      "group": "Status",
+      "area": "holding",
+      "address": 1002,
+      "type": "uint16",
+      "access": "R",
+      "enum": "evse_state"
+    },
+    {
+      "name": "Cable state",
+      "group": "Status",
+      "area": "holding",
+      "address": 1004,
+      "type": "uint16",
+      "access": "R",
+      "enum": "cable_state"
+    },
+    {
+      "name": "EVSE error code",
+      "group": "Status",
+      "area": "holding",
+      "address": 1006,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors",
+      "description": "0 = no error; 1 and above are error codes of appendix 1"
+    },
+    {
+      "name": "Charging current L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1008,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mA"
+    },
+    {
+      "name": "Charging current L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1010,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mA"
+    },
+    {
+      "name": "Charging current L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1012,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mA"
+    },
+    {
+      "name": "Total charge active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1020,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Charge active power L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1024,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Charge active power L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1028,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Charge active power L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1032,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Energy meter",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1036,
+      "type": "uint32",
+      "access": "R",
+      "description": "Meter reading of the charging station",
+      "unit": "Wh"
+    },
+    {
+      "name": "Maximum current (hardware)",
+      "group": "Limits",
+      "area": "holding",
+      "address": 1100,
+      "type": "uint16",
+      "access": "R",
+      "description": "Maximal charging current of the hardware (EVSE, cable, EV)",
+      "unit": "A"
+    },
+    {
+      "name": "Minimum current limit",
+      "group": "Limits",
+      "area": "holding",
+      "address": 1102,
+      "type": "uint16",
+      "access": "R",
+      "description": "Minimal charging current of the hardware",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum current from EVSE",
+      "group": "Limits",
+      "area": "holding",
+      "address": 1104,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum current from cable",
+      "group": "Limits",
+      "area": "holding",
+      "address": 1106,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum current from EV",
+      "group": "Limits",
+      "area": "holding",
+      "address": 1108,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Charged energy (last session)",
+      "group": "Session",
+      "area": "holding",
+      "address": 1502,
+      "type": "uint16",
+      "access": "R",
+      "description": "Energy of the last session; 0 during a session",
+      "unit": "Wh"
+    },
+    {
+      "name": "Session start time",
+      "group": "Session",
+      "area": "holding",
+      "address": 1504,
+      "type": "uint32",
+      "access": "R",
+      "description": "Start of the current or last session as hhmmss",
+      "unit": "hhmmss"
+    },
+    {
+      "name": "Charging time",
+      "group": "Session",
+      "area": "holding",
+      "address": 1508,
+      "type": "uint32",
+      "access": "R",
+      "description": "Duration since the start of the charge",
+      "unit": "s"
+    },
+    {
+      "name": "Session end time",
+      "group": "Session",
+      "area": "holding",
+      "address": 1512,
+      "type": "uint32",
+      "access": "R",
+      "description": "End of the last session as hhmmss; 0 during a session",
+      "unit": "hhmmss"
+    },
+    {
+      "name": "User ID",
+      "group": "Session",
+      "area": "holding",
+      "address": 1600,
+      "type": "string",
+      "access": "R",
+      "length": 10,
+      "description": "OCPP IdTag of the current session, 20 bytes of ASCII hex codes"
+    },
+    {
+      "name": "ISO 15118 smart vehicle detected",
+      "group": "Session",
+      "area": "holding",
+      "address": 1620,
+      "type": "uint32",
+      "access": "R",
+      "description": "1 if the connected EV is a smart vehicle, 0 otherwise"
+    },
+    {
+      "name": "Safe current",
+      "group": "Control",
+      "area": "holding",
+      "address": 2000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Maximum charge current during a communication failure",
+      "unit": "A"
+    },
+    {
+      "name": "Communication timeout",
+      "group": "Control",
+      "area": "holding",
+      "address": 2002,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s"
+    },
+    {
+      "name": "Charge power",
+      "group": "Control",
+      "area": "holding",
+      "address": 5000,
+      "type": "uint32",
+      "access": "W",
+      "unit": "W"
+    },
+    {
+      "name": "Charge current",
+      "group": "Control",
+      "area": "holding",
+      "address": 5004,
+      "type": "uint16",
+      "access": "W",
+      "unit": "A"
+    },
+    {
+      "name": "Start / cancel charging session",
+      "group": "Control",
+      "area": "holding",
+      "address": 5006,
+      "type": "uint16",
+      "access": "W",
+      "enum": "session_cmd"
+    },
+    {
+      "name": "Life bit",
+      "group": "Control",
+      "area": "holding",
+      "address": 6000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Communication monitoring toggle bit: the energy manager writes 1 every half of the timeout and the wallbox resets it to 0"
+    }
+  ]
+}
