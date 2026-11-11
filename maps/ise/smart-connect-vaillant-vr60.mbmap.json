@@ -1,0 +1,185 @@
+{
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "ISE",
+ "model": "smart connect Modbus Vaillant (VR60 mixer module)",
+ "vendor_website": "ise.de",
+ "description": "Vaillant VR60 mixer module heating circuit through the ise gateway",
+ "revision": 1,
+ "revised": "2026-11-11",
+ "source": "ISE Individuelle Software und Elektronik, ise smart connect Modbus Vaillant, Product Manual (order no. S-0002-007), section 4.5",
+ "sources": [
+  {
+   "title": "ise smart connect Modbus Vaillant, Product Manual",
+   "version": "S-0002-007",
+   "note": "Section 4.5 Modbus registers and 4.6 data types"
+  }
+ ],
+ "notes": [
+  "The gateway (ise smart connect Modbus Vaillant with the ise eBUS adapter) answers Modbus TCP and reads the Vaillant device over eBUS; this map is for unit IDs 4 to 9, the VR60 mixer modules (heating circuits 4 to 9); the map is written for unit ID 4 (the manual's Modbus unit ID). The manual covers the Vaillant geoTHERM/3 VWS 220/3 to 460/3 ground-source heat pump only; other Vaillant heat pumps such as the aroTHERM are not covered.",
+  "Modbus TCP, port 502 by default (configurable from 2000 to 4000). Functions 0x03, 0x04, 0x06 and 0x10. Addresses are one-based: register 1 is address 1 with address_base 1.",
+  "32-bit values (uint32 and IEEE 754 floats) take two registers and the first register holds the least significant word (little word order); they can only be written together with function 0x10.",
+  "The gateway polls the heat pump over eBUS every 2 to 60 minutes depending on the value (2 minutes for most sensors, 15 for error history and outside temperature, 60 for counters), so reads show the last polled value. A request to a unit ID whose device is not present gets exception 0x0B.The gateway reaches up to three VR60 modules."
+ ],
+ "protocol": "tcp",
+ "port": 502,
+ "unit_id": 4,
+ "byte_order": "big",
+ "word_order": "little",
+ "address_base": 1,
+ "x_status": "official",
+ "enums": {
+  "ebus_error": {
+   "0": "No error",
+   "1": "geoTHERM/3, VR60 or VR90 not found",
+   "2": "No compatible geoTHERM/3, VR60 or VR90 found",
+   "3": "Error in communication with the ise eBUS adapter",
+   "4": "eBUS cable not connected",
+   "5": "No answer from eBUS",
+   "7": "Value not permitted"
+  },
+  "ebus_state": {
+   "0": "No error / device found",
+   "1": "Error during eBUS communication / device not found"
+  },
+  "mixer": {
+   "0": "Stationary",
+   "1": "Opening",
+   "2": "Closing"
+  },
+  "op_hc": {
+   "1": "On",
+   "2": "Off",
+   "3": "Auto",
+   "4": "Eco",
+   "5": "Low"
+  },
+  "sensor": {
+   "0": "No fault",
+   "85": "Short-circuit",
+   "170": "Interrupt"
+  },
+  "status": {
+   "0": "Off",
+   "1": "On"
+  }
+ },
+ "registers": [
+  {
+   "name": "eBUS error",
+   "group": "Input registers",
+   "area": "input",
+   "address": 1,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ebus_state"
+  },
+  {
+   "name": "eBUS last error",
+   "group": "Input registers",
+   "area": "input",
+   "address": 2,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ebus_error"
+  },
+  {
+   "name": "VF2 flow temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 3,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "VF2 flow temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 4,
+   "type": "int16",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "Mixer activation",
+   "group": "Input registers",
+   "area": "input",
+   "address": 5,
+   "type": "uint16",
+   "access": "R",
+   "enum": "mixer"
+  },
+  {
+   "name": "Heating circuit pump status",
+   "group": "Input registers",
+   "area": "input",
+   "address": 6,
+   "type": "uint16",
+   "access": "R",
+   "enum": "status"
+  },
+  {
+   "name": "Heating circuit operating mode",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 7,
+   "type": "uint16",
+   "access": "RW",
+   "enum": "op_hc"
+  },
+  {
+   "name": "Day target room temperature",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 8,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  },
+  {
+   "name": "Set-back temperature",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 9,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  },
+  {
+   "name": "Heating curve",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 10,
+   "type": "float32",
+   "access": "RW"
+  },
+  {
+   "name": "Maximum target flow temperature",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 12,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  },
+  {
+   "name": "Minimum target flow temperature",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 13,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  },
+  {
+   "name": "Outside temperature switch-off threshold",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 14,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  }
+ ]
+}

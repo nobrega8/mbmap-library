@@ -1,0 +1,686 @@
+{
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "ISE",
+ "model": "smart connect Modbus Vaillant (geoTHERM/3 heat pump)",
+ "vendor_website": "ise.de",
+ "description": "Vaillant geoTHERM/3 heat pump through the ise Modbus TCP gateway",
+ "revision": 1,
+ "revised": "2026-11-11",
+ "source": "ISE Individuelle Software und Elektronik, ise smart connect Modbus Vaillant, Product Manual (order no. S-0002-007), section 4.5",
+ "sources": [
+  {
+   "title": "ise smart connect Modbus Vaillant, Product Manual",
+   "version": "S-0002-007",
+   "note": "Section 4.5 Modbus registers and 4.6 data types"
+  }
+ ],
+ "notes": [
+  "The gateway (ise smart connect Modbus Vaillant with the ise eBUS adapter) answers Modbus TCP and reads the Vaillant device over eBUS; this map is for unit ID 1, the geoTHERM/3 heat pump (the manual's Modbus unit ID). The manual covers the Vaillant geoTHERM/3 VWS 220/3 to 460/3 ground-source heat pump only; other Vaillant heat pumps such as the aroTHERM are not covered.",
+  "Modbus TCP, port 502 by default (configurable from 2000 to 4000). Functions 0x03, 0x04, 0x06 and 0x10. Addresses are one-based: register 1 is address 1 with address_base 1.",
+  "32-bit values (uint32 and IEEE 754 floats) take two registers and the first register holds the least significant word (little word order); they can only be written together with function 0x10.",
+  "The gateway polls the heat pump over eBUS every 2 to 60 minutes depending on the value (2 minutes for most sensors, 15 for error history and outside temperature, 60 for counters), so reads show the last polled value. A request to a unit ID whose device is not present gets exception 0x0B."
+ ],
+ "protocol": "tcp",
+ "port": 502,
+ "unit_id": 1,
+ "byte_order": "big",
+ "word_order": "little",
+ "address_base": 1,
+ "x_status": "official",
+ "enums": {
+  "dtc": {
+   "514": "Error comp inlet sensor",
+   "515": "Error evaporator sensor",
+   "516": "Error heat source outlet sensor",
+   "517": "Error comp outlet sensor",
+   "518": "Error heat source inlet sensor",
+   "519": "Error HP return sensor",
+   "520": "Error HP flow sensor",
+   "521": "Error AF sensor",
+   "522": "Error SP sensor",
+   "523": "Error VF1 sensor",
+   "524": "Error RF1 sensor",
+   "525": "Error VF2 sensor",
+   "526": "Sensor fault: TCoilLiquidOpen",
+   "527": "Error heat source outlet sensor",
+   "528": "Error condenser sensor",
+   "529": "Heat source anti freezing protection: delta T6-T7",
+   "530": "Heat source anti freezing protection: T5<4 °C",
+   "531": "Heat source anti freezing protection: T6<-10 °C",
+   "532": "No water flow",
+   "533": "Abnormal cooling of the CH circuit",
+   "534": "Building circuit: floor protection active",
+   "535": "CH flow temperature too high for floor heating",
+   "536": "Compressor outlet overheat",
+   "537": "Refrigerant pressure too high",
+   "538": "Refrigerant pressure too high, check CH pump",
+   "539": "Refrigerant pressure too low",
+   "540": "CH pressure too low",
+   "541": "Brine pressure too low",
+   "542": "CH return temperature too high",
+   "543": "Fan overheat thermostat open",
+   "544": "One or two phases missing",
+   "545": "Wrong phase order",
+   "546": "Refrigerant pressure sensors fault",
+   "547": "Operation interlock: heat source anti freezing delta T6-T7",
+   "548": "Operation interlock: heat source anti freezing T5<4 °C",
+   "549": "Operation interlock: heat source anti freezing T6<-10 °C",
+   "550": "Operation interlock: no water flow",
+   "551": "Operation interlock: CH circuit anti freezing protection",
+   "552": "Operation interlock: CH flow temperature too high",
+   "553": "Operation interlock: compressor outlet overheat",
+   "554": "Refrigerant pressure out of range",
+   "555": "CH circuit pressure sensor error",
+   "556": "Brine circuit pressure sensor error",
+   "557": "Hydraulic scheme and external sensors do not match",
+   "558": "Appliance code and internal sensors do not match",
+   "561": "No power for compressor",
+   "577": "Operation interlock: refrigerant pressure too high",
+   "578": "Operation interlock: refrigerant pressure too low",
+   "579": "Operation interlock: pressostats opened",
+   "580": "Brine pressure low (below 0.6 bar for more than a minute)",
+   "1471": "Exchanger temperature sensor error",
+   "1472": "Air inlet temperature sensor error",
+   "1478": "Too low evaporation temperature, retrying",
+   "1480": "Too high evaporation temperature, retrying",
+   "1495": "Fluid flow reversed (warning)",
+   "1496": "Air flow blocked (warning)",
+   "1497": "Fan blocked or defective or air flow fully blocked",
+   "1498": "Lost communication with outdoor unit",
+   "1499": "De-icing was incomplete (warning)",
+   "1500": "STB ODU is open (error)",
+   "1501": "CH pump failure",
+   "1502": "Brine pump failure",
+   "65535": "No fault existing"
+  },
+  "ebus_error": {
+   "0": "No error",
+   "1": "geoTHERM/3, VR60 or VR90 not found",
+   "2": "No compatible geoTHERM/3, VR60 or VR90 found",
+   "3": "Error in communication with the ise eBUS adapter",
+   "4": "eBUS cable not connected",
+   "5": "No answer from eBUS",
+   "7": "Value not permitted"
+  },
+  "ebus_state": {
+   "0": "No error / device found",
+   "1": "Error during eBUS communication / device not found"
+  },
+  "hp_status": {
+   "0": "Standby",
+   "1": "Cooling",
+   "2": "De-icing",
+   "3": "CH: compressor only",
+   "4": "CH: compressor and auxiliary",
+   "5": "CH: auxiliary only",
+   "6": "CH: compressor and auxiliary off",
+   "7": "DHW: compressor and auxiliary off",
+   "8": "DHW: compressor only",
+   "9": "DHW: auxiliary only",
+   "10": "Peak rate: hot water",
+   "11": "Peak rate: standby",
+   "12": "Acceleration mode",
+   "13": "Frost protection heating",
+   "14": "Frost protection cylinder",
+   "15": "Legionella protection",
+   "16": "Automatic pump spin",
+   "17": "Floor drying",
+   "18": "Venting mode",
+   "19": "Fault shutdown: heating",
+   "20": "Error shutdown: heating",
+   "21": "Fault shutdown: DHW",
+   "22": "Error shutdown: DHW",
+   "23": "Malfunction",
+   "24": "Blocking error",
+   "25": "Operation interlock",
+   "26": "CH compressor overrun",
+   "27": "DHW compressor overrun",
+   "28": "Cooling and DHW",
+   "29": "CH return too high"
+  },
+  "mixer": {
+   "0": "Stationary",
+   "1": "Opening",
+   "2": "Closing"
+  },
+  "op_hc": {
+   "1": "On",
+   "2": "Off",
+   "3": "Auto",
+   "4": "Eco",
+   "5": "Low"
+  },
+  "sensor": {
+   "0": "No fault",
+   "85": "Short-circuit",
+   "170": "Interrupt"
+  },
+  "status": {
+   "0": "Off",
+   "1": "On"
+  }
+ },
+ "registers": [
+  {
+   "name": "eBUS error",
+   "group": "Input registers",
+   "area": "input",
+   "address": 1,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ebus_state"
+  },
+  {
+   "name": "eBUS last error",
+   "group": "Input registers",
+   "area": "input",
+   "address": 2,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ebus_error"
+  },
+  {
+   "name": "Air brine outlet temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 3,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Air brine outlet temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 4,
+   "type": "float32",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "Brine inlet temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 6,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Brine inlet temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 7,
+   "type": "float32",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "Environment circuit pressure sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 9,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Environment circuit pressure",
+   "group": "Input registers",
+   "area": "input",
+   "address": 10,
+   "type": "float32",
+   "access": "R",
+   "unit": "bar"
+  },
+  {
+   "name": "Fan / brine pump status",
+   "group": "Input registers",
+   "area": "input",
+   "address": 12,
+   "type": "uint16",
+   "access": "R",
+   "enum": "status"
+  },
+  {
+   "name": "Compressor starts",
+   "group": "Input registers",
+   "area": "input",
+   "address": 13,
+   "type": "uint32",
+   "access": "R"
+  },
+  {
+   "name": "Compressor operating hours",
+   "group": "Input registers",
+   "area": "input",
+   "address": 15,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h"
+  },
+  {
+   "name": "Compressor running",
+   "group": "Input registers",
+   "area": "input",
+   "address": 17,
+   "type": "uint16",
+   "access": "R",
+   "enum": "status"
+  },
+  {
+   "name": "Compressor high pressure sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 18,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Compressor high pressure",
+   "group": "Input registers",
+   "area": "input",
+   "address": 19,
+   "type": "float32",
+   "access": "R",
+   "unit": "bar"
+  },
+  {
+   "name": "Compressor low pressure sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 21,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Compressor low pressure",
+   "group": "Input registers",
+   "area": "input",
+   "address": 22,
+   "type": "float32",
+   "access": "R",
+   "unit": "bar"
+  },
+  {
+   "name": "Compressor outlet temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 24,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Compressor outlet temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 25,
+   "type": "int16",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "External top cylinder temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 26,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "External top cylinder temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 27,
+   "type": "int16",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "External bottom cylinder temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 28,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "External bottom cylinder temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 29,
+   "type": "int16",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "Error history 1",
+   "group": "Input registers",
+   "area": "input",
+   "address": 30,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 2",
+   "group": "Input registers",
+   "area": "input",
+   "address": 31,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 3",
+   "group": "Input registers",
+   "area": "input",
+   "address": 32,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 4",
+   "group": "Input registers",
+   "area": "input",
+   "address": 33,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 5",
+   "group": "Input registers",
+   "area": "input",
+   "address": 34,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 6",
+   "group": "Input registers",
+   "area": "input",
+   "address": 35,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 7",
+   "group": "Input registers",
+   "area": "input",
+   "address": 36,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 8",
+   "group": "Input registers",
+   "area": "input",
+   "address": 37,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 9",
+   "group": "Input registers",
+   "area": "input",
+   "address": 38,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Error history 10",
+   "group": "Input registers",
+   "area": "input",
+   "address": 39,
+   "type": "uint16",
+   "access": "R",
+   "enum": "dtc"
+  },
+  {
+   "name": "Heat pump status",
+   "group": "Input registers",
+   "area": "input",
+   "address": 40,
+   "type": "uint16",
+   "access": "R",
+   "enum": "hp_status"
+  },
+  {
+   "name": "Earned environment energy",
+   "group": "Input registers",
+   "area": "input",
+   "address": 41,
+   "type": "uint32",
+   "access": "R",
+   "unit": "kWh"
+  },
+  {
+   "name": "Outside temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 43,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Outside temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 44,
+   "type": "int16",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "Flow temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 45,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Flow temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 46,
+   "type": "int16",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "Return temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 47,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Return temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 48,
+   "type": "int16",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "Heating circuit pressure sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 49,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "Heating circuit pressure",
+   "group": "Input registers",
+   "area": "input",
+   "address": 50,
+   "type": "float32",
+   "access": "R",
+   "unit": "bar"
+  },
+  {
+   "name": "Energy integral value",
+   "group": "Input registers",
+   "area": "input",
+   "address": 52,
+   "type": "int16",
+   "access": "R",
+   "unit": "°min"
+  },
+  {
+   "name": "VF2 flow temperature sensor state",
+   "group": "Input registers",
+   "area": "input",
+   "address": 53,
+   "type": "uint16",
+   "access": "R",
+   "enum": "sensor"
+  },
+  {
+   "name": "VF2 flow temperature",
+   "group": "Input registers",
+   "area": "input",
+   "address": 54,
+   "type": "int16",
+   "access": "R",
+   "unit": "°C"
+  },
+  {
+   "name": "Mixer activation",
+   "group": "Input registers",
+   "area": "input",
+   "address": 55,
+   "type": "uint16",
+   "access": "R",
+   "enum": "mixer"
+  },
+  {
+   "name": "Heating circuit pump status",
+   "group": "Input registers",
+   "area": "input",
+   "address": 56,
+   "type": "uint16",
+   "access": "R",
+   "enum": "status"
+  },
+  {
+   "name": "Brine pump speed control",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 57,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%"
+  },
+  {
+   "name": "Compressor hysteresis",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 58,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "K"
+  },
+  {
+   "name": "Energy integral since compressor started",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 59,
+   "type": "int16",
+   "access": "RW",
+   "unit": "°min"
+  },
+  {
+   "name": "CH pump speed control",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 60,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%"
+  },
+  {
+   "name": "Heating circuit operating mode",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 61,
+   "type": "uint16",
+   "access": "RW",
+   "enum": "op_hc"
+  },
+  {
+   "name": "Day target room temperature",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 62,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  },
+  {
+   "name": "Set-back temperature",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 63,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  },
+  {
+   "name": "Heating curve",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 64,
+   "type": "float32",
+   "access": "RW"
+  },
+  {
+   "name": "Maximum target flow temperature",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 66,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  },
+  {
+   "name": "Minimum target flow temperature",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 67,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  },
+  {
+   "name": "Outside temperature switch-off threshold",
+   "group": "Holding registers",
+   "area": "holding",
+   "address": 68,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C"
+  }
+ ]
+}
