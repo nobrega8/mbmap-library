@@ -1,0 +1,338 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Alfa Instrumentos",
+  "model": "6620",
+  "vendor_website": "alfainstrumentos.com.br",
+  "description": "Bulk dosing system (Dosadora a Granel) with Modbus TCP",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Alfa Instrumentos, Manual de Configuração e Operação, Dosadora a Granel Mod. 6620 (0140MN00), section 23.1 Dados em Modbus TCP",
+  "sources": [
+    {
+      "title": "Manual de Configuração e Operação - Dosadora a Granel Mod. 6620",
+      "version": "0140MN00",
+      "note": "Section 23.1 and the status and fault tables of section 22.5; supplied with the map request"
+    }
+  ],
+  "notes": [
+    "Modbus TCP on port 502; the data block is 16 registers from 4096 (function 0x03), as figure 130 of the manual shows.",
+    "The manual says the 32-bit values are two words, Lo then Hi (4096 weight Lo, 4097 weight Hi), so the word order is little.",
+    "The weights are integers in kg whose decimals are set on the weighing channel; the manual's example (40 shown as 4.0 kg, 1060 as 106.0 kg) has one decimal, so a scale of 0.1 is used. Change it if the channel is set to another number of decimals.",
+    "Register 4110 holds the status bits and 4111 the faults, as in the tables of section 22.5. Bits 9 to 14 of the status and 11 to 15 of the faults are reserved.",
+    "The date and time registers hold the day, month, year (four digits in the example), hour, minute and second of the selected record.",
+    "The manual's tables are partly low-resolution scans; the register numbers were read from figure 130 and confirmed against the text."
+  ],
+  "protocol": "tcp",
+  "port": 502,
+  "unit_id": 1,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Current weight",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 4096,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kg",
+      "description": "Divide by 10 to the power of the decimal places set for the weighing channel (one decimal in the manual's example)"
+    },
+    {
+      "name": "Partial accumulated weight",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 4098,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kg",
+      "description": "Accumulated during the loading cycle"
+    },
+    {
+      "name": "Current recipe",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4100,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Record",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4101,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of the dosing record being shown"
+    },
+    {
+      "name": "Final weight",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 4102,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kg",
+      "description": "Final weight of the selected record"
+    },
+    {
+      "name": "Record day",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4104,
+      "type": "uint16",
+      "access": "R",
+      "description": "Date and time of the selected record"
+    },
+    {
+      "name": "Record month",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4105,
+      "type": "uint16",
+      "access": "R",
+      "description": "Date and time of the selected record"
+    },
+    {
+      "name": "Record year",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4106,
+      "type": "uint16",
+      "access": "R",
+      "description": "Date and time of the selected record"
+    },
+    {
+      "name": "Record hour",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4107,
+      "type": "uint16",
+      "access": "R",
+      "description": "Date and time of the selected record"
+    },
+    {
+      "name": "Record minute",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4108,
+      "type": "uint16",
+      "access": "R",
+      "description": "Date and time of the selected record"
+    },
+    {
+      "name": "Record second",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4109,
+      "type": "uint16",
+      "access": "R",
+      "description": "Date and time of the selected record"
+    },
+    {
+      "name": "Left scale sensor closed",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Right scale sensor closed",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Dosing sensor closed",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "System in manual",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "System paused",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "System dosing",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Timers in parallel with the sensors enabled",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Sensor failure warning disabled",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Scale empty",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Heart beat",
+      "group": "Status",
+      "area": "holding",
+      "address": 4110,
+      "type": "bool",
+      "access": "R",
+      "bit": 15,
+      "description": "Toggles between 0 and 1 at 0.5 Hz"
+    },
+    {
+      "name": "Emergency (0 = pressed)",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Weighing transmitter 2711 communication fault",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Weighing adjustment fault",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Load cell supply current fault",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Left scale sensor fault",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Right scale sensor fault",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Dosing sensor fault",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Out of material",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Recipe configuration error",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Overload",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Saturation",
+      "group": "Faults",
+      "area": "holding",
+      "address": 4111,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Record selector",
+      "group": "Dosing",
+      "area": "holding",
+      "address": 4608,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write the number of the record plus 1 to read it (31 reads record 30); write 0 to follow the latest record"
+    }
+  ]
+}

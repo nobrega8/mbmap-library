@@ -1,0 +1,645 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Samrello",
+  "model": "PIC153-P-C-1",
+  "vendor_website": "samrello.com.br",
+  "description": "Universal temperature and process controller with RS485 Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Selec PIC153-P-C-1, RS485 Modbus address list",
+  "sources": [
+    {
+      "title": "PIC153-P-C-1 RS485 Modbus Address (www.selec.com)",
+      "note": "Supplied with the map request"
+    }
+  ],
+  "notes": [
+    "The device is the Selec PIC153 sold by Samrello. The addresses are the hexadecimal ones in the document (coil 10001 is address 1, input register 30007 is address 7, holding register 40064 is address 64 = 0x40), used as they are with address_base 0.",
+    "Functions: 0x01 coils, 0x02 discrete inputs, 0x04 input registers, 0x10 to write holding registers.",
+    "The document lists some parameters (scale, setpoint limits, alarms, hysteresis, bias) more than once with different widths and ranges (4-byte at 40032 to 40052, 40512 to 40562 and 40544 to 40600). Only the 16-bit set at 40064 to 40116 and the one-register configuration entries are mapped; the others are left out because the document does not say which resolution or mode selects them.",
+    "Scaling of the 16-bit parameters follows the resolution setting (register 131); the document gives no fixed factor, so the values are raw.",
+    "The document gives the final PV as a signed DINT at 30007; the float at 30066 does not state its word order (big assumed)."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "data_bits": 8,
+  "parity": "N",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "input_type": {
+      "0": "J",
+      "1": "K",
+      "2": "T",
+      "3": "R",
+      "4": "S",
+      "5": "C",
+      "6": "E",
+      "7": "B",
+      "8": "N",
+      "9": "L",
+      "10": "U",
+      "11": "W",
+      "12": "PTNL",
+      "13": "PT100",
+      "14": "PT1000",
+      "15": "mV",
+      "16": "Voltage",
+      "17": "Current"
+    },
+    "resolution": {
+      "0": "1",
+      "1": "0.1",
+      "2": "0.01",
+      "3": "0.001",
+      "4": "0.0001"
+    },
+    "colour_pv": {
+      "0": "Red",
+      "1": "White",
+      "2": "Alarm 1",
+      "3": "Alarm 2",
+      "4": "Annunciator"
+    },
+    "colour_2": {
+      "0": "Red",
+      "1": "White"
+    },
+    "alarm_mode": {
+      "0": "Off",
+      "1": "High alarm",
+      "2": "Low alarm",
+      "3": "Band",
+      "4": "Sensor break"
+    },
+    "din": {
+      "0": "None",
+      "1": "Keys"
+    },
+    "aout": {
+      "0": "4-20 mA",
+      "1": "0-20 mA",
+      "2": "0-5 V",
+      "3": "0-10 V"
+    },
+    "lock": {
+      "0": "Unlocked",
+      "1": "Read only",
+      "2": "Locked"
+    }
+  },
+  "registers": [
+    {
+      "name": "Temperature unit",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = °C, 1 = °F"
+    },
+    {
+      "name": "Reverse scaling",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "High resolution mode",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "Alarm 1 latch",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 7,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = on, 1 = off"
+    },
+    {
+      "name": "Alarm 1 hold",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 8,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = on, 1 = off"
+    },
+    {
+      "name": "Alarm 1 energize",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 9,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = energize, 1 = de-energize"
+    },
+    {
+      "name": "Alarm 1 annunciator",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 10,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = off, 1 = on"
+    },
+    {
+      "name": "Alarm 2 latch",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 13,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = on, 1 = off"
+    },
+    {
+      "name": "Alarm 2 hold",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 14,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = on, 1 = off"
+    },
+    {
+      "name": "Alarm 2 energize",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 15,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = energize, 1 = de-energize"
+    },
+    {
+      "name": "Alarm 2 annunciator",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 16,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = off, 1 = on"
+    },
+    {
+      "name": "Sensor error action",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 19,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = low, 1 = high"
+    },
+    {
+      "name": "Standby mode",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 20,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "NPN/PNP selection",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 21,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "Auto/manual selection",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 22,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "FTC selection",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 24,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "Over range",
+      "group": "Status",
+      "area": "discrete",
+      "address": 1,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Under range",
+      "group": "Status",
+      "area": "discrete",
+      "address": 2,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Relay 2 status",
+      "group": "Status",
+      "area": "discrete",
+      "address": 3,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Relay 3 status",
+      "group": "Status",
+      "area": "discrete",
+      "address": 4,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Digital input 1",
+      "group": "Status",
+      "area": "discrete",
+      "address": 5,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Digital input 2",
+      "group": "Status",
+      "area": "discrete",
+      "address": 6,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Process value",
+      "group": "Measurements",
+      "area": "input",
+      "address": 7,
+      "type": "int32",
+      "access": "R",
+      "description": "Final PV as a signed 32-bit integer; the decimal point follows the resolution setting"
+    },
+    {
+      "name": "Process value (float)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 66,
+      "type": "float32",
+      "access": "R",
+      "description": "Final PV as a 32-bit float"
+    },
+    {
+      "name": "Display scale low",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 64,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Input scale low",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 65,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Display scale high",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 66,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Input scale high",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 67,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Setpoint high limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Setpoint low limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 69,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Hysteresis bias 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 96,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm 1 high",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 97,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm 1 low",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 98,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Hysteresis 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Power-on delay 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Relay delay 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm 2 high",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 102,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm 2 low",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 103,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Hysteresis 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Power-on delay 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Relay delay 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Hysteresis bias 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Manual output percentage",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Analog output low",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 111,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Analog output high",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 112,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "PV bias",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 113,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "User ID",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 116,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Input type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 129,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Resolution",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 131,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "resolution",
+      "description": "Thermocouple/RTD: 0 = 1, 1 = 0.1. Analog input: 0 = 1, 1 = 0.1, 2 = 0.01, 3 = 0.001, 4 = 0.0001"
+    },
+    {
+      "name": "PV colour",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 132,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "colour_pv"
+    },
+    {
+      "name": "PV colour normal",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "colour_2"
+    },
+    {
+      "name": "PV colour high",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "colour_2"
+    },
+    {
+      "name": "PV colour low",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 135,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "colour_2"
+    },
+    {
+      "name": "Alarm 1 mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 147,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_mode"
+    },
+    {
+      "name": "Alarm 2 mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 151,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_mode"
+    },
+    {
+      "name": "Digital input function",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 155,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "din"
+    },
+    {
+      "name": "Analog output type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 157,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aout"
+    },
+    {
+      "name": "FTC",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 161,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 99 for thermocouple/RTD"
+    },
+    {
+      "name": "Rounding",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.1 to 10.0 for analog input"
+    },
+    {
+      "name": "Lock 0",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 174,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 176,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 177,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 178,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 179,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    }
+  ]
+}

@@ -1,0 +1,2929 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Samrello",
+  "model": "A202",
+  "vendor_website": "samrello.com.br",
+  "description": "8-channel data acquisition unit and logger with RS485 Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Samrello, Mapa de registros Modbus, Aquisitor de dados A202, version 1.02 revision 2",
+  "sources": [
+    {
+      "title": "Mapa de registros Modbus - Aquisitor de dados A202",
+      "version": "1.02 / revision 2",
+      "note": "Supplied with the map request; software V1.02 or later"
+    }
+  ],
+  "notes": [
+    "Registers are numbered as in the manual, which is one-based (address_base 1).",
+    "Functions: 0x03 and 0x04 read, 0x06 and 0x10 write registers, 0x01, 0x05 and 0x0F reach the on/off registers as coils; this map lists them as holding registers. Report slave ID (0x17) returns 32 ASCII characters.",
+    "Values are in engineering units (u.e) with the decimals set in registers 176 to 183, so divide by 10 to the power of the decimal places. Channel status in register 69 reads 00 OK, 01 under range, 10 over range, 11 no reading.",
+    "The manual's table 2 (output status, register 66) is cut off in the document; relay 1 is bit 0 and relay 2 the next bit. The relay states are also available as registers 116 and 117.",
+    "Serial settings: 9600, 19200, 38400 or 57600 baud; none, odd or even parity; 1 or 2 stop bits; address 1 to 247; 8 data bits. Registers 324 to 326 can only be written while the virtual jumper is active (register 327).",
+    "The manual's log memory section (the data file read-out) is not mapped; only the configuration registers of the logger and the real-time clock are listed. Times are BCD, and the 32-bit values are split over four registers, one byte each."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "data_bits": 8,
+  "parity": "N",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "enums": {
+    "onoff": {
+      "0": "Off",
+      "1": "On"
+    },
+    "input_type": {
+      "0": "J (-50 to 1100 °C)",
+      "1": "K (-100 to 1300 °C)",
+      "2": "E (-100 to 720 °C)",
+      "3": "N (-50 to 1300 °C)",
+      "4": "T (-200 to 400 °C)",
+      "5": "R (0 to 1760 °C)",
+      "6": "S (0 to 1760 °C)",
+      "7": "B (40 to 1800 °C)",
+      "8": "PT100 (-200 to 600 °C)",
+      "9": "0 to 20 mA",
+      "10": "4 to 20 mA",
+      "11": "0 to 60 mV",
+      "12": "0 to 5 V",
+      "13": "1 to 5 V",
+      "14": "0 to 10 V",
+      "15": "±60 mV",
+      "16": "±5 V",
+      "17": "±10 V"
+    },
+    "unit": {
+      "0": "°C",
+      "1": "°F",
+      "2": "K"
+    },
+    "alarm_fn": {
+      "0": "Off",
+      "1": "Low",
+      "2": "High",
+      "3": "Burn out"
+    },
+    "alarm_out": {
+      "0": "Off",
+      "1": "Relay 1",
+      "2": "Relay 2"
+    },
+    "contact": {
+      "0": "Normally open",
+      "1": "Normally closed"
+    },
+    "di_type": {
+      "0": "Pulse",
+      "1": "Level"
+    },
+    "di_fn": {
+      "0": "Off",
+      "1": "Relay 1",
+      "2": "Relay 2",
+      "3": "Log"
+    },
+    "baud": {
+      "0": "9600",
+      "1": "19200",
+      "2": "38400",
+      "3": "57600"
+    },
+    "parity": {
+      "0": "None",
+      "1": "Odd",
+      "2": "Even"
+    },
+    "log_start": {
+      "0": "Digital input",
+      "1": "Time",
+      "2": "Modbus"
+    },
+    "log_end": {
+      "0": "Digital input",
+      "1": "Time",
+      "2": "Modbus",
+      "3": "Number of samples"
+    },
+    "mem_full": {
+      "0": "Stop",
+      "1": "FIFO"
+    },
+    "data_fmt": {
+      "0": "Off",
+      "1": "RTC",
+      "2": "ASCII"
+    }
+  },
+  "registers": [
+    {
+      "name": "PV1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "description": "Process value of the channel, in the unit and decimals set for it"
+    },
+    {
+      "name": "PV2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "access": "R",
+      "description": "Process value of the channel, in the unit and decimals set for it"
+    },
+    {
+      "name": "PV3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "access": "R",
+      "description": "Process value of the channel, in the unit and decimals set for it"
+    },
+    {
+      "name": "PV4",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "R",
+      "description": "Process value of the channel, in the unit and decimals set for it"
+    },
+    {
+      "name": "PV5",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "access": "R",
+      "description": "Process value of the channel, in the unit and decimals set for it"
+    },
+    {
+      "name": "PV6",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "int16",
+      "access": "R",
+      "description": "Process value of the channel, in the unit and decimals set for it"
+    },
+    {
+      "name": "PV7",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7,
+      "type": "int16",
+      "access": "R",
+      "description": "Process value of the channel, in the unit and decimals set for it"
+    },
+    {
+      "name": "PV8",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8,
+      "type": "int16",
+      "access": "R",
+      "description": "Process value of the channel, in the unit and decimals set for it"
+    },
+    {
+      "name": "Ambient temperature 1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 9,
+      "type": "int16",
+      "access": "R",
+      "description": "Cold-junction / ambient temperature, 0 to 60 °C"
+    },
+    {
+      "name": "Ambient temperature 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "access": "R",
+      "description": "Cold-junction / ambient temperature, 0 to 60 °C"
+    },
+    {
+      "name": "Alarm A1 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 50,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L1 and in.H1"
+    },
+    {
+      "name": "Alarm A2 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 51,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L2 and in.H2"
+    },
+    {
+      "name": "Alarm A3 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 52,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L3 and in.H3"
+    },
+    {
+      "name": "Alarm A4 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 53,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L4 and in.H4"
+    },
+    {
+      "name": "Alarm A5 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 54,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L5 and in.H5"
+    },
+    {
+      "name": "Alarm A6 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L6 and in.H6"
+    },
+    {
+      "name": "Alarm A7 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L7 and in.H7"
+    },
+    {
+      "name": "Alarm A8 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 57,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L8 and in.H8"
+    },
+    {
+      "name": "Alarm B1 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 58,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L1 and in.H1"
+    },
+    {
+      "name": "Alarm B2 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 59,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L2 and in.H2"
+    },
+    {
+      "name": "Alarm B3 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 60,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L3 and in.H3"
+    },
+    {
+      "name": "Alarm B4 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 61,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L4 and in.H4"
+    },
+    {
+      "name": "Alarm B5 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 62,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L5 and in.H5"
+    },
+    {
+      "name": "Alarm B6 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 63,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L6 and in.H6"
+    },
+    {
+      "name": "Alarm B7 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 64,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L7 and in.H7"
+    },
+    {
+      "name": "Alarm B8 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 65,
+      "type": "int16",
+      "access": "RW",
+      "description": "Between in.L8 and in.H8"
+    },
+    {
+      "name": "Output status",
+      "group": "Status",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit 0 relay 1 on, bit 1 relay 2 on (table 2 of the manual)"
+    },
+    {
+      "name": "Digital input status",
+      "group": "Status",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0: input on"
+    },
+    {
+      "name": "Alarm A1 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm B1 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm A2 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Alarm B2 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Alarm A3 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Alarm B3 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Alarm A4 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Alarm B4 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Alarm A5 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Alarm B5 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Alarm A6 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Alarm B6 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "Alarm A7 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 12
+    },
+    {
+      "name": "Alarm B7 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 13
+    },
+    {
+      "name": "Alarm A8 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 14
+    },
+    {
+      "name": "Alarm B8 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Channel status",
+      "group": "Status",
+      "area": "holding",
+      "address": 69,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bits per channel: bits 0-1 channel 1 up to bits 14-15 channel 8; 0 = OK, 1 = under range, 2 = over range, 3 = no reading (---- )"
+    },
+    {
+      "name": "Alarm A1 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm A2 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm A3 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm A4 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm A5 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm A6 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm A7 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm A8 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm B1 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm B2 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm B3 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm B4 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm B5 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm B6 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 113,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm B7 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 114,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Alarm B8 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Relay 1 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 116,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Relay 2 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 117,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Logging state",
+      "group": "Status",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Digital input state",
+      "group": "Status",
+      "area": "holding",
+      "address": 119,
+      "type": "uint16",
+      "access": "R",
+      "enum": "onoff"
+    },
+    {
+      "name": "Scan channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Scan channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 151,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Scan channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 152,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Scan channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 153,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Scan channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 154,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Scan channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 155,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Scan channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 156,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Scan channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 157,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Input type channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 158,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Input type channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 159,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Input type channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 160,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Input type channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 161,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Input type channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Input type channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 163,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Input type channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Input type channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Unit channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 166,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 167,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 168,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 169,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 170,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 171,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 172,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 173,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit ambient 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 174,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Unit ambient 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 175,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "unit"
+    },
+    {
+      "name": "Decimal places channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 176,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3 decimals"
+    },
+    {
+      "name": "Decimal places channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 177,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3 decimals"
+    },
+    {
+      "name": "Decimal places channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 178,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3 decimals"
+    },
+    {
+      "name": "Decimal places channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 179,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3 decimals"
+    },
+    {
+      "name": "Decimal places channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 180,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3 decimals"
+    },
+    {
+      "name": "Decimal places channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 181,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3 decimals"
+    },
+    {
+      "name": "Decimal places channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 182,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3 decimals"
+    },
+    {
+      "name": "Decimal places channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 183,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3 decimals"
+    },
+    {
+      "name": "Square-root extraction channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 184,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "SQtr"
+    },
+    {
+      "name": "Square-root extraction channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 185,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "SQtr"
+    },
+    {
+      "name": "Square-root extraction channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 186,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "SQtr"
+    },
+    {
+      "name": "Square-root extraction channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 187,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "SQtr"
+    },
+    {
+      "name": "Square-root extraction channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 188,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "SQtr"
+    },
+    {
+      "name": "Square-root extraction channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 189,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "SQtr"
+    },
+    {
+      "name": "Square-root extraction channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 190,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "SQtr"
+    },
+    {
+      "name": "Square-root extraction channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 191,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "SQtr"
+    },
+    {
+      "name": "Offset channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 192,
+      "type": "int16",
+      "access": "RW",
+      "description": "-1000 to 1000"
+    },
+    {
+      "name": "Offset channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 193,
+      "type": "int16",
+      "access": "RW",
+      "description": "-1000 to 1000"
+    },
+    {
+      "name": "Offset channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 194,
+      "type": "int16",
+      "access": "RW",
+      "description": "-1000 to 1000"
+    },
+    {
+      "name": "Offset channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 195,
+      "type": "int16",
+      "access": "RW",
+      "description": "-1000 to 1000"
+    },
+    {
+      "name": "Offset channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 196,
+      "type": "int16",
+      "access": "RW",
+      "description": "-1000 to 1000"
+    },
+    {
+      "name": "Offset channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 197,
+      "type": "int16",
+      "access": "RW",
+      "description": "-1000 to 1000"
+    },
+    {
+      "name": "Offset channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 198,
+      "type": "int16",
+      "access": "RW",
+      "description": "-1000 to 1000"
+    },
+    {
+      "name": "Offset channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 199,
+      "type": "int16",
+      "access": "RW",
+      "description": "-1000 to 1000"
+    },
+    {
+      "name": "Input low channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 200,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.L: lower limit of the input range"
+    },
+    {
+      "name": "Input low channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 201,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.L: lower limit of the input range"
+    },
+    {
+      "name": "Input low channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 202,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.L: lower limit of the input range"
+    },
+    {
+      "name": "Input low channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 203,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.L: lower limit of the input range"
+    },
+    {
+      "name": "Input low channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 204,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.L: lower limit of the input range"
+    },
+    {
+      "name": "Input low channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 205,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.L: lower limit of the input range"
+    },
+    {
+      "name": "Input low channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 206,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.L: lower limit of the input range"
+    },
+    {
+      "name": "Input low channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 207,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.L: lower limit of the input range"
+    },
+    {
+      "name": "Input high channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 208,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.H: upper limit of the input range"
+    },
+    {
+      "name": "Input high channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 209,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.H: upper limit of the input range"
+    },
+    {
+      "name": "Input high channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 210,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.H: upper limit of the input range"
+    },
+    {
+      "name": "Input high channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 211,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.H: upper limit of the input range"
+    },
+    {
+      "name": "Input high channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 212,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.H: upper limit of the input range"
+    },
+    {
+      "name": "Input high channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 213,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.H: upper limit of the input range"
+    },
+    {
+      "name": "Input high channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 214,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.H: upper limit of the input range"
+    },
+    {
+      "name": "Input high channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 215,
+      "type": "int16",
+      "access": "RW",
+      "description": "in.H: upper limit of the input range"
+    },
+    {
+      "name": "Filter channel 1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 216,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off, 1 to 200"
+    },
+    {
+      "name": "Filter channel 2",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 217,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off, 1 to 200"
+    },
+    {
+      "name": "Filter channel 3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 218,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off, 1 to 200"
+    },
+    {
+      "name": "Filter channel 4",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 219,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off, 1 to 200"
+    },
+    {
+      "name": "Filter channel 5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 220,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off, 1 to 200"
+    },
+    {
+      "name": "Filter channel 6",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 221,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off, 1 to 200"
+    },
+    {
+      "name": "Filter channel 7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 222,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off, 1 to 200"
+    },
+    {
+      "name": "Filter channel 8",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 223,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off, 1 to 200"
+    },
+    {
+      "name": "Alarm A1 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 224,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm A2 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 225,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm A3 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 226,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm A4 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 227,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm A5 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 228,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm A6 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 229,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm A7 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 230,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm A8 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 231,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm B1 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 232,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm B2 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 233,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm B3 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 234,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm B4 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 235,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm B5 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 236,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm B6 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 237,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm B7 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 238,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm B8 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 239,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_fn"
+    },
+    {
+      "name": "Alarm A1 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 240,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm A2 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 241,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm A3 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 242,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm A4 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 243,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm A5 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 244,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm A6 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 245,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm A7 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 246,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm A8 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 247,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm B1 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 248,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm B2 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 249,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm B3 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 250,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm B4 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 251,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm B5 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 252,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm B6 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 253,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm B7 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 254,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm B8 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 255,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 1000"
+    },
+    {
+      "name": "Alarm A1 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 256,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A2 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 257,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A3 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 258,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A4 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 259,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A5 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 260,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A6 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 261,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A7 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 262,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A8 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 263,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B1 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 264,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B2 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 265,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B3 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 266,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B4 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 267,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B5 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 268,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B6 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 269,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B7 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 270,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B8 delay on",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 271,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "rt: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A1 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 272,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A2 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 273,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A3 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 274,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A4 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 275,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A5 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 276,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A6 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 277,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A7 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 278,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A8 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 279,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B1 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 280,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B2 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 281,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B3 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 282,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B4 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 283,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B5 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 284,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B6 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 285,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B7 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 286,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm B8 delay off",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 287,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "pl: 0 = off, 1 to 9999"
+    },
+    {
+      "name": "Alarm A1 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 288,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm A2 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 289,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm A3 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 290,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm A4 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 291,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm A5 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 292,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm A6 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 293,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm A7 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 294,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm A8 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 295,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm B1 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 296,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm B2 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 297,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm B3 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 298,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm B4 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 299,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm B5 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 300,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm B6 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 301,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm B7 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 302,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm B8 initial blocking",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 303,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "bL"
+    },
+    {
+      "name": "Alarm A1 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 304,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm A2 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 305,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm A3 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 306,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm A4 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 307,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm A5 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm A6 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 309,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm A7 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 310,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm A8 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 311,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm B1 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 312,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm B2 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 313,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm B3 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 314,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm B4 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 315,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm B5 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 316,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm B6 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 317,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm B7 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 318,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Alarm B8 output",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 319,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_out",
+      "description": "bd"
+    },
+    {
+      "name": "Relay 1 contact",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 320,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "contact"
+    },
+    {
+      "name": "Relay 2 contact",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 321,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "contact"
+    },
+    {
+      "name": "Digital input type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 322,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "di_type"
+    },
+    {
+      "name": "Digital input function",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 323,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "di_fn"
+    },
+    {
+      "name": "Device address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 324,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 247; the virtual jumper (register 327) must be active to write"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 325,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "baud",
+      "description": "Virtual jumper must be active to write"
+    },
+    {
+      "name": "Parity",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 326,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "parity",
+      "description": "Virtual jumper must be active to write"
+    },
+    {
+      "name": "Virtual jumper",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 327,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 0xAA to simulate the hardware jumper (default serial settings 9600, no parity, address 247 until released; writes to 324 to 326 allowed); write 0x55 to release it and apply registers 324 to 326"
+    },
+    {
+      "name": "Clock second",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 350,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Clock minute",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 351,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Clock hour",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 352,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Clock day",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 353,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Clock month",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 354,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Clock year",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 355,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Sampling interval byte 3",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 356,
+      "type": "uint16",
+      "access": "RW",
+      "description": "32-bit sampling interval in 0.1 s, one byte per register, byte 3 is the most significant"
+    },
+    {
+      "name": "Sampling interval byte 2",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 357,
+      "type": "uint16",
+      "access": "RW",
+      "description": "32-bit sampling interval in 0.1 s, one byte per register, byte 3 is the most significant"
+    },
+    {
+      "name": "Sampling interval byte 1",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 358,
+      "type": "uint16",
+      "access": "RW",
+      "description": "32-bit sampling interval in 0.1 s, one byte per register, byte 3 is the most significant"
+    },
+    {
+      "name": "Sampling interval byte 0",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 359,
+      "type": "uint16",
+      "access": "RW",
+      "description": "32-bit sampling interval in 0.1 s, one byte per register, byte 3 is the most significant"
+    },
+    {
+      "name": "Save channel 1",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 360,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Save channel 2",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 361,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Save channel 3",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 362,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Save channel 4",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 363,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Save channel 5",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 364,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Save channel 6",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 365,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Save channel 7",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 366,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Save channel 8",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 367,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Save on occurrence",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 368,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Logging",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 369,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff"
+    },
+    {
+      "name": "Log start condition",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 370,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "log_start"
+    },
+    {
+      "name": "Log end condition",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 371,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "log_end"
+    },
+    {
+      "name": "Memory full action",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 372,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "mem_full"
+    },
+    {
+      "name": "Data format",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 373,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "data_fmt"
+    },
+    {
+      "name": "Start time second",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 374,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Start time minute",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 375,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Start time hour",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 376,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Start time day",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 377,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Start time month",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 378,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Start time year",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 379,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "End time second",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 380,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "End time minute",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 381,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "End time hour",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 382,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "End time day",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 383,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "End time month",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 384,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "End time year",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 385,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD"
+    },
+    {
+      "name": "Log end sample count byte 3",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 386,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Number of samples; byte 3 is the most significant"
+    },
+    {
+      "name": "Log end sample count byte 2",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 387,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Number of samples; byte 3 is the most significant"
+    },
+    {
+      "name": "Log end sample count byte 1",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 388,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Number of samples; byte 3 is the most significant"
+    },
+    {
+      "name": "Log end sample count byte 0",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 389,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Number of samples; byte 3 is the most significant"
+    },
+    {
+      "name": "Read pointer byte 3",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 390,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Byte 3 is the most significant"
+    },
+    {
+      "name": "Read pointer byte 2",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 391,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Byte 3 is the most significant"
+    },
+    {
+      "name": "Read pointer byte 1",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 392,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Byte 3 is the most significant"
+    },
+    {
+      "name": "Read pointer byte 0",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 393,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Byte 3 is the most significant"
+    },
+    {
+      "name": "Event pointer byte 1",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 394,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Event pointer byte 0",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 395,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Current event pointer position byte 1",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 396,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Current event pointer position byte 0",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 397,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Current header pointer position",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 398,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 100"
+    },
+    {
+      "name": "Delete file",
+      "group": "Logger and clock",
+      "area": "holding",
+      "address": 399,
+      "type": "uint16",
+      "access": "W",
+      "description": "0 to 100, or 0xFF for all files"
+    },
+    {
+      "name": "TAG channel 1",
+      "group": "Tags",
+      "area": "holding",
+      "address": 440,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "ASCII, 32 characters"
+    },
+    {
+      "name": "TAG channel 2",
+      "group": "Tags",
+      "area": "holding",
+      "address": 456,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "ASCII, 32 characters"
+    },
+    {
+      "name": "TAG channel 3",
+      "group": "Tags",
+      "area": "holding",
+      "address": 472,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "ASCII, 32 characters"
+    },
+    {
+      "name": "TAG channel 4",
+      "group": "Tags",
+      "area": "holding",
+      "address": 488,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "ASCII, 32 characters"
+    },
+    {
+      "name": "TAG channel 5",
+      "group": "Tags",
+      "area": "holding",
+      "address": 504,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "ASCII, 32 characters"
+    },
+    {
+      "name": "TAG channel 6",
+      "group": "Tags",
+      "area": "holding",
+      "address": 520,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "ASCII, 32 characters"
+    },
+    {
+      "name": "TAG channel 7",
+      "group": "Tags",
+      "area": "holding",
+      "address": 536,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "ASCII, 32 characters"
+    },
+    {
+      "name": "TAG channel 8",
+      "group": "Tags",
+      "area": "holding",
+      "address": 552,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "ASCII, 32 characters"
+    },
+    {
+      "name": "TAG equipment",
+      "group": "Tags",
+      "area": "holding",
+      "address": 568,
+      "type": "string",
+      "length": 32,
+      "access": "RW",
+      "description": "ASCII, 64 characters"
+    }
+  ]
+}

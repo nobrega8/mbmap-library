@@ -1,0 +1,1629 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Samrello",
+  "model": "PID500-U",
+  "vendor_website": "samrello.com.br",
+  "description": "Universal PID process and temperature controller with RS485 Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Samrello, PID500-U RS485 MODBUS Addresses, version 0.0 (May 2023)",
+  "sources": [
+    {
+      "title": "PID500-U RS485 MODBUS Addresses",
+      "version": "0.0",
+      "date": "2023-05",
+      "note": "Supplied with the map request"
+    }
+  ],
+  "notes": [
+    "Addresses are the hexadecimal ones in the document (holding register 40032 is address 0x20 = 32, input register 30007 is address 7, coil 10 is address 0x0A), used as they are with address_base 0.",
+    "Functions: 0x01 coils, 0x04 input registers, 0x03 and 0x10 holding registers. The document marks the coils as read-only.",
+    "The document lists the setpoints, scaling, alarm and tuning parameters a second time as 32-bit floats at 400512 to 400780 (hex 0x200 to 0x30C). They are the same parameters and are not mapped here; the 16-bit and 32-bit integer set is used, with the decimal point set by the resolution register 130.",
+    "The integer values carry the decimals of the resolution setting; the document gives no fixed factor, so values are raw (except output percentage 0 to 1000 = 0 to 100 %).",
+    "Profile ramp time is 0000 to 9959 (hours and minutes as digits). Profile parameters follow the controller's 16-step profile.",
+    "The document gives no serial defaults (baud rate, parity, stop bits) or unit id."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "out_status": {
+      "0": "SSR",
+      "1": "Relay",
+      "2": "Analog output"
+    },
+    "dsp": {
+      "0": "Set 1",
+      "1": "Set 2",
+      "2": "Set 3",
+      "4": "Tune",
+      "5": "Hand",
+      "6": "PB-2",
+      "7": "IT-2",
+      "8": "DT-2",
+      "9": "Manual offset",
+      "10": "PB-C",
+      "11": "R-SP",
+      "12": "Output percentage",
+      "13": "Soak",
+      "16": "Alarm 1",
+      "17": "Alarm 2",
+      "21": "Profile",
+      "22": "Profile no",
+      "23": "Step no",
+      "24": "Time remaining",
+      "25": "Time elapsed",
+      "29": "Blank"
+    },
+    "input_type": {
+      "0": "J",
+      "1": "K",
+      "2": "T",
+      "3": "R",
+      "4": "S",
+      "5": "C",
+      "6": "E",
+      "7": "B",
+      "8": "N",
+      "9": "L",
+      "10": "U",
+      "11": "Y",
+      "12": "PTNL",
+      "13": "PT100",
+      "14": "AV (analog voltage)",
+      "15": "10 V",
+      "16": "20 mA"
+    },
+    "resolution": {
+      "0": "1",
+      "1": "0.1",
+      "2": "0.01",
+      "3": "0.001"
+    },
+    "autotune": {
+      "0": "Off",
+      "1": "ST",
+      "2": "AT",
+      "3": "ADT"
+    },
+    "zone_mode": {
+      "0": "All",
+      "1": "Zone"
+    },
+    "zone_no": {
+      "0": "1",
+      "1": "2",
+      "2": "3",
+      "3": "4"
+    },
+    "cycle": {
+      "0": "A15.0",
+      "1": "User",
+      "2": "USP.F"
+    },
+    "set2_mode": {
+      "0": "None",
+      "1": "Fd",
+      "2": "Rev",
+      "3": "Alarm"
+    },
+    "alarm1_mode": {
+      "0": "Off",
+      "1": "Deviation high",
+      "2": "Deviation low",
+      "3": "Band",
+      "4": "Full-scale high",
+      "5": "Full-scale low",
+      "6": "Sensor break"
+    },
+    "alarm2_mode": {
+      "0": "Off",
+      "1": "Deviation high",
+      "2": "Deviation low",
+      "3": "Band",
+      "4": "Full-scale high",
+      "5": "Full-scale low",
+      "6": "Sensor break"
+    },
+    "main_out": {
+      "0": "Relay",
+      "1": "Analog output",
+      "2": "SSR"
+    },
+    "aout": {
+      "0": "4-20 mA",
+      "1": "0-20 mA",
+      "2": "0-5 V",
+      "3": "0-10 V"
+    },
+    "ramp": {
+      "0": "On",
+      "1": "Off",
+      "2": "Hold"
+    },
+    "lock": {
+      "0": "Unlocked",
+      "1": "Read only",
+      "2": "Locked"
+    },
+    "pdn": {
+      "0": "Auto restart",
+      "1": "Stop",
+      "2": "Resume"
+    },
+    "dev_hold": {
+      "0": "Enabled",
+      "1": "Disabled"
+    },
+    "aux": {
+      "0": "On",
+      "1": "Off",
+      "2": "NA",
+      "3": "Alarm"
+    },
+    "prun": {
+      "0": "Stop",
+      "1": "Run",
+      "2": "Hold"
+    }
+  },
+  "registers": [
+    {
+      "name": "Temperature unit",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = °C, 1 = °F"
+    },
+    {
+      "name": "Reverse scaling",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "Relay 1 mode",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 4,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = FD, 1 = RE"
+    },
+    {
+      "name": "ARW",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 5,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = auto, 1 = manual"
+    },
+    {
+      "name": "Set 2 type",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = absolute, 1 = deviation"
+    },
+    {
+      "name": "Alarm 1 latch",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 7,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = on, 1 = off"
+    },
+    {
+      "name": "Alarm 1 hold",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 8,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = on, 1 = off"
+    },
+    {
+      "name": "Alarm 1 energize",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = energize, 1 = de-energize"
+    },
+    {
+      "name": "Alarm 1 annunciator",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 10,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = off, 1 = on"
+    },
+    {
+      "name": "Sensor error level",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 12,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = low, 1 = high"
+    },
+    {
+      "name": "Alarm 2 latch",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 13,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = on, 1 = off"
+    },
+    {
+      "name": "Alarm 2 hold",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = on, 1 = off"
+    },
+    {
+      "name": "Alarm 2 energize",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 15,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = energize, 1 = de-energize"
+    },
+    {
+      "name": "Alarm 2 annunciator",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = off, 1 = on"
+    },
+    {
+      "name": "Heat/cool mode",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "Profile status",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 18,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "Sensor open condition",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 19,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = auto, 1 = manual"
+    },
+    {
+      "name": "Standby mode",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 20,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = no, 1 = yes"
+    },
+    {
+      "name": "Program access settings",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 21,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = level, 1 = online"
+    },
+    {
+      "name": "Set mode zone",
+      "group": "Settings (coils)",
+      "area": "coil",
+      "address": 26,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = all, 1 = zone"
+    },
+    {
+      "name": "Main output status",
+      "group": "Status",
+      "area": "input",
+      "address": 1,
+      "type": "int32",
+      "access": "R",
+      "enum": "out_status"
+    },
+    {
+      "name": "Elapsed soak time",
+      "group": "Status",
+      "area": "input",
+      "address": 3,
+      "type": "int32",
+      "access": "R"
+    },
+    {
+      "name": "Output percentage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 5,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0 to 1000"
+    },
+    {
+      "name": "Final PV",
+      "group": "Measurements",
+      "area": "input",
+      "address": 7,
+      "type": "int32",
+      "access": "R",
+      "description": "Decimals follow the resolution setting"
+    },
+    {
+      "name": "Remote setpoint (ramp)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 9,
+      "type": "int32",
+      "access": "R"
+    },
+    {
+      "name": "Output percentage (float)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 64,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Final PV (float)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 66,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Remote setpoint (ramp, float)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 68,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Set 1 value",
+      "group": "Setpoints",
+      "area": "holding",
+      "address": 32,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Set 2 value",
+      "group": "Setpoints",
+      "area": "holding",
+      "address": 34,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Set 3 value",
+      "group": "Setpoints",
+      "area": "holding",
+      "address": 36,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "DSCL",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 64,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "ISCL",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 65,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "DSCH",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 66,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "ISCH",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "SPHL",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "SPLL",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 69,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone setpoint 1",
+      "group": "Zones",
+      "area": "holding",
+      "address": 72,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone setpoint 2",
+      "group": "Zones",
+      "area": "holding",
+      "address": 73,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone setpoint 3",
+      "group": "Zones",
+      "area": "holding",
+      "address": 74,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone setpoint 4",
+      "group": "Zones",
+      "area": "holding",
+      "address": 75,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Proportional band 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 76,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 400.0"
+    },
+    {
+      "name": "Zone proportional band 2",
+      "group": "Zones",
+      "area": "holding",
+      "address": 77,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone proportional band 3",
+      "group": "Zones",
+      "area": "holding",
+      "address": 78,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone proportional band 4",
+      "group": "Zones",
+      "area": "holding",
+      "address": 79,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Integral time 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 80,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 3600"
+    },
+    {
+      "name": "Zone integral time 2",
+      "group": "Zones",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone integral time 3",
+      "group": "Zones",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone integral time 4",
+      "group": "Zones",
+      "area": "holding",
+      "address": 83,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Derivative time 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 84,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 200"
+    },
+    {
+      "name": "Zone derivative time 2",
+      "group": "Zones",
+      "area": "holding",
+      "address": 85,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone derivative time 3",
+      "group": "Zones",
+      "area": "holding",
+      "address": 86,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone derivative time 4",
+      "group": "Zones",
+      "area": "holding",
+      "address": 87,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Timer",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 88,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Cycle time user",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 89,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Anti-reset windup",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 90,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Manual reset",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 91,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Hysteresis set 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 92,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Proportional band cooling",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 95,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Cycle time cooling",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 96,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Hysteresis set 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 97,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm low set 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 98,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm high set 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 99,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Hysteresis set 3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Soft start time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Ramp rate",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Soak time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "PV bias",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 108,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "User ID",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Special display index",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 128,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "dsp"
+    },
+    {
+      "name": "Input type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 129,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "input_type"
+    },
+    {
+      "name": "Resolution",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 130,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "resolution",
+      "description": "TC/RTD: 0 = 1, 1 = 0.1; analog input: 0 = 1, 1 = 0.1, 2 = 0.01, 3 = 0.001"
+    },
+    {
+      "name": "Auto tune",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "autotune"
+    },
+    {
+      "name": "Tune percentage",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "access": "RW",
+      "description": "75 to 100"
+    },
+    {
+      "name": "Power low set 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 135,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 100 (-100 to 100 in heat/cool mode)"
+    },
+    {
+      "name": "Power high set 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 136,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Zone mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 137,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "zone_mode"
+    },
+    {
+      "name": "Zone number",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 138,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "zone_no"
+    },
+    {
+      "name": "DAC",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 139,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.5 to 5.0"
+    },
+    {
+      "name": "Cycle time selection",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 140,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "cycle"
+    },
+    {
+      "name": "Hysteresis bias set 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 141,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Set 2 mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 144,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "set2_mode"
+    },
+    {
+      "name": "Alarm 1 mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 145,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm1_mode"
+    },
+    {
+      "name": "Hysteresis bias set 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 146,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm 2 mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 149,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm2_mode"
+    },
+    {
+      "name": "Hysteresis bias set 3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 150,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Main output",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 153,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "main_out"
+    },
+    {
+      "name": "Analog output type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 154,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aout"
+    },
+    {
+      "name": "Hand percentage",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 155,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Off or 0 to 100"
+    },
+    {
+      "name": "Ramp",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 156,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "ramp"
+    },
+    {
+      "name": "Sensor fail power level",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 157,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 100 (-100 to 100 in heat/cool mode)"
+    },
+    {
+      "name": "Filter time constant",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 158,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = off, 1 to 99"
+    },
+    {
+      "name": "Output power dampening",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 159,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = off, 1 to 250"
+    },
+    {
+      "name": "Rounding increment",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 160,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.1 to 10.0 for TC/RTD"
+    },
+    {
+      "name": "Lock access Set 1",
+      "group": "Locks",
+      "area": "holding",
+      "address": 163,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Set 2",
+      "group": "Locks",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Set 3",
+      "group": "Locks",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Auto tune",
+      "group": "Locks",
+      "area": "holding",
+      "address": 166,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Hand %",
+      "group": "Locks",
+      "area": "holding",
+      "address": 167,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access PB main",
+      "group": "Locks",
+      "area": "holding",
+      "address": 168,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access IT main",
+      "group": "Locks",
+      "area": "holding",
+      "address": 169,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access DR main",
+      "group": "Locks",
+      "area": "holding",
+      "address": 170,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Manual reset",
+      "group": "Locks",
+      "area": "holding",
+      "address": 171,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access PB aux",
+      "group": "Locks",
+      "area": "holding",
+      "address": 172,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Level 0",
+      "group": "Locks",
+      "area": "holding",
+      "address": 173,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Level 1",
+      "group": "Locks",
+      "area": "holding",
+      "address": 174,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Level 2",
+      "group": "Locks",
+      "area": "holding",
+      "address": 175,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Level 3",
+      "group": "Locks",
+      "area": "holding",
+      "address": 176,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Level 4",
+      "group": "Locks",
+      "area": "holding",
+      "address": 177,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Lock access Level 9",
+      "group": "Locks",
+      "area": "holding",
+      "address": 178,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "lock"
+    },
+    {
+      "name": "Profile target temperature 1",
+      "group": "Profile",
+      "area": "holding",
+      "address": 192,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 2",
+      "group": "Profile",
+      "area": "holding",
+      "address": 194,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 3",
+      "group": "Profile",
+      "area": "holding",
+      "address": 196,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 4",
+      "group": "Profile",
+      "area": "holding",
+      "address": 198,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 5",
+      "group": "Profile",
+      "area": "holding",
+      "address": 200,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 6",
+      "group": "Profile",
+      "area": "holding",
+      "address": 202,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 7",
+      "group": "Profile",
+      "area": "holding",
+      "address": 204,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 8",
+      "group": "Profile",
+      "area": "holding",
+      "address": 206,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 9",
+      "group": "Profile",
+      "area": "holding",
+      "address": 208,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 10",
+      "group": "Profile",
+      "area": "holding",
+      "address": 210,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 11",
+      "group": "Profile",
+      "area": "holding",
+      "address": 212,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 12",
+      "group": "Profile",
+      "area": "holding",
+      "address": 214,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 13",
+      "group": "Profile",
+      "area": "holding",
+      "address": 216,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 14",
+      "group": "Profile",
+      "area": "holding",
+      "address": 218,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 15",
+      "group": "Profile",
+      "area": "holding",
+      "address": 220,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile target temperature 16",
+      "group": "Profile",
+      "area": "holding",
+      "address": 222,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Profile ramp time 1",
+      "group": "Profile",
+      "area": "holding",
+      "address": 256,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 2",
+      "group": "Profile",
+      "area": "holding",
+      "address": 257,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 3",
+      "group": "Profile",
+      "area": "holding",
+      "address": 258,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 4",
+      "group": "Profile",
+      "area": "holding",
+      "address": 259,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 5",
+      "group": "Profile",
+      "area": "holding",
+      "address": 260,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 6",
+      "group": "Profile",
+      "area": "holding",
+      "address": 261,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 7",
+      "group": "Profile",
+      "area": "holding",
+      "address": 262,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 8",
+      "group": "Profile",
+      "area": "holding",
+      "address": 263,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 9",
+      "group": "Profile",
+      "area": "holding",
+      "address": 264,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 10",
+      "group": "Profile",
+      "area": "holding",
+      "address": 265,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 11",
+      "group": "Profile",
+      "area": "holding",
+      "address": 266,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 12",
+      "group": "Profile",
+      "area": "holding",
+      "address": 267,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 13",
+      "group": "Profile",
+      "area": "holding",
+      "address": 268,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 14",
+      "group": "Profile",
+      "area": "holding",
+      "address": 269,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 15",
+      "group": "Profile",
+      "area": "holding",
+      "address": 270,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Profile ramp time 16",
+      "group": "Profile",
+      "area": "holding",
+      "address": 271,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0000 to 9959"
+    },
+    {
+      "name": "Full profile repeat",
+      "group": "Profile",
+      "area": "holding",
+      "address": 320,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 99"
+    },
+    {
+      "name": "Profile number",
+      "group": "Profile",
+      "area": "holding",
+      "address": 321,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 8"
+    },
+    {
+      "name": "Single profile repeat",
+      "group": "Profile",
+      "area": "holding",
+      "address": 322,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 99"
+    },
+    {
+      "name": "Profile power-down resume",
+      "group": "Profile",
+      "area": "holding",
+      "address": 323,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "pdn"
+    },
+    {
+      "name": "Profile link",
+      "group": "Profile",
+      "area": "holding",
+      "address": 324,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = no, 1 to 8"
+    },
+    {
+      "name": "Profile deviation hold",
+      "group": "Profile",
+      "area": "holding",
+      "address": 325,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "dev_hold"
+    },
+    {
+      "name": "Profile alarm duration",
+      "group": "Profile",
+      "area": "holding",
+      "address": 326,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 99"
+    },
+    {
+      "name": "Profile start step number",
+      "group": "Profile",
+      "area": "holding",
+      "address": 327,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 16"
+    },
+    {
+      "name": "Profile number of steps",
+      "group": "Profile",
+      "area": "holding",
+      "address": 328,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 16"
+    },
+    {
+      "name": "Profile aux output 1",
+      "group": "Profile",
+      "area": "holding",
+      "address": 331,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 2",
+      "group": "Profile",
+      "area": "holding",
+      "address": 332,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 3",
+      "group": "Profile",
+      "area": "holding",
+      "address": 333,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 4",
+      "group": "Profile",
+      "area": "holding",
+      "address": 334,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 5",
+      "group": "Profile",
+      "area": "holding",
+      "address": 335,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 6",
+      "group": "Profile",
+      "area": "holding",
+      "address": 336,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 7",
+      "group": "Profile",
+      "area": "holding",
+      "address": 337,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 8",
+      "group": "Profile",
+      "area": "holding",
+      "address": 338,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 9",
+      "group": "Profile",
+      "area": "holding",
+      "address": 339,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 10",
+      "group": "Profile",
+      "area": "holding",
+      "address": 340,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 11",
+      "group": "Profile",
+      "area": "holding",
+      "address": 341,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 12",
+      "group": "Profile",
+      "area": "holding",
+      "address": 342,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 13",
+      "group": "Profile",
+      "area": "holding",
+      "address": 343,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 14",
+      "group": "Profile",
+      "area": "holding",
+      "address": 344,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 15",
+      "group": "Profile",
+      "area": "holding",
+      "address": 345,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile aux output 16",
+      "group": "Profile",
+      "area": "holding",
+      "address": 346,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "aux"
+    },
+    {
+      "name": "Profile run",
+      "group": "Profile",
+      "area": "holding",
+      "address": 351,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "prun"
+    }
+  ]
+}

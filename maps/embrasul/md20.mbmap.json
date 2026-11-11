@@ -1,0 +1,1630 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Embrasul",
+  "model": "MD20",
+  "vendor_website": "embrasul.com.br",
+  "description": "Three-phase multifunction energy meter with RS485 Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Embrasul, Manual de Instalação e Operação do MD20, section 7 (Modbus RTU) and section 8 (register list)",
+  "sources": [
+    {
+      "title": "Manual de Instalação e Operação do MD20",
+      "note": "Sections 7 and 8, supplied with the map request"
+    }
+  ],
+  "notes": [
+    "Register addresses are the decimal ones in the manual, used as they are (address_base 0): the manual's read example for the phase voltages sends start address 1000 (0x03E8). Function 0x03 reads; function 0x10 writes.",
+    "Data bytes are sent high byte first and the example (0x435C0000 = 220) shows a 32-bit float with the high word first, so the word order is big. The manual does not state the word order of the 32-bit integers; big is assumed.",
+    "Registers marked R/WC in the manual (clock, communication, power parameters and the others) are changed with the configuration command block: write an instruction code and its parameters with function 0x10 at registers 300 to 423, then read the result code at 425 (0 = accepted). They are marked read-only here because they cannot be written directly. The instruction codes are in sections 8.1 to 8.8 and are not mapped.",
+    "Energy registers are integers in 0.1 kWh, 0.1 kvarh and 0.1 kVAh; the scale of 0.1 gives kWh, kvarh and kVAh.",
+    "Names follow the manual's aliases. I1VGMax and I1VGMin in the manual are the maximum and minimum of the average three-phase current; the manual lists phase B minimum power at 6078, which is taken as the 6072 the sequence implies.",
+    "The peak demand dates (5120, 5128, 5136), the demand reset time (5002) and the unmapped date-time values use four registers of the manual's date format and are not mapped.",
+    "Serial settings: 2400, 4800, 9600 or 19200 baud, no, odd or even parity, 8 data bits, 1 stop bit, address 1 to 247. Defaults are 9600 baud, no parity, address 1."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baud_rate": 9600,
+  "data_bits": 8,
+  "parity": "N",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "baud": {
+      "0": "2400",
+      "1": "4800",
+      "2": "9600",
+      "3": "19200"
+    },
+    "parity": {
+      "0": "None",
+      "1": "Odd",
+      "2": "Even"
+    },
+    "wiring": {
+      "0": "3 phase 4 wire",
+      "1": "3 phase 3 wire"
+    },
+    "di": {
+      "0": "DI1 open, DI2 open",
+      "1": "DI1 closed, DI2 open",
+      "2": "DI1 open, DI2 closed",
+      "3": "DI1 closed, DI2 closed"
+    },
+    "relay": {
+      "0": "Open",
+      "1": "Closed"
+    },
+    "phase": {
+      "0": "Voltage and current sequence correct",
+      "1": "Voltage sequence wrong, current correct",
+      "2": "Voltage correct, current sequence wrong",
+      "3": "Voltage and current sequence wrong"
+    },
+    "dmd": {
+      "0": "Sliding",
+      "1": "Fixed"
+    }
+  },
+  "registers": [
+    {
+      "name": "Meter model",
+      "group": "Device",
+      "area": "holding",
+      "address": 50,
+      "type": "string",
+      "access": "R",
+      "length": 20,
+      "description": "UTF-8 text"
+    },
+    {
+      "name": "Serial number",
+      "group": "Device",
+      "area": "holding",
+      "address": 70,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Device",
+      "area": "holding",
+      "address": 72,
+      "type": "uint16",
+      "access": "R",
+      "description": "Format X.Y.ZTT"
+    },
+    {
+      "name": "Clock year",
+      "group": "Device",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 99, years since 2000"
+    },
+    {
+      "name": "Clock month and day",
+      "group": "Device",
+      "area": "holding",
+      "address": 74,
+      "type": "uint16",
+      "access": "R",
+      "description": "Month in the high byte, day in the low byte"
+    },
+    {
+      "name": "Clock hour and minute",
+      "group": "Device",
+      "area": "holding",
+      "address": 75,
+      "type": "uint16",
+      "access": "R",
+      "description": "Hour in the high byte, minute in the low byte"
+    },
+    {
+      "name": "Clock milliseconds",
+      "group": "Device",
+      "area": "holding",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 59999 (seconds and milliseconds)"
+    },
+    {
+      "name": "Slave address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 80,
+      "type": "uint16",
+      "access": "R",
+      "description": "1 to 247"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "R",
+      "enum": "baud"
+    },
+    {
+      "name": "Parity",
+      "group": "Communication",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "access": "R",
+      "enum": "parity"
+    },
+    {
+      "name": "Wiring mode",
+      "group": "Power",
+      "area": "holding",
+      "address": 90,
+      "type": "uint16",
+      "access": "R",
+      "enum": "wiring"
+    },
+    {
+      "name": "VT ratio",
+      "group": "Power",
+      "area": "holding",
+      "address": 91,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V/V",
+      "description": "Sent as the ratio multiplied by 10000",
+      "scale": 0.0001
+    },
+    {
+      "name": "CT ratio",
+      "group": "Power",
+      "area": "holding",
+      "address": 93,
+      "type": "uint32",
+      "access": "R",
+      "unit": "A/A",
+      "description": "Sent as the ratio multiplied by 10000",
+      "scale": 0.0001
+    },
+    {
+      "name": "Digital input status",
+      "group": "Status",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "R",
+      "enum": "di"
+    },
+    {
+      "name": "Relay output status",
+      "group": "Status",
+      "area": "holding",
+      "address": 151,
+      "type": "uint16",
+      "access": "R",
+      "enum": "relay"
+    },
+    {
+      "name": "Phase sequence status",
+      "group": "Status",
+      "area": "holding",
+      "address": 152,
+      "type": "uint16",
+      "access": "R",
+      "enum": "phase"
+    },
+    {
+      "name": "Phase A voltage",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 1000,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase B voltage",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 1002,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase C voltage",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 1004,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average phase voltage",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 1006,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage A-B",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 1008,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage B-C",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 1010,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage C-A",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 1012,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average line voltage",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 1014,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase A current",
+      "group": "Current",
+      "area": "holding",
+      "address": 1016,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase B current",
+      "group": "Current",
+      "area": "holding",
+      "address": 1018,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase C current",
+      "group": "Current",
+      "area": "holding",
+      "address": 1020,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Average current",
+      "group": "Current",
+      "area": "holding",
+      "address": 1022,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase A active power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1026,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase B active power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1028,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase C active power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1030,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Total active power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1032,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase A reactive power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1034,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase B reactive power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1036,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase C reactive power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1038,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1040,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase A apparent power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1042,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase B apparent power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1044,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase C apparent power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1046,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Total apparent power",
+      "group": "Power",
+      "area": "holding",
+      "address": 1048,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase A power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 1050,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase B power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 1052,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase C power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 1054,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Average power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 1056,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase A displacement power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 1058,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase B displacement power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 1060,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase C displacement power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 1062,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Average displacement power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 1064,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1066,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Phase A voltage THD",
+      "group": "Power quality",
+      "area": "holding",
+      "address": 2000,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase B voltage THD",
+      "group": "Power quality",
+      "area": "holding",
+      "address": 2002,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase C voltage THD",
+      "group": "Power quality",
+      "area": "holding",
+      "address": 2004,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Average voltage THD",
+      "group": "Power quality",
+      "area": "holding",
+      "address": 2006,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase A current THD",
+      "group": "Power quality",
+      "area": "holding",
+      "address": 2008,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase B current THD",
+      "group": "Power quality",
+      "area": "holding",
+      "address": 2010,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase C current THD",
+      "group": "Power quality",
+      "area": "holding",
+      "address": 2012,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Average current THD",
+      "group": "Power quality",
+      "area": "holding",
+      "address": 2014,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase A imported active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4000,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase B imported active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4002,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase C imported active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4004,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Total imported active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4006,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase A exported active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4008,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase B exported active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4010,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase C exported active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4012,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Total exported active energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4014,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase A imported reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4024,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase B imported reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4026,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase C imported reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4028,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1
+    },
+    {
+      "name": "Total imported reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4030,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase A exported reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4032,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase B exported reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4034,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase C exported reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4036,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1
+    },
+    {
+      "name": "Total exported reactive energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4038,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase A apparent energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4048,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kVAh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase B apparent energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4050,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kVAh",
+      "scale": 0.1
+    },
+    {
+      "name": "Phase C apparent energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4052,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kVAh",
+      "scale": 0.1
+    },
+    {
+      "name": "Total apparent energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4054,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kVAh",
+      "scale": 0.1
+    },
+    {
+      "name": "Demand method",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5000,
+      "type": "uint16",
+      "access": "R",
+      "enum": "dmd"
+    },
+    {
+      "name": "Demand interval",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5001,
+      "type": "uint16",
+      "access": "R",
+      "unit": "min"
+    },
+    {
+      "name": "Phase A active power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5020,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase A active power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5022,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase B active power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5028,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase B active power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5030,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase C active power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5036,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase C active power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5038,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Total active power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5044,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Total active power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5046,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase A reactive power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5052,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase A reactive power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5054,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase B reactive power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5060,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase B reactive power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5062,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase C reactive power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5068,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase C reactive power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5070,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Total reactive power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5076,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Total reactive power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5078,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase A apparent power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5084,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase A apparent power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5086,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase B apparent power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5092,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase B apparent power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5094,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase C apparent power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5100,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase C apparent power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5102,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Total apparent power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5108,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Total apparent power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5110,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase A current demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5116,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase A current peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5118,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase B current demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5124,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase B current peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5126,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase C current demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5132,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase C current peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5134,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Average current demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5140,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Average current peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 5142,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase A current maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6000,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase B current maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6002,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase C current maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6004,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Average current maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6006,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase A current minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6010,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase B current minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6012,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase C current minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6014,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Average current minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6016,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase A voltage maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6020,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase B voltage maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6022,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase C voltage maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6024,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average phase voltage maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6026,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase A voltage minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6030,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase B voltage minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6032,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase C voltage minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6034,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average phase voltage minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6036,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage A-B maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6040,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage B-C maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6042,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage C-A maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6044,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average line voltage maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6046,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage A-B minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6050,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage B-C minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6052,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line voltage C-A minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6054,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average line voltage minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6056,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase A active power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6060,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase B active power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6062,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase C active power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6064,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Total active power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6066,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase A active power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6070,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase B active power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6072,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase C active power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6074,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Total active power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6076,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase A reactive power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6080,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase B reactive power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6082,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase C reactive power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6084,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Total reactive power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6086,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase A reactive power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6090,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase B reactive power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6092,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase C reactive power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6094,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Total reactive power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6096,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase A apparent power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6100,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase B apparent power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6102,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase C apparent power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6104,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Total apparent power maximum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6106,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase A apparent power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6110,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase B apparent power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6112,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase C apparent power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6114,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Total apparent power minimum",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 6116,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase A current unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7000,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase B current unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7002,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase C current unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7004,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Worst current unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7006,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase A voltage unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7010,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase B voltage unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7012,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase C voltage unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7014,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Worst phase voltage unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7016,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Line voltage A-B unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7020,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Line voltage B-C unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7022,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Line voltage C-A unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7024,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Worst line voltage unbalance",
+      "group": "Unbalance",
+      "area": "holding",
+      "address": 7026,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    }
+  ]
+}

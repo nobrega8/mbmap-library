@@ -1,0 +1,51 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Samrello",
+  "model": "IDTS-302/96-RS",
+  "vendor_website": "samrello.com.br",
+  "description": "Two-channel temperature indicator with RS485 Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Samrello, Mapa de registros RS485, IDTS-302/96, firmware V00",
+  "sources": [
+    {
+      "title": "Mapa de registros RS485 - IDTS-302/96",
+      "version": "firmware V00",
+      "note": "Register map supplied with the map request"
+    }
+  ],
+  "notes": [
+    "Addresses are the hexadecimal ones from the manual (0x9C40 = 40000); the manual's read example sends 0x9C40 as the start address, so they are used as they are (address_base 0).",
+    "Function 0x03 reads. The manual lists each value as 2 bytes (one register) and marks the setpoints as read/write; it gives no scale or unit for the temperatures, so values are the raw device counts. Check the scale against the display.",
+    "Serial format: 8 data bits, no parity, 1 stop bit. The manual does not give a baud rate; the device address is 1 to 127.",
+    "Status bits of register 40013: bit 0 SSR, bit 1 S1, bit 2 S2, each 1 when the output is on."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "data_bits": 8,
+  "parity": "N",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {"name": "Temperature 1", "group": "Measurements", "area": "holding", "address": 40000, "type": "int16", "access": "R", "description": "Process value, channel 1"},
+    {"name": "Temperature 2", "group": "Measurements", "area": "holding", "address": 40001, "type": "int16", "access": "R", "description": "Process value, channel 2"},
+    {"name": "Maximum temperature 1", "group": "Measurements", "area": "holding", "address": 40024, "type": "int16", "access": "R"},
+    {"name": "Maximum temperature 2", "group": "Measurements", "area": "holding", "address": 40025, "type": "int16", "access": "R"},
+    {"name": "Minimum temperature 1", "group": "Measurements", "area": "holding", "address": 40034, "type": "int16", "access": "R"},
+    {"name": "Minimum temperature 2", "group": "Measurements", "area": "holding", "address": 40035, "type": "int16", "access": "R"},
+    {"name": "Average temperature 1", "group": "Measurements", "area": "holding", "address": 40044, "type": "int16", "access": "R"},
+    {"name": "Average temperature 2", "group": "Measurements", "area": "holding", "address": 40045, "type": "int16", "access": "R"},
+    {"name": "Setpoint S1", "group": "Setpoints", "area": "holding", "address": 40010, "type": "int16", "access": "RW"},
+    {"name": "Setpoint S2", "group": "Setpoints", "area": "holding", "address": 40011, "type": "int16", "access": "RW"},
+    {"name": "Setpoint PV", "group": "Setpoints", "area": "holding", "address": 40012, "type": "int16", "access": "RW"},
+    {"name": "SSR output on", "group": "Status", "area": "holding", "address": 40013, "type": "bool", "access": "R", "bit": 0},
+    {"name": "S1 output on", "group": "Status", "area": "holding", "address": 40013, "type": "bool", "access": "R", "bit": 1},
+    {"name": "S2 output on", "group": "Status", "area": "holding", "address": 40013, "type": "bool", "access": "R", "bit": 2},
+    {"name": "Offset channel 1", "group": "Configuration", "area": "holding", "address": 40014, "type": "int16", "access": "R"},
+    {"name": "Offset channel 2", "group": "Configuration", "area": "holding", "address": 40015, "type": "int16", "access": "R"}
+  ]
+}
