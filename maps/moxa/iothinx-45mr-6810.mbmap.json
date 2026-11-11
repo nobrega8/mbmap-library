@@ -1,40 +1,546 @@
 {
-  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
-  "mbmap": 2,
-  "vendor": "Moxa",
-  "model": "ioThinx 45MR-6810",
-  "models": ["ioThinx 45MR-6810"],
-  "vendor_website": "moxa.com",
-  "description": "8-TC thermocouple input ioThinx 45MR slot module. Addresses are module-relative; actual PDU address = slot_base + relative_address. FC01: tcResetMinValue ch0-7 (W=1 to reset), tcResetMaxValue ch0-7 (W=1 to reset). FC03: tcResetMinValueAll (rel 0), tcResetMaxValueAll (rel 1). FC04: tcValueScaled ch0-7 (f32 2-regs/ch = 16 regs), tcValueScaledMin (16 regs), tcValueScaledMax (16 regs), tcType ch0-7 (0=J 1=K 2=T 3=E 4=R 5=S 6=B 7=N 14=±78.126mV 15=±39.062mV 16=±19.532mV), tcStatus ch0-7 (0=normal 1=burnout).",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/moxa-iothinx-45mr-6810.toml; Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Moxa ioThinx 45MR-6810.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Moxa ioThinx 45MR-6810 — 8-channel Thermocouple input",
-    "|",
-    "| Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A",
-    "| Protocol: Modbus/TCP via ioThinx 4510 adapter, port 502",
-    "|",
-    "| IMPORTANT: Addresses are MODULE-RELATIVE. Actual PDU address = slot_base + relative_address.",
-    "| Slot base depends on which slot this module occupies in the ioThinx 4510 chassis.",
-    "|",
-    "| FC01 (coil R/W): tcResetMinValue ch0-7 (8 BOOL, W=1 to reset min tracking),",
-    "| tcResetMaxValue ch0-7 (8 BOOL, W=1 to reset max tracking)",
-    "| FC03 (holding R/W): see [[registers]] below",
-    "| FC04 (input R): tcValueScaled ch0-7 (f32, 2 regs/ch = 16 regs),",
-    "| tcValueScaledMin ch0-7 (f32, 16 regs), tcValueScaledMax ch0-7 (f32, 16 regs),",
-    "| tcType ch0-7 (8 WORD, 0=J 1=K 2=T 3=E 4=R 5=S 6=B 7=N"
-  ],
-  "byte_order": "big",
-  "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
-  "registers": [
-    {"name": "tcResetMinValueAll (bitmask bit0-7=ch0-7; W=1 to reset min-value tracking; R/W)", "area": "holding", "address": 0, "type": "uint16", "access": "R"},
-    {"name": "tcResetMaxValueAll (bitmask bit0-7=ch0-7; W=1 to reset max-value tracking; R/W)", "area": "holding", "address": 1, "type": "uint16", "access": "R"}
-  ]
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "Moxa",
+ "model": "ioThinx 45MR-6810",
+ "models": [
+  "ioThinx 45MR-6810",
+  "ioThinx 45MR-6810-T"
+ ],
+ "vendor_website": "moxa.com",
+ "description": "8-channel thermocouple input module for the ioThinx 4510 adapter",
+ "revision": 3,
+ "revised": "2026-11-11",
+ "source": "Moxa, ioThinx 4510 Series User's Manual, version 6.2 (July 2024), Appendix A (Modbus/TCP slave rules and register lists)",
+ "sources": [
+  {
+   "title": "ioThinx 4510 Series User's Manual",
+   "version": "6.2",
+   "date": "2024-07",
+   "note": "Appendix A, 45MR-6810 (-T) registers"
+  }
+ ],
+ "notes": [
+  "Addresses are relative to the module: the Modbus address on the 4510 is the slot's base address (set on the Modbus page of the 4510 web console: reload the default addresses or edit them) plus the relative address given here, separately for coils, discrete inputs, holding registers and input registers. Modbus/TCP port 502 on the ioThinx 4510 adapter.",
+  "The manual lists every parameter with a length: in bits for coils and discrete inputs, and in 16-bit registers for the others. A DWORD or REAL value takes two registers; a REAL is a 32-bit float. Per-channel entries here follow that: for example 8 registers of DWORD for 4 channels are four 32-bit values.",
+  "The manual does not state the word order of the 32-bit values; big is assumed. The function codes are 1, 5 and 15 for coils, 2 for discrete inputs, 3, 6 and 16 for holding registers and 4 for input registers.",
+  "Each 'All' register is a bit mask with one bit per channel."
+ ],
+ "protocol": "tcp",
+ "port": 502,
+ "unit_id": 1,
+ "byte_order": "big",
+ "word_order": "big",
+ "address_base": 0,
+ "x_status": "official",
+ "enums": {
+  "burnout": {
+   "0": "Normal",
+   "1": "Burnout"
+  },
+  "tc_type": {
+   "0": "J",
+   "1": "K",
+   "2": "T",
+   "3": "E",
+   "4": "R",
+   "5": "S",
+   "6": "B",
+   "7": "N",
+   "14": "±78.126 mV",
+   "15": "±39.062 mV",
+   "16": "±19.532 mV"
+  }
+ },
+ "registers": [
+  {
+   "name": "TC - reset minimum value ch0",
+   "group": "tcResetMinValue",
+   "area": "coil",
+   "address": 0,
+   "type": "bool",
+   "access": "RW",
+   "description": "TC - reset minimum value (1: Reset)"
+  },
+  {
+   "name": "TC - reset minimum value ch1",
+   "group": "tcResetMinValue",
+   "area": "coil",
+   "address": 1,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset minimum value ch2",
+   "group": "tcResetMinValue",
+   "area": "coil",
+   "address": 2,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset minimum value ch3",
+   "group": "tcResetMinValue",
+   "area": "coil",
+   "address": 3,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset minimum value ch4",
+   "group": "tcResetMinValue",
+   "area": "coil",
+   "address": 4,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset minimum value ch5",
+   "group": "tcResetMinValue",
+   "area": "coil",
+   "address": 5,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset minimum value ch6",
+   "group": "tcResetMinValue",
+   "area": "coil",
+   "address": 6,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset minimum value ch7",
+   "group": "tcResetMinValue",
+   "area": "coil",
+   "address": 7,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset maximum value ch0",
+   "group": "tcResetMaxValue",
+   "area": "coil",
+   "address": 8,
+   "type": "bool",
+   "access": "RW",
+   "description": "TC - reset maximum value (1: Reset)"
+  },
+  {
+   "name": "TC - reset maximum value ch1",
+   "group": "tcResetMaxValue",
+   "area": "coil",
+   "address": 9,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset maximum value ch2",
+   "group": "tcResetMaxValue",
+   "area": "coil",
+   "address": 10,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset maximum value ch3",
+   "group": "tcResetMaxValue",
+   "area": "coil",
+   "address": 11,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset maximum value ch4",
+   "group": "tcResetMaxValue",
+   "area": "coil",
+   "address": 12,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset maximum value ch5",
+   "group": "tcResetMaxValue",
+   "area": "coil",
+   "address": 13,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset maximum value ch6",
+   "group": "tcResetMaxValue",
+   "area": "coil",
+   "address": 14,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset maximum value ch7",
+   "group": "tcResetMaxValue",
+   "area": "coil",
+   "address": 15,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "TC - reset minimum value (all channels)",
+   "group": "tcResetMinValueAll",
+   "area": "holding",
+   "address": 0,
+   "type": "uint16",
+   "access": "RW",
+   "description": "TC - reset minimum value (1: Reset); bit n is channel n"
+  },
+  {
+   "name": "TC - reset maximum value (all channels)",
+   "group": "tcResetMaxValueAll",
+   "area": "holding",
+   "address": 1,
+   "type": "uint16",
+   "access": "RW",
+   "description": "TC - reset maximum value (1: Reset); bit n is channel n"
+  },
+  {
+   "name": "TC - scaled value ch0",
+   "group": "tcValueScaled",
+   "area": "input",
+   "address": 0,
+   "type": "float32",
+   "access": "R",
+   "description": "TC - scaled value"
+  },
+  {
+   "name": "TC - scaled value ch1",
+   "group": "tcValueScaled",
+   "area": "input",
+   "address": 2,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - scaled value ch2",
+   "group": "tcValueScaled",
+   "area": "input",
+   "address": 4,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - scaled value ch3",
+   "group": "tcValueScaled",
+   "area": "input",
+   "address": 6,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - scaled value ch4",
+   "group": "tcValueScaled",
+   "area": "input",
+   "address": 8,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - scaled value ch5",
+   "group": "tcValueScaled",
+   "area": "input",
+   "address": 10,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - scaled value ch6",
+   "group": "tcValueScaled",
+   "area": "input",
+   "address": 12,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - scaled value ch7",
+   "group": "tcValueScaled",
+   "area": "input",
+   "address": 14,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - minimum scaled value ch0",
+   "group": "tcValueScaledMin",
+   "area": "input",
+   "address": 16,
+   "type": "float32",
+   "access": "R",
+   "description": "TC - minimum scaled value"
+  },
+  {
+   "name": "TC - minimum scaled value ch1",
+   "group": "tcValueScaledMin",
+   "area": "input",
+   "address": 18,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - minimum scaled value ch2",
+   "group": "tcValueScaledMin",
+   "area": "input",
+   "address": 20,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - minimum scaled value ch3",
+   "group": "tcValueScaledMin",
+   "area": "input",
+   "address": 22,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - minimum scaled value ch4",
+   "group": "tcValueScaledMin",
+   "area": "input",
+   "address": 24,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - minimum scaled value ch5",
+   "group": "tcValueScaledMin",
+   "area": "input",
+   "address": 26,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - minimum scaled value ch6",
+   "group": "tcValueScaledMin",
+   "area": "input",
+   "address": 28,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - minimum scaled value ch7",
+   "group": "tcValueScaledMin",
+   "area": "input",
+   "address": 30,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - maximum scaled value ch0",
+   "group": "tcValueScaledMax",
+   "area": "input",
+   "address": 32,
+   "type": "float32",
+   "access": "R",
+   "description": "TC - maximum scaled value"
+  },
+  {
+   "name": "TC - maximum scaled value ch1",
+   "group": "tcValueScaledMax",
+   "area": "input",
+   "address": 34,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - maximum scaled value ch2",
+   "group": "tcValueScaledMax",
+   "area": "input",
+   "address": 36,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - maximum scaled value ch3",
+   "group": "tcValueScaledMax",
+   "area": "input",
+   "address": 38,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - maximum scaled value ch4",
+   "group": "tcValueScaledMax",
+   "area": "input",
+   "address": 40,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - maximum scaled value ch5",
+   "group": "tcValueScaledMax",
+   "area": "input",
+   "address": 42,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - maximum scaled value ch6",
+   "group": "tcValueScaledMax",
+   "area": "input",
+   "address": 44,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - maximum scaled value ch7",
+   "group": "tcValueScaledMax",
+   "area": "input",
+   "address": 46,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "TC - Type ch0",
+   "group": "tcType",
+   "area": "input",
+   "address": 48,
+   "type": "uint16",
+   "access": "R",
+   "description": "TC - Type (0: J Type, 1: K Type, 2: T Type, 3: E",
+   "enum": "tc_type"
+  },
+  {
+   "name": "TC - Type ch1",
+   "group": "tcType",
+   "area": "input",
+   "address": 49,
+   "type": "uint16",
+   "access": "R",
+   "enum": "tc_type"
+  },
+  {
+   "name": "TC - Type ch2",
+   "group": "tcType",
+   "area": "input",
+   "address": 50,
+   "type": "uint16",
+   "access": "R",
+   "enum": "tc_type"
+  },
+  {
+   "name": "TC - Type ch3",
+   "group": "tcType",
+   "area": "input",
+   "address": 51,
+   "type": "uint16",
+   "access": "R",
+   "enum": "tc_type"
+  },
+  {
+   "name": "TC - Type ch4",
+   "group": "tcType",
+   "area": "input",
+   "address": 52,
+   "type": "uint16",
+   "access": "R",
+   "enum": "tc_type"
+  },
+  {
+   "name": "TC - Type ch5",
+   "group": "tcType",
+   "area": "input",
+   "address": 53,
+   "type": "uint16",
+   "access": "R",
+   "enum": "tc_type"
+  },
+  {
+   "name": "TC - Type ch6",
+   "group": "tcType",
+   "area": "input",
+   "address": 54,
+   "type": "uint16",
+   "access": "R",
+   "enum": "tc_type"
+  },
+  {
+   "name": "TC - Type ch7",
+   "group": "tcType",
+   "area": "input",
+   "address": 55,
+   "type": "uint16",
+   "access": "R",
+   "enum": "tc_type"
+  },
+  {
+   "name": "TC - Status ch0",
+   "group": "tcStatus",
+   "area": "input",
+   "address": 56,
+   "type": "uint16",
+   "access": "R",
+   "description": "TC - Status (0: normal, 1:burnout)",
+   "enum": "burnout"
+  },
+  {
+   "name": "TC - Status ch1",
+   "group": "tcStatus",
+   "area": "input",
+   "address": 57,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "TC - Status ch2",
+   "group": "tcStatus",
+   "area": "input",
+   "address": 58,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "TC - Status ch3",
+   "group": "tcStatus",
+   "area": "input",
+   "address": 59,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "TC - Status ch4",
+   "group": "tcStatus",
+   "area": "input",
+   "address": 60,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "TC - Status ch5",
+   "group": "tcStatus",
+   "area": "input",
+   "address": 61,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "TC - Status ch6",
+   "group": "tcStatus",
+   "area": "input",
+   "address": 62,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "TC - Status ch7",
+   "group": "tcStatus",
+   "area": "input",
+   "address": 63,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  }
+ ]
 }

@@ -1,56 +1,474 @@
 {
-  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
-  "mbmap": 2,
-  "vendor": "Moxa",
-  "model": "ioThinx 45MR-1600",
-  "models": ["ioThinx 45MR-1600"],
-  "vendor_website": "moxa.com",
-  "description": "16-DI PNP sink input ioThinx 45MR slot module. Addresses are module-relative; actual PDU address = slot_base + relative_address (slot base assigned dynamically by ioThinx 4510 chassis). Only ch0-3 support event counter mode; ch4-15 are DI-only. FC01: diCounterStatus ch0-3 (0=Pause 1=Run), diCounterOverflowFlagClear ch0-3 (W=1 to clear). FC02: diStatus ch0-15, diMode ch0-15 (0=DI 1=Counter), diCounterOverflowFlag ch0-3. FC03: diCounterValue ch0-3 u64 4-words/ch (rel 0-15), diCounterStatusAll bitmask (rel 16), diCounterOverflowFlagClearAll (rel 17). FC04: diStatusAll (1 WORD), diCounterOverflowFlagAll (1 WORD), diModeAll (1 WORD).",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/moxa-iothinx-45mr-1600.toml; Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Moxa ioThinx 45MR-1600.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Moxa ioThinx 45MR-1600 — 16-channel DI (PNP sink)",
-    "|",
-    "| Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A",
-    "| Protocol: Modbus/TCP via ioThinx 4510 adapter, port 502",
-    "|",
-    "| IMPORTANT: Addresses below are MODULE-RELATIVE. Actual PDU address = slot_base + relative_address.",
-    "| Slot base depends on which slot this module occupies in the ioThinx 4510 chassis.",
-    "| Only ch0-3 support event counter mode; ch4-15 are standard DI only.",
-    "|",
-    "| FC01 (coil R/W): diCounterStatus ch0-3 (4 BOOL, 0=Pause 1=Run),",
-    "| diCounterOverflowFlagClear ch0-3 (4 BOOL, W=1 to clear)",
-    "| FC02 (discrete input R): diStatus ch0-15 (16 BOOL, 0=OFF 1=ON),",
-    "| diMode ch0-15 (16 BOOL, 0=DI 1=Counter), diCounterOverflowFlag ch0-3 (4 BOOL, 0=Normal 1=Overflow)",
-    "| FC03 (holding R/W): see [[registers]] below"
-  ],
-  "byte_order": "big",
-  "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
-  "registers": [
-    {"name": "diCounterValue ch0 word[0] (u64 hi-DWORD hi-word; R)", "area": "holding", "address": 0, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch0 word[1] (u64 hi-DWORD lo-word)", "area": "holding", "address": 1, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch0 word[2] (u64 lo-DWORD hi-word)", "area": "holding", "address": 2, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch0 word[3] (u64 lo-DWORD lo-word)", "area": "holding", "address": 3, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch1 word[0] (u64 hi-DWORD hi-word)", "area": "holding", "address": 4, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch1 word[1]", "area": "holding", "address": 5, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch1 word[2]", "area": "holding", "address": 6, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch1 word[3]", "area": "holding", "address": 7, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch2 word[0] (u64 hi-DWORD hi-word)", "area": "holding", "address": 8, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch2 word[1]", "area": "holding", "address": 9, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch2 word[2]", "area": "holding", "address": 10, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch2 word[3]", "area": "holding", "address": 11, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch3 word[0] (u64 hi-DWORD hi-word)", "area": "holding", "address": 12, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch3 word[1]", "area": "holding", "address": 13, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch3 word[2]", "area": "holding", "address": 14, "type": "uint16", "access": "R"},
-    {"name": "diCounterValue ch3 word[3] (u64 lo-DWORD lo-word)", "area": "holding", "address": 15, "type": "uint16", "access": "R"},
-    {"name": "diCounterStatusAll (bitmask bit0-3=ch0-3; 0=Pause 1=Run; R/W)", "area": "holding", "address": 16, "type": "uint16", "access": "R"},
-    {"name": "diCounterOverflowFlagClearAll (W=1 to clear all overflow flags; R/W)", "area": "holding", "address": 17, "type": "uint16", "access": "R"}
-  ]
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "Moxa",
+ "model": "ioThinx 45MR-1600",
+ "models": [
+  "ioThinx 45MR-1600",
+  "ioThinx 45MR-1600-T"
+ ],
+ "vendor_website": "moxa.com",
+ "description": "16-channel digital input module (PNP, sink) for the ioThinx 4510 adapter",
+ "revision": 3,
+ "revised": "2026-11-11",
+ "source": "Moxa, ioThinx 4510 Series User's Manual, version 6.2 (July 2024), Appendix A (Modbus/TCP slave rules and register lists)",
+ "sources": [
+  {
+   "title": "ioThinx 4510 Series User's Manual",
+   "version": "6.2",
+   "date": "2024-07",
+   "note": "Appendix A, 45MR-1600 (-T) registers"
+  }
+ ],
+ "notes": [
+  "Addresses are relative to the module: the Modbus address on the 4510 is the slot's base address (set on the Modbus page of the 4510 web console: reload the default addresses or edit them) plus the relative address given here, separately for coils, discrete inputs, holding registers and input registers. Modbus/TCP port 502 on the ioThinx 4510 adapter.",
+  "The manual lists every parameter with a length: in bits for coils and discrete inputs, and in 16-bit registers for the others. A DWORD or REAL value takes two registers; a REAL is a 32-bit float. Per-channel entries here follow that: for example 8 registers of DWORD for 4 channels are four 32-bit values.",
+  "The manual does not state the word order of the 32-bit values; big is assumed. The function codes are 1, 5 and 15 for coils, 2 for discrete inputs, 3, 6 and 16 for holding registers and 4 for input registers.",
+  "Each 'All' register is a bit mask with one bit per channel.",
+  "The earlier version of this map read the counters as 64-bit values; the manual and its RESTful API list them as 32-bit (0 to 4294967295)."
+ ],
+ "protocol": "tcp",
+ "port": 502,
+ "unit_id": 1,
+ "byte_order": "big",
+ "word_order": "big",
+ "address_base": 0,
+ "x_status": "official",
+ "registers": [
+  {
+   "name": "DI - Counter mode - status ch0",
+   "group": "diCounterStatus",
+   "area": "coil",
+   "address": 0,
+   "type": "bool",
+   "access": "RW",
+   "description": "DI - Counter mode - status (0: Pause, 1: Run)"
+  },
+  {
+   "name": "DI - Counter mode - status ch1",
+   "group": "diCounterStatus",
+   "area": "coil",
+   "address": 1,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "DI - Counter mode - status ch2",
+   "group": "diCounterStatus",
+   "area": "coil",
+   "address": 2,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "DI - Counter mode - status ch3",
+   "group": "diCounterStatus",
+   "area": "coil",
+   "address": 3,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "DI - Counter mode - clear overflow flag ch0",
+   "group": "diCounterOverflowFlagClear",
+   "area": "coil",
+   "address": 4,
+   "type": "bool",
+   "access": "RW",
+   "description": "DI - Counter mode - clear overflow flag (1: Clear)"
+  },
+  {
+   "name": "DI - Counter mode - clear overflow flag ch1",
+   "group": "diCounterOverflowFlagClear",
+   "area": "coil",
+   "address": 5,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "DI - Counter mode - clear overflow flag ch2",
+   "group": "diCounterOverflowFlagClear",
+   "area": "coil",
+   "address": 6,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "DI - Counter mode - clear overflow flag ch3",
+   "group": "diCounterOverflowFlagClear",
+   "area": "coil",
+   "address": 7,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "DI - DI mode - status ch0",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 0,
+   "type": "bool",
+   "access": "R",
+   "description": "DI - DI mode - status (0: OFF, 1: ON)"
+  },
+  {
+   "name": "DI - DI mode - status ch1",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 1,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch2",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 2,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch3",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 3,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch4",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 4,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch5",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 5,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch6",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 6,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch7",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 7,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch8",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 8,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch9",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 9,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch10",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 10,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch11",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 11,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch12",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 12,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch13",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 13,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch14",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 14,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - DI mode - status ch15",
+   "group": "diStatus",
+   "area": "discrete",
+   "address": 15,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch0",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 16,
+   "type": "bool",
+   "access": "R",
+   "description": "DI - mode (0: DI, 1: Counter)"
+  },
+  {
+   "name": "DI - mode ch1",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 17,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch2",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 18,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch3",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 19,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch4",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 20,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch5",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 21,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch6",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 22,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch7",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 23,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch8",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 24,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch9",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 25,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch10",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 26,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch11",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 27,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch12",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 28,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch13",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 29,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch14",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 30,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - mode ch15",
+   "group": "diMode",
+   "area": "discrete",
+   "address": 31,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - Counter mode - overflow flag ch0",
+   "group": "diCounterOverflowFlag",
+   "area": "discrete",
+   "address": 32,
+   "type": "bool",
+   "access": "R",
+   "description": "DI - Counter mode - overflow flag (0: Normal, 1:"
+  },
+  {
+   "name": "DI - Counter mode - overflow flag ch1",
+   "group": "diCounterOverflowFlag",
+   "area": "discrete",
+   "address": 33,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - Counter mode - overflow flag ch2",
+   "group": "diCounterOverflowFlag",
+   "area": "discrete",
+   "address": 34,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - Counter mode - overflow flag ch3",
+   "group": "diCounterOverflowFlag",
+   "area": "discrete",
+   "address": 35,
+   "type": "bool",
+   "access": "R"
+  },
+  {
+   "name": "DI - Counter mode - value ch0",
+   "group": "diCounterValue",
+   "area": "holding",
+   "address": 0,
+   "type": "uint32",
+   "access": "RW",
+   "description": "DI - Counter mode - value"
+  },
+  {
+   "name": "DI - Counter mode - value ch1",
+   "group": "diCounterValue",
+   "area": "holding",
+   "address": 2,
+   "type": "uint32",
+   "access": "RW"
+  },
+  {
+   "name": "DI - Counter mode - value ch2",
+   "group": "diCounterValue",
+   "area": "holding",
+   "address": 4,
+   "type": "uint32",
+   "access": "RW"
+  },
+  {
+   "name": "DI - Counter mode - value ch3",
+   "group": "diCounterValue",
+   "area": "holding",
+   "address": 6,
+   "type": "uint32",
+   "access": "RW"
+  },
+  {
+   "name": "DI - Counter mode - status (all channels)",
+   "group": "diCounterStatusAll",
+   "area": "holding",
+   "address": 8,
+   "type": "uint16",
+   "access": "RW",
+   "description": "DI - Counter mode - status (0: Pause, 1: Run); bit n is channel n"
+  },
+  {
+   "name": "DI - Counter mode - clear overflow flag (all channels)",
+   "group": "diCounterOverflowFlagClearAll",
+   "area": "holding",
+   "address": 9,
+   "type": "uint16",
+   "access": "RW",
+   "description": "DI - Counter mode - clear overflow flag (1: Clear); bit n is channel n"
+  },
+  {
+   "name": "DI - DI mode - status (all channels)",
+   "group": "diStatusAll",
+   "area": "input",
+   "address": 0,
+   "type": "uint16",
+   "access": "R",
+   "description": "DI - DI mode - status (0: OFF, 1: ON); bit n is channel n"
+  },
+  {
+   "name": "DI - Counter mode - overflow flag (all channels)",
+   "group": "diCounterOverflowFlagAll",
+   "area": "input",
+   "address": 1,
+   "type": "uint16",
+   "access": "R",
+   "description": "DI - Counter mode - overflow flag (0: Normal, 1:; bit n is channel n"
+  },
+  {
+   "name": "DI - mode (all channels)",
+   "group": "diModeAll",
+   "area": "input",
+   "address": 2,
+   "type": "uint16",
+   "access": "R",
+   "description": "DI - mode (0: DI, 1: Counter); bit n is channel n"
+  }
+ ]
 }

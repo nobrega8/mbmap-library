@@ -1,40 +1,437 @@
 {
-  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
-  "mbmap": 2,
-  "vendor": "Moxa",
-  "model": "ioThinx 45MR-6600",
-  "models": ["ioThinx 45MR-6600"],
-  "vendor_website": "moxa.com",
-  "description": "6-RTD input ioThinx 45MR slot module. Addresses are module-relative; actual PDU address = slot_base + relative_address. FC01: rtdResetMinValue ch0-5 (W=1 to reset), rtdResetMaxValue ch0-5 (W=1 to reset). FC03: rtdResetMinValueAll (rel 0), rtdResetMaxValueAll (rel 1). FC04: rtdValueScaled ch0-5 (f32 2-regs/ch = 12 regs), rtdValueScaledMin (12 regs), rtdValueScaledMax (12 regs), rtdType ch0-5 (0=PT50 1=PT100 2=PT200 3=PT500 4=PT1000 14=310Ohm 15=620Ohm 16=1250Ohm 17=2200Ohm 20=JPT100 21=JPT200 22=JPT500 23=JPT1000 30=NI100 31=NI200 32=NI500 33=NI1000 34=NI120), rtdStatus ch0-5 (0=normal 1=burnout).",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/moxa-iothinx-45mr-6600.toml; Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Moxa ioThinx 45MR-6600.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Moxa ioThinx 45MR-6600 — 6-channel RTD input",
-    "|",
-    "| Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A",
-    "| Protocol: Modbus/TCP via ioThinx 4510 adapter, port 502",
-    "|",
-    "| IMPORTANT: Addresses are MODULE-RELATIVE. Actual PDU address = slot_base + relative_address.",
-    "| Slot base depends on which slot this module occupies in the ioThinx 4510 chassis.",
-    "|",
-    "| FC01 (coil R/W): rtdResetMinValue ch0-5 (6 BOOL, W=1 to reset min tracking),",
-    "| rtdResetMaxValue ch0-5 (6 BOOL, W=1 to reset max tracking)",
-    "| FC03 (holding R/W): see [[registers]] below",
-    "| FC04 (input R): rtdValueScaled ch0-5 (f32, 2 regs/ch = 12 regs),",
-    "| rtdValueScaledMin ch0-5 (f32, 12 regs), rtdValueScaledMax ch0-5 (f32, 12 regs),",
-    "| rtdType ch0-5 (6 WORD, 0=PT50 1=PT100 2=PT200 3=PT500 4=PT1000"
-  ],
-  "byte_order": "big",
-  "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
-  "registers": [
-    {"name": "rtdResetMinValueAll (bitmask bit0-5=ch0-5; W=1 to reset min-value tracking; R/W)", "area": "holding", "address": 0, "type": "uint16", "access": "R"},
-    {"name": "rtdResetMaxValueAll (bitmask bit0-5=ch0-5; W=1 to reset max-value tracking; R/W)", "area": "holding", "address": 1, "type": "uint16", "access": "R"}
-  ]
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "Moxa",
+ "model": "ioThinx 45MR-6600",
+ "models": [
+  "ioThinx 45MR-6600",
+  "ioThinx 45MR-6600-T"
+ ],
+ "vendor_website": "moxa.com",
+ "description": "6-channel RTD input module for the ioThinx 4510 adapter",
+ "revision": 3,
+ "revised": "2026-11-11",
+ "source": "Moxa, ioThinx 4510 Series User's Manual, version 6.2 (July 2024), Appendix A (Modbus/TCP slave rules and register lists)",
+ "sources": [
+  {
+   "title": "ioThinx 4510 Series User's Manual",
+   "version": "6.2",
+   "date": "2024-07",
+   "note": "Appendix A, 45MR-6600 (-T) registers"
+  }
+ ],
+ "notes": [
+  "Addresses are relative to the module: the Modbus address on the 4510 is the slot's base address (set on the Modbus page of the 4510 web console: reload the default addresses or edit them) plus the relative address given here, separately for coils, discrete inputs, holding registers and input registers. Modbus/TCP port 502 on the ioThinx 4510 adapter.",
+  "The manual lists every parameter with a length: in bits for coils and discrete inputs, and in 16-bit registers for the others. A DWORD or REAL value takes two registers; a REAL is a 32-bit float. Per-channel entries here follow that: for example 8 registers of DWORD for 4 channels are four 32-bit values.",
+  "The manual does not state the word order of the 32-bit values; big is assumed. The function codes are 1, 5 and 15 for coils, 2 for discrete inputs, 3, 6 and 16 for holding registers and 4 for input registers.",
+  "Each 'All' register is a bit mask with one bit per channel."
+ ],
+ "protocol": "tcp",
+ "port": 502,
+ "unit_id": 1,
+ "byte_order": "big",
+ "word_order": "big",
+ "address_base": 0,
+ "x_status": "official",
+ "enums": {
+  "burnout": {
+   "0": "Normal",
+   "1": "Burnout"
+  },
+  "rtd_type": {
+   "0": "PT50",
+   "1": "PT100",
+   "2": "PT200",
+   "3": "PT500",
+   "4": "PT1000",
+   "14": "310 Ohm",
+   "15": "620 Ohm",
+   "16": "1250 Ohm",
+   "17": "2200 Ohm",
+   "20": "JPT100",
+   "21": "JPT200",
+   "22": "JPT500",
+   "23": "JPT1000",
+   "30": "NI100",
+   "31": "NI200",
+   "32": "NI500",
+   "33": "NI1000",
+   "34": "NI120"
+  }
+ },
+ "registers": [
+  {
+   "name": "RTD - reset minimum value ch0",
+   "group": "rtdResetMinValue",
+   "area": "coil",
+   "address": 0,
+   "type": "bool",
+   "access": "RW",
+   "description": "RTD - reset minimum value (1: Reset)"
+  },
+  {
+   "name": "RTD - reset minimum value ch1",
+   "group": "rtdResetMinValue",
+   "area": "coil",
+   "address": 1,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset minimum value ch2",
+   "group": "rtdResetMinValue",
+   "area": "coil",
+   "address": 2,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset minimum value ch3",
+   "group": "rtdResetMinValue",
+   "area": "coil",
+   "address": 3,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset minimum value ch4",
+   "group": "rtdResetMinValue",
+   "area": "coil",
+   "address": 4,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset minimum value ch5",
+   "group": "rtdResetMinValue",
+   "area": "coil",
+   "address": 5,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset maximum value ch0",
+   "group": "rtdResetMaxValue",
+   "area": "coil",
+   "address": 6,
+   "type": "bool",
+   "access": "RW",
+   "description": "RTD - reset maximum value (1: Reset)"
+  },
+  {
+   "name": "RTD - reset maximum value ch1",
+   "group": "rtdResetMaxValue",
+   "area": "coil",
+   "address": 7,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset maximum value ch2",
+   "group": "rtdResetMaxValue",
+   "area": "coil",
+   "address": 8,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset maximum value ch3",
+   "group": "rtdResetMaxValue",
+   "area": "coil",
+   "address": 9,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset maximum value ch4",
+   "group": "rtdResetMaxValue",
+   "area": "coil",
+   "address": 10,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset maximum value ch5",
+   "group": "rtdResetMaxValue",
+   "area": "coil",
+   "address": 11,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "RTD - reset minimum value (all channels)",
+   "group": "rtdResetMinValueAll",
+   "area": "holding",
+   "address": 0,
+   "type": "uint16",
+   "access": "RW",
+   "description": "RTD - reset minimum value (1: Reset); bit n is channel n"
+  },
+  {
+   "name": "RTD - reset maximum value (all channels)",
+   "group": "rtdResetMaxValueAll",
+   "area": "holding",
+   "address": 1,
+   "type": "uint16",
+   "access": "RW",
+   "description": "RTD - reset maximum value (1: Reset); bit n is channel n"
+  },
+  {
+   "name": "RTD - scaled value ch0",
+   "group": "rtdValueScaled",
+   "area": "input",
+   "address": 0,
+   "type": "float32",
+   "access": "R",
+   "description": "RTD - scaled value"
+  },
+  {
+   "name": "RTD - scaled value ch1",
+   "group": "rtdValueScaled",
+   "area": "input",
+   "address": 2,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - scaled value ch2",
+   "group": "rtdValueScaled",
+   "area": "input",
+   "address": 4,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - scaled value ch3",
+   "group": "rtdValueScaled",
+   "area": "input",
+   "address": 6,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - scaled value ch4",
+   "group": "rtdValueScaled",
+   "area": "input",
+   "address": 8,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - scaled value ch5",
+   "group": "rtdValueScaled",
+   "area": "input",
+   "address": 10,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - minimum scaled value ch0",
+   "group": "rtdValueScaledMin",
+   "area": "input",
+   "address": 12,
+   "type": "float32",
+   "access": "R",
+   "description": "RTD - minimum scaled value"
+  },
+  {
+   "name": "RTD - minimum scaled value ch1",
+   "group": "rtdValueScaledMin",
+   "area": "input",
+   "address": 14,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - minimum scaled value ch2",
+   "group": "rtdValueScaledMin",
+   "area": "input",
+   "address": 16,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - minimum scaled value ch3",
+   "group": "rtdValueScaledMin",
+   "area": "input",
+   "address": 18,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - minimum scaled value ch4",
+   "group": "rtdValueScaledMin",
+   "area": "input",
+   "address": 20,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - minimum scaled value ch5",
+   "group": "rtdValueScaledMin",
+   "area": "input",
+   "address": 22,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - maximum scaled value ch0",
+   "group": "rtdValueScaledMax",
+   "area": "input",
+   "address": 24,
+   "type": "float32",
+   "access": "R",
+   "description": "RTD - maximum scaled value"
+  },
+  {
+   "name": "RTD - maximum scaled value ch1",
+   "group": "rtdValueScaledMax",
+   "area": "input",
+   "address": 26,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - maximum scaled value ch2",
+   "group": "rtdValueScaledMax",
+   "area": "input",
+   "address": 28,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - maximum scaled value ch3",
+   "group": "rtdValueScaledMax",
+   "area": "input",
+   "address": 30,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - maximum scaled value ch4",
+   "group": "rtdValueScaledMax",
+   "area": "input",
+   "address": 32,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - maximum scaled value ch5",
+   "group": "rtdValueScaledMax",
+   "area": "input",
+   "address": 34,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "RTD - Type ch0",
+   "group": "rtdType",
+   "area": "input",
+   "address": 36,
+   "type": "uint16",
+   "access": "R",
+   "description": "RTD - Type (0: PT50, 1: PT100, 2: PT200, 3:",
+   "enum": "rtd_type"
+  },
+  {
+   "name": "RTD - Type ch1",
+   "group": "rtdType",
+   "area": "input",
+   "address": 37,
+   "type": "uint16",
+   "access": "R",
+   "enum": "rtd_type"
+  },
+  {
+   "name": "RTD - Type ch2",
+   "group": "rtdType",
+   "area": "input",
+   "address": 38,
+   "type": "uint16",
+   "access": "R",
+   "enum": "rtd_type"
+  },
+  {
+   "name": "RTD - Type ch3",
+   "group": "rtdType",
+   "area": "input",
+   "address": 39,
+   "type": "uint16",
+   "access": "R",
+   "enum": "rtd_type"
+  },
+  {
+   "name": "RTD - Type ch4",
+   "group": "rtdType",
+   "area": "input",
+   "address": 40,
+   "type": "uint16",
+   "access": "R",
+   "enum": "rtd_type"
+  },
+  {
+   "name": "RTD - Type ch5",
+   "group": "rtdType",
+   "area": "input",
+   "address": 41,
+   "type": "uint16",
+   "access": "R",
+   "enum": "rtd_type"
+  },
+  {
+   "name": "RTD - Status ch0",
+   "group": "rtdStatus",
+   "area": "input",
+   "address": 42,
+   "type": "uint16",
+   "access": "R",
+   "description": "RTD - Status (0: normal, 1:burnout)",
+   "enum": "burnout"
+  },
+  {
+   "name": "RTD - Status ch1",
+   "group": "rtdStatus",
+   "area": "input",
+   "address": 43,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "RTD - Status ch2",
+   "group": "rtdStatus",
+   "area": "input",
+   "address": 44,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "RTD - Status ch3",
+   "group": "rtdStatus",
+   "area": "input",
+   "address": 45,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "RTD - Status ch4",
+   "group": "rtdStatus",
+   "area": "input",
+   "address": 46,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  },
+  {
+   "name": "RTD - Status ch5",
+   "group": "rtdStatus",
+   "area": "input",
+   "address": 47,
+   "type": "uint16",
+   "access": "R",
+   "enum": "burnout"
+  }
+ ]
 }

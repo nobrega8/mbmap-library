@@ -1,38 +1,179 @@
 {
-  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
-  "mbmap": 2,
-  "vendor": "Moxa",
-  "model": "ioThinx 45MR-2404",
-  "models": ["ioThinx 45MR-2404"],
-  "vendor_website": "moxa.com",
-  "description": "4-relay output ioThinx 45MR slot module. Addresses are module-relative; actual PDU address = slot_base + relative_address. FC01: relayStatus ch0-3 (0=OFF 1=ON), relayCurrentCountReset ch0-3 (W=1 to reset). FC03: relayStatusAll bitmask (rel 0). FC04: relayTotalCount ch0-3 u64 4-words/ch (16 regs), relayCurrentCount ch0-3 u64 4-words/ch (16 regs). Total and current relay cycle counts are 64-bit (4 u16 registers per channel).",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/moxa-iothinx-45mr-2404.toml; Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Moxa ioThinx 45MR-2404.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Moxa ioThinx 45MR-2404 — 4-channel Relay Output",
-    "|",
-    "| Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A",
-    "| Protocol: Modbus/TCP via ioThinx 4510 adapter, port 502",
-    "|",
-    "| IMPORTANT: Addresses are MODULE-RELATIVE. Actual PDU address = slot_base + relative_address.",
-    "| Slot base depends on which slot this module occupies in the ioThinx 4510 chassis.",
-    "|",
-    "| FC01 (coil R/W): relayStatus ch0-3 (4 BOOL, 0=OFF 1=ON),",
-    "| relayCurrentCountReset ch0-3 (4 BOOL, W=1 to reset current count)",
-    "| FC03 (holding R/W): see [[registers]] below",
-    "| FC04 (input R): relayTotalCount ch0-3 (u64, 4 regs/ch = 16 regs total),",
-    "| relayCurrentCount ch0-3 (u64, 4 regs/ch = 16 regs total)"
-  ],
-  "byte_order": "big",
-  "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
-  "registers": [
-    {"name": "relayStatusAll (bitmask bit0-3=ch0-3; 0=OFF 1=ON; R/W)", "area": "holding", "address": 0, "type": "uint16", "access": "R"}
-  ]
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "Moxa",
+ "model": "ioThinx 45MR-2404",
+ "models": [
+  "ioThinx 45MR-2404",
+  "ioThinx 45MR-2404-T"
+ ],
+ "vendor_website": "moxa.com",
+ "description": "4-channel relay output module for the ioThinx 4510 adapter",
+ "revision": 3,
+ "revised": "2026-11-11",
+ "source": "Moxa, ioThinx 4510 Series User's Manual, version 6.2 (July 2024), Appendix A (Modbus/TCP slave rules and register lists)",
+ "sources": [
+  {
+   "title": "ioThinx 4510 Series User's Manual",
+   "version": "6.2",
+   "date": "2024-07",
+   "note": "Appendix A, 45MR-2404 (-T) registers"
+  }
+ ],
+ "notes": [
+  "Addresses are relative to the module: the Modbus address on the 4510 is the slot's base address (set on the Modbus page of the 4510 web console: reload the default addresses or edit them) plus the relative address given here, separately for coils, discrete inputs, holding registers and input registers. Modbus/TCP port 502 on the ioThinx 4510 adapter.",
+  "The manual lists every parameter with a length: in bits for coils and discrete inputs, and in 16-bit registers for the others. A DWORD or REAL value takes two registers; a REAL is a 32-bit float. Per-channel entries here follow that: for example 8 registers of DWORD for 4 channels are four 32-bit values.",
+  "The manual does not state the word order of the 32-bit values; big is assumed. The function codes are 1, 5 and 15 for coils, 2 for discrete inputs, 3, 6 and 16 for holding registers and 4 for input registers.",
+  "Each 'All' register is a bit mask with one bit per channel."
+ ],
+ "protocol": "tcp",
+ "port": 502,
+ "unit_id": 1,
+ "byte_order": "big",
+ "word_order": "big",
+ "address_base": 0,
+ "x_status": "official",
+ "registers": [
+  {
+   "name": "Relay - Relay mode - status ch0",
+   "group": "relayStatus",
+   "area": "coil",
+   "address": 0,
+   "type": "bool",
+   "access": "RW",
+   "description": "Relay - Relay mode - status (0: OFF, 1: ON)"
+  },
+  {
+   "name": "Relay - Relay mode - status ch1",
+   "group": "relayStatus",
+   "area": "coil",
+   "address": 1,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "Relay - Relay mode - status ch2",
+   "group": "relayStatus",
+   "area": "coil",
+   "address": 2,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "Relay - Relay mode - status ch3",
+   "group": "relayStatus",
+   "area": "coil",
+   "address": 3,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "Relay - reset current count ch0",
+   "group": "relayCurrentCountReset",
+   "area": "coil",
+   "address": 4,
+   "type": "bool",
+   "access": "RW",
+   "description": "Relay - reset current count (1: Reset)"
+  },
+  {
+   "name": "Relay - reset current count ch1",
+   "group": "relayCurrentCountReset",
+   "area": "coil",
+   "address": 5,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "Relay - reset current count ch2",
+   "group": "relayCurrentCountReset",
+   "area": "coil",
+   "address": 6,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "Relay - reset current count ch3",
+   "group": "relayCurrentCountReset",
+   "area": "coil",
+   "address": 7,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "Relay - Relay mode - status (all channels)",
+   "group": "relayStatusAll",
+   "area": "holding",
+   "address": 0,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Relay - Relay mode - status (0: OFF, 1: ON); bit n is channel n"
+  },
+  {
+   "name": "Relay - total count ch0",
+   "group": "relayTotalCount",
+   "area": "input",
+   "address": 0,
+   "type": "uint32",
+   "access": "R",
+   "description": "Relay - total count"
+  },
+  {
+   "name": "Relay - total count ch1",
+   "group": "relayTotalCount",
+   "area": "input",
+   "address": 2,
+   "type": "uint32",
+   "access": "R"
+  },
+  {
+   "name": "Relay - total count ch2",
+   "group": "relayTotalCount",
+   "area": "input",
+   "address": 4,
+   "type": "uint32",
+   "access": "R"
+  },
+  {
+   "name": "Relay - total count ch3",
+   "group": "relayTotalCount",
+   "area": "input",
+   "address": 6,
+   "type": "uint32",
+   "access": "R"
+  },
+  {
+   "name": "Relay - current count ch0",
+   "group": "relayCurrentCount",
+   "area": "input",
+   "address": 8,
+   "type": "uint32",
+   "access": "R",
+   "description": "Relay - current count"
+  },
+  {
+   "name": "Relay - current count ch1",
+   "group": "relayCurrentCount",
+   "area": "input",
+   "address": 10,
+   "type": "uint32",
+   "access": "R"
+  },
+  {
+   "name": "Relay - current count ch2",
+   "group": "relayCurrentCount",
+   "area": "input",
+   "address": 12,
+   "type": "uint32",
+   "access": "R"
+  },
+  {
+   "name": "Relay - current count ch3",
+   "group": "relayCurrentCount",
+   "area": "input",
+   "address": 14,
+   "type": "uint32",
+   "access": "R"
+  }
+ ]
 }

@@ -1,40 +1,803 @@
 {
-  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
-  "mbmap": 2,
-  "vendor": "Moxa",
-  "model": "ioThinx 45MR-3810",
-  "models": ["ioThinx 45MR-3810"],
-  "vendor_website": "moxa.com",
-  "description": "8-AI voltage-input (±10V/0-10V) ioThinx 45MR slot module. Register map identical to 45MR-3800; differs in supported input ranges. Addresses are module-relative; actual PDU address = slot_base + relative_address. FC01: aiResetMinValue ch0-7 (W=1 to reset), aiResetMaxValue ch0-7 (W=1 to reset). FC03: aiResetMinValueAll (rel 0), aiResetMaxValueAll (rel 1). FC04: aiValueRaw ch0-7 (8 WORD), aiValueRawMin ch0-7, aiValueRawMax ch0-7, aiValueScaled ch0-7 (f32 2-regs/ch = 16 regs), aiValueScaledMin (16 regs), aiValueScaledMax (16 regs), aiStatus ch0-7 (0=normal 1=burnout 2=over-range 3=under-range), aiBurnoutValueScaled ch0-7 (f32, 16 regs), aiMode ch0-7 (0=disable 1=0-10V 2=0-20mA 3=4-20mA+burnout 4=4-20mA 5=±10V).",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/moxa-iothinx-45mr-3810.toml; Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Moxa ioThinx 45MR-3810.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Moxa ioThinx 45MR-3810 — 8-channel AI (voltage: ±10V / 0-10V)",
-    "|",
-    "| Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A",
-    "| Protocol: Modbus/TCP via ioThinx 4510 adapter, port 502",
-    "|",
-    "| Identical register map to 45MR-3800; differs in supported input ranges (voltage vs current).",
-    "| IMPORTANT: Addresses are MODULE-RELATIVE. Actual PDU address = slot_base + relative_address.",
-    "| Slot base depends on which slot this module occupies in the ioThinx 4510 chassis.",
-    "|",
-    "| FC01 (coil R/W): aiResetMinValue ch0-7 (8 BOOL, W=1 to reset min tracking),",
-    "| aiResetMaxValue ch0-7 (8 BOOL, W=1 to reset max tracking)",
-    "| FC03 (holding R/W): see [[registers]] below",
-    "| FC04 (input R): aiValueRaw ch0-7 (8 WORD, raw ADC counts),",
-    "| aiValueRawMin ch0-7 (8 WORD), aiValueRawMax ch0-7 (8 WORD),"
-  ],
-  "byte_order": "big",
-  "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
-  "registers": [
-    {"name": "aiResetMinValueAll (bitmask bit0-7=ch0-7; W=1 to reset min-value tracking; R/W)", "area": "holding", "address": 0, "type": "uint16", "access": "R"},
-    {"name": "aiResetMaxValueAll (bitmask bit0-7=ch0-7; W=1 to reset max-value tracking; R/W)", "area": "holding", "address": 1, "type": "uint16", "access": "R"}
-  ]
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "Moxa",
+ "model": "ioThinx 45MR-3810",
+ "models": [
+  "ioThinx 45MR-3810",
+  "ioThinx 45MR-3810-T"
+ ],
+ "vendor_website": "moxa.com",
+ "description": "8-channel analog input module (voltage) for the ioThinx 4510 adapter",
+ "revision": 3,
+ "revised": "2026-11-11",
+ "source": "Moxa, ioThinx 4510 Series User's Manual, version 6.2 (July 2024), Appendix A (Modbus/TCP slave rules and register lists)",
+ "sources": [
+  {
+   "title": "ioThinx 4510 Series User's Manual",
+   "version": "6.2",
+   "date": "2024-07",
+   "note": "Appendix A, 45MR-3810 (-T) registers"
+  }
+ ],
+ "notes": [
+  "Addresses are relative to the module: the Modbus address on the 4510 is the slot's base address (set on the Modbus page of the 4510 web console: reload the default addresses or edit them) plus the relative address given here, separately for coils, discrete inputs, holding registers and input registers. Modbus/TCP port 502 on the ioThinx 4510 adapter.",
+  "The manual lists every parameter with a length: in bits for coils and discrete inputs, and in 16-bit registers for the others. A DWORD or REAL value takes two registers; a REAL is a 32-bit float. Per-channel entries here follow that: for example 8 registers of DWORD for 4 channels are four 32-bit values.",
+  "The manual does not state the word order of the 32-bit values; big is assumed. The function codes are 1, 5 and 15 for coils, 2 for discrete inputs, 3, 6 and 16 for holding registers and 4 for input registers.",
+  "Each 'All' register is a bit mask with one bit per channel."
+ ],
+ "protocol": "tcp",
+ "port": 502,
+ "unit_id": 1,
+ "byte_order": "big",
+ "word_order": "big",
+ "address_base": 0,
+ "x_status": "official",
+ "enums": {
+  "ai_mode": {
+   "0": "Disabled",
+   "1": "0-10 V",
+   "2": "0-20 mA",
+   "3": "4-20 mA burnout",
+   "4": "4-20 mA",
+   "5": "±10 V"
+  },
+  "ai_status": {
+   "0": "Normal",
+   "1": "Burnout",
+   "2": "Over range",
+   "3": "Under range"
+  }
+ },
+ "registers": [
+  {
+   "name": "AI - reset minimum value ch0",
+   "group": "aiResetMinValue",
+   "area": "coil",
+   "address": 0,
+   "type": "bool",
+   "access": "RW",
+   "description": "AI - reset minimum value (1: Reset)"
+  },
+  {
+   "name": "AI - reset minimum value ch1",
+   "group": "aiResetMinValue",
+   "area": "coil",
+   "address": 1,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset minimum value ch2",
+   "group": "aiResetMinValue",
+   "area": "coil",
+   "address": 2,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset minimum value ch3",
+   "group": "aiResetMinValue",
+   "area": "coil",
+   "address": 3,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset minimum value ch4",
+   "group": "aiResetMinValue",
+   "area": "coil",
+   "address": 4,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset minimum value ch5",
+   "group": "aiResetMinValue",
+   "area": "coil",
+   "address": 5,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset minimum value ch6",
+   "group": "aiResetMinValue",
+   "area": "coil",
+   "address": 6,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset minimum value ch7",
+   "group": "aiResetMinValue",
+   "area": "coil",
+   "address": 7,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset maximum value ch0",
+   "group": "aiResetMaxValue",
+   "area": "coil",
+   "address": 8,
+   "type": "bool",
+   "access": "RW",
+   "description": "AI - reset maximum value (1: Reset)"
+  },
+  {
+   "name": "AI - reset maximum value ch1",
+   "group": "aiResetMaxValue",
+   "area": "coil",
+   "address": 9,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset maximum value ch2",
+   "group": "aiResetMaxValue",
+   "area": "coil",
+   "address": 10,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset maximum value ch3",
+   "group": "aiResetMaxValue",
+   "area": "coil",
+   "address": 11,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset maximum value ch4",
+   "group": "aiResetMaxValue",
+   "area": "coil",
+   "address": 12,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset maximum value ch5",
+   "group": "aiResetMaxValue",
+   "area": "coil",
+   "address": 13,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset maximum value ch6",
+   "group": "aiResetMaxValue",
+   "area": "coil",
+   "address": 14,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset maximum value ch7",
+   "group": "aiResetMaxValue",
+   "area": "coil",
+   "address": 15,
+   "type": "bool",
+   "access": "RW"
+  },
+  {
+   "name": "AI - reset minimum value (all channels)",
+   "group": "aiResetMinValueAll",
+   "area": "holding",
+   "address": 0,
+   "type": "uint16",
+   "access": "RW",
+   "description": "AI - reset minimum value (1: Reset); bit n is channel n"
+  },
+  {
+   "name": "AI - reset maximum value (all channels)",
+   "group": "aiResetMaxValueAll",
+   "area": "holding",
+   "address": 1,
+   "type": "uint16",
+   "access": "RW",
+   "description": "AI - reset maximum value (1: Reset); bit n is channel n"
+  },
+  {
+   "name": "AI - raw value ch0",
+   "group": "aiValueRaw",
+   "area": "input",
+   "address": 0,
+   "type": "uint16",
+   "access": "R",
+   "description": "AI - raw value"
+  },
+  {
+   "name": "AI - raw value ch1",
+   "group": "aiValueRaw",
+   "area": "input",
+   "address": 1,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - raw value ch2",
+   "group": "aiValueRaw",
+   "area": "input",
+   "address": 2,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - raw value ch3",
+   "group": "aiValueRaw",
+   "area": "input",
+   "address": 3,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - raw value ch4",
+   "group": "aiValueRaw",
+   "area": "input",
+   "address": 4,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - raw value ch5",
+   "group": "aiValueRaw",
+   "area": "input",
+   "address": 5,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - raw value ch6",
+   "group": "aiValueRaw",
+   "area": "input",
+   "address": 6,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - raw value ch7",
+   "group": "aiValueRaw",
+   "area": "input",
+   "address": 7,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum raw value ch0",
+   "group": "aiValueRawMin",
+   "area": "input",
+   "address": 8,
+   "type": "uint16",
+   "access": "R",
+   "description": "AI - minimum raw value"
+  },
+  {
+   "name": "AI - minimum raw value ch1",
+   "group": "aiValueRawMin",
+   "area": "input",
+   "address": 9,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum raw value ch2",
+   "group": "aiValueRawMin",
+   "area": "input",
+   "address": 10,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum raw value ch3",
+   "group": "aiValueRawMin",
+   "area": "input",
+   "address": 11,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum raw value ch4",
+   "group": "aiValueRawMin",
+   "area": "input",
+   "address": 12,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum raw value ch5",
+   "group": "aiValueRawMin",
+   "area": "input",
+   "address": 13,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum raw value ch6",
+   "group": "aiValueRawMin",
+   "area": "input",
+   "address": 14,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum raw value ch7",
+   "group": "aiValueRawMin",
+   "area": "input",
+   "address": 15,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum raw value ch0",
+   "group": "aiValueRawMax",
+   "area": "input",
+   "address": 16,
+   "type": "uint16",
+   "access": "R",
+   "description": "AI - maximum raw value"
+  },
+  {
+   "name": "AI - maximum raw value ch1",
+   "group": "aiValueRawMax",
+   "area": "input",
+   "address": 17,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum raw value ch2",
+   "group": "aiValueRawMax",
+   "area": "input",
+   "address": 18,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum raw value ch3",
+   "group": "aiValueRawMax",
+   "area": "input",
+   "address": 19,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum raw value ch4",
+   "group": "aiValueRawMax",
+   "area": "input",
+   "address": 20,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum raw value ch5",
+   "group": "aiValueRawMax",
+   "area": "input",
+   "address": 21,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum raw value ch6",
+   "group": "aiValueRawMax",
+   "area": "input",
+   "address": 22,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum raw value ch7",
+   "group": "aiValueRawMax",
+   "area": "input",
+   "address": 23,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled value ch0",
+   "group": "aiValueScaled",
+   "area": "input",
+   "address": 24,
+   "type": "float32",
+   "access": "R",
+   "description": "AI - scaled value"
+  },
+  {
+   "name": "AI - scaled value ch1",
+   "group": "aiValueScaled",
+   "area": "input",
+   "address": 26,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled value ch2",
+   "group": "aiValueScaled",
+   "area": "input",
+   "address": 28,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled value ch3",
+   "group": "aiValueScaled",
+   "area": "input",
+   "address": 30,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled value ch4",
+   "group": "aiValueScaled",
+   "area": "input",
+   "address": 32,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled value ch5",
+   "group": "aiValueScaled",
+   "area": "input",
+   "address": 34,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled value ch6",
+   "group": "aiValueScaled",
+   "area": "input",
+   "address": 36,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled value ch7",
+   "group": "aiValueScaled",
+   "area": "input",
+   "address": 38,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum scaled value ch0",
+   "group": "aiValueScaledMin",
+   "area": "input",
+   "address": 40,
+   "type": "float32",
+   "access": "R",
+   "description": "AI - minimum scaled value"
+  },
+  {
+   "name": "AI - minimum scaled value ch1",
+   "group": "aiValueScaledMin",
+   "area": "input",
+   "address": 42,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum scaled value ch2",
+   "group": "aiValueScaledMin",
+   "area": "input",
+   "address": 44,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum scaled value ch3",
+   "group": "aiValueScaledMin",
+   "area": "input",
+   "address": 46,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum scaled value ch4",
+   "group": "aiValueScaledMin",
+   "area": "input",
+   "address": 48,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum scaled value ch5",
+   "group": "aiValueScaledMin",
+   "area": "input",
+   "address": 50,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum scaled value ch6",
+   "group": "aiValueScaledMin",
+   "area": "input",
+   "address": 52,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - minimum scaled value ch7",
+   "group": "aiValueScaledMin",
+   "area": "input",
+   "address": 54,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum scaled value ch0",
+   "group": "aiValueScaledMax",
+   "area": "input",
+   "address": 56,
+   "type": "float32",
+   "access": "R",
+   "description": "AI - maximum scaled value"
+  },
+  {
+   "name": "AI - maximum scaled value ch1",
+   "group": "aiValueScaledMax",
+   "area": "input",
+   "address": 58,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum scaled value ch2",
+   "group": "aiValueScaledMax",
+   "area": "input",
+   "address": 60,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum scaled value ch3",
+   "group": "aiValueScaledMax",
+   "area": "input",
+   "address": 62,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum scaled value ch4",
+   "group": "aiValueScaledMax",
+   "area": "input",
+   "address": 64,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum scaled value ch5",
+   "group": "aiValueScaledMax",
+   "area": "input",
+   "address": 66,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum scaled value ch6",
+   "group": "aiValueScaledMax",
+   "area": "input",
+   "address": 68,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - maximum scaled value ch7",
+   "group": "aiValueScaledMax",
+   "area": "input",
+   "address": 70,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - status ch0",
+   "group": "aiStatus",
+   "area": "input",
+   "address": 72,
+   "type": "uint16",
+   "access": "R",
+   "description": "AI - status (0: normal, 1: burnout, 2: over range,",
+   "enum": "ai_status"
+  },
+  {
+   "name": "AI - status ch1",
+   "group": "aiStatus",
+   "area": "input",
+   "address": 73,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_status"
+  },
+  {
+   "name": "AI - status ch2",
+   "group": "aiStatus",
+   "area": "input",
+   "address": 74,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_status"
+  },
+  {
+   "name": "AI - status ch3",
+   "group": "aiStatus",
+   "area": "input",
+   "address": 75,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_status"
+  },
+  {
+   "name": "AI - status ch4",
+   "group": "aiStatus",
+   "area": "input",
+   "address": 76,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_status"
+  },
+  {
+   "name": "AI - status ch5",
+   "group": "aiStatus",
+   "area": "input",
+   "address": 77,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_status"
+  },
+  {
+   "name": "AI - status ch6",
+   "group": "aiStatus",
+   "area": "input",
+   "address": 78,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_status"
+  },
+  {
+   "name": "AI - status ch7",
+   "group": "aiStatus",
+   "area": "input",
+   "address": 79,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_status"
+  },
+  {
+   "name": "AI - scaled burnout value ch0",
+   "group": "aiBurnoutValueScaled",
+   "area": "input",
+   "address": 80,
+   "type": "float32",
+   "access": "R",
+   "description": "AI - scaled burnout value"
+  },
+  {
+   "name": "AI - scaled burnout value ch1",
+   "group": "aiBurnoutValueScaled",
+   "area": "input",
+   "address": 82,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled burnout value ch2",
+   "group": "aiBurnoutValueScaled",
+   "area": "input",
+   "address": 84,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled burnout value ch3",
+   "group": "aiBurnoutValueScaled",
+   "area": "input",
+   "address": 86,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled burnout value ch4",
+   "group": "aiBurnoutValueScaled",
+   "area": "input",
+   "address": 88,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled burnout value ch5",
+   "group": "aiBurnoutValueScaled",
+   "area": "input",
+   "address": 90,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled burnout value ch6",
+   "group": "aiBurnoutValueScaled",
+   "area": "input",
+   "address": 92,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - scaled burnout value ch7",
+   "group": "aiBurnoutValueScaled",
+   "area": "input",
+   "address": 94,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "AI - mode ch0",
+   "group": "aiMode",
+   "area": "input",
+   "address": 96,
+   "type": "uint16",
+   "access": "R",
+   "description": "AI - mode (0: disable, 1: 0-10 V, 2: 0-20 mA, 3:",
+   "enum": "ai_mode"
+  },
+  {
+   "name": "AI - mode ch1",
+   "group": "aiMode",
+   "area": "input",
+   "address": 97,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_mode"
+  },
+  {
+   "name": "AI - mode ch2",
+   "group": "aiMode",
+   "area": "input",
+   "address": 98,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_mode"
+  },
+  {
+   "name": "AI - mode ch3",
+   "group": "aiMode",
+   "area": "input",
+   "address": 99,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_mode"
+  },
+  {
+   "name": "AI - mode ch4",
+   "group": "aiMode",
+   "area": "input",
+   "address": 100,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_mode"
+  },
+  {
+   "name": "AI - mode ch5",
+   "group": "aiMode",
+   "area": "input",
+   "address": 101,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_mode"
+  },
+  {
+   "name": "AI - mode ch6",
+   "group": "aiMode",
+   "area": "input",
+   "address": 102,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_mode"
+  },
+  {
+   "name": "AI - mode ch7",
+   "group": "aiMode",
+   "area": "input",
+   "address": 103,
+   "type": "uint16",
+   "access": "R",
+   "enum": "ai_mode"
+  }
+ ]
 }
