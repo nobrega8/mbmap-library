@@ -1,0 +1,114 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "KACO new energy",
+  "model": "blueplanet / Powador TL1 and TL3 (SunSpec)",
+  "vendor_website": "kaco-newenergy.com",
+  "description": "String inverters with Modbus TCP/UDP and RTU using the SunSpec register layout",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "KACO new energy, Modbus Protocol Application Note, Tx1 and Tx3 Series, version 180730",
+  "sources": [
+    {
+      "title": "Modbus Protocol Application Note - Tx1 and Tx3 Series",
+      "version": "180730",
+      "note": "Sections 2 to 5; the SunSpec model tables are in SunSpec-Information-Model-Reference-Kaco.xlsx, which is attached to the note and was not available"
+    }
+  ],
+  "notes": [
+    "The inverters follow the SunSpec specification: the map starts with 'SunS' at register 40001 (address 40000 on the wire), then the common block, then the models the inverter supports one after another until the end model (DID 0xFFFF). The note names models 1, 101/102/103, 111/113, 112, 122, 123, 129, 130, 135, 136 and 160, depending on the software version.",
+    "This map holds only the common block, which the note describes. The position of the inverter model depends on the device and the version: walk the chain (each model's length is in its header) and then use the generic maps in maps/sunspec-alliance/ (inverter 101-103 and 111-113) from the position found. The note's own arithmetic puts the next model at 40069; the specification's 66-register common block puts it at 40071, so read the DID to check.",
+    "Values use SunSpec scale factors: real value = register value x 10^SF. Function 0x03 reads, 0x06 and 0x10 write. Write access has to be enabled in the inverter menu; some settings go to flash and must not be written cyclically.",
+    "Modbus TCP on port 502 (default); older units have TCP/UDP only through the local GUI, newer ones also Modbus RTU on RS485. The unit identifier addresses auxiliary devices such as a string combiner on newer units. Modbus UDP (packet version 4.0 and later) accepts write commands only.",
+    "Supported inverters: blueplanet TL1/TL3 (software V2.02 or higher for TL3, V3.00 for TL1) and Powador TL3 (V2.10 or higher)."
+  ],
+  "protocol": "tcp+rtu",
+  "unit_id": 1,
+  "port": 502,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "SunSpec marker",
+      "group": "Device",
+      "area": "holding",
+      "address": 40000,
+      "type": "string",
+      "length": 2,
+      "access": "R",
+      "description": "Reads 'SunS' (0x53756E53) on a SunSpec device"
+    },
+    {
+      "name": "Common block ID",
+      "group": "Device",
+      "area": "holding",
+      "address": 40002,
+      "type": "uint16",
+      "access": "R",
+      "description": "SunSpec DID, 1"
+    },
+    {
+      "name": "Common block length",
+      "group": "Device",
+      "area": "holding",
+      "address": 40003,
+      "type": "uint16",
+      "access": "R",
+      "description": "66"
+    },
+    {
+      "name": "Manufacturer",
+      "group": "Device",
+      "area": "holding",
+      "address": 40004,
+      "type": "string",
+      "length": 16,
+      "access": "R",
+      "description": "'KACO new energy'"
+    },
+    {
+      "name": "Model",
+      "group": "Device",
+      "area": "holding",
+      "address": 40020,
+      "type": "string",
+      "length": 16,
+      "access": "R",
+      "description": "Inverter name, for example 'Powador 39.0 TL3'"
+    },
+    {
+      "name": "Options",
+      "group": "Device",
+      "area": "holding",
+      "address": 40036,
+      "type": "string",
+      "length": 8,
+      "access": "R",
+      "description": "Data logger ID string"
+    },
+    {
+      "name": "Version",
+      "group": "Device",
+      "area": "holding",
+      "address": 40044,
+      "type": "string",
+      "length": 8,
+      "access": "R",
+      "role": "firmware",
+      "description": "Packet version of the installed software, for example 'V2.10'"
+    },
+    {
+      "name": "Serial number",
+      "group": "Device",
+      "area": "holding",
+      "address": 40052,
+      "type": "string",
+      "length": 16,
+      "access": "R",
+      "role": "serial",
+      "description": "Serial number set in production"
+    }
+  ]
+}

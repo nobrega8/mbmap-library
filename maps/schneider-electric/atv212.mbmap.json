@@ -1,0 +1,697 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Schneider Electric",
+  "model": "Altivar 212 (ATV212)",
+  "vendor_website": "se.com",
+  "description": "HVAC variable speed drive with Modbus RTU on its RJ45 and open style ports",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Schneider Electric, Altivar 212 Modbus communication manual S1A53844, 09/2012",
+  "sources": [
+    {
+      "title": "Altivar 212 Modbus communication manual",
+      "version": "S1A53844 09/2012",
+      "note": "Chapters 3 and 5: communication parameters, control, setpoint, monitoring, trip codes and I/O"
+    }
+  ],
+  "notes": [
+    "Partial map: it holds the registers of the Modbus manual (communication parameters, command and setpoint words, monitoring values and trip codes). The other drive parameters are in the Altivar 212 programming manual (S1A53838), which gives their Modbus addresses, and are not mapped.",
+    "Addresses are the decimal numbers of the manual (16#FA00 = 64000), sent as they are: address_base is 0. Functions: 0x03 read, 0x06 write one, 0x10 write several, 0x2B/0x0E device identification, plus indirect block read and write.",
+    "Control: set CMOd (3) to 2 and FMOd (4) to 4, or set bits 14 and 15 of the command word to use Modbus whatever the settings. The command word and the setpoints are kept in RAM only and are lost at power-off. Examples from the manual: FA00 = 16#0400 run forward, 16#0600 reverse; frequency 80 Hz is FA01 = 8000.",
+    "Serial settings: 9600 or 19200 baud (factory 19200), no, even or odd parity (factory even), address 1 to 247 (factory 1), time-out factory 3 s. The stop bit is not configurable: the drive sends 2 stop bits and accepts 1 or 2. Baud rate and parity changes apply after a power cycle.",
+    "The manual lists the digital outputs status at the last trip (FE07) at 65030, the same as FE06; 16#FE07 is 65031 and is used here.",
+    "Output current, torque, voltages and exciting current are in 0.01 % of the rated values."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baud_rate": 19200,
+  "data_bits": 8,
+  "parity": "E",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "trip": {
+      "0": "No error",
+      "1": "Over-current during acceleration",
+      "2": "Over-current during deceleration",
+      "3": "Over-current during constant speed operation",
+      "4": "Over-current in load at startup",
+      "5": "Short circuit in arm",
+      "8": "Input phase failure",
+      "9": "Output phase failure",
+      "10": "Overvoltage during acceleration",
+      "11": "Overvoltage during deceleration",
+      "12": "Overvoltage during constant speed operation",
+      "13": "Over-LOAD in inverter",
+      "14": "Over-LOAD in motor",
+      "16": "Overheat trip",
+      "17": "Emergency stop",
+      "18": "EEPROM fault 1 (writing operation)",
+      "19": "EEPROM fault 2 (reading operation)",
+      "20": "EEPROM fault 3 (other)",
+      "21": "RAM fault",
+      "22": "ROM fault",
+      "23": "CPU fault",
+      "24": "Communication error trip",
+      "26": "Current detector fault",
+      "27": "Optional circuit board type error",
+      "28": "Graphic keypad communication error",
+      "29": "Small-current trip",
+      "30": "Trip due to undervoltage in main circuit",
+      "32": "Over-torque trip",
+      "34": "Ground fault trip (hardware detection)",
+      "37": "Overcurrent flowing in element during acceleration",
+      "38": "Overcurrent flowing in element during deceleration",
+      "39": "Overcurrent flowing in element during operation",
+      "41": "Inverter type error",
+      "46": "External thermal input",
+      "47": "VIA cable break",
+      "50": "Break in an analog signal cable",
+      "51": "CPU fault",
+      "52": "Excess torque boost",
+      "53": "CPU fault",
+      "84": "Auto-tuning error",
+      "72": "Closed damper 1 fault",
+      "73": "Closed damper 2 fault"
+    },
+    "cmd_src": {
+      "0": "Terminal board",
+      "1": "Operation panel",
+      "2": "Serial communication"
+    },
+    "sp_src": {
+      "0": "-",
+      "1": "VIA",
+      "2": "VIB",
+      "3": "Operation panel",
+      "4": "Serial communication",
+      "5": "TB up/down frequency",
+      "255": "Preset speed operation"
+    }
+  },
+  "registers": [
+    {
+      "name": "Command mode selection (CMOd)",
+      "group": "Control source",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "description": "2 = communication"
+    },
+    {
+      "name": "Frequency mode selection (FMOd)",
+      "group": "Control source",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "description": "4 = serial communication reference"
+    },
+    {
+      "name": "Command word 1 (FA00)",
+      "group": "Control",
+      "area": "holding",
+      "address": 64000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit 10 run, bit 9 reverse, bit 11 coast stop, bit 12 emergency stop, bit 13 reset, bit 14 setpoint priority, bit 15 command priority; 16#C400 run forward from Modbus, 16#C600 run reverse"
+    },
+    {
+      "name": "Command word 2 (FA20)",
+      "group": "Control",
+      "area": "holding",
+      "address": 64032,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit 1 energy reset, bit 12 over-current stall level change"
+    },
+    {
+      "name": "Frequency reference (FA01)",
+      "group": "Control",
+      "area": "holding",
+      "address": 64001,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to the maximum frequency (FH)",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Speed reference (FA13)",
+      "group": "Control",
+      "area": "holding",
+      "address": 64019,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 24000; converted with the number of motor poles (F856)",
+      "unit": "rpm"
+    },
+    {
+      "name": "Terminal output data (FA50)",
+      "group": "Control",
+      "area": "holding",
+      "address": 64080,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit 0 relay FL, bit 1 relay RY; needs the relay function set to communication data"
+    },
+    {
+      "name": "Analog output data (FA51)",
+      "group": "Control",
+      "area": "holding",
+      "address": 64081,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 1023 (10 bits); needs AO function set to 18 (communication data)"
+    },
+    {
+      "name": "Modbus RJ45 baud rate (F800)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2048,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = 9600, 1 = 19200"
+    },
+    {
+      "name": "Modbus RJ45 parity (F801)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2049,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = none, 1 = even, 2 = odd"
+    },
+    {
+      "name": "Modbus address (F802)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2050,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 247; used on both ports"
+    },
+    {
+      "name": "Communication time-out (F803)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2051,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = off, 1 to 100 s"
+    },
+    {
+      "name": "Communication channel choice (F807)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2055,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = RJ45, 1 = open style"
+    },
+    {
+      "name": "Modbus network baud rate (F820)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2080,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Open style port; 0 = 9600, 1 = 19200"
+    },
+    {
+      "name": "Modbus network parity (F821)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2081,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Open style port; 0 = none, 1 = even, 2 = odd"
+    },
+    {
+      "name": "Network protocol (F829)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2089,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 = Modbus RTU"
+    },
+    {
+      "name": "Block write data 1 (F870)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2160,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Indirect block selection"
+    },
+    {
+      "name": "Block write data 2 (F871)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2161,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Indirect block selection"
+    },
+    {
+      "name": "Block read data 1 (F875)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2165,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Indirect block selection"
+    },
+    {
+      "name": "Block read data 2 (F876)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2166,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Indirect block selection"
+    },
+    {
+      "name": "Block read data 3 (F877)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2167,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Indirect block selection"
+    },
+    {
+      "name": "Block read data 4 (F878)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2168,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Indirect block selection"
+    },
+    {
+      "name": "Block read data 5 (F879)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2169,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Indirect block selection"
+    },
+    {
+      "name": "Output frequency (Fd00)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 64768,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Status word (Fd01)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 64769,
+      "type": "uint16",
+      "access": "R",
+      "description": "Drive state bits: bit 1 tripped, bit 2 alarm, bit 3 MOFF, bit 9 reverse, bit 10 run, bit 12 emergency stop, bit 15 local"
+    },
+    {
+      "name": "Digital inputs status (Fd06)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 64774,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 F, bit 1 R, bit 2 RES, bit 7 VIA"
+    },
+    {
+      "name": "Digital outputs status (Fd07)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 64775,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 RY, bit 2 FL"
+    },
+    {
+      "name": "Status word 2 (Fd42)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 64834,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Status word 3 (Fd49)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 64841,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Trip code (FC90)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 64656,
+      "type": "uint16",
+      "access": "R",
+      "enum": "trip"
+    },
+    {
+      "name": "Alarm code (FC91)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 64657,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits: 0 overcurrent, 1 drive overload, 2 motor overload, 3 overheat, 4 overvoltage, 5 undervoltage, 7 undercurrent, 8 over-torque, 10 operation hours"
+    },
+    {
+      "name": "Output frequency at last trip (FE00)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65024,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Status word at last trip (FE01)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65025,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Frequency reference before ramp (FE02)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65026,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Output current (FE03)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65027,
+      "type": "uint16",
+      "access": "R",
+      "description": "Percent of the drive's rated current",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "DC bus voltage (FE04)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65028,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "Output voltage (FE05)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65029,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "Digital inputs status at last trip (FE06)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65030,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Digital outputs status at last trip (FE07)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65031,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual lists 65030 for this register; 16#FE07 is 65031"
+    },
+    {
+      "name": "Latest trip code (FE10)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65040,
+      "type": "uint16",
+      "access": "R",
+      "enum": "trip"
+    },
+    {
+      "name": "2nd previous trip code (FE11)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65041,
+      "type": "uint16",
+      "access": "R",
+      "enum": "trip"
+    },
+    {
+      "name": "3rd previous trip code (FE12)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65042,
+      "type": "uint16",
+      "access": "R",
+      "enum": "trip"
+    },
+    {
+      "name": "4th previous trip code (FE13)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65043,
+      "type": "uint16",
+      "access": "R",
+      "enum": "trip"
+    },
+    {
+      "name": "Cumulative run time (FE14)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65044,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h",
+      "scale": 0.01
+    },
+    {
+      "name": "Frequency reference after ramp (FE15)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65045,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Estimated speed (FE16)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65046,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Torque (FE18)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65048,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "Torque current (FE20)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65056,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "Exciting current (FE21)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65057,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01
+    },
+    {
+      "name": "PID feedback value (FE22)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65058,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Motor load (FE26)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65062,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Inverter load (FE27)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65063,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Input power (FE29)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65065,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.01
+    },
+    {
+      "name": "Output power (FE30)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65072,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.01
+    },
+    {
+      "name": "Analog input VIA value (FE35)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65077,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 1023"
+    },
+    {
+      "name": "Analog input VIB value (FE36)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65078,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 1023"
+    },
+    {
+      "name": "Status word 2 at last trip (FE42)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65090,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Command mode status (FE45)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65093,
+      "type": "uint16",
+      "access": "R",
+      "enum": "cmd_src"
+    },
+    {
+      "name": "Setpoint mode status (FE46)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65094,
+      "type": "uint16",
+      "access": "R",
+      "enum": "sp_src"
+    },
+    {
+      "name": "Status word 3 at last trip (FE49)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65097,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Cumulative power on time (FE80)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65152,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h",
+      "scale": 0.01
+    },
+    {
+      "name": "Alarm of run time (FE79)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65145,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 fan life, bit 1 circuit board life, bit 2 main-circuit capacitor life, bit 3 user set"
+    },
+    {
+      "name": "Output speed (FE90)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65168,
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "Input energy (FE76)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65142,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Wh"
+    },
+    {
+      "name": "Output energy (FE77)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": 65143,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Wh"
+    }
+  ]
+}

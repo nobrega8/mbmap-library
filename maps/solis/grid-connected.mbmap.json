@@ -1,0 +1,1511 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Solis",
+  "model": "Grid-connected inverters (S5)",
+  "vendor_website": "solisinverters.com",
+  "description": "Single and three-phase grid-connected PV inverters with RS485 Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Solis, RS485_MODBUS Communication, Solis PV Grid-Connected Inverter, version 3.7 (2025/2026)",
+  "sources": [
+    {
+      "title": "RS485_MODBUS Solis PV Grid-Connected Inverter",
+      "version": "3.7",
+      "url": "https://oss.soliscloud.com/templet/RS485_MODBUS%C2%A0Solis%20PV%C2%A0Grid-Connected%C2%A0Inverter.pdf",
+      "note": "Sections 5.1 (function 0x04) and 5.2 (functions 0x03, 0x06, 0x10); linked from the Solis service portal, Modbus table article"
+    }
+  ],
+  "notes": [
+    "The manual applies to Solis grid-connected inverters of every power range made after mid-2023; older units may use another register layout. The hybrid inverters have a separate document (ESINV-33000ID) and are not covered here.",
+    "Addresses are the ones in the manual and its examples (a read of register 2999 sends 0x0BB7), so address_base is 0. Input registers are read with function 0x04; holding registers with 0x03, 0x06 and 0x10. Registers not implemented in a model read as 0.",
+    "32-bit values (U32, S32) are two registers with the high word first (big word order).",
+    "Slave address 1 to 99, 9600 baud, no parity, 8 data bits, 1 stop bit. Leave more than 300 ms between reads and 700 ms between writes; write one register at a time. A frame can carry at most 50 registers.",
+    "Input registers 2999 and 3000 are the product model and DSP version, while holding registers 2999 to 3004 are the clock: the two areas are separate.",
+    "Not mapped: the model code table (appendix 1), alarm and fault code tables (appendix 2), status bit definitions (appendix 3) and the setting instructions (appendix 4). Registers marked 'Only for the 320K series' exist only on that series.",
+    "Several labels in the manual contradict their units (3298, 3544); this map follows the unit and says so in the description."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baud_rate": 9600,
+  "data_bits": 8,
+  "parity": "N",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "working_mode": {
+      "0": "No response mode",
+      "1": "Volt-watt default",
+      "2": "Volt-var",
+      "3": "Fixed power factor",
+      "4": "Fixed reactive power",
+      "5": "Power-PF",
+      "6": "Rule 21 Volt-watt"
+    },
+    "onoff": {
+      "190": "On",
+      "222": "Off"
+    },
+    "switch_pl": {
+      "85": "Off",
+      "170": "On"
+    },
+    "switch_rp": {
+      "85": "Off",
+      "161": "On (3050 and 3082)",
+      "162": "On (3053)"
+    },
+    "switch_ap": {
+      "85": "Off",
+      "170": "On (3051 and 3080)"
+    }
+  },
+  "registers": [
+    {
+      "name": "Inverter type",
+      "group": "Device",
+      "area": "input",
+      "address": 35000,
+      "type": "uint16",
+      "access": "R",
+      "description": "Model code, appendix 1 of the manual"
+    },
+    {
+      "name": "Product model",
+      "group": "Device",
+      "area": "input",
+      "address": 2999,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DSP version",
+      "group": "Device",
+      "area": "input",
+      "address": 3000,
+      "type": "uint16",
+      "access": "R",
+      "description": "Slave DSP version in the high byte and main DSP version in the low byte"
+    },
+    {
+      "name": "HMI version",
+      "group": "Device",
+      "area": "input",
+      "address": 3001,
+      "type": "uint16",
+      "access": "R",
+      "description": "Major version in the low byte"
+    },
+    {
+      "name": "HMI version (minor and major)",
+      "group": "Device",
+      "area": "input",
+      "address": 3020,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DC input type",
+      "group": "Device",
+      "area": "input",
+      "address": 3003,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of DC inputs minus 1 (0 = 1 input, 1 = 2 inputs, ...)"
+    },
+    {
+      "name": "SN word 1",
+      "group": "Device",
+      "area": "input",
+      "address": 3060,
+      "type": "uint16",
+      "access": "R",
+      "description": "Serial number in hexadecimal, 4 words"
+    },
+    {
+      "name": "SN word 2",
+      "group": "Device",
+      "area": "input",
+      "address": 3061,
+      "type": "uint16",
+      "access": "R",
+      "description": "Serial number in hexadecimal, 4 words"
+    },
+    {
+      "name": "SN word 3",
+      "group": "Device",
+      "area": "input",
+      "address": 3062,
+      "type": "uint16",
+      "access": "R",
+      "description": "Serial number in hexadecimal, 4 words"
+    },
+    {
+      "name": "SN word 4",
+      "group": "Device",
+      "area": "input",
+      "address": 3063,
+      "type": "uint16",
+      "access": "R",
+      "description": "Serial number in hexadecimal, 4 words"
+    },
+    {
+      "name": "Active power",
+      "group": "Output",
+      "area": "input",
+      "address": 3004,
+      "type": "int32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Total DC output power",
+      "group": "Output",
+      "area": "input",
+      "address": 3006,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Total energy",
+      "group": "Energy",
+      "area": "input",
+      "address": 3008,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh"
+    },
+    {
+      "name": "Energy this month",
+      "group": "Energy",
+      "area": "input",
+      "address": 3010,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh"
+    },
+    {
+      "name": "Energy last month",
+      "group": "Energy",
+      "area": "input",
+      "address": 3012,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh"
+    },
+    {
+      "name": "Energy today",
+      "group": "Energy",
+      "area": "input",
+      "address": 3014,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "Energy yesterday",
+      "group": "Energy",
+      "area": "input",
+      "address": 3015,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1
+    },
+    {
+      "name": "DC voltage 1",
+      "group": "DC input",
+      "area": "input",
+      "address": 3021,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "DC current 1",
+      "group": "DC input",
+      "area": "input",
+      "address": 3022,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "DC voltage 2",
+      "group": "DC input",
+      "area": "input",
+      "address": 3023,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "DC current 2",
+      "group": "DC input",
+      "area": "input",
+      "address": 3024,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "DC voltage 3",
+      "group": "DC input",
+      "area": "input",
+      "address": 3025,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "DC current 3",
+      "group": "DC input",
+      "area": "input",
+      "address": 3026,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "DC voltage 4",
+      "group": "DC input",
+      "area": "input",
+      "address": 3027,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "DC current 4",
+      "group": "DC input",
+      "area": "input",
+      "address": 3028,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Alarm code data",
+      "group": "Status",
+      "area": "input",
+      "address": 3029,
+      "type": "uint16",
+      "access": "R",
+      "description": "Used with register 3043 to subdivide the fault message; appendix 2"
+    },
+    {
+      "name": "AB line voltage / A phase voltage",
+      "group": "AC output",
+      "area": "input",
+      "address": 3033,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "BC line voltage / B phase voltage",
+      "group": "AC output",
+      "area": "input",
+      "address": 3034,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "CA line voltage / C phase voltage",
+      "group": "AC output",
+      "area": "input",
+      "address": 3035,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "A phase current",
+      "group": "AC output",
+      "area": "input",
+      "address": 3036,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "B phase current",
+      "group": "AC output",
+      "area": "input",
+      "address": 3037,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "C phase current",
+      "group": "AC output",
+      "area": "input",
+      "address": 3038,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Standard working mode",
+      "group": "Status",
+      "area": "input",
+      "address": 3040,
+      "type": "uint16",
+      "access": "R",
+      "enum": "working_mode"
+    },
+    {
+      "name": "Inverter temperature",
+      "group": "Status",
+      "area": "input",
+      "address": 3041,
+      "type": "int16",
+      "access": "R",
+      "description": "AC NTC (IGBT)",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Grid frequency",
+      "group": "AC output",
+      "area": "input",
+      "address": 3042,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Inverter status",
+      "group": "Status",
+      "area": "input",
+      "address": 3043,
+      "type": "uint16",
+      "access": "R",
+      "description": "Appendix 3 of the manual; used with register 3029"
+    },
+    {
+      "name": "Limited active power rated output value",
+      "group": "Output",
+      "area": "input",
+      "address": 3044,
+      "type": "int32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Reactive power regulation rated output value",
+      "group": "Output",
+      "area": "input",
+      "address": 3046,
+      "type": "int32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Active power percentage value",
+      "group": "Output",
+      "area": "input",
+      "address": 3049,
+      "type": "uint16",
+      "access": "R",
+      "description": "10000 = 100 %",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Actual power factor adjustment",
+      "group": "Output",
+      "area": "input",
+      "address": 3051,
+      "type": "int16",
+      "access": "R",
+      "description": "800 = 0.8",
+      "scale": 0.001
+    },
+    {
+      "name": "Reactive power percentage value",
+      "group": "Output",
+      "area": "input",
+      "address": 3052,
+      "type": "int16",
+      "access": "R",
+      "description": "10000 = 100 %",
+      "unit": "%",
+      "scale": 0.1
+    },
+    {
+      "name": "Reactive power value",
+      "group": "Output",
+      "area": "input",
+      "address": 3055,
+      "type": "int32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Apparent power value",
+      "group": "Output",
+      "area": "input",
+      "address": 3057,
+      "type": "int32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Real-time power factor",
+      "group": "Output",
+      "area": "input",
+      "address": 3059,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Working status",
+      "group": "Status",
+      "area": "input",
+      "address": 3071,
+      "type": "uint16",
+      "access": "R",
+      "description": "Appendix 3"
+    },
+    {
+      "name": "System time year",
+      "group": "Clock",
+      "area": "input",
+      "address": 3072,
+      "type": "uint16",
+      "access": "R",
+      "description": "Year is 0 to 99"
+    },
+    {
+      "name": "System time month",
+      "group": "Clock",
+      "area": "input",
+      "address": 3073,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System time day",
+      "group": "Clock",
+      "area": "input",
+      "address": 3074,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System time hour",
+      "group": "Clock",
+      "area": "input",
+      "address": 3075,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System time minute",
+      "group": "Clock",
+      "area": "input",
+      "address": 3076,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System time second",
+      "group": "Clock",
+      "area": "input",
+      "address": 3077,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Power limit switch",
+      "group": "Status",
+      "area": "input",
+      "address": 3089,
+      "type": "uint16",
+      "access": "R",
+      "enum": "switch_pl"
+    },
+    {
+      "name": "Reactive power switch",
+      "group": "Status",
+      "area": "input",
+      "address": 3090,
+      "type": "uint16",
+      "access": "R",
+      "enum": "switch_rp"
+    },
+    {
+      "name": "Limiting status information",
+      "group": "Status",
+      "area": "input",
+      "address": 3094,
+      "type": "uint16",
+      "access": "R",
+      "description": "Appendix 3"
+    },
+    {
+      "name": "Fault code 01",
+      "group": "Faults",
+      "area": "input",
+      "address": 3095,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 02",
+      "group": "Faults",
+      "area": "input",
+      "address": 3096,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 03",
+      "group": "Faults",
+      "area": "input",
+      "address": 3097,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 04",
+      "group": "Faults",
+      "area": "input",
+      "address": 3098,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 05",
+      "group": "Faults",
+      "area": "input",
+      "address": 3099,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 06",
+      "group": "Faults",
+      "area": "input",
+      "address": 3100,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 07",
+      "group": "Faults",
+      "area": "input",
+      "address": 3101,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 08",
+      "group": "Faults",
+      "area": "input",
+      "address": 3102,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Warning message DSP",
+      "group": "Faults",
+      "area": "input",
+      "address": 3103,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Warning message HMI",
+      "group": "Faults",
+      "area": "input",
+      "address": 3104,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Factory-rated output power",
+      "group": "Device",
+      "area": "input",
+      "address": 3109,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale": 10
+    },
+    {
+      "name": "PV21 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3288,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV22 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3289,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV23 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3290,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV24 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3291,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV25 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3292,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV26 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3293,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV27 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3294,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV28 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3295,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV29 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3296,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV30 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3297,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Total PV voltage",
+      "group": "PV input",
+      "area": "input",
+      "address": 3298,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual labels this register 'Total PV current' with the unit V; treated as the total PV voltage",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "Total PV current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3299,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV1 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3300,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV2 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3301,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV3 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3302,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV4 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3303,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV5 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3304,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV6 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3305,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV7 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3306,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV8 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3307,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV9 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3308,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV10 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3309,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV11 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3310,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV12 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3311,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV13 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3312,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV14 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3313,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV15 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3314,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV16 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3315,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV17 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3316,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV18 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3317,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV19 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3318,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV20 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3319,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV31 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3336,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "PV32 current",
+      "group": "PV input",
+      "area": "input",
+      "address": 3337,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Fault code 10",
+      "group": "Faults",
+      "area": "input",
+      "address": 3471,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 11",
+      "group": "Faults",
+      "area": "input",
+      "address": 3472,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 12",
+      "group": "Faults",
+      "area": "input",
+      "address": 3473,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "MPPT 1 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3499,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 2 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3500,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 3 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3501,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 4 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3502,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 5 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3503,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 6 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3504,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 7 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3505,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 8 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3506,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 9 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3507,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 10 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3508,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 11 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3509,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 12 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3510,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 13 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3511,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 14 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3512,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 15 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3513,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 1 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3529,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 2 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3530,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 3 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3531,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 4 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3532,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 5 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3533,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 6 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3534,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 7 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3535,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 8 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3536,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 9 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3537,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 10 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3538,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 11 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3539,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 12 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3540,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 13 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3541,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 14 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3542,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 15 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3543,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 16 voltage",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3544,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual labels this register 'MPPT 16 current' with the unit V; treated as the voltage",
+      "unit": "V",
+      "scale": 0.1
+    },
+    {
+      "name": "MPPT 16 current",
+      "group": "MPPT",
+      "area": "input",
+      "address": 3545,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.1
+    },
+    {
+      "name": "Clock year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 2999,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 99"
+    },
+    {
+      "name": "Clock month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 3000,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock day",
+      "group": "Clock",
+      "area": "holding",
+      "address": 3001,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 3002,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock minutes",
+      "group": "Clock",
+      "area": "holding",
+      "address": 3003,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Clock seconds",
+      "group": "Clock",
+      "area": "holding",
+      "address": 3004,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "ON/OFF",
+      "group": "Control",
+      "area": "holding",
+      "address": 3006,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "onoff",
+      "description": "0xBE (190) on, 0xDE (222) off"
+    },
+    {
+      "name": "Reactive power limitation",
+      "group": "Control",
+      "area": "holding",
+      "address": 3050,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "-60 % to +60 %, 10000 = 100 %, default 0. Only for working mode 04",
+      "scale": 0.1
+    },
+    {
+      "name": "Percentage of active power",
+      "group": "Control",
+      "area": "holding",
+      "address": 3051,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "%",
+      "description": "0 to 110 %, 10000 = 100 %",
+      "scale": 0.1
+    },
+    {
+      "name": "Actual power factor adjustment (setting)",
+      "group": "Control",
+      "area": "holding",
+      "address": 3053,
+      "type": "int16",
+      "access": "RW",
+      "description": "800 = 0.8",
+      "scale": 0.001
+    },
+    {
+      "name": "Power-off saving function",
+      "group": "Control",
+      "area": "holding",
+      "address": 3068,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit 0 saves register 3051, bit 2 saves 3050, bit 3 saves 3053 across a power-off"
+    },
+    {
+      "name": "Active power switch",
+      "group": "Control",
+      "area": "holding",
+      "address": 3069,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "switch_ap",
+      "description": "Saved to flash on write; do not change often"
+    },
+    {
+      "name": "Reactive power switch (setting)",
+      "group": "Control",
+      "area": "holding",
+      "address": 3070,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "switch_rp",
+      "description": "Saved to flash on write; do not change often"
+    },
+    {
+      "name": "Active power set-point 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 3080,
+      "type": "int16",
+      "access": "RW",
+      "unit": "W",
+      "description": "0 to +32768 in units of 10 W",
+      "scale": 10
+    },
+    {
+      "name": "Reactive power set-point 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 3082,
+      "type": "int16",
+      "access": "RW",
+      "unit": "var",
+      "description": "-32767 to +32768 in units of 10 var",
+      "scale": 10
+    },
+    {
+      "name": "Active power set-point 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 3222,
+      "type": "int32",
+      "access": "RW",
+      "unit": "W",
+      "description": "Only for the 320K series",
+      "scale": 10
+    },
+    {
+      "name": "Reactive power set-point 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 3224,
+      "type": "int32",
+      "access": "RW",
+      "unit": "var",
+      "description": "Only for the 320K series",
+      "scale": 10
+    }
+  ]
+}
