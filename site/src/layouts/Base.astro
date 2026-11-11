@@ -18,11 +18,14 @@ interface Props {
   nav?: "home" | "devices" | "manufacturers" | "spec" | "compatibility" | "contribute" | "about";
   jsonLd?: object[];
   ogType?: string;
+  /** Keeps the page out of search results */
+  noindex?: boolean;
 }
 
-const { title, fullTitle = false, description, nav, jsonLd = [], ogType = "website" } = Astro.props;
+const { title, fullTitle = false, description, nav, jsonLd = [], ogType = "website", noindex = false } = Astro.props;
 const pageTitle = fullTitle ? title : `${title} | ${SITE_NAME}`;
 const canonical = new URL(Astro.url.pathname.replace(/\/index$|\.html$/, "") || "/", Astro.site).href;
+const ogImage = new URL(href("/social-banner.png"), Astro.site).href;
 const { commit, commitDate } = registry();
 const logoSvg = logo.replace(/<\?xml[^>]*>/, "").replace(/ fill="#171717"/, "").replace(/<title>.*?<\/title>/, "");
 
@@ -54,7 +57,17 @@ const tabs = [
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:locale" content="en" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:alt" content="MBMap, the open registry for Modbus device maps" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="robots" content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
+    <meta name="author" content="Afonso Nóbrega" />
     {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
     <!-- Theme before first paint, as Modbench's Settings: system, light or dark -->
     <script is:inline>

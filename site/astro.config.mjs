@@ -5,7 +5,9 @@ import { defineConfig } from "astro/config";
 // actions/configure-pages, so a custom domain needs no change here:
 //   SITE_ORIGIN  https://nobrega8.github.io (or the custom domain)
 //   BASE_PATH    /mbmap-library (or "" at the root of a domain)
-const site = process.env.SITE_ORIGIN || "https://nobrega8.github.io";
+// Always https: GitHub Pages reports http until HTTPS is enforced, and
+// canonical URLs, Open Graph and the sitemap must not point at http.
+const site = (process.env.SITE_ORIGIN || "https://nobrega8.github.io").replace(/^http:\/\/(?!localhost)/, "https://");
 const base = process.env.BASE_PATH ?? "/mbmap-library";
 
 export default defineConfig({

@@ -37,6 +37,9 @@ const fileName = d.path.split("/").pop()!;
 const fileUrl = href(`/${d.path}`);
 const said = (k: string) => info.stated.includes(k);
 const otherModels = others(d);
+const maker = registry().manufacturers.find((m) => m.devices.includes(d) || m.devices.some((x) => x.path === d.path));
+const related = (maker?.devices ?? []).filter((x) => x.path !== d.path).slice(0, 12);
+const relatedMore = (maker?.devices.length ?? 1) - 1 - related.length;
 const areas = AREAS.filter((a) => d.areaCounts[a]);
 const hasTcp = info.protocol.includes("tcp");
 const hasRtu = info.protocol.includes("rtu");
@@ -65,6 +68,10 @@ const jsonLd = [
     ...(info.revision ? { version: String(info.revision) } : {}),
     ...(info.revised ? { dateModified: info.revised } : {}),
     ...(d.added ? { datePublished: d.added } : {}),
+    inLanguage: "en",
+    creator: { "@type": "Person", name: "Afonso Nóbrega", url: "https://nobrega.me" },
+    publisher: { "@type": "Organization", name: `${SITE_NAME} Registry`, url: Astro.site?.href },
+    variableMeasured: info.registers.slice(0, 30).map((r) => ({ "@type": "PropertyValue", name: r.name, ...(r.unit ? { unitText: r.unit } : {}) })),
     about: { "@type": "Product", name, brand: { "@type": "Brand", name: info.vendor } },
     includedInDataCatalog: { "@type": "DataCatalog", name: `${SITE_NAME} Registry`, url: Astro.site?.href },
     distribution: [
@@ -381,6 +388,22 @@ for (const r of info.registers) accessCounts[r.access]++;
       </div>
     </section>
 
+    {
+      related.length > 0 && (
+        <section class="card pad" aria-labelledby="rel-title">
+          <h2 id="rel-title" class="key">More {info.vendor} Modbus maps</h2>
+          <ul class="related">
+            {related.map((x) => (
+              <li><a href={x.url}>{x.info.model}</a></li>
+            ))}
+            {relatedMore > 0 && (
+              <li><a href={href(`/manufacturers/${d.vendorSlug}`)}>+{relatedMore} more</a></li>
+            )}
+          </ul>
+        </section>
+      )
+    }
+
     <section class="card pad help" aria-labelledby="help-title">
       <h2 id="help-title" class="key">Help improve this map</h2>
       <ul class="help-list">
@@ -398,6 +421,30 @@ for (const r of info.registers) accessCounts[r.access]++;
 </script>
 
 <style>
+  .related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: var(--subtle);
+    font-size: 13px;
+    text-decoration: none;
+  }
+
+  .related a:hover {
+    background: var(--accent-soft);
+  }
+
   .dev-title {
     display: flex;
     align-items: flex-start;
