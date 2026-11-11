@@ -1,0 +1,7128 @@
+{
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "Omron",
+ "model": "MX2",
+ "models": [
+  "3G3MX2",
+  "3G3RX"
+ ],
+ "vendor_website": "omron.com",
+ "description": "Variable frequency drives with built-in RS485 Modbus RTU",
+ "revision": 1,
+ "revised": "2026-11-11",
+ "source": "Omron, MX2 User's Manual (I570), Appendix B, ModBus Data Listing",
+ "sources": [
+  {
+   "title": "3G3MX2 Series Inverter User's Manual",
+   "version": "I570",
+   "note": "Appendix B-4, ModBus Coil List and ModBus Holding Registers"
+  }
+ ],
+ "notes": [
+  "Registers are numbered as in the manual. The manual states that the address on the wire is one less than the register number (register 0012h is sent as 0011h), so address_base is 1.",
+  "Functions: 0x01 and 0x05 coils, 0x03 read, 0x06 and 0x10 write, 0x17 read/write. The coils are the run, direction, trip, input terminal and status bits of section B-4-1.",
+  "Values that the manual lists as high and low registers are one 32-bit value, high register first (big word order). Network values are integers: the scale gives the resolution column of the manual (for example 0.01 Hz for frequencies).",
+  "The manual gives the parameter code of the inverter keypad (F001, A001, b001, C001, H001, P001) for each register; it is repeated at the start of each description. Enumerated values are listed in the descriptions rather than as tables.",
+  "Register 0900h writes to the EEPROM (0 recalculates the motor constants, 1 saves all data). Setting 0902h (EEPROM write mode) is referred to once when a 0x06 write is run.",
+  "The trip factors in registers 0012h to 0043h are the codes of the manual's list of inverter trip factors (1 over-current at constant speed, 5 overload protection, 7 overvoltage, 9 undervoltage, 12 external trip, 41 Modbus communication error and so on).",
+  "Serial defaults: 9600 baud (C071 = 05), station 1 (C072), no parity (C074 = 00), 1 stop bit (C075 = 01), 8 data bits. Baud rates 2400 to 115200 are selectable. Run and frequency commands over Modbus need A002 = 03 and A001 = 03.",
+  "Written from an automatic read of the manual's register tables; names that the manual wraps over two lines were joined, and ranges that include negative values are typed as signed."
+ ],
+ "protocol": "rtu",
+ "unit_id": 1,
+ "baud_rate": 9600,
+ "data_bits": 8,
+ "parity": "N",
+ "stop_bits": 1,
+ "byte_order": "big",
+ "word_order": "big",
+ "address_base": 1,
+ "x_status": "official",
+ "registers": [
+  {
+   "name": "Operation command",
+   "group": "Coils",
+   "area": "coil",
+   "address": 1,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: Run, 0: Stop (valid when A002 = 03)"
+  },
+  {
+   "name": "Rotation direction command",
+   "group": "Coils",
+   "area": "coil",
+   "address": 2,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: Reverse rotation, 0: Forward rotation (valid when A002 = 03)"
+  },
+  {
+   "name": "External trip (EXT)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 3,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: Trip"
+  },
+  {
+   "name": "Trip reset (RS)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 4,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: Reset"
+  },
+  {
+   "name": "Intelligent input terminal [1]",
+   "group": "Coils",
+   "area": "coil",
+   "address": 7,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Intelligent input terminal [2]",
+   "group": "Coils",
+   "area": "coil",
+   "address": 8,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Intelligent input terminal [3]",
+   "group": "Coils",
+   "area": "coil",
+   "address": 9,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Intelligent input terminal [4]",
+   "group": "Coils",
+   "area": "coil",
+   "address": 10,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Intelligent input terminal [5]",
+   "group": "Coils",
+   "area": "coil",
+   "address": 11,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Intelligent input terminal [6]",
+   "group": "Coils",
+   "area": "coil",
+   "address": 12,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Intelligent input terminal [7]",
+   "group": "Coils",
+   "area": "coil",
+   "address": 13,
+   "type": "bool",
+   "access": "RW",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Operation status",
+   "group": "Coils",
+   "area": "coil",
+   "address": 15,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Run, 0: Stop (interlocked to “d003”)"
+  },
+  {
+   "name": "Rotation direction",
+   "group": "Coils",
+   "area": "coil",
+   "address": 16,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Reverse rotation, 0: Forward rotation (interlocked to “d003”)"
+  },
+  {
+   "name": "Inverter ready",
+   "group": "Coils",
+   "area": "coil",
+   "address": 17,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Ready, 0: Not ready"
+  },
+  {
+   "name": "RUN (running)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 19,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Running, 0: Not Running"
+  },
+  {
+   "name": "FA1 (constant-speed reached)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 20,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "FA2 (set frequency overreached)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 21,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "OL (overload advance notice (1))",
+   "group": "Coils",
+   "area": "coil",
+   "address": 22,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "OD (output deviation for PID control)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 23,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "AL (alarm signal)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 24,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "FA3 (set frequency reached)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 25,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "OTQ (over-torque)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 26,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "UV (undervoltage)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 28,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "TRQ (torque limited)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 29,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "RNT (operation time over)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 30,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "ONT (plug-in time over)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 31,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "THM (thermal alarm signal)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 32,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "BRK (brake release)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 38,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "BER (brake error)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 39,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "ZS (0 Hz detection signal)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 40,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "DSE (speed deviation maximum)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 41,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "POK (positioning completed)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 42,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "FA4 (set frequency overreached 2)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 43,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "FA5 (set frequency reached 2)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 44,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "OL2 (overload notice advance (2))",
+   "group": "Coils",
+   "area": "coil",
+   "address": 45,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Odc: Analog O disconnection detec-",
+   "group": "Coils",
+   "area": "coil",
+   "address": 46,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "OIDc: Analog OI disconnection detec-",
+   "group": "Coils",
+   "area": "coil",
+   "address": 47,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "FBV (PID feedback comparison)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 50,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "NDc (communication train disconnec-",
+   "group": "Coils",
+   "area": "coil",
+   "address": 51,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "LOG1 (logical operation result 1)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 52,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "LOG2 (logical operation result 2)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 53,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "LOG3 (logical operation result 3)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 54,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "WAC (capacitor life warning)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 58,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "WAF (cooling-fan speed drop)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 59,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "FR (starting contact signal)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 60,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "OHF (heat sink overheat warning)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 61,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "LOC (low-current indication signal)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 62,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "M01 (general output 1)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 63,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "M02 (general output 2)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 64,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "M03 (general output 3)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 65,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "IRDY (inverter ready)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 69,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "FWR (forward rotation)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 70,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "RVR (reverse rotation)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 71,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "MJA (major failure)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 72,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Data writing in progress",
+   "group": "Coils",
+   "area": "coil",
+   "address": 73,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Writing in progress, 0: Normal status"
+  },
+  {
+   "name": "CRC error",
+   "group": "Coils",
+   "area": "coil",
+   "address": 74,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Error detected, 0: No error"
+  },
+  {
+   "name": "Overrun",
+   "group": "Coils",
+   "area": "coil",
+   "address": 75,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Error detected, 0: No error"
+  },
+  {
+   "name": "Framing error",
+   "group": "Coils",
+   "area": "coil",
+   "address": 76,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Error detected, 0: No error"
+  },
+  {
+   "name": "Parity error",
+   "group": "Coils",
+   "area": "coil",
+   "address": 77,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Error detected, 0: No error"
+  },
+  {
+   "name": "Sum check error",
+   "group": "Coils",
+   "area": "coil",
+   "address": 78,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Error detected, 0: No error"
+  },
+  {
+   "name": "WCO (window comparator O)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 80,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "WCOI (window comparator OI)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 81,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "OPDc (option disconnection)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 83,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "FREF (FQ command source)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 84,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Operator, 0: Others"
+  },
+  {
+   "name": "REF (RUN command source)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 85,
+   "type": "bool",
+   "access": "R",
+   "description": "1: Operator, 0: Others"
+  },
+  {
+   "name": "SETM (2nd motor selected)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 86,
+   "type": "bool",
+   "access": "R",
+   "description": "1: 2nd motor selected, 0: 1st motor selected"
+  },
+  {
+   "name": "EDM (Gate suppress monitor)",
+   "group": "Coils",
+   "area": "coil",
+   "address": 88,
+   "type": "bool",
+   "access": "R",
+   "description": "1: ON, 0: OFF"
+  },
+  {
+   "name": "Output frequency setting/monitor",
+   "group": "Basic functions",
+   "area": "holding",
+   "address": 1,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter F001. 0 to 40000 (valid when A001 = 03)"
+  },
+  {
+   "name": "Inverter status A",
+   "group": "Registers",
+   "area": "holding",
+   "address": 3,
+   "type": "uint16",
+   "access": "R",
+   "enum": "status_a"
+  },
+  {
+   "name": "Inverter status B",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4,
+   "type": "uint16",
+   "access": "R",
+   "enum": "status_b"
+  },
+  {
+   "name": "Inverter status C",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5,
+   "type": "uint16",
+   "access": "R",
+   "enum": "status_c"
+  },
+  {
+   "name": "PID feedback",
+   "group": "Registers",
+   "area": "holding",
+   "address": 6,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "%",
+   "description": "0 to 10000"
+  },
+  {
+   "name": "Fault frequency monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 17,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d080. 0 to 65535"
+  },
+  {
+   "name": "Fault monitor 1 (factor)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 18,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d081. See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 1 (inverter status)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 19,
+   "type": "uint16",
+   "access": "R",
+   "description": "See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 1 (frequency)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 20,
+   "type": "uint32",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "0 to 40000"
+  },
+  {
+   "name": "Fault monitor 1 (current)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 22,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Output current at tripping"
+  },
+  {
+   "name": "Fault monitor 1 (voltage)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 23,
+   "type": "uint16",
+   "access": "R",
+   "unit": "V",
+   "description": "DC input voltage at tripping"
+  },
+  {
+   "name": "Fault monitor 1 (running time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 24,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative running time at tripping"
+  },
+  {
+   "name": "Fault monitor 1 (power-on time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 26,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative power-on time at tripping"
+  },
+  {
+   "name": "Fault monitor 2 (factor)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 28,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d082. See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 2 (inverter status)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 29,
+   "type": "uint16",
+   "access": "R",
+   "description": "See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 2 (frequency)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 30,
+   "type": "uint32",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "0 to 40000"
+  },
+  {
+   "name": "Fault monitor 2 (current)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 32,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Output current at tripping"
+  },
+  {
+   "name": "Fault monitor 2 (voltage)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 33,
+   "type": "uint16",
+   "access": "R",
+   "unit": "V",
+   "description": "DC input voltage at tripping"
+  },
+  {
+   "name": "Fault monitor 2 (running time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 34,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative running time at tripping"
+  },
+  {
+   "name": "Fault monitor 2 (power-on time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 36,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative power-on time at tripping"
+  },
+  {
+   "name": "Fault monitor 3 (factor)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 38,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d083. See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 3 (inverter status)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 39,
+   "type": "uint16",
+   "access": "R",
+   "description": "See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 3 (frequency)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 40,
+   "type": "uint32",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "0 to 40000"
+  },
+  {
+   "name": "Fault monitor 3 (current)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 42,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Output current at tripping"
+  },
+  {
+   "name": "Fault monitor 3 (voltage)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 43,
+   "type": "uint16",
+   "access": "R",
+   "unit": "V",
+   "description": "DC input voltage at tripping"
+  },
+  {
+   "name": "Fault monitor 3 (running time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 44,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative running time at tripping"
+  },
+  {
+   "name": "Fault monitor 3 (power-on time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 46,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative power-on time at tripping"
+  },
+  {
+   "name": "Fault monitor 4 (factor)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 48,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d084. See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 4 (inverter status)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 49,
+   "type": "uint16",
+   "access": "R",
+   "description": "See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 4 (frequency)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 50,
+   "type": "uint32",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "0 to 40000"
+  },
+  {
+   "name": "Fault monitor 4 (current)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 52,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Output current at tripping"
+  },
+  {
+   "name": "Fault monitor 4 (voltage)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 53,
+   "type": "uint16",
+   "access": "R",
+   "unit": "V",
+   "description": "DC input voltage at tripping"
+  },
+  {
+   "name": "Fault monitor 4 (running time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 54,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative running time at tripping"
+  },
+  {
+   "name": "Fault monitor 4 (power-on time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 56,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative power-on time at tripping"
+  },
+  {
+   "name": "Fault monitor 5 (factor)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 58,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d085. See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 5 (inverter status)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 59,
+   "type": "uint16",
+   "access": "R",
+   "description": "See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 5 (frequency)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 60,
+   "type": "uint32",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "0 to 40000"
+  },
+  {
+   "name": "Fault monitor 5 (current)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 62,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Output current at tripping"
+  },
+  {
+   "name": "Fault monitor 5 (voltage)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 63,
+   "type": "uint16",
+   "access": "R",
+   "unit": "V",
+   "description": "DC input voltage at tripping"
+  },
+  {
+   "name": "Fault monitor 5 (running time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 64,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative running time at tripping"
+  },
+  {
+   "name": "Fault monitor 5 (power-on time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 66,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative power-on time at tripping"
+  },
+  {
+   "name": "Fault monitor 6 (factor)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 68,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d086. See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 6 (inverter status)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 69,
+   "type": "uint16",
+   "access": "R",
+   "description": "See the list of inverter trip factors below"
+  },
+  {
+   "name": "Fault monitor 6 (frequency)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 70,
+   "type": "uint32",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "0 to 40000"
+  },
+  {
+   "name": "Fault monitor 6 (current)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 72,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Output current at tripping"
+  },
+  {
+   "name": "Fault monitor 6 (voltage)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 73,
+   "type": "uint16",
+   "access": "R",
+   "unit": "V",
+   "description": "DC input voltage at tripping"
+  },
+  {
+   "name": "Fault monitor 6 (running time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 74,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative running time at tripping"
+  },
+  {
+   "name": "Fault monitor 6 (power-on time)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 76,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Cumulative power-on time at tripping"
+  },
+  {
+   "name": "Warning monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 78,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d090. Warning code: 0 to 385"
+  },
+  {
+   "name": "Writing to EEPROM",
+   "group": "Registers",
+   "area": "holding",
+   "address": 2304,
+   "type": "uint16",
+   "access": "W",
+   "description": "0: Motor constant recalculation"
+  },
+  {
+   "name": "EEPROM write mode",
+   "group": "Registers",
+   "area": "holding",
+   "address": 2306,
+   "type": "uint16",
+   "access": "W",
+   "description": "0 (invalid) / 1 (valid)"
+  },
+  {
+   "name": "Output frequency monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4097,
+   "type": "uint32",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter d001. 0 to 40000"
+  },
+  {
+   "name": "Output current monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4099,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Parameter d002. 0 to 999900"
+  },
+  {
+   "name": "Rotation direction monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4100,
+   "type": "uint16",
+   "access": "R",
+   "enum": "direction"
+  },
+  {
+   "name": "PID feedback value monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4101,
+   "type": "uint32",
+   "access": "R",
+   "description": "Parameter d004. 0 to 1000000",
+   "scale": 0.1
+  },
+  {
+   "name": "Multi-function input monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4103,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d005. 2^0: Terminal 1 to 2^6: Terminal 7"
+  },
+  {
+   "name": "Multi-function output monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4104,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d006. 2^0: Terminal 11 to 2^1: Terminal 12/"
+  },
+  {
+   "name": "Output frequency monitor (after conversion)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4105,
+   "type": "uint32",
+   "access": "R",
+   "description": "Parameter d007. 0 to 4000000",
+   "scale": 0.01
+  },
+  {
+   "name": "Real frequency monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4107,
+   "type": "int32",
+   "access": "R",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter d008. -40000 to +40000"
+  },
+  {
+   "name": "Torque reference monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4109,
+   "type": "int16",
+   "access": "R",
+   "unit": "%",
+   "description": "Parameter d009. -200 to +200"
+  },
+  {
+   "name": "Torque bias monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4110,
+   "type": "int16",
+   "access": "R",
+   "unit": "%",
+   "description": "Parameter d010. -200 to +200"
+  },
+  {
+   "name": "Output torque monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4112,
+   "type": "int16",
+   "access": "R",
+   "unit": "%",
+   "description": "Parameter d012. -200 to +200"
+  },
+  {
+   "name": "Output voltage monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4113,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter d013. 0 to 6000"
+  },
+  {
+   "name": "Input power monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4114,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.1,
+   "unit": "kW",
+   "description": "Parameter d014. 0 to 1000"
+  },
+  {
+   "name": "Watt-hour monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4115,
+   "type": "uint32",
+   "access": "R",
+   "description": "Parameter d015. 0 to 9999000",
+   "scale": 0.1
+  },
+  {
+   "name": "Total RUN time",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4117,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Parameter d016. 0 to 999900"
+  },
+  {
+   "name": "Power ON time monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4119,
+   "type": "uint32",
+   "access": "R",
+   "unit": "h",
+   "description": "Parameter d017. 0 to 999900"
+  },
+  {
+   "name": "Fin temperature monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4121,
+   "type": "int16",
+   "access": "R",
+   "scale": 0.1,
+   "unit": "°C",
+   "description": "Parameter d018. -200 to 1500"
+  },
+  {
+   "name": "Life assessment monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4125,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d022. 2^0: Capacitor on main circuit board"
+  },
+  {
+   "name": "Program counter",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4126,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d023. 0~1024"
+  },
+  {
+   "name": "Program number",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4127,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d024. 0~9999"
+  },
+  {
+   "name": "DC voltage monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4134,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter d102. 0 to 10000"
+  },
+  {
+   "name": "Regenerative braking load rate monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4135,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter d103. 0 to 1000"
+  },
+  {
+   "name": "Electronic thermal monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4136,
+   "type": "uint16",
+   "access": "R",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter d104. 0 to 1000"
+  },
+  {
+   "name": "Drive programming monitor (UM0)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4142,
+   "type": "int32",
+   "access": "R",
+   "description": "Parameter d025. -2147483647 to 2147483647 1"
+  },
+  {
+   "name": "Drive programming monitor (UM1)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4144,
+   "type": "int32",
+   "access": "R",
+   "description": "Parameter d026. -2147483647 to 2147483647 1"
+  },
+  {
+   "name": "Drive programming monitor (UM2)",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4146,
+   "type": "int32",
+   "access": "R",
+   "description": "Parameter d027. -2147483647 to 2147483647 1"
+  },
+  {
+   "name": "Position command monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4150,
+   "type": "int32",
+   "access": "R",
+   "description": "Parameter d029. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Current position monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4152,
+   "type": "int32",
+   "access": "R",
+   "description": "Parameter d030. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Inverter mode",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4183,
+   "type": "uint16",
+   "access": "R",
+   "enum": "mode"
+  },
+  {
+   "name": "Frequency source monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4185,
+   "type": "uint16",
+   "access": "R",
+   "enum": "freq_source"
+  },
+  {
+   "name": "Run source monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4186,
+   "type": "uint16",
+   "access": "R",
+   "enum": "run_source"
+  },
+  {
+   "name": "Analog input O monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4257,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d130. 0 to 1023"
+  },
+  {
+   "name": "Analog input OI monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4258,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d131. 0 to 1023"
+  },
+  {
+   "name": "Pulse train input monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4260,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d133. 0.00 to 100.00 %"
+  },
+  {
+   "name": "PID deviation monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4262,
+   "type": "int16",
+   "access": "R",
+   "description": "Parameter d153. -327.68 to 327.67 %"
+  },
+  {
+   "name": "PID output monitor",
+   "group": "Monitoring",
+   "area": "holding",
+   "address": 4264,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter d155. 0.00 to 9999.00 if (A071: 01) %"
+  },
+  {
+   "name": "Acceleration time 1",
+   "group": "Basic functions",
+   "area": "holding",
+   "address": 4355,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter F002. 0 to 360000"
+  },
+  {
+   "name": "Deceleration time 1",
+   "group": "Basic functions",
+   "area": "holding",
+   "address": 4357,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter F003. 0 to 360000"
+  },
+  {
+   "name": "Operator rotation direction selection",
+   "group": "Basic functions",
+   "area": "holding",
+   "address": 4359,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter F004. 00 (forward rotation), 01 (reverse"
+  },
+  {
+   "name": "Frequency reference selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4609,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A001. 00 (digital operator), 01 (terminal), 02"
+  },
+  {
+   "name": "Run command selection (*)",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4610,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A002. 01 (terminal), 02 (operator), 03 (Modbus"
+  },
+  {
+   "name": "Base frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4611,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "Hz",
+   "description": "Parameter A003. 300 to “maximum frequency”"
+  },
+  {
+   "name": "Maximum frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4612,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "Hz",
+   "description": "Parameter A004. 300 to 4000"
+  },
+  {
+   "name": "O/OI selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4613,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A005. 00 (switches between O/OI via terminal"
+  },
+  {
+   "name": "O start frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4619,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A011. 0 to 40000"
+  },
+  {
+   "name": "O end frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4621,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A012. 0 to 40000"
+  },
+  {
+   "name": "O start ratio",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4623,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A013. 0 to “O end ratio”"
+  },
+  {
+   "name": "O end ratio",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4624,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A014. “O start ratio” to 100"
+  },
+  {
+   "name": "O start selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4625,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A015. 00 (start FQ), 01 (0 Hz)"
+  },
+  {
+   "name": "O, O2, OI sampling",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4626,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A016. 1 to 30 or 31 (500 ms filter ±0.1 Hz 1"
+  },
+  {
+   "name": "Drive Programming (EzSQ) selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4627,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A017. 00 (disable), 01 (PRG start),"
+  },
+  {
+   "name": "Multi-step speed selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4629,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A019. 00 (binary), 01 (bit)"
+  },
+  {
+   "name": "Multi-step speed reference 0",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4630,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A020. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 1",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4632,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A021. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 2",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4634,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A022. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 3",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4636,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A023. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 4",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4638,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A024. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 5",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4640,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A025. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 6",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4642,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A026. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 7",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4644,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A027. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 8",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4646,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A028. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 9",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4648,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A029. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 10",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4650,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A030. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 11",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4652,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A031. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 12",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4654,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A032. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 13",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4656,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A033. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 14",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4658,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A034. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Multi-step speed reference 15",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4660,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A035. 0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "Jogging frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4664,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A038. 0.0, “Start frequency” to 999"
+  },
+  {
+   "name": "Jogging stop selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4665,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A039. 00 (free running on jogging stop/Dis-"
+  },
+  {
+   "name": "Torque boost selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4667,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A041. 00 (manual torque boost),"
+  },
+  {
+   "name": "Manual torque boost voltage",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4668,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter A042. 0 to 200"
+  },
+  {
+   "name": "Manual torque boost frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4669,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter A043. 0 to 500"
+  },
+  {
+   "name": "V/F characteristics selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4670,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A044. 00 (VC), 01 (VP), 02 (free V/f),"
+  },
+  {
+   "name": "Output voltage gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4671,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A045. 20 to 100"
+  },
+  {
+   "name": "Automatic torque boost voltage compensation gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4672,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A046. 0 to 255"
+  },
+  {
+   "name": "Automatic torque boost slip compensation gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4673,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A047. 0 to 255"
+  },
+  {
+   "name": "DC injection braking enable",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4677,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A051. 00 (disabling), 01 (enabling),"
+  },
+  {
+   "name": "DC injection braking frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4678,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A052. 0 to 6000"
+  },
+  {
+   "name": "DC injection braking delay time A053",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4679,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "0 to 50"
+  },
+  {
+   "name": "DC injection braking power",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4680,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A054. 0 to 100"
+  },
+  {
+   "name": "DC injection braking time",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4681,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter A055. 0 to 600"
+  },
+  {
+   "name": "DC injection braking method selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4682,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A056. 00 (edge operation),"
+  },
+  {
+   "name": "Startup DC injection braking power",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4683,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A057. 0 to 100"
+  },
+  {
+   "name": "Startup DC injection braking time A058",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4684,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "0 to 600"
+  },
+  {
+   "name": "DC injection braking carrier frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4685,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "kHz",
+   "description": "Parameter A059. 20 to 150"
+  },
+  {
+   "name": "Frequency upper limit",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4687,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A061. 0 or “maximum frequency limit” to “max-"
+  },
+  {
+   "name": "Frequency lower limit",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4689,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A062. 0 or “maximum frequency limit” to “max-"
+  },
+  {
+   "name": "Jump frequency 1",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4691,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A063. 0 to 40000"
+  },
+  {
+   "name": "Jump frequency width 1",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4693,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A064. 0 to 1000"
+  },
+  {
+   "name": "Jump frequency 2",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4694,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A065. 0 to 40000"
+  },
+  {
+   "name": "Jump frequency width 2",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4696,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A066. 0 to 1000"
+  },
+  {
+   "name": "Jump frequency 3",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4697,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A067. 0 to 40000"
+  },
+  {
+   "name": "Jump frequency width 3",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4699,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A068. 0 to 1000"
+  },
+  {
+   "name": "Acceleration stop frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4700,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A069. 0 to 40000"
+  },
+  {
+   "name": "Acceleration stop time",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4702,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter A070. 0 to 600"
+  },
+  {
+   "name": "PID selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4703,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A071. 00 (disabling), 01 (enabling),"
+  },
+  {
+   "name": "PID P gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4704,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A072. 0 to 2500",
+   "scale": 0.1
+  },
+  {
+   "name": "PID I gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4705,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter A073. 0 to 36000"
+  },
+  {
+   "name": "PID D gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4706,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter A074. 0 to 10000"
+  },
+  {
+   "name": "PID scale",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4707,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A075. 1 to 9999",
+   "scale": 0.01
+  },
+  {
+   "name": "PID feedback selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4708,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A076. 00 (OI), 01 (O), 02 (RS485 communica-"
+  },
+  {
+   "name": "Reverse PID function",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4709,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A077. 00 (disabling), 01 (enabling)"
+  },
+  {
+   "name": "PID output limit function",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4710,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter A078. 0 to 1000"
+  },
+  {
+   "name": "PID feedforward selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4711,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A079. 00 (disabled), 01 (O), 02 (OI)"
+  },
+  {
+   "name": "AVR selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4713,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A081. 00 (always on), 01 (always off), 02 (off"
+  },
+  {
+   "name": "AVR voltage selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4714,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A082. 200 V class: 0 (200)/1 (215)/2 (220)/3"
+  },
+  {
+   "name": "AVR filter time constant",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4715,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "s",
+   "description": "Parameter A083. 0.000 to 10.00"
+  },
+  {
+   "name": "AVR deceleration gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4716,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A084. 50 to 200"
+  },
+  {
+   "name": "Energy-saving operation mode",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4717,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A085. 00 (normal operation), 01 (energy-sav-"
+  },
+  {
+   "name": "Energy-saving response/ accuracy adjustment",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4718,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter A086. 0 to 1000"
+  },
+  {
+   "name": "Acceleration time 2",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4724,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter A092. 0 to 360000"
+  },
+  {
+   "name": "Deceleration time 2",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4726,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter A093. 0 to 360000"
+  },
+  {
+   "name": "Select method to switch to Acc2/ Dec2 profile",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4728,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A094. 00 (switching by 2CH terminal),"
+  },
+  {
+   "name": "Acc1 to Acc2 frequency transition point",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4729,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A095. 0 to 40000"
+  },
+  {
+   "name": "Dec1 to Dec2 frequency transition point",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4731,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A096. 0 to 40000"
+  },
+  {
+   "name": "Acceleration curve selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4733,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A097. 00 (linear), 01 (S curve), 02 (U curve),"
+  },
+  {
+   "name": "Deceleration curve setting",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4734,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A098. 00 (linear), 01 (S curve), 02 (U curve),"
+  },
+  {
+   "name": "OI input active range start frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4737,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A101. 0 to 40000"
+  },
+  {
+   "name": "OI input active range end quency",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4739,
+   "type": "uint32",
+   "access": "RW",
+   "unit": "%",
+   "description": "fre- A102 (high) R/W 0 to 40000"
+  },
+  {
+   "name": "OI input active range start ratio",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4741,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A103. 0 to “OI input active range end ratio”"
+  },
+  {
+   "name": "OI input active range end ratio",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4742,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A104. “OI input active range start ratio” to 100"
+  },
+  {
+   "name": "OI input start frequency enable",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4743,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A105. 00 (start FQ), 01 (0 Hz)"
+  },
+  {
+   "name": "Acceleration curve parameter",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4773,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A131. 01 (small curve) to 10 (large curve)"
+  },
+  {
+   "name": "Deceleration curve parameter",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4774,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A132. 01 (small curve) to 10 (large curve) -"
+  },
+  {
+   "name": "Operation frequency input A setting",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4783,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A141. 00 (digital operator), 01 (freq adjuster),"
+  },
+  {
+   "name": "Operation frequency input B setting",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4784,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A142. 00 (digital operator), 01 (freq adjuster),"
+  },
+  {
+   "name": "Operator selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4785,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A143. 00 (addition (A + B)), 01 (subtraction:"
+  },
+  {
+   "name": "Frequency addition amount",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4787,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A145. 0 to 40000"
+  },
+  {
+   "name": "Frequency addition direction",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4789,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A146. 00 (frequency command + A145),"
+  },
+  {
+   "name": "EL-S-curve ratio 1 during acceleration",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4793,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A150. 0 to 50"
+  },
+  {
+   "name": "EL-S-curve ratio 2 during acceleration",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4794,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A151. 0 to 50"
+  },
+  {
+   "name": "EL-S-curve ratio 1 during deceleration",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4795,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A152. 0 to 50"
+  },
+  {
+   "name": "EL-S-curve ratio 2 during deceleration",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4796,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A153. 0 to 50"
+  },
+  {
+   "name": "Deceleration hold frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4797,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A154. 0~40000"
+  },
+  {
+   "name": "Deceleration hold time",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4799,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter A155. 0~600"
+  },
+  {
+   "name": "PID sleep function action threshold",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4800,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A156. 0~40000"
+  },
+  {
+   "name": "PID sleep function action delay time",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4802,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter A157. 0~255"
+  },
+  {
+   "name": "[VR] input active range start frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4806,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A161. 0~40000"
+  },
+  {
+   "name": "[VR] input active range end frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4808,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A162. 0~40000"
+  },
+  {
+   "name": "[VR] input active range start current",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 4810,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A163. 0~100"
+  },
+  {
+   "name": "[VR] input active range end volt- A164 age",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4811,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "0~100"
+  },
+  {
+   "name": "[VR] input start frequency enable A165",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4812,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (start FQ) / 01 (0 Hz)"
+  },
+  {
+   "name": "Retry selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4865,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b001. 00 (trip), 01 (0 Hz start), 02 (frequency"
+  },
+  {
+   "name": "Allowable momentary power interruption time",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4866,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter b002. 3 to 250"
+  },
+  {
+   "name": "Retry wait time",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4867,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter b003. 3 to 1000"
+  },
+  {
+   "name": "Momentary power interruption/ undervoltage trip during stop selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4868,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b004. 00 (disabling), 01 (enabling), 02 (dis-"
+  },
+  {
+   "name": "Momentary power interruption retry time selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4869,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b005. 00 (16 times), 01 (no limit)"
+  },
+  {
+   "name": "Frequency matching lower limit frequency setting",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4871,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter b007. 0 to 40000"
+  },
+  {
+   "name": "Trip retry selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4873,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b008. 00 (trip), 01 (0 Hz start), 02 (frequency"
+  },
+  {
+   "name": "Overvoltage/overcurrent retry time selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4875,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b010. 1 to 3"
+  },
+  {
+   "name": "Trip retry wait time",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4876,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter b011. 3 to 1000"
+  },
+  {
+   "name": "Electronic thermal level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4877,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter b012. 0.20 x Rated current to 1.00 x Rated"
+  },
+  {
+   "name": "Electronic thermal characteristics selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4878,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b013. 00 (reduced torque characteristic),"
+  },
+  {
+   "name": "Free setting, electronic thermal frequency 1",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4880,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b015. 0 to b017"
+  },
+  {
+   "name": "Free setting, electronic thermal current 1",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4881,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "A",
+   "description": "Parameter b016. 0 to Rated current"
+  },
+  {
+   "name": "Free setting, electronic thermal frequency 2",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4882,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b017. 0 to b019"
+  },
+  {
+   "name": "Free setting, electronic thermal current 2",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4883,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "A",
+   "description": "Parameter b018. 0 to Rated current"
+  },
+  {
+   "name": "Free setting, electronic thermal frequency 3",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4884,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b019. 0 to 400"
+  },
+  {
+   "name": "Free setting, electronic thermal current 3",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4885,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "A",
+   "description": "Parameter b020. 0 to Rated current"
+  },
+  {
+   "name": "Overload limit selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4886,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b021. 00 (disabling), 01 (enabling during"
+  },
+  {
+   "name": "Overload limit level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4887,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter b022. 0.32 x Rated current to 3.20 x Rated"
+  },
+  {
+   "name": "Overload limit parameter",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4888,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter b023. 1 to 30000"
+  },
+  {
+   "name": "Overload limit selection 2",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4889,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b024. 00 (disabling), 01 (enabling during"
+  },
+  {
+   "name": "Overload limit level 2",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4890,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter b025. 0.32 x Rated current to 3.20 x Rated"
+  },
+  {
+   "name": "Overload limit parameter 2",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4891,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter b026. 1 to 30000"
+  },
+  {
+   "name": "Overcurrent suppression function",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4892,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b027. 00 (disabling), 01 (enabling), 02 (enable"
+  },
+  {
+   "name": "Active frequency matching restart level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4893,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter b028. 0.32 x Rated current to 3.20 x Rated"
+  },
+  {
+   "name": "Active frequency matching restart parameter",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4894,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter b029. 1 to 30000"
+  },
+  {
+   "name": "Starting frequency at active frequency matching restart",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4895,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b030. 00 (frequency at the last shutoff), 01"
+  },
+  {
+   "name": "Soft lock selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4896,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b031. 00 (disabling change of data other than"
+  },
+  {
+   "name": "Motor cable length parameter",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4898,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b033. 5 to 20"
+  },
+  {
+   "name": "RUN time/Power ON time setting b034",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4899,
+   "type": "uint32",
+   "access": "RW",
+   "description": "0 to 65535"
+  },
+  {
+   "name": "Rotation direction limit selection b035",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4901,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (Forward and Reverse are enabled)/"
+  },
+  {
+   "name": "Reduced voltage startup selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4902,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b036. 0 (minimum reduced voltage start time)"
+  },
+  {
+   "name": "Display selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4903,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b037. 00 (complete display), 01 (function-spe-"
+  },
+  {
+   "name": "Initial screen selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4904,
+   "type": "int16",
+   "access": "RW",
+   "description": "Parameter b038. 000-202"
+  },
+  {
+   "name": "User parameter automatic setting function selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4905,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b039. 00 (disabling), 01 (enabling)"
+  },
+  {
+   "name": "Torque limit selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4906,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b040. 00 (quadrant-specific setting), 01"
+  },
+  {
+   "name": "Torque limit 1 (fwd-power in",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4907,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b041. 0 to 200/no"
+  },
+  {
+   "name": "Torque limit 2 (rev/regen. in",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4908,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b042. 0 to 200/no"
+  },
+  {
+   "name": "Torque limit 3 (rev/power in",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4909,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b043. 0 to 200/no"
+  },
+  {
+   "name": "Torque limit 4 (fwd/regen. in",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4910,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b044. 0 to 200/no"
+  },
+  {
+   "name": "Torque LADSTOP selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4911,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b045. 00 (disabling), 01 (enabling)"
+  },
+  {
+   "name": "Reverse rotation prevention selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4912,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b046. 00 (disabling), 01 (enabling)"
+  },
+  {
+   "name": "Dual rate selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4915,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b049. 00 (CT mode)/ 01 (VT mode)"
+  },
+  {
+   "name": "Selection of non-stop function at momentary power interruption",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4916,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b050. 00 (disabling), 01 (enabling), 02"
+  },
+  {
+   "name": "Starting voltage of non-stop function at momentary power interruption",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4917,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b051. 0 to 10000"
+  },
+  {
+   "name": "Stop deceleration level of nonstop function at momentary power interruption",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4918,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b052. 0 to 10000"
+  },
+  {
+   "name": "Deceleration time of non-stop function at momentary power interruption",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4919,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter b053. 0.01 to 36000"
+  },
+  {
+   "name": "Deceleration starting width of non-stop function at momentary power interruption",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4921,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter b054. 0 to 1000"
+  },
+  {
+   "name": "Window comparator O upper limit level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4927,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b060. 0. to 100. (lower limit : b061 + b062 *2)"
+  },
+  {
+   "name": "Window comparator O lower limit level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4928,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b061. 0. to 100. (lower limit : b060 - b062*2) (%)"
+  },
+  {
+   "name": "Window comparator O hysteresis width",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4929,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b062. 0. to 10. (lower limit : b061 - b062 / 2) (%)"
+  },
+  {
+   "name": "Window comparator OI upper limit level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4930,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b063. 0. to 100. (lower limit : b064 + b066 *2)"
+  },
+  {
+   "name": "Window comparator OI lower limit level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4931,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b064. 0. to 100. (lower limit : b063 - b066 *2) (%)"
+  },
+  {
+   "name": "Window comparator OI teresis width",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4932,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "hys- b065 R/W 0. to 10. (lower limit : b063 - b064 / 2) (%)"
+  },
+  {
+   "name": "Analog operation level at O dis- b070 connection",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4937,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "0 to 100 (%) or “no” (ignore)"
+  },
+  {
+   "name": "Analog operation level at OI disconnection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4938,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter b071. 0 to 100 (%) or “no” (ignore)"
+  },
+  {
+   "name": "Ambient temperature",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4942,
+   "type": "int16",
+   "access": "RW",
+   "unit": "°C",
+   "description": "Parameter b075. -10 to 50"
+  },
+  {
+   "name": "Integrated power clear",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4945,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b078. Clearance by setting “01”"
+  },
+  {
+   "name": "Integrated power display gain",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4946,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b079. 1 to 1000 1"
+  },
+  {
+   "name": "Starting frequency",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4949,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter b082. 10 to 999"
+  },
+  {
+   "name": "Carrier frequency",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4950,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "kHz",
+   "description": "Parameter b083. 20 to 150"
+  },
+  {
+   "name": "Initialization selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4951,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b084. 00 (clears the trip monitor),01 (initializes"
+  },
+  {
+   "name": "Initialization parameter selection b085",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4952,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (JPN), 01 (EUR)"
+  },
+  {
+   "name": "Frequency conversion coefficient",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4953,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b086. 1 to 9999",
+   "scale": 0.01
+  },
+  {
+   "name": "STOP key selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4954,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b087. 00 (enabling), 01 (disabling), 02"
+  },
+  {
+   "name": "Free-run stop selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4955,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b088. 0 (starting with 0 Hz), 1 (starting with -"
+  },
+  {
+   "name": "Automatic carrier frequency reduction",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4956,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b089. 00 (0 Hz start)/ 01 (frequency matching"
+  },
+  {
+   "name": "Usage rate of regenerative braking function",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4957,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter b090. 0 to 1000"
+  },
+  {
+   "name": "Stop selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4958,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b091. 00 (deceleration until stop), 01 (free-run"
+  },
+  {
+   "name": "Cooling fan control",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4959,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b092. 00 (always ON), 01 (ON during RUN),"
+  },
+  {
+   "name": "Clear elapsed time of cooling fan b093",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4960,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (OFF)/ 01 (CLR)"
+  },
+  {
+   "name": "Initialization target data",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4961,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b094. 00 (ALL)/ 01 (Exp.COM, TERM)/ 02"
+  },
+  {
+   "name": "Regenerative braking function operation selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4962,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b095. 00 (disabling), 01 (enabling [disabling"
+  },
+  {
+   "name": "Regenerative braking function ON level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4963,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b096. 330 to 380, 660 to 760 1. [V]"
+  },
+  {
+   "name": "BRD resistor",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4964,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "Ω",
+   "description": "Parameter b097. Min. Resitance to 600.0"
+  },
+  {
+   "name": "Free V/f frequency 1",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4967,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b100. 0. to “Free V/f frequency 2”"
+  },
+  {
+   "name": "Free V/f voltage 1",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4968,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b101. 0. to 8000"
+  },
+  {
+   "name": "Free V/f frequency 2",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4969,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b102. 0. to “Free V/f frequency 3”"
+  },
+  {
+   "name": "Free V/f voltage 2",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4970,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b103. 0. to 8000"
+  },
+  {
+   "name": "Free V/f frequency 3",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4971,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b104. 0. to “Free V/f frequency 4”"
+  },
+  {
+   "name": "Free V/f voltage 3",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4972,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b105. 0. to 8000"
+  },
+  {
+   "name": "Free V/f frequency 4",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4973,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b106. 0. to “Free V/f frequency 5”"
+  },
+  {
+   "name": "Free V/f voltage 4",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4974,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b107. 0. to 8000"
+  },
+  {
+   "name": "Free V/f frequency 5",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4975,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b108. 0. to “Free V/f frequency 6”"
+  },
+  {
+   "name": "Free V/f voltage 5",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4976,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b109. 0. to 8000"
+  },
+  {
+   "name": "Free V/f frequency 6",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4977,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b110. 0. to “Free V/f frequency 7”"
+  },
+  {
+   "name": "Free V/f voltage 6",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4978,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b111. 0. to 8000"
+  },
+  {
+   "name": "Free V/f frequency 7",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4979,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "Hz",
+   "description": "Parameter b112. 0. to 400."
+  },
+  {
+   "name": "Free V/f voltage 7",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4980,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "V",
+   "description": "Parameter b113. 0. to 8000"
+  },
+  {
+   "name": "Brake control selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4987,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b120. 00 (disabling), 01 (enabling), 02 (enable"
+  },
+  {
+   "name": "Brake wait time for release",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4988,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter b121. 0 to 500"
+  },
+  {
+   "name": "Brake wait time for acceleration b122",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4989,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "0 to 500"
+  },
+  {
+   "name": "Brake wait time for stopping",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4990,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter b123. 0 to 500"
+  },
+  {
+   "name": "Brake wait time for confirmation b124",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4991,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "0 to 500"
+  },
+  {
+   "name": "Brake release frequency",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4992,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter b125. 0 to 40000"
+  },
+  {
+   "name": "Brake release current",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4993,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter b126. 0.0 to 3.20 x Rated current"
+  },
+  {
+   "name": "Braking input frequency",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4994,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter b127. 0 to 40000"
+  },
+  {
+   "name": "Overvoltage protection function b130 selection during deceleration",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4997,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (disabling), 01 (enabling), 02"
+  },
+  {
+   "name": "Overvoltage protection level dur- b131 ing deceleration",
+   "group": "Registers",
+   "area": "holding",
+   "address": 4998,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "V",
+   "description": "200 V class: 330 to 390 (V)"
+  },
+  {
+   "name": "Overvoltage protection parameter",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 4999,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter b132. 10 to 3000"
+  },
+  {
+   "name": "Overvoltage protection portional gain setting",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5000,
+   "type": "uint16",
+   "access": "RW",
+   "description": "pro- b133 R/W 0 to 500",
+   "scale": 0.01
+  },
+  {
+   "name": "Overvoltage protection integral time setting",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5001,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter b134. 0 to 1500"
+  },
+  {
+   "name": "GS input mode",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5012,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b145. 00 (no trip)/ 01 (trip)"
+  },
+  {
+   "name": "Display ex.operator connected",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5018,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b150. 001 to 060 -"
+  },
+  {
+   "name": "1st parameter of Dual Monitor",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5027,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b160. 001 to 030"
+  },
+  {
+   "name": "2nd parameter of Dual Monitor",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5028,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b161. 001 to 030"
+  },
+  {
+   "name": "Freq. set in monitoring",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5030,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b163. 00 (disabling), 01 (enabling),"
+  },
+  {
+   "name": "Auto return initial display",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5031,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b164. 00 (disabling), 01 (enabling),"
+  },
+  {
+   "name": "Ex. Operator com. loss action",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5032,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b165. 00 (trip), 01 (decel-trip), 02 (ignore), 03"
+  },
+  {
+   "name": "Data Read/Write selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5033,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b166. 00 (Read/Write OK), 01 (Protected)"
+  },
+  {
+   "name": "Inverter mode selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5038,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b171. 00 (no), 01 (Std.IM), 02 (Reserved), 03"
+  },
+  {
+   "name": "Initialize trigger",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5047,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b180. 00 (no action), 01 (initialize)"
+  },
+  {
+   "name": "E. thermal Dec Mode",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5062,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b910. 00 (Off), 01 (Fixed Linear), 02 (LinDec"
+  },
+  {
+   "name": "to E. thermal Dec Time",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5063,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter b911. 0.10 to 100000.00"
+  },
+  {
+   "name": "to E. thermal Dec TimeCnst",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5065,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter b912. 0.10 to 100000.00"
+  },
+  {
+   "name": "E. thermal AccmGain",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 5067,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter b913. 1.0 to 200.0"
+  },
+  {
+   "name": "Multi-function input 1 selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5121,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C001. 00 (FW: Forward RUN), 01 (RV: Reverse"
+  },
+  {
+   "name": "Multi-function input 2 selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5122,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C002. stop), 12 (EXT: external trip), 13 (USP:"
+  },
+  {
+   "name": "Multi-function input 3 selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5123,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C003. 23 (PID: PID disable), 24 (PIDC: PID"
+  },
+  {
+   "name": "Multi-function input 4 selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5124,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C004. 38 (SF7: multispeed bit 7), 39 (OLR: over-"
+  },
+  {
+   "name": "Multi-function input 5 selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5125,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C005. tion [A145]), 51 (F-TM: forcible-terminal"
+  },
+  {
+   "name": "Multi-function input 6 selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5126,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C006. general-purpose input 6), 62 (MI7: gen-"
+  },
+  {
+   "name": "Multi-function input 7 selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5127,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C007. function), 73 (SPD: speed / position"
+  },
+  {
+   "name": "Multi-function input 1 operation selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5131,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C011. 00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Multi-function input 2 operation selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5132,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C012. 00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Multi-function input 3 operation selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5133,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C013. 00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Multi-function input 4 operation selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5134,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C014. 00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Multi-function input 5 operation selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5135,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C015. 00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Multi-function input 6 operation selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5136,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C016. 00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Multi-function input 7 operation selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5137,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C017. 00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Multi-function output terminal 11 selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5141,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C021. 00 (RUN: running), 01 (FA1: constant-"
+  },
+  {
+   "name": "Multi-function output terminal 12 C022 selection",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5142,
+   "type": "uint16",
+   "access": "RW",
+   "description": "12 (ONT: plug-in time over), 13 (THM:"
+  },
+  {
+   "name": "(NDc: communication line disconnec-",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5155,
+   "type": "uint16",
+   "access": "RW",
+   "description": ""
+  },
+  {
+   "name": "Relay output (AL2, AL1) function selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5146,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C026. indication signal), 44 (M01: general-pur-"
+  },
+  {
+   "name": "[EO] terminal selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5147,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C027. 00 (output frequency), 01 (output cur-"
+  },
+  {
+   "name": "AM selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5148,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C028. 00 (output frequency), 01 (output cur-"
+  },
+  {
+   "name": "Digital current monitor reference C030 value",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5150,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "0.32 x Rated current to 3.20 x Rated"
+  },
+  {
+   "name": "Multi-function output terminal 11 C031 contact selection",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5151,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Multi-function output terminal 12 C032 contact selection",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5152,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (NO), 01 (NC)"
+  },
+  {
+   "name": "Relay output (AL2, AL1) contact C036 selection",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5156,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (NO contact at AL2, NC contact at"
+  },
+  {
+   "name": "Light load signal output mode",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5158,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C038. 00 (output during acceleration/decelera-"
+  },
+  {
+   "name": "Light load detection level",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5159,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter C039. 0.0 to 3.20 x Rated current"
+  },
+  {
+   "name": "Overload warning signal output mode",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5160,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C040. 00 (output during acceleration/decelera-"
+  },
+  {
+   "name": "Overload warning level",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5161,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter C041. 0.1 to 3.20 x Rated current"
+  },
+  {
+   "name": "Arrival frequency during acceleration",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5162,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter C042. 0 to 40000"
+  },
+  {
+   "name": "Arrival frequency during deceleration",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5164,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter C043. 0 to 40000"
+  },
+  {
+   "name": "PID deviation excessive level",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5166,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter C044. 0 to 1000"
+  },
+  {
+   "name": "Arrival frequency during acceleration 2",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5167,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter C045. 0 to 40000"
+  },
+  {
+   "name": "Arrival frequency during deceleration 2",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5169,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter C046. 0 to 40000"
+  },
+  {
+   "name": "Pulse train input scale conversion for EO output",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5171,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C047. 0.01 - 99.99"
+  },
+  {
+   "name": "PID FB upper limit",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5176,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter C052. 0 to 1000"
+  },
+  {
+   "name": "PID FB lower limit",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5177,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter C053. 0 to 1000"
+  },
+  {
+   "name": "Over-torque/under-torque selection C054",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5178,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (Over torque)/ 01 (under torque)"
+  },
+  {
+   "name": "Overtorque level (forward power C055 running)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5179,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "0 to 200"
+  },
+  {
+   "name": "Overtorque level (reverse regen- C056 eration)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5180,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "0 to 200"
+  },
+  {
+   "name": "Overtorque level (reverse power C057 running",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5181,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "0 to 200"
+  },
+  {
+   "name": "Overtorque level (forward regen- C058 eration)",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5182,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "0 to 200"
+  },
+  {
+   "name": "Signal output mode of Over/ under torque",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5183,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C059. 00 (output during acceleration/decelera-"
+  },
+  {
+   "name": "Thermal warning level",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5185,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter C061. 0 to 100"
+  },
+  {
+   "name": "0 Hz detection level",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5187,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter C063. 0 to 10000"
+  },
+  {
+   "name": "Fin overheat warning level",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5188,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "°C",
+   "description": "Parameter C064. 0 to 110"
+  },
+  {
+   "name": "Communication speed selection (Baud rate selection)",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5195,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C071. 03 (2400bps), 04 (4800bps),"
+  },
+  {
+   "name": "Communication station No. Selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5196,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C072. 1 to 247"
+  },
+  {
+   "name": "Communication parity selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5198,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C074. 00 (no parity), 01 (even parity),"
+  },
+  {
+   "name": "Communication stop bit selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5199,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C075. 1 (1 bit), 2 (2 bits)"
+  },
+  {
+   "name": "Communication error selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5200,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C076. 00 (trip), 01 (tripping after deceleration"
+  },
+  {
+   "name": "Communication error timeout",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5201,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter C077. 0 to 9999"
+  },
+  {
+   "name": "Communication wait time",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5202,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "ms",
+   "description": "Parameter C078. 0 to 1000"
+  },
+  {
+   "name": "O adjustment",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5205,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C081. 0 to 2000",
+   "scale": 0.1
+  },
+  {
+   "name": "OI adjustment",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5206,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C082. 0 to 2000",
+   "scale": 0.1
+  },
+  {
+   "name": "Thermistor adjustment",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5209,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C085. 0 to 2000",
+   "scale": 0.1
+  },
+  {
+   "name": "Debug mode selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5215,
+   "type": "uint16",
+   "access": "R",
+   "description": "Parameter C091. “00” Do not change"
+  },
+  {
+   "name": "Communication selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5220,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C096. 00 (Modbus-RTU)/ 01(EzCOM)/"
+  },
+  {
+   "name": "EzCOM start adr. of master",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5222,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C098. 1~8"
+  },
+  {
+   "name": "EzCOM end adr. of master",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5223,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C099. 1~8"
+  },
+  {
+   "name": "EzCOM starting trigger",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5224,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C100. 00 (485 input)/ 01 (Always ON)"
+  },
+  {
+   "name": "UP/DWN selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5225,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C101. 00 (not storing the frequency data),"
+  },
+  {
+   "name": "Reset selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5226,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C102. 00 (trip reset at power-on), 01 (trip reset"
+  },
+  {
+   "name": "Restart frequency matching selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5227,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C103. 00 (0 Hz start), 01 (frequency matching"
+  },
+  {
+   "name": "UP/DWN clear mode",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5228,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C104. 00 (0Hz)/ 01 (Pow-ON data)"
+  },
+  {
+   "name": "EO gain setting",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5229,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter C105. 50 to 200"
+  },
+  {
+   "name": "AM gain setting",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5230,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter C106. 50 to 200"
+  },
+  {
+   "name": "AM bias setting",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5233,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter C109. 0 to 100"
+  },
+  {
+   "name": "Overload warning level 2",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5235,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter C111. 0.0 to 3.20 x Rated current"
+  },
+  {
+   "name": "Output 11 ON delay",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5254,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter C130. 0 to 1000"
+  },
+  {
+   "name": "Output 11 OFF delay",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5255,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter C131. 0 to 1000"
+  },
+  {
+   "name": "Output 12 ON delay",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5256,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter C132. 0 to 1000"
+  },
+  {
+   "name": "Output 12 OFF delay",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5257,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter C133. 0 to 1000"
+  },
+  {
+   "name": "Relay output ON delay",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5264,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter C140. 0 to 1000"
+  },
+  {
+   "name": "Relay output OFF delay",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5265,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter C141. 0 to 1000"
+  },
+  {
+   "name": "Logic output signal 1 selection 1 C142",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5266,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Same as the settings of C021 to C026"
+  },
+  {
+   "name": "Logic output signal 1 selection 2 C143",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5267,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Same as the settings of C021 to C026"
+  },
+  {
+   "name": "Logical output signal 1 operator C144 selection",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5268,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (AND), 01 (OR), 02 (XOR)"
+  },
+  {
+   "name": "Logic output signal 2 selection 1 C145",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5269,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Same as the settings of C021 to C026"
+  },
+  {
+   "name": "Logic output signal 2 selection 2 C146",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5270,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Same as the settings of C021 to C026"
+  },
+  {
+   "name": "Logical output signal 2 operator C147 selection",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5271,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (AND), 01 (OR), 02 (XOR)"
+  },
+  {
+   "name": "Logic output signal 3 selection 1 C148",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5272,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Same as the settings of C021 to C026"
+  },
+  {
+   "name": "Logic output signal 3 selection 2 C149",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5273,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Same as the settings of C021 to C026"
+  },
+  {
+   "name": "Logical output signal 3 operator selection",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5274,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C150. 00 (AND), 01 (OR), 02 (XOR)"
+  },
+  {
+   "name": "Input terminal response time 1",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5284,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C160. 0 to 200"
+  },
+  {
+   "name": "Input terminal response time 2",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5285,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C161. 0 to 200"
+  },
+  {
+   "name": "Input terminal response time 3",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5286,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C162. 0 to 200"
+  },
+  {
+   "name": "Input terminal response time 4",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5287,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C163. 0 to 200"
+  },
+  {
+   "name": "Input terminal response time 5",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5288,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C164. 0 to 200"
+  },
+  {
+   "name": "Input terminal response time 6",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5289,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C165. 0 to 200"
+  },
+  {
+   "name": "Input terminal response time 7",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5290,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C166. 0 to 200"
+  },
+  {
+   "name": "Multi-step speed/position determination time",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 5293,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter C169. 0 to 200"
+  },
+  {
+   "name": "Auto-tuning selection",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5377,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H001. 00 (disabled), 01 (stop), 02 (rotation)"
+  },
+  {
+   "name": "Motor parameter selecion",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5378,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H002. 00 (Standard motor parameter), 02"
+  },
+  {
+   "name": "Motor capacity selection",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5379,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H003. 00 (0.1kW) - 15 (18.5kW)"
+  },
+  {
+   "name": "Motor pole number selection",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5380,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H004. 2/4/6/8/10/12/14/16/18/20/22/24/26/28/"
+  },
+  {
+   "name": "Speed response",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5382,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter H005. 1 to 1000"
+  },
+  {
+   "name": "Stabilization parameter",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5383,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H006. 0 to 255 1"
+  },
+  {
+   "name": "Motor parameter R1",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5398,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H020. 1 to 65530"
+  },
+  {
+   "name": "Motor parameter R2",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5400,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H021. 1 to 65530"
+  },
+  {
+   "name": "Motor parameter L",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5402,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "mH",
+   "description": "Parameter H022. 1 to 65530"
+  },
+  {
+   "name": "Motor parameter Io",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5404,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Parameter H023. 1 to 65530"
+  },
+  {
+   "name": "Motor parameter J",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5405,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Parameter H024. 1 to 9999000",
+   "scale": 0.001
+  },
+  {
+   "name": "Motor parameter R1 (auto-tuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5413,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H030. 1 to 65530"
+  },
+  {
+   "name": "Motor parameter R2 (auto-tuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5415,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H031. 1 to 65530"
+  },
+  {
+   "name": "Motor parameter L (auto-tuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5417,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "mH",
+   "description": "Parameter H032. 1 to 65530"
+  },
+  {
+   "name": "Motor parameter Io (auto-tuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5419,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Parameter H033. 1 to 65530"
+  },
+  {
+   "name": "Motor parameter J (auto-tuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5420,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Parameter H034. 1 to 9999000",
+   "scale": 0.001
+  },
+  {
+   "name": "Slip compensation P gain for V/f control with FB",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5437,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H050. 0 to 10000",
+   "scale": 0.1
+  },
+  {
+   "name": "Slip compensation I gain for V/f control with FB",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5438,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H051. 0 to 10000 1"
+  },
+  {
+   "name": "PM motor code selection",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5489,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H102.  Standard motor parameter"
+  },
+  {
+   "name": "PM motor capacity",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5490,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H103. 0.10 to 18.50"
+  },
+  {
+   "name": "PM motor pole number selection H104",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5491,
+   "type": "uint16",
+   "access": "RW",
+   "description": "2/4/6/8/10/12/14/16/18/20/22/24/26/28/"
+  },
+  {
+   "name": "PM rated current",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5492,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Parameter H105. 0.00 x Rated current to 1.60 x Rated"
+  },
+  {
+   "name": "PM parameter R",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5493,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H106. 0.001 to 65.535 "
+  },
+  {
+   "name": "PM parameter Ld",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5494,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "mH",
+   "description": "Parameter H107. 0.01 to 655.35 mH"
+  },
+  {
+   "name": "PM parameter Lq",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5495,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "mH",
+   "description": "Parameter H108. 0.01 to 655.35 mH"
+  },
+  {
+   "name": "PM parameter Ke",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5496,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H109. 0.0001 to 6.5535 Vp/(rad/s)",
+   "scale": 0.0001
+  },
+  {
+   "name": "to PM parameter J",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5497,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H110. 0.001 - 9999.000 kg/m²",
+   "scale": 0.001
+  },
+  {
+   "name": "[kg/m²]",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5498,
+   "type": "uint16",
+   "access": "RW",
+   "description": ""
+  },
+  {
+   "name": "PM parameter R (auto-tuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5499,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H111. 0.001 to 65.535 "
+  },
+  {
+   "name": "PM parameter Ld (auto-tuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5500,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "mH",
+   "description": "Parameter H112. 0.01 to 655.35 mH"
+  },
+  {
+   "name": "PM parameter Lq (auto-tuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5501,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "mH",
+   "description": "Parameter H113. 0.01 to 655.35 mH"
+  },
+  {
+   "name": "PM speed response",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5505,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H116. 1 to 1000"
+  },
+  {
+   "name": "PM starting current",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5506,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H117. 20.00 to 100.00%"
+  },
+  {
+   "name": "PM starting time",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5507,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter H118. 0.01 to 60.00 s"
+  },
+  {
+   "name": "PM stabilization constant",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5508,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H119. 0 to 120%"
+  },
+  {
+   "name": "PM minimum frequency",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5510,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H121. 0.0 to 25.5%"
+  },
+  {
+   "name": "PM No-Load current",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5511,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H122. 0.00 to 100.00%"
+  },
+  {
+   "name": "PM starting method",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5512,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H123.  Normal"
+  },
+  {
+   "name": "PM IMPE 0V wait",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5514,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H131. 0 to 255"
+  },
+  {
+   "name": "PM IMPE detect wait",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5515,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H132. 0 to 255"
+  },
+  {
+   "name": "PM IMPE detect",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5516,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H133. 0 to 255"
+  },
+  {
+   "name": "PM IMPE voltage gain",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 5517,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H134. 0 to 200"
+  },
+  {
+   "name": "Operation selection at option 1 error",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5633,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P001. 00 (trip), 01 (continues operation)"
+  },
+  {
+   "name": "EA terminal selection",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5635,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P003. 00 (FQ set), 01 (Encoder FB), 02"
+  },
+  {
+   "name": "Pulse train input mode for feed- P004 back",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5636,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (Single ph.), 01 (2 ph.1), 02 (2 ph.2),"
+  },
+  {
+   "name": "Encoder pulses",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5643,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P011. 32 to 1024 1"
+  },
+  {
+   "name": "Simple positioning selection",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5644,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P012. 00 (OFF), 02 (ON)"
+  },
+  {
+   "name": "Creep speed",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5647,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter P015. “start frequency” to 1000"
+  },
+  {
+   "name": "Positioning range",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5649,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P017. 0 to 10000 pulses"
+  },
+  {
+   "name": "Over-speed error detection level P026",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5658,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "0 to 1500"
+  },
+  {
+   "name": "Speed deviation error detection P027 level",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5659,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "0 to 12000"
+  },
+  {
+   "name": "Acceleration/deceleration time input type",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5663,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P031. 00 (digital operator), 03 (drive"
+  },
+  {
+   "name": "Torque reference input selection P033",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5665,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (terminal O), 01 (terminal OI),"
+  },
+  {
+   "name": "Torque reference setting",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5666,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter P034. 0 to 200"
+  },
+  {
+   "name": "Torque bias mode",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5668,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P036. 00 (none), 01 (digital operator), 05"
+  },
+  {
+   "name": "Torque bias value",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5669,
+   "type": "int16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter P037. -200 to +200"
+  },
+  {
+   "name": "Torque bias polarity selection",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5670,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P038. 00 (signed), 01 (depends on the run"
+  },
+  {
+   "name": "Speed limit value in torque control (forward)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5671,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter P039. 0 to 12000"
+  },
+  {
+   "name": "Speed limit value in torque control (reverse)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5673,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter P040. 0 to 12000"
+  },
+  {
+   "name": "Speed / torque control switching time",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5675,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P041. 0 to 1000"
+  },
+  {
+   "name": "Network comm. Watchdog timer",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5678,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter P044. 0 to 9999"
+  },
+  {
+   "name": "Operation setting at communica- P045 tions error",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5679,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (trip), 01 (trip after deceleration"
+  },
+  {
+   "name": "Instance number",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5680,
+   "type": "int16",
+   "access": "RW",
+   "description": "Parameter P046. 0-20"
+  },
+  {
+   "name": "Operation setting at idle mode detection",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5682,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P048. 00 (trip), 01 (trip after deceleration"
+  },
+  {
+   "name": "Polarity setting for rotation speed P049",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5683,
+   "type": "uint16",
+   "access": "RW",
+   "description": "2/4/6/8/10/12/14/16/18/20/22/24/26/28/"
+  },
+  {
+   "name": "Pulse train frequency scale",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5689,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "kHz",
+   "description": "Parameter P055. 10 to 320 (input frequency correspond-"
+  },
+  {
+   "name": "Pulse train frequency filter time constant",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5690,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter P056. 1 to 200"
+  },
+  {
+   "name": "Pulse train frequency bias amount",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5691,
+   "type": "int16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter P057. -100 to +100"
+  },
+  {
+   "name": "Pulse train frequency limit",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5692,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter P058. 0 to 100"
+  },
+  {
+   "name": "Pulse input lower cut",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5693,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "%",
+   "description": "Parameter P059. 0.01 to 20.00"
+  },
+  {
+   "name": "Multi-step position command 0",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5694,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P060. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Multi-step position command 1",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5696,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P061. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Multi-step position command 2",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5698,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P062. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Multi-step position command 3",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5700,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P063. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Multi-step position command 4",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5702,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P064. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Multi-step position command 5",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5704,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P065. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Multi-step position command 6",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5706,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P066. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Multi-step position command 7",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5708,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P067. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Zero return mode",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5710,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P068. 00 (Low speed) / 01 (High speed)"
+  },
+  {
+   "name": "Zero return direction selection",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5711,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P069. 00 (FW) / 01 (RV)"
+  },
+  {
+   "name": "Low-speed zero return frequency",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5712,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P070. 0 to 1000"
+  },
+  {
+   "name": "High-speed zero return frequency",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5713,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P071. 0 to 40000"
+  },
+  {
+   "name": "Position range specification (forward)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5714,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Parameter P072. 0 to 268435455 1"
+  },
+  {
+   "name": "Position range specification (reverse)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5716,
+   "type": "int32",
+   "access": "RW",
+   "description": "Parameter P073. -268435455 to 0 1"
+  },
+  {
+   "name": "Positioning mode",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5719,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P075. 00…Limit"
+  },
+  {
+   "name": "Encoder disconnection timeout",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5721,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "s",
+   "description": "Parameter P077. 0 to 100"
+  },
+  {
+   "name": "Position restarting range",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5724,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P080. 0 to 10000 pulses"
+  },
+  {
+   "name": "Save position at power off",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5725,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P081. 00…OFF"
+  },
+  {
+   "name": "Curnt pos at poff",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5726,
+   "type": "int16",
+   "access": "RW",
+   "description": "Parameter P082. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Preset position data",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5728,
+   "type": "int16",
+   "access": "RW",
+   "description": "Parameter P083. -268435455 to 268435455 1"
+  },
+  {
+   "name": "Drive Program parameter U(00)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5734,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P100. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(01)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5735,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P101. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(02)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5736,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P102. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(03)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5737,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P103. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(04)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5738,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P104. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(05)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5739,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P105. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(06)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5740,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P106. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(07)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5741,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P107. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(08)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5742,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P108. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(09)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5743,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P109. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(10)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5744,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P110. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(11)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5745,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P111. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(12)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5746,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P112. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(13)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5747,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P113. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(14)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5748,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P114. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(15)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5749,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P115. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(16)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5750,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P116. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(17)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5751,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P117. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(18)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5752,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P118. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(19)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5753,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P119. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(20)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5754,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P120. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(21)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5755,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P121. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(22)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5756,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P122. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(23)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5757,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P123. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(24)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5758,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P124. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(25)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5759,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P125. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(26)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5760,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P126. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(27)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5761,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P127. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(28)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5762,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P128. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(29)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5763,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P129. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(30)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5764,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P130. 0 to 65535 1"
+  },
+  {
+   "name": "Drive Program parameter U(31)",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5765,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P131. 0 to 65535 1"
+  },
+  {
+   "name": "EzCOM number of data",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5774,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P140. 1 to 5"
+  },
+  {
+   "name": "EzCOM destination 1 address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5775,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P141. 1 to 247"
+  },
+  {
+   "name": "EzCOM destination 1 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5776,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P142. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM source 1 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5777,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P143. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM destination 2 address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5778,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P144. 1 to 247"
+  },
+  {
+   "name": "EzCOM destination 2 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5779,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P145. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM source 2 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5780,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P146. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM destination 3 address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5781,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P147. 1 to 247"
+  },
+  {
+   "name": "EzCOM destination 3 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5782,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P148. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM source 3 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5783,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P149. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM destination 4 address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5784,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P150. 1 to 247"
+  },
+  {
+   "name": "EzCOM destination 4 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5785,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P151. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM source 4 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5786,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P152. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM destination 5 address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5787,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P153. 1 to 247"
+  },
+  {
+   "name": "EzCOM destination 5 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5788,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P154. 0000 to FFFF"
+  },
+  {
+   "name": "EzCOM source 5 register",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5789,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P155. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 1",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5794,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P160. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 2",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5795,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P161. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 3",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5796,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P162. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 4",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5797,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P163. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 5",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5798,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P164. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 6",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5799,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P165. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 7",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5800,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P166. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 8",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5801,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P167. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 9",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5802,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P168. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd W register 10",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5803,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P169. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 1",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5804,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P170. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 2",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5805,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P171. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 3",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5806,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P172. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 4",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5807,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P173. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 5",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5808,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P174. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 6",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5809,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P175. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 7",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5810,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P176. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 8",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5811,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P177. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 9",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5812,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P178. 0000 to FFFF"
+  },
+  {
+   "name": "Option I/F cmd R register 10",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5813,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P179. 0000 to FFFF"
+  },
+  {
+   "name": "Profibus node address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5814,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P180. 0 to 125"
+  },
+  {
+   "name": "Profibus clear mode",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5815,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P181. 00 (clear)/ 01 (last value)"
+  },
+  {
+   "name": "Profibus map selection",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5816,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P182. 00 (PPO)/ 01 (Convertional)/ 02"
+  },
+  {
+   "name": "CANopen node address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5819,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P185. 0 to 127"
+  },
+  {
+   "name": "CAN open communication speed P186",
+   "group": "Registers",
+   "area": "holding",
+   "address": 5820,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (auto) 05 (250kbps)"
+  },
+  {
+   "name": "CompoNet node address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5824,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P190. 0 to 63"
+  },
+  {
+   "name": "DeviceNet node address",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5826,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P192. 0 to 63"
+  },
+  {
+   "name": "Serial comms mode",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5832,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P200. 00…Standard"
+  },
+  {
+   "name": "Modbus external register 1",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5833,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P201. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 2",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5834,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P202. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 3",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5835,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P203. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 4",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5836,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P204. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 5",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5837,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P205. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 6",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5838,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P206. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 7",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5839,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P207. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 8",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5840,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P208. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 9",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5841,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P209. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus external register 10",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5842,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P210. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus register format 1",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5843,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P211. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 2",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5844,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P212. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 3",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5845,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P213. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 4",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5846,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P214. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 5",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5847,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P215. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 6",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5848,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P216. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 7",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5849,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P217. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 8",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5850,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P218. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 9",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5851,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P219. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register format 10",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5852,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P220. 00…Unsigned"
+  },
+  {
+   "name": "Modbus register scaling 1",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5853,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P221. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 2",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5854,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P222. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 3",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5855,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P223. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 4",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5856,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P224. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 5",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5857,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P225. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 6",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5858,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P226. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 7",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5859,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P227. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 8",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5860,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P228. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 9",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5861,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P229. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus register scaling 10",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5862,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P230. 0.001 to 65.535",
+   "scale": 0.001
+  },
+  {
+   "name": "Modbus internal register 1",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5863,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P301. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 2",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5864,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P302. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 3",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5865,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P303. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 4",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5866,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P304. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 5",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5867,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P305. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 6",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5868,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P306. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 7",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5869,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P307. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 8",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5870,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P308. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 9",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5871,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P309. 0000 to FFFF"
+  },
+  {
+   "name": "Modbus internal register 10",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5872,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P310. 0000 to FFFF"
+  },
+  {
+   "name": "Big/Little endian selection",
+   "group": "Parameter group P",
+   "area": "holding",
+   "address": 5873,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter P400. 00…Big endian"
+  },
+  {
+   "name": "Coil data 1",
+   "group": "Registers",
+   "area": "holding",
+   "address": 7681,
+   "type": "uint16",
+   "access": "RW",
+   "description": "21: coil number 0010h -"
+  },
+  {
+   "name": "Coil data 2",
+   "group": "Registers",
+   "area": "holding",
+   "address": 7682,
+   "type": "uint16",
+   "access": "RW",
+   "description": "21: coil number 0020h -"
+  },
+  {
+   "name": "Coil data 3",
+   "group": "Registers",
+   "area": "holding",
+   "address": 7683,
+   "type": "uint16",
+   "access": "RW",
+   "description": "21: coil number 0030h -"
+  },
+  {
+   "name": "Coil data 4",
+   "group": "Registers",
+   "area": "holding",
+   "address": 7684,
+   "type": "uint16",
+   "access": "RW",
+   "description": "21: coil number 0030h -"
+  },
+  {
+   "name": "Coil data 5",
+   "group": "Registers",
+   "area": "holding",
+   "address": 7685,
+   "type": "uint16",
+   "access": "RW",
+   "description": "21: coil number 0040h -"
+  },
+  {
+   "name": "Coil data 0",
+   "group": "Registers",
+   "area": "holding",
+   "address": 7937,
+   "type": "uint16",
+   "access": "RW",
+   "description": "21: coil number 0001h -"
+  },
+  {
+   "name": "2nd acceleration time 1",
+   "group": "Basic functions",
+   "area": "holding",
+   "address": 8451,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter F202. 1 to 360000"
+  },
+  {
+   "name": "2nd deceleration time 1",
+   "group": "Basic functions",
+   "area": "holding",
+   "address": 8453,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter F203. 1 to 360000"
+  },
+  {
+   "name": "Frequency reference selection,",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8705,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A201. 00 (digital operator), 01 (terminal), 02"
+  },
+  {
+   "name": "RUN command selection. 2nd motor",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8706,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A202. 01 (terminal), 02 (operator), 03 (Modbus"
+  },
+  {
+   "name": "2nd set base frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8707,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "Hz",
+   "description": "Parameter A203. 300 to “maximum frequency, 2nd motor”"
+  },
+  {
+   "name": "2nd maximum frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8708,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "Hz",
+   "description": "Parameter A204. 300 to 4000"
+  },
+  {
+   "name": "2nd multi-step speed reference 0 A220",
+   "group": "Registers",
+   "area": "holding",
+   "address": 8726,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "0 or “start frequency” to “maximum"
+  },
+  {
+   "name": "2nd torque boost selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8763,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A241. 00 (manual torque boost), 01 (automatic"
+  },
+  {
+   "name": "2nd torque boost voltage",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8764,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A242. 20 to 200"
+  },
+  {
+   "name": "2nd manual torque boost frequency",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8765,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A243. 0 to 50"
+  },
+  {
+   "name": "2nd V/f characteristics selection",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8766,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A244. 00 (VC), 01 (VP), 02 (free V/f), -"
+  },
+  {
+   "name": "Output voltage gain, 2nd motor",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8767,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter A245. 20 to 100"
+  },
+  {
+   "name": "2nd automatic torque boost voltage compensation gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8768,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A246. 0 to 255 1"
+  },
+  {
+   "name": "2nd automatic torque boost slip compensation gain",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8769,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A247. 0 to 255 1"
+  },
+  {
+   "name": "2nd frequency upper limit",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8783,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A261. 00 or “2nd minimum frequency limit” to"
+  },
+  {
+   "name": "2nd frequency lower limit",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8785,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A262. 00 or “start frequency” to “maximum"
+  },
+  {
+   "name": "AVR selection, 2nd motor",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8809,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A281. 00 (always on), 01 (always off), 02 (off"
+  },
+  {
+   "name": "AVR voltage selection, 2nd motor",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8810,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter A282. 200 V class: 0 (200)/1 (215)/2 (220)/"
+  },
+  {
+   "name": "2nd acceleration time 2",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8815,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter A292. 1 to 360000"
+  },
+  {
+   "name": "2nd deceleration time 2",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8817,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "s",
+   "description": "Parameter A293. 1 to 360000"
+  },
+  {
+   "name": "Select method to switch to Acc2/ A294 Dec2 profile, 2nd motor",
+   "group": "Registers",
+   "area": "holding",
+   "address": 8819,
+   "type": "uint16",
+   "access": "RW",
+   "description": "00 (switching by 2CH terminal), 01"
+  },
+  {
+   "name": "Acc1 to Acc2 frequency transition point, 2nd motor",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8820,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A295. 0 to 40000"
+  },
+  {
+   "name": "Dec1 to Dec2 frequency transition point, 2nd motor",
+   "group": "Parameter group A",
+   "area": "holding",
+   "address": 8822,
+   "type": "uint32",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "Hz",
+   "description": "Parameter A296. 0 to 40000"
+  },
+  {
+   "name": "2nd electronic thermal level",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 8972,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter b212. 0.20 x Rated current to 1.00 x Rated"
+  },
+  {
+   "name": "2nd electronic thermal characteristics selection",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 8973,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b213. 00 (reduced TRQ), 01 (constant torque"
+  },
+  {
+   "name": "Overload limit selection, 2nd motor",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 8982,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter b221. 00 (disabling), 01 (enabling during"
+  },
+  {
+   "name": "Overload limit level, 2nd motor",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 8983,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter b222. 100 to 2000"
+  },
+  {
+   "name": "Overload limit parameter, 2nd motor",
+   "group": "Parameter group b",
+   "area": "holding",
+   "address": 8984,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "description": "Parameter b223. 1 to 30000"
+  },
+  {
+   "name": "Overload warning level 2,",
+   "group": "Parameter group C",
+   "area": "holding",
+   "address": 9257,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.1,
+   "unit": "%",
+   "description": "Parameter C241. 0 to 2000"
+  },
+  {
+   "name": "2nd motor parameter selection",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9474,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H202. 00 (standard motor parameter),"
+  },
+  {
+   "name": "2nd motor capacity selection",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9475,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H203. 00 (0.1kW) - 15 (18.5kW)"
+  },
+  {
+   "name": "2nd motor pole number selection H204",
+   "group": "Registers",
+   "area": "holding",
+   "address": 9476,
+   "type": "uint16",
+   "access": "RW",
+   "description": "2/4/6/8/10/12/14/16/18/20/22/24/26/28/"
+  },
+  {
+   "name": "2nd speed response",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9477,
+   "type": "uint16",
+   "access": "RW",
+   "unit": "%",
+   "description": "Parameter H205. 1 to 1000"
+  },
+  {
+   "name": "2nd stabilization parameter",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9478,
+   "type": "uint16",
+   "access": "RW",
+   "description": "Parameter H206. 0 to 255 1"
+  },
+  {
+   "name": "2nd motor parameter R1",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9494,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H220. 1 to 65535"
+  },
+  {
+   "name": "2nd motor parameter R2",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9496,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H221. 1 to 65535"
+  },
+  {
+   "name": "2nd motor parameter L",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9498,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "mH",
+   "description": "Parameter H222. 1 to 65535"
+  },
+  {
+   "name": "2nd motor parameter Io",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9500,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Parameter H223. 1 to 65535"
+  },
+  {
+   "name": "2nd motor parameter J",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9501,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Parameter H224. 1 to 9999000",
+   "scale": 0.001
+  },
+  {
+   "name": "2nd motor parameter R1 (autotuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9509,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H230. 1 to 65530"
+  },
+  {
+   "name": "2nd motor parameter R2 (autotuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9511,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.001,
+   "unit": "Ω",
+   "description": "Parameter H231. 1 to 65530"
+  },
+  {
+   "name": "2nd motor parameter L (autotuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9513,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "mH",
+   "description": "Parameter H232. 1 to 65530"
+  },
+  {
+   "name": "2nd motor parameter Io (autotuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9515,
+   "type": "uint16",
+   "access": "RW",
+   "scale": 0.01,
+   "unit": "A",
+   "description": "Parameter H233. 1 to 65530"
+  },
+  {
+   "name": "2nd motor parameter J (autotuning data)",
+   "group": "Parameter group H",
+   "area": "holding",
+   "address": 9516,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Parameter H234. 1 to 9999000",
+   "scale": 0.001
+  }
+ ],
+ "enums": {
+  "status_a": {
+   "0": "Initial",
+   "2": "Stopping",
+   "3": "Running",
+   "4": "Free-run stop",
+   "5": "Jogging",
+   "6": "DC braking",
+   "7": "Retrying",
+   "8": "Tripping",
+   "9": "Undervoltage (UV)"
+  },
+  "status_b": {
+   "0": "Stopping",
+   "1": "Running",
+   "2": "Tripping"
+  },
+  "status_c": {
+   "1": "Stopping",
+   "2": "Decelerating",
+   "3": "Constant speed",
+   "4": "Accelerating",
+   "5": "Forward rotation",
+   "6": "Reverse rotation",
+   "7": "Switching forward to reverse",
+   "8": "Switching reverse to forward",
+   "9": "Starting forward",
+   "10": "Starting reverse"
+  },
+  "direction": {
+   "0": "Stopped",
+   "1": "Forward",
+   "2": "Reverse"
+  },
+  "mode": {
+   "0": "IM CT",
+   "1": "IM VT"
+  },
+  "freq_source": {
+   "0": "Operator",
+   "1": "Multi-speed 1",
+   "2": "Multi-speed 2",
+   "3": "Multi-speed 3",
+   "4": "Multi-speed 4",
+   "5": "Multi-speed 5",
+   "6": "Multi-speed 6",
+   "7": "Multi-speed 7",
+   "8": "Multi-speed 8",
+   "9": "Multi-speed 9",
+   "10": "Multi-speed 10",
+   "11": "Multi-speed 11",
+   "12": "Multi-speed 12",
+   "13": "Multi-speed 13",
+   "14": "Multi-speed 14",
+   "15": "Multi-speed 15",
+   "16": "Jog frequency",
+   "18": "Modbus network",
+   "19": "Option",
+   "21": "Potentiometer",
+   "22": "Pulse train",
+   "23": "Calculated function output",
+   "24": "EzSQ (drive programming)",
+   "25": "[O] input",
+   "26": "[OI] input",
+   "27": "[O] + [OI]"
+  },
+  "run_source": {
+   "1": "Terminal",
+   "2": "Operator",
+   "3": "Modbus network",
+   "4": "Option"
+  }
+ }
+}

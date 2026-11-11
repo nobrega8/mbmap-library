@@ -1,0 +1,413 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Schneider Electric",
+  "model": "Altivar 12 (ATV12)",
+  "vendor_website": "se.com",
+  "description": "Compact variable speed drive with Modbus RTU on its RJ45 port",
+  "revision": 1,
+  "revised": "2026-11-11",
+  "source": "Schneider Electric, ATV12 Modbus Communication Manual BBV28590, 06/2012",
+  "sources": [
+    {
+      "title": "Altivar 12 Modbus Communication Manual",
+      "version": "BBV28590 06/2012",
+      "note": "Communication parameters, drive state machine, command and status words and the I/O scanner"
+    }
+  ],
+  "notes": [
+    "Partial map: the manual gives the communication settings, the control and status words, the communication scanner and a few examples. The full list of drive parameters is in a separate Excel file that came with the manual and is not mapped here.",
+    "Registers are addressed as the W numbers of the manual (W3201 is address 3201; the examples send 16#0C81 for 3201 and 16#2329 for 9001), so address_base is 0. Functions: 0x03 read, 0x06 write one, 0x10 write several, 0x17 read/write (four words each way), 0x2B/0x0E device identification.",
+    "Control: write the command word (CMD, 8501) with 6, 7 and then 15 to run and read the status word (ETA, 3201); the state machine follows IEC 61800-7. A masked ETA (ETA and 16#006F) gives the state: 16#0050 switch on disabled, 16#0031 ready, 16#0033 switched on, 16#0037 operation enabled, 16#0017 quick stop active.",
+    "Units are given only by the manual's examples (HSP 50 Hz = 500, tFr 60 Hz = 600, SFr 4 kHz = 40, so 0.1 Hz and 0.1 kHz); no scale is set because the manual does not state it in a table.",
+    "Serial settings: 4.8, 9.6, 19.2 or 38.4 kbps (default 19.2 kbps on the ATV12), 8E1 by default, address 1 to 247. The factory address is off until set. Address 0 is broadcast and is not answered.",
+    "This map covers the ATV12 only; the ATV212 uses a different manual."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "data_bits": 8,
+  "parity": "E",
+  "stop_bits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Status word (ETA)",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "uint16",
+      "access": "R",
+      "description": "Drive state word; 16#0637 stopped or forward at speed, 16#0237 forward accelerating or decelerating, 16#8237 reverse accelerating or decelerating"
+    },
+    {
+      "name": "ETA: Ready to switch on",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "ETA: Switched on",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "ETA: Operation enabled",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "ETA: Fault detected",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "ETA: Voltage enabled",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "ETA: Quick stop active (0 = active)",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "ETA: Switch on disabled",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "ETA: Local mode (0 = local)",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "ETA: Reference reached",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "ETA: Reference exceeded",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "ETA: Stopped by STOP key",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 14
+    },
+    {
+      "name": "ETA: Reverse rotation",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3201,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Extended status word (EtI)",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 3206,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Command word (CMD)",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 8501,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Drive state commands: 6 shutdown, 7 switch on, 15 enable operation, 0 disable voltage, 2 quick stop, 128 fault reset (rising edge). Bit 11 reverse direction, bit 8 stop"
+    },
+    {
+      "name": "Extended command word (CMI)",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 8504,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Speed reference (LFRD)",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 8602,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Speed reference written over Modbus"
+    },
+    {
+      "name": "Output speed (RFRD)",
+      "group": "Drive control",
+      "area": "holding",
+      "address": 8604,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Switching frequency (SFr)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3102,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Example value 40 for 4 kHz"
+    },
+    {
+      "name": "Maximum output frequency (tFr)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3103,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Example value 600 for 60 Hz (0.1 Hz)"
+    },
+    {
+      "name": "High speed (HSP)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3104,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Example value 500 for 50 Hz (0.1 Hz)"
+    },
+    {
+      "name": "Low speed (LSP)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3105,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.1 Hz"
+    },
+    {
+      "name": "Acceleration time (ACC)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 9001,
+      "type": "uint16",
+      "access": "RW",
+      "description": "The manual's example writes 13 for 13 s"
+    },
+    {
+      "name": "Modbus address (Add)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 6001,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = off (broadcast only), 1 to 247"
+    },
+    {
+      "name": "Modbus baud rate (tbr)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 6003,
+      "type": "uint16",
+      "access": "RW",
+      "description": "4.8, 9.6, 19.2 or 38.4 kbps"
+    },
+    {
+      "name": "Modbus format (tFO)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 6004,
+      "type": "uint16",
+      "access": "RW",
+      "description": "8O1, 8E1, 8N1 or 8N2"
+    },
+    {
+      "name": "Modbus time-out (ttO)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 6005,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.1 to 30 s, default 10 s"
+    },
+    {
+      "name": "Scanner input 1 source address (nMA1)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12701,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Address of the parameter read as input word 1"
+    },
+    {
+      "name": "Scanner input 2 source address (nMA2)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12702,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Address of the parameter read as input word 2"
+    },
+    {
+      "name": "Scanner input 3 source address (nMA3)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12703,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Address of the parameter read as input word 3"
+    },
+    {
+      "name": "Scanner input 4 source address (nMA4)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12704,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Address of the parameter read as input word 4"
+    },
+    {
+      "name": "Scanner output 1 destination address (nCA1)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12721,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Address of the parameter written as output word 1"
+    },
+    {
+      "name": "Scanner output 2 destination address (nCA2)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12722,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Address of the parameter written as output word 2"
+    },
+    {
+      "name": "Scanner output 3 destination address (nCA3)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12723,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Address of the parameter written as output word 3"
+    },
+    {
+      "name": "Scanner output 4 destination address (nCA4)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12724,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Address of the parameter written as output word 4"
+    },
+    {
+      "name": "Scanner input 1 value (nM1)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12741,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Scanner input 2 value (nM2)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12742,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Scanner input 3 value (nM3)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12743,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Scanner input 4 value (nM4)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12744,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Scanner output 1 value (nC1)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12761,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Scanner output 2 value (nC2)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12762,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Scanner output 3 value (nC3)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12763,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Scanner output 4 value (nC4)",
+      "group": "Communication scanner",
+      "area": "holding",
+      "address": 12764,
+      "type": "uint16",
+      "access": "RW"
+    }
+  ]
+}
