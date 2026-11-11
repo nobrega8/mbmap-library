@@ -1,0 +1,3866 @@
+{
+ "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+ "mbmap": 2,
+ "vendor": "Landis+Gyr",
+ "models": [
+  "E650",
+  "MarCom RS485 DLMS-Modbus gateway"
+ ],
+ "vendor_website": "landisgyr.com",
+ "revision": 1,
+ "revised": "2026-11-11",
+ "source": "MarCom, Landis & Gyr E650 with RS485 DLMS-Modbus Gateway, rev. 3.107 EN",
+ "sources": [
+  {
+   "title": "Landis & Gyr E650 with RS485 DLMS-MODBUS Gateway (MarCom)",
+   "version": "3.107 EN",
+   "note": "Modbus mapping area; up to four meters on one gateway, one map per meter"
+  }
+ ],
+ "protocol": "tcp+rtu",
+ "port": 502,
+ "unit_id": 1,
+ "byte_order": "big",
+ "word_order": "big",
+ "address_base": 0,
+ "x_status": "official",
+ "model": "E650 with RS485 DLMS-Modbus gateway",
+ "description": "E650 energy meters (up to four) behind a MarCom RS485 DLMS to Modbus gateway",
+ "notes": [
+  "The Modbus data comes from a DLMS to Modbus gateway made by MarCom that reads the E650 meters over RS485; the meter itself does not speak Modbus. Up to four meters connect to one gateway; each has its own block of registers (meter 1 starts at 40016, meter 2 at 40216, meter 3 at 40416, meter 4 at 40616) and the gateway-wide registers 40000 to 40014 are shared.",
+  "The manual writes the addresses as 4x40000 to 4x40798 (holding registers); they are used here as they are with address_base 0. If reads come out one register off, the gateway counts from 1 and address_base should be 1.",
+  "Each value takes 2 registers (FLOAT, DINT or UDINT). The word order is not stated; big is assumed. A value the meter does not answer reads -1.",
+  "The meter's serial number must be written to the gateway (registers 40004, 40006, 40008, 40010 for meters 1 to 4, or on its web page) before the first reading. The gateway's default address is 192.168.0.122; Modbus RTU on its RS232 ports and Modbus TCP on its Ethernet port.",
+  "Energy and power registers carry the DLMS OBIS code in their description (for example 1.8.0 is total active energy A+, 1.6.1 maximum power in time slot 1). The 'previous month' values are the OBIS codes with an asterisk. Units are not given by the manual."
+ ],
+ "registers": [
+  {
+   "name": "Digital input 00",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40000,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "Digital input 01",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40001,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "Digital output 00",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40002,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "Digital output 01",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40003,
+   "type": "uint16",
+   "access": "R"
+  },
+  {
+   "name": "Meter 1 serial number",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40004,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Serial number of the meter, written to the gateway to enable DLMS reading"
+  },
+  {
+   "name": "Meter 2 serial number",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40006,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Serial number of the meter, written to the gateway to enable DLMS reading"
+  },
+  {
+   "name": "Meter 3 serial number",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40008,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Serial number of the meter, written to the gateway to enable DLMS reading"
+  },
+  {
+   "name": "Meter 4 serial number",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40010,
+   "type": "uint32",
+   "access": "RW",
+   "description": "Serial number of the meter, written to the gateway to enable DLMS reading"
+  },
+  {
+   "name": "Index reading meter",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40012,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "Error number",
+   "group": "Gateway",
+   "area": "holding",
+   "address": 40014,
+   "type": "float32",
+   "access": "R"
+  },
+  {
+   "name": "Meter 1: Hours: format HHMMSS",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40016,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.9.1"
+  },
+  {
+   "name": "Meter 1: Data format AAMMGG",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40018,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.9.2"
+  },
+  {
+   "name": "Meter 1: Meter Serial Number (read by DLMS)",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40020,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.0.0"
+  },
+  {
+   "name": "Meter 1: Reset Meter Count",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40022,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 0.1.0"
+  },
+  {
+   "name": "Meter 1: Total Active Energy A+",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40024,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.0"
+  },
+  {
+   "name": "Meter 1: Total Active Energy previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40026,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.0*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 1 A+",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40028,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.1"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 1 previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40030,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.1*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 2 A+",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40032,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.2"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 2 previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40034,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.2*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 3 A+",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40036,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.3"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 3 previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40038,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.3*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 4 A+",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40040,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.4"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 4 previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40042,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.4*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40044,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.0"
+  },
+  {
+   "name": "Meter 1: Total Active Energy previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40046,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.0*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 1 A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40048,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.1"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 1 previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40050,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.1*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 2 A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40052,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.2"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 2 previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40054,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.2*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 3 A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40056,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.3"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 3 previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40058,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.3*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 4 A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40060,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.4"
+  },
+  {
+   "name": "Meter 1: Total Active Energy slot 4 previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40062,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.4*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40064,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.0"
+  },
+  {
+   "name": "Meter 1: Reactive total energy previous month QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40066,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.0*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 1 QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40068,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.1"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 1 previous month QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40070,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.1*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 2 QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40072,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.2"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 2 previous month QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40074,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.2*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 3 QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40076,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.3"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 3 previous month QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40078,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.3*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 4 QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40080,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.4"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 4 previous month QI",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40082,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.4*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40084,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.0"
+  },
+  {
+   "name": "Meter 1: Reactive total energy previous month QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40086,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.0*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 1 QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40088,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.1"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 1 previous month QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40090,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.1*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 2 QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40092,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.2"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 2 previous month QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40094,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.2*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 3 QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40096,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.3"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 3 previous month QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40098,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.3*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 4 QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40100,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.4"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 4 previous month QII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40102,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.4*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40104,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.0"
+  },
+  {
+   "name": "Meter 1: Reactive total energy previous month QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40106,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.0*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 1 QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40108,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.1"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 1 previous month QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40110,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.1*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 2 QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40112,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.2"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 2 previous month QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40114,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.2*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 3 QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40116,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.3"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 3 previous month QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40118,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.3*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 4 QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40120,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.4"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 4 previous month QIII",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40122,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.4*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40124,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.0"
+  },
+  {
+   "name": "Meter 1: Reactive total energy previous month QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40126,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.0*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 1 QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40128,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.1"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 1 previous month QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40130,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.1*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 2 QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40132,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.2"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 2 previous month QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40134,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.2*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 3 QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40136,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.3"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 3 previous month QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40138,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.3*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 4 QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40140,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.4"
+  },
+  {
+   "name": "Meter 1: Reactive total energy slot 4 previous month QIV",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40142,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.4*"
+  },
+  {
+   "name": "Meter 1: Power max slot 1 A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40144,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.1"
+  },
+  {
+   "name": "Meter 1: Power max slot 1 previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40146,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.1*"
+  },
+  {
+   "name": "Meter 1: Power max slot 2 A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40148,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.2"
+  },
+  {
+   "name": "Meter 1: Power max slot 2 previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40150,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.2*"
+  },
+  {
+   "name": "Meter 1: Power max slot 3 A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40152,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.3"
+  },
+  {
+   "name": "Meter 1: Power max slot 3 previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40154,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.3*"
+  },
+  {
+   "name": "Meter 1: Power max slot 4 A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40156,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.4"
+  },
+  {
+   "name": "Meter 1: Power max slot 4 previous month A +",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40158,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.4*"
+  },
+  {
+   "name": "Meter 1: Power max slot 1 A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40160,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.1"
+  },
+  {
+   "name": "Meter 1: Power max slot 1 previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40162,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.1*"
+  },
+  {
+   "name": "Meter 1: Power max slot 2 A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40164,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.2"
+  },
+  {
+   "name": "Meter 1: Power max slot 2 previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40166,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.2*"
+  },
+  {
+   "name": "Meter 1: Power max slot 3 A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40168,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.3"
+  },
+  {
+   "name": "Meter 1: Power max slot 3 previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40170,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.3*"
+  },
+  {
+   "name": "Meter 1: Power max slot 4 A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40172,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.4"
+  },
+  {
+   "name": "Meter 1: Power max slot 4 previous month A -",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40174,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.4*"
+  },
+  {
+   "name": "Meter 1: Internal signal control status",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40176,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.4.0"
+  },
+  {
+   "name": "Meter 1: Internal operation status",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40178,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.5.0"
+  },
+  {
+   "name": "Meter 1: Voltage phase 1",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40180,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 32.7.0"
+  },
+  {
+   "name": "Meter 1: Voltage phase 2",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40182,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 52.7.0"
+  },
+  {
+   "name": "Meter 1: Voltage phase 3",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40184,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 72.7.0"
+  },
+  {
+   "name": "Meter 1: Power failure counter phase1",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40186,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.1"
+  },
+  {
+   "name": "Meter 1: Power failure counter phase2",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40188,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.2"
+  },
+  {
+   "name": "Meter 1: Power failure counter phase3",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40190,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.3"
+  },
+  {
+   "name": "Meter 1: Power failure total counter for phase 1,2,3",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40192,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.0"
+  },
+  {
+   "name": "Meter 1: Overvoltage event number phase1",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40194,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 32.7.1"
+  },
+  {
+   "name": "Meter 1: Overvoltage event number phase2",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40196,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 52.7.1"
+  },
+  {
+   "name": "Meter 1: Overvoltage event number phase3",
+   "group": "Meter 1 - OBIS values",
+   "area": "holding",
+   "address": 40198,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 72.7.1"
+  },
+  {
+   "name": "Meter 1: Total Active Energy A+ (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41046,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 1.8.0"
+  },
+  {
+   "name": "Meter 1: Total Active Energy previous month A + (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41048,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 1.8.0*"
+  },
+  {
+   "name": "Meter 1: Total Active Energy A - (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41050,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 2.8.0"
+  },
+  {
+   "name": "Meter 1: Total Active Energy previous month A - (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41052,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 2.8.0*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy QI (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41054,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 5.8.0"
+  },
+  {
+   "name": "Meter 1: Reactive total energy previous month QI (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41056,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 5.8.0*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy QII (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41058,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 6.8.0"
+  },
+  {
+   "name": "Meter 1: Reactive total energy previous month QII (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41060,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 6.8.0*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy QIII (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41062,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 7.8.0"
+  },
+  {
+   "name": "Meter 1: Reactive total energy previous month QIII (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41064,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 7.8.0*"
+  },
+  {
+   "name": "Meter 1: Reactive total energy QIV (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41066,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 8.8.0"
+  },
+  {
+   "name": "Meter 1: Reactive total energy previous month QIV (unsigned copy)",
+   "group": "Meter 1 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41068,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 8.8.0*"
+  },
+  {
+   "name": "Meter 2: Hours: format HHMMSS",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40216,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.9.1"
+  },
+  {
+   "name": "Meter 2: Data format AAMMGG",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40218,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.9.2"
+  },
+  {
+   "name": "Meter 2: Meter Serial Number (read by DLMS)",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40220,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.0.0"
+  },
+  {
+   "name": "Meter 2: Reset Meter Count",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40222,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 0.1.0"
+  },
+  {
+   "name": "Meter 2: Total Active Energy A+",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40224,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.0"
+  },
+  {
+   "name": "Meter 2: Total Active Energy previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40226,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.0*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 1 A+",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40228,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.1"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 1 previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40230,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.1*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 2 A+",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40232,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.2"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 2 previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40234,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.2*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 3 A+",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40236,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.3"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 3 previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40238,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.3*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 4 A+",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40240,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.4"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 4 previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40242,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.4*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40244,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.0"
+  },
+  {
+   "name": "Meter 2: Total Active Energy previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40246,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.0*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 1 A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40248,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.1"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 1 previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40250,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.1*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 2 A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40252,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.2"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 2 previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40254,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.2*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 3 A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40256,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.3"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 3 previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40258,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.3*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 4 A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40260,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.4"
+  },
+  {
+   "name": "Meter 2: Total Active Energy slot 4 previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40262,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.4*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40264,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.0"
+  },
+  {
+   "name": "Meter 2: Reactive total energy previous month QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40266,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.0*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 1 QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40268,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.1"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 1 previous month QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40270,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.1*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 2 QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40272,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.2"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 2 previous month QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40274,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.2*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 3 QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40276,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.3"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 3 previous month QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40278,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.3*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 4 QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40280,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.4"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 4 previous month QI",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40282,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.4*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40284,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.0"
+  },
+  {
+   "name": "Meter 2: Reactive total energy previous month QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40286,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.0*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 1 QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40288,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.1"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 1 previous month QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40290,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.1*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 2 QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40292,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.2"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 2 previous month QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40294,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.2*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 3 QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40296,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.3"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 3 previous month QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40298,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.3*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 4 QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40300,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.4"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 4 previous month QII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40302,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.4*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40304,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.0"
+  },
+  {
+   "name": "Meter 2: Reactive total energy previous month QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40306,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.0*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 1 QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40308,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.1"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 1 previous month QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40310,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.1*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 2 QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40312,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.2"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 2 previous month QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40314,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.2*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 3 QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40316,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.3"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 3 previous month QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40318,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.3*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 4 QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40320,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.4"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 4 previous month QIII",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40322,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.4*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40324,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.0"
+  },
+  {
+   "name": "Meter 2: Reactive total energy previous month QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40326,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.0*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 1 QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40328,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.1"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 1 previous month QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40330,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.1*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 2 QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40332,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.2"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 2 previous month QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40334,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.2*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 3 QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40336,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.3"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 3 previous month QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40338,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.3*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 4 QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40340,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.4"
+  },
+  {
+   "name": "Meter 2: Reactive total energy slot 4 previous month QIV",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40342,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.4*"
+  },
+  {
+   "name": "Meter 2: Power max slot 1 A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40344,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.1"
+  },
+  {
+   "name": "Meter 2: Power max slot 1 previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40346,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.1*"
+  },
+  {
+   "name": "Meter 2: Power max slot 2 A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40348,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.2"
+  },
+  {
+   "name": "Meter 2: Power max slot 2 previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40350,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.2*"
+  },
+  {
+   "name": "Meter 2: Power max slot 3 A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40352,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.3"
+  },
+  {
+   "name": "Meter 2: Power max slot 3 previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40354,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.3*"
+  },
+  {
+   "name": "Meter 2: Power max slot 4 A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40356,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.4"
+  },
+  {
+   "name": "Meter 2: Power max slot 4 previous month A +",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40358,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.4*"
+  },
+  {
+   "name": "Meter 2: Power max slot 1 A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40360,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.1"
+  },
+  {
+   "name": "Meter 2: Power max slot 1 previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40362,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.1*"
+  },
+  {
+   "name": "Meter 2: Power max slot 2 A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40364,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.2"
+  },
+  {
+   "name": "Meter 2: Power max slot 2 previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40366,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.2*"
+  },
+  {
+   "name": "Meter 2: Power max slot 3 A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40368,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.3"
+  },
+  {
+   "name": "Meter 2: Power max slot 3 previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40370,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.3*"
+  },
+  {
+   "name": "Meter 2: Power max slot 4 A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40372,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.4"
+  },
+  {
+   "name": "Meter 2: Power max slot 4 previous month A -",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40374,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.4*"
+  },
+  {
+   "name": "Meter 2: Internal signal control status",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40376,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.4.0"
+  },
+  {
+   "name": "Meter 2: Internal operation status",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40378,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.5.0"
+  },
+  {
+   "name": "Meter 2: Voltage phase 1",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40380,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 32.7.0"
+  },
+  {
+   "name": "Meter 2: Voltage phase 2",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40382,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 52.7.0"
+  },
+  {
+   "name": "Meter 2: Voltage phase 3",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40384,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 72.7.0"
+  },
+  {
+   "name": "Meter 2: Power failure counter phase1",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40386,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.1"
+  },
+  {
+   "name": "Meter 2: Power failure counter phase2",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40388,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.2"
+  },
+  {
+   "name": "Meter 2: Power failure counter phase3",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40390,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.3"
+  },
+  {
+   "name": "Meter 2: Power failure total counter for phase 1,2,3",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40392,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.0"
+  },
+  {
+   "name": "Meter 2: Overvoltage event number phase1",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40394,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 32.7.1"
+  },
+  {
+   "name": "Meter 2: Overvoltage event number phase2",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40396,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 52.7.1"
+  },
+  {
+   "name": "Meter 2: Overvoltage event number phase3",
+   "group": "Meter 2 - OBIS values",
+   "area": "holding",
+   "address": 40398,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 72.7.1"
+  },
+  {
+   "name": "Meter 2: Total Active Energy A+ (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41086,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 1.8.0"
+  },
+  {
+   "name": "Meter 2: Total Active Energy previous month A + (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41088,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 1.8.0*"
+  },
+  {
+   "name": "Meter 2: Total Active Energy A - (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41090,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 2.8.0"
+  },
+  {
+   "name": "Meter 2: Total Active Energy previous month A - (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41092,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 2.8.0*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy QI (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41094,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 5.8.0"
+  },
+  {
+   "name": "Meter 2: Reactive total energy previous month QI (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41096,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 5.8.0*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy QII (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41098,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 6.8.0"
+  },
+  {
+   "name": "Meter 2: Reactive total energy previous month QII (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41100,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 6.8.0*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy QIII (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41102,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 7.8.0"
+  },
+  {
+   "name": "Meter 2: Reactive total energy previous month QIII (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41104,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 7.8.0*"
+  },
+  {
+   "name": "Meter 2: Reactive total energy QIV (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41106,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 8.8.0"
+  },
+  {
+   "name": "Meter 2: Reactive total energy previous month QIV (unsigned copy)",
+   "group": "Meter 2 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41108,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 8.8.0*"
+  },
+  {
+   "name": "Meter 3: Hours: format HHMMSS",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40416,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.9.1"
+  },
+  {
+   "name": "Meter 3: Data format AAMMGG",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40418,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.9.2"
+  },
+  {
+   "name": "Meter 3: Meter Serial Number (read by DLMS)",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40420,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.0.0"
+  },
+  {
+   "name": "Meter 3: Reset Meter Count",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40422,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 0.1.0"
+  },
+  {
+   "name": "Meter 3: Total Active Energy A+",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40424,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.0"
+  },
+  {
+   "name": "Meter 3: Total Active Energy previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40426,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.0*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 1 A+",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40428,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.1"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 1 previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40430,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.1*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 2 A+",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40432,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.2"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 2 previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40434,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.2*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 3 A+",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40436,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.3"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 3 previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40438,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.3*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 4 A+",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40440,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.4"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 4 previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40442,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.4*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40444,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.0"
+  },
+  {
+   "name": "Meter 3: Total Active Energy previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40446,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.0*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 1 A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40448,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.1"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 1 previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40450,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.1*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 2 A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40452,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.2"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 2 previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40454,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.2*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 3 A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40456,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.3"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 3 previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40458,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.3*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 4 A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40460,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.4"
+  },
+  {
+   "name": "Meter 3: Total Active Energy slot 4 previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40462,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.4*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40464,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.0"
+  },
+  {
+   "name": "Meter 3: Reactive total energy previous month QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40466,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.0*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 1 QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40468,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.1"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 1 previous month QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40470,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.1*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 2 QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40472,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.2"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 2 previous month QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40474,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.2*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 3 QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40476,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.3"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 3 previous month QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40478,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.3*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 4 QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40480,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.4"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 4 previous month QI",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40482,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.4*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40484,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.0"
+  },
+  {
+   "name": "Meter 3: Reactive total energy previous month QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40486,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.0*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 1 QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40488,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.1"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 1 previous month QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40490,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.1*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 2 QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40492,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.2"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 2 previous month QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40494,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.2*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 3 QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40496,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.3"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 3 previous month QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40498,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.3*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 4 QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40500,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.4"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 4 previous month QII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40502,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.4*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40504,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.0"
+  },
+  {
+   "name": "Meter 3: Reactive total energy previous month QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40506,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.0*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 1 QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40508,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.1"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 1 previous month QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40510,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.1*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 2 QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40512,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.2"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 2 previous month QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40514,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.2*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 3 QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40516,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.3"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 3 previous month QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40518,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.3*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 4 QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40520,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.4"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 4 previous month QIII",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40522,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.4*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40524,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.0"
+  },
+  {
+   "name": "Meter 3: Reactive total energy previous month QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40526,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.0*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 1 QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40528,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.1"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 1 previous month QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40530,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.1*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 2 QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40532,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.2"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 2 previous month QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40534,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.2*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 3 QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40536,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.3"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 3 previous month QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40538,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.3*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 4 QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40540,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.4"
+  },
+  {
+   "name": "Meter 3: Reactive total energy slot 4 previous month QIV",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40542,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.4*"
+  },
+  {
+   "name": "Meter 3: Power max slot 1 A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40544,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.1"
+  },
+  {
+   "name": "Meter 3: Power max slot 1 previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40546,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.1*"
+  },
+  {
+   "name": "Meter 3: Power max slot 2 A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40548,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.2"
+  },
+  {
+   "name": "Meter 3: Power max slot 2 previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40550,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.2*"
+  },
+  {
+   "name": "Meter 3: Power max slot 3 A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40552,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.3"
+  },
+  {
+   "name": "Meter 3: Power max slot 3 previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40554,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.3*"
+  },
+  {
+   "name": "Meter 3: Power max slot 4 A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40556,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.4"
+  },
+  {
+   "name": "Meter 3: Power max slot 4 previous month A +",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40558,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.4*"
+  },
+  {
+   "name": "Meter 3: Power max slot 1 A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40560,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.1"
+  },
+  {
+   "name": "Meter 3: Power max slot 1 previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40562,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.1*"
+  },
+  {
+   "name": "Meter 3: Power max slot 2 A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40564,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.2"
+  },
+  {
+   "name": "Meter 3: Power max slot 2 previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40566,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.2*"
+  },
+  {
+   "name": "Meter 3: Power max slot 3 A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40568,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.3"
+  },
+  {
+   "name": "Meter 3: Power max slot 3 previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40570,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.3*"
+  },
+  {
+   "name": "Meter 3: Power max slot 4 A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40572,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.4"
+  },
+  {
+   "name": "Meter 3: Power max slot 4 previous month A -",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40574,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.4*"
+  },
+  {
+   "name": "Meter 3: Internal signal control status",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40576,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.4.0"
+  },
+  {
+   "name": "Meter 3: Internal operation status",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40578,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.5.0"
+  },
+  {
+   "name": "Meter 3: Voltage phase 1",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40580,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 32.7.0"
+  },
+  {
+   "name": "Meter 3: Voltage phase 2",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40582,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 52.7.0"
+  },
+  {
+   "name": "Meter 3: Voltage phase 3",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40584,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 72.7.0"
+  },
+  {
+   "name": "Meter 3: Power failure counter phase1",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40586,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.1"
+  },
+  {
+   "name": "Meter 3: Power failure counter phase2",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40588,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.2"
+  },
+  {
+   "name": "Meter 3: Power failure counter phase3",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40590,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.3"
+  },
+  {
+   "name": "Meter 3: Power failure total counter for phase 1,2,3",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40592,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.0"
+  },
+  {
+   "name": "Meter 3: Overvoltage event number phase1",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40594,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 32.7.1"
+  },
+  {
+   "name": "Meter 3: Overvoltage event number phase2",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40596,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 52.7.1"
+  },
+  {
+   "name": "Meter 3: Overvoltage event number phase3",
+   "group": "Meter 3 - OBIS values",
+   "area": "holding",
+   "address": 40598,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 72.7.1"
+  },
+  {
+   "name": "Meter 3: Total Active Energy A+ (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41126,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 1.8.0"
+  },
+  {
+   "name": "Meter 3: Total Active Energy previous month A + (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41128,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 1.8.0*"
+  },
+  {
+   "name": "Meter 3: Total Active Energy A - (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41130,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 2.8.0"
+  },
+  {
+   "name": "Meter 3: Total Active Energy previous month A - (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41132,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 2.8.0*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy QI (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41134,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 5.8.0"
+  },
+  {
+   "name": "Meter 3: Reactive total energy previous month QI (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41136,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 5.8.0*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy QII (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41138,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 6.8.0"
+  },
+  {
+   "name": "Meter 3: Reactive total energy previous month QII (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41140,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 6.8.0*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy QIII (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41142,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 7.8.0"
+  },
+  {
+   "name": "Meter 3: Reactive total energy previous month QIII (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41144,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 7.8.0*"
+  },
+  {
+   "name": "Meter 3: Reactive total energy QIV (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41146,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 8.8.0"
+  },
+  {
+   "name": "Meter 3: Reactive total energy previous month QIV (unsigned copy)",
+   "group": "Meter 3 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41148,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 8.8.0*"
+  },
+  {
+   "name": "Meter 4: Hours: format HHMMSS",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40616,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.9.1"
+  },
+  {
+   "name": "Meter 4: Data format AAMMGG",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40618,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.9.2"
+  },
+  {
+   "name": "Meter 4: Meter Serial Number (read by DLMS)",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40620,
+   "type": "int32",
+   "access": "R",
+   "description": "OBIS 0.0.0"
+  },
+  {
+   "name": "Meter 4: Reset Meter Count",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40622,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 0.1.0"
+  },
+  {
+   "name": "Meter 4: Total Active Energy A+",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40624,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.0"
+  },
+  {
+   "name": "Meter 4: Total Active Energy previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40626,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.0*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 1 A+",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40628,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.1"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 1 previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40630,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.1*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 2 A+",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40632,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.2"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 2 previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40634,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.2*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 3 A+",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40636,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.3"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 3 previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40638,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.3*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 4 A+",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40640,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.4"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 4 previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40642,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.8.4*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40644,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.0"
+  },
+  {
+   "name": "Meter 4: Total Active Energy previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40646,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.0*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 1 A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40648,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.1"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 1 previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40650,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.1*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 2 A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40652,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.2"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 2 previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40654,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.2*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 3 A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40656,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.3"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 3 previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40658,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.3*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 4 A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40660,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.4"
+  },
+  {
+   "name": "Meter 4: Total Active Energy slot 4 previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40662,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.8.4*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40664,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.0"
+  },
+  {
+   "name": "Meter 4: Reactive total energy previous month QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40666,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.0*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 1 QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40668,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.1"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 1 previous month QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40670,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.1*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 2 QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40672,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.2"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 2 previous month QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40674,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.2*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 3 QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40676,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.3"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 3 previous month QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40678,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.3*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 4 QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40680,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.4"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 4 previous month QI",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40682,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 5.8.4*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40684,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.0"
+  },
+  {
+   "name": "Meter 4: Reactive total energy previous month QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40686,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.0*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 1 QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40688,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.1"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 1 previous month QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40690,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.1*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 2 QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40692,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.2"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 2 previous month QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40694,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.2*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 3 QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40696,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.3"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 3 previous month QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40698,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.3*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 4 QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40700,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.4"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 4 previous month QII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40702,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 6.8.4*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40704,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.0"
+  },
+  {
+   "name": "Meter 4: Reactive total energy previous month QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40706,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.0*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 1 QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40708,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.1"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 1 previous month QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40710,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.1*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 2 QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40712,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.2"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 2 previous month QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40714,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.2*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 3 QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40716,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.3"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 3 previous month QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40718,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.3*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 4 QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40720,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.4"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 4 previous month QIII",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40722,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 7.8.4*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40724,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.0"
+  },
+  {
+   "name": "Meter 4: Reactive total energy previous month QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40726,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.0*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 1 QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40728,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.1"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 1 previous month QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40730,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.1*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 2 QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40732,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.2"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 2 previous month QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40734,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.2*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 3 QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40736,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.3"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 3 previous month QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40738,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.3*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 4 QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40740,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.4"
+  },
+  {
+   "name": "Meter 4: Reactive total energy slot 4 previous month QIV",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40742,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 8.8.4*"
+  },
+  {
+   "name": "Meter 4: Power max slot 1 A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40744,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.1"
+  },
+  {
+   "name": "Meter 4: Power max slot 1 previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40746,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.1*"
+  },
+  {
+   "name": "Meter 4: Power max slot 2 A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40748,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.2"
+  },
+  {
+   "name": "Meter 4: Power max slot 2 previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40750,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.2*"
+  },
+  {
+   "name": "Meter 4: Power max slot 3 A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40752,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.3"
+  },
+  {
+   "name": "Meter 4: Power max slot 3 previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40754,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.3*"
+  },
+  {
+   "name": "Meter 4: Power max slot 4 A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40756,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.4"
+  },
+  {
+   "name": "Meter 4: Power max slot 4 previous month A +",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40758,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 1.6.4*"
+  },
+  {
+   "name": "Meter 4: Power max slot 1 A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40760,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.1"
+  },
+  {
+   "name": "Meter 4: Power max slot 1 previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40762,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.1*"
+  },
+  {
+   "name": "Meter 4: Power max slot 2 A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40764,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.2"
+  },
+  {
+   "name": "Meter 4: Power max slot 2 previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40766,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.2*"
+  },
+  {
+   "name": "Meter 4: Power max slot 3 A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40768,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.3"
+  },
+  {
+   "name": "Meter 4: Power max slot 3 previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40770,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.3*"
+  },
+  {
+   "name": "Meter 4: Power max slot 4 A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40772,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.4"
+  },
+  {
+   "name": "Meter 4: Power max slot 4 previous month A -",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40774,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 2.6.4*"
+  },
+  {
+   "name": "Meter 4: Internal signal control status",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40776,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.4.0"
+  },
+  {
+   "name": "Meter 4: Internal operation status",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40778,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.5.0"
+  },
+  {
+   "name": "Meter 4: Voltage phase 1",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40780,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 32.7.0"
+  },
+  {
+   "name": "Meter 4: Voltage phase 2",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40782,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 52.7.0"
+  },
+  {
+   "name": "Meter 4: Voltage phase 3",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40784,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 72.7.0"
+  },
+  {
+   "name": "Meter 4: Power failure counter phase1",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40786,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.1"
+  },
+  {
+   "name": "Meter 4: Power failure counter phase2",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40788,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.2"
+  },
+  {
+   "name": "Meter 4: Power failure counter phase3",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40790,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.3"
+  },
+  {
+   "name": "Meter 4: Power failure total counter for phase 1,2,3",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40792,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS C.7.0"
+  },
+  {
+   "name": "Meter 4: Overvoltage event number phase1",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40794,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 32.7.1"
+  },
+  {
+   "name": "Meter 4: Overvoltage event number phase2",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40796,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 52.7.1"
+  },
+  {
+   "name": "Meter 4: Overvoltage event number phase3",
+   "group": "Meter 4 - OBIS values",
+   "area": "holding",
+   "address": 40798,
+   "type": "float32",
+   "access": "R",
+   "description": "OBIS 72.7.1"
+  },
+  {
+   "name": "Meter 4: Total Active Energy A+ (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41166,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 1.8.0"
+  },
+  {
+   "name": "Meter 4: Total Active Energy previous month A + (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41168,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 1.8.0*"
+  },
+  {
+   "name": "Meter 4: Total Active Energy A - (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41170,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 2.8.0"
+  },
+  {
+   "name": "Meter 4: Total Active Energy previous month A - (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41172,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 2.8.0*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy QI (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41174,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 5.8.0"
+  },
+  {
+   "name": "Meter 4: Reactive total energy previous month QI (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41176,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 5.8.0*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy QII (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41178,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 6.8.0"
+  },
+  {
+   "name": "Meter 4: Reactive total energy previous month QII (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41180,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 6.8.0*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy QIII (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41182,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 7.8.0"
+  },
+  {
+   "name": "Meter 4: Reactive total energy previous month QIII (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41184,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 7.8.0*"
+  },
+  {
+   "name": "Meter 4: Reactive total energy QIV (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41186,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 8.8.0"
+  },
+  {
+   "name": "Meter 4: Reactive total energy previous month QIV (unsigned copy)",
+   "group": "Meter 4 - Energy counters (unsigned copy)",
+   "area": "holding",
+   "address": 41188,
+   "type": "uint32",
+   "access": "R",
+   "description": "OBIS 8.8.0*"
+  }
+ ]
+}
