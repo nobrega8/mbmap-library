@@ -26,6 +26,7 @@ npm run check    # type check
 | `BASE_PATH` | `/mbmap-library` | Path the site is served under; `""` at the root of a domain (set by the workflow) |
 | `MBMAP_LIBRARY_DIR` | the folder above `site/` | A checkout of the library to read instead |
 | `MBMAP_LIBRARY_REPO`, `MBMAP_LIBRARY_REF` | GitHub, `main` | Clone the library into `.cache/` instead of reading this checkout |
+| `PUBLIC_GTM_ID` | `GTM-KC33D3LQ` | Google Tag Manager container; `""` removes analytics and the cookie banner. Loads only after the visitor accepts |
 | `MBMAP_ICONS` | on | `0` skips fetching manufacturer icons (offline builds) |
 
 Manufacturer icons are fetched at build time from each map's `vendor_website`, as

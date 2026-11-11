@@ -16,6 +16,8 @@ export const GET: APIRoute = ({ site }) => {
     url(href("/compatibility")),
     url(href("/contribute")),
     url(href("/about")),
+    url(href("/terms")),
+    url(href("/privacy")),
     ...manufacturers.map((m) => url(m.url)),
     ...devices.map((d) => url(d.url, d.info.revised ?? d.added?.slice(0, 10))),
   ];

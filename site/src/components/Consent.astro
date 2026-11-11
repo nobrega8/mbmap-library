@@ -1,0 +1,28 @@
+---
+import { href } from "../lib/base.ts";
+import { GTM_ID } from "../lib/analytics.ts";
+---
+
+{
+  GTM_ID && (
+    <>
+      <div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" aria-describedby="consent-text" hidden>
+        <p id="consent-title"><strong>Cookies</strong></p>
+        <p id="consent-text">
+          We use Google Analytics cookies (through Google Tag Manager) to count visits and see which maps are used. Nothing is loaded unless you accept.
+          See the <a href={href("/privacy")}>privacy policy</a> and the <a href={href("/terms")}>terms</a>.
+        </p>
+        <div class="consent-actions">
+          <button class="btn" type="button" data-consent="denied">Reject</button>
+          <button class="btn primary" type="button" data-consent="granted">Accept</button>
+        </div>
+      </div>
+      <script define:vars={{ GTM_ID }} is:inline>
+        window.__GTM_ID = GTM_ID;
+      </script>
+      <script>
+        import "../scripts/consent.ts";
+      </script>
+    </>
+  )
+}
