@@ -8,21 +8,21 @@
     "S700"
   ],
   "vendor_website": "seneca.it",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table seneca/s604; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/seneca-s604.htm. Not verified against the manufacturer's documentation; Modbus Database (Jibril Sharafi, MIT licence), table seneca/s700; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/seneca-s700.htm. Not verified against the manufacturer's documentation",
+  "revision": 3,
+  "source": "Seneca, S604 Universal Power Meter user manual, MODBUS Protocol (MI00394-3-EN)",
   "notes": [
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Seneca S604 and S700 power meters.",
+    "Values are read as IEEE 754 float32 (two registers) at the 0x1000 block of the manual's table, with function 03 or 04. The same quantities are also available as integers at 0x0000, in milli-units.",
+    "Checked against the S604 manual. The S700 shares this table in the catalogue the map came from, but no S700 document was available, so it is not confirmed for that model.",
+    "Not tested on a device. Parameters beyond these first 51 (demand, harmonics, energy counters, settings) are not in this map."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
     {
-      "name": "Phase 1 N voltage",
+      "name": "Phase 1-N voltage",
       "area": "holding",
       "address": 4096,
       "type": "float32",
@@ -30,7 +30,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 2 N voltage",
+      "name": "Phase 2-N voltage",
       "area": "holding",
       "address": 4098,
       "type": "float32",
@@ -38,7 +38,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 3 N voltage",
+      "name": "Phase 3-N voltage",
       "area": "holding",
       "address": 4100,
       "type": "float32",
@@ -242,21 +242,21 @@
       "access": "R"
     },
     {
-      "name": "Phase 1 dpf",
+      "name": "Phase 1 DPF",
       "area": "holding",
       "address": 4152,
       "type": "float32",
       "access": "R"
     },
     {
-      "name": "Phase 2 dpf",
+      "name": "Phase 2 DPF",
       "area": "holding",
       "address": 4154,
       "type": "float32",
       "access": "R"
     },
     {
-      "name": "Phase 3 dpf",
+      "name": "Phase 3 DPF",
       "area": "holding",
       "address": 4156,
       "type": "float32",
@@ -291,7 +291,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 1 N voltage thd",
+      "name": "Phase 1-N voltage THD",
       "area": "holding",
       "address": 4166,
       "type": "float32",
@@ -299,7 +299,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 2 N voltage thd",
+      "name": "Phase 2-N voltage THD",
       "area": "holding",
       "address": 4168,
       "type": "float32",
@@ -307,7 +307,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 3 N voltage thd",
+      "name": "Phase 3-N voltage THD",
       "area": "holding",
       "address": 4170,
       "type": "float32",
@@ -315,7 +315,7 @@
       "access": "R"
     },
     {
-      "name": "Line 12 voltage thd",
+      "name": "Line 12 voltage THD",
       "area": "holding",
       "address": 4172,
       "type": "float32",
@@ -323,7 +323,7 @@
       "access": "R"
     },
     {
-      "name": "Line 23 voltage thd",
+      "name": "Line 23 voltage THD",
       "area": "holding",
       "address": 4174,
       "type": "float32",
@@ -331,7 +331,7 @@
       "access": "R"
     },
     {
-      "name": "Line 31 voltage thd",
+      "name": "Line 31 voltage THD",
       "area": "holding",
       "address": 4176,
       "type": "float32",
@@ -339,7 +339,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 1 current thd",
+      "name": "Phase 1 current THD",
       "area": "holding",
       "address": 4178,
       "type": "float32",
@@ -347,7 +347,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 2 current thd",
+      "name": "Phase 2 current THD",
       "area": "holding",
       "address": 4180,
       "type": "float32",
@@ -355,7 +355,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 3 current thd",
+      "name": "Phase 3 current THD",
       "area": "holding",
       "address": 4182,
       "type": "float32",
@@ -363,7 +363,7 @@
       "access": "R"
     },
     {
-      "name": "Neutral current thd",
+      "name": "Neutral current THD",
       "area": "holding",
       "address": 4184,
       "type": "float32",
@@ -379,14 +379,15 @@
       "access": "R"
     },
     {
-      "name": "Sequence ($00=123 ccw, $01=321 cw, $02=not defined)",
+      "name": "Phase sequence",
       "area": "holding",
       "address": 4188,
       "type": "float32",
-      "access": "R"
+      "access": "R",
+      "description": "0 = 123 (counter-clockwise), 1 = 321 (clockwise), 2 = not defined"
     },
     {
-      "name": "Hourcounter (4190)",
+      "name": "Installation hourcounter",
       "area": "holding",
       "address": 4190,
       "type": "float32",
@@ -394,7 +395,7 @@
       "access": "R"
     },
     {
-      "name": "Hourcounter (4192)",
+      "name": "Measurement hourcounter",
       "area": "holding",
       "address": 4192,
       "type": "float32",
@@ -402,7 +403,7 @@
       "access": "R"
     },
     {
-      "name": "Phase 1 current dmd",
+      "name": "Phase 1 current DMD",
       "area": "holding",
       "address": 4366,
       "type": "float32",
@@ -410,5 +411,14 @@
       "access": "R"
     }
   ],
-  "description": "Seneca S604 and S700"
+  "description": "Seneca S604 and S700",
+  "revised": "2026-11-13",
+  "sources": [
+    {
+      "title": "S604 Universal Power Meter user manual: MODBUS Protocol",
+      "version": "MI00394-3-EN",
+      "url": "https://www.seneca.it/media/3675/mi00394-3-en.pdf",
+      "note": "section 4.1, IEEE floating point registers"
+    }
+  ]
 }
