@@ -1,0 +1,1159 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "KVA",
+  "model": "K30Plus",
+  "models": [
+    "K30Plus"
+  ],
+  "vendor_website": "www.kva.com.br",
+  "description": "Automatic control and protection module for a single generator set (mains failure start), RS-485 and RS-232 Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-13",
+  "source": "KVA, K30Plus Manual de instalação e operação, version 1.01, rev. 03, appendix B (Protocolo modbus)",
+  "sources": [
+    {
+      "title": "K30Plus Manual de instalação e operação",
+      "version": "1.01 (rev. 03)",
+      "url": "https://github.com/nobrega8/mbmap-library/issues/399",
+      "note": "Appendix B, pages 57 to 61; the PDF is attached to the map request"
+    }
+  ],
+  "notes": [
+    "Modbus RTU with functions 0x03, 0x06 and 0x10. Serial settings: 9600 or 19200 bit/s, no, odd or even parity, 8 data bits, 1 stop bit; up to 247 modules. Factory settings: address 1, 19200 N 8 1 on both RS-485 and RS-232.",
+    "The addresses are the register numbers printed in the manual (00001 to 00448). The manual does not say whether the frames use these numbers or the number minus one; the map treats them as 1-based (address_base 1). If every value looks shifted by one register, change address_base to 0.",
+    "Registers marked RESERVADO in the manual (1 and 45 to 58) are left out. Register 44 holds the accumulated starts and the running time in seconds is a 32-bit value in registers 42 and 43; the manual does not state their word order (most significant register first is assumed).",
+    "The manual does not give the unit or scale of the phase currents, the power factors and the remaining cooling time, nor the coding of the configuration registers 446 to 448.",
+    "The keyboard command register is printed as 30008 while all other registers are numbered 00001 to 00448; it is listed at the printed number.",
+    "The submitter did not confirm that the manual is public. It is the printed installation manual of a commercial product. Not tested on a device."
+  ],
+  "enums": {
+    "aux_input_function": {
+      "0": "Disabled",
+      "1": "Emergency stop",
+      "2": "Charger fault",
+      "3": "Fuel level",
+      "4": "Water level",
+      "5": "Remote reset",
+      "6": "Remote start",
+      "7": "Conditional start"
+    },
+    "aux_output_function": {
+      "0": "Disabled",
+      "1": "Choke",
+      "2": "Glow plug pre-heater",
+      "3": "Generator in manual mode",
+      "4": "Generator in auto mode",
+      "5": "Audible alarm",
+      "6": "Start failure",
+      "7": "Overfrequency",
+      "8": "Low pressure",
+      "9": "High temperature",
+      "10": "Overload",
+      "11": "Underfrequency",
+      "12": "Abnormal generator voltage",
+      "13": "Normal generator voltage",
+      "14": "Normal mains voltage",
+      "15": "Low battery",
+      "16": "Mains supplying",
+      "17": "Generator supplying",
+      "18": "Engine running",
+      "19": "Starter motor",
+      "20": "Fuel valve"
+    },
+    "temperature_sensor": {
+      "0": "Disabled",
+      "1": "Thermostat N/O",
+      "2": "Thermostat N/C",
+      "3": "PT-100 sensor"
+    },
+    "pressure_sensor": {
+      "0": "Disabled",
+      "1": "Pressure switch N/O",
+      "2": "Pressure switch N/C",
+      "3": "0-10 bar sensor"
+    },
+    "speed_sensor": {
+      "1": "Generator frequency",
+      "2": "Magnetic pick-up"
+    },
+    "fault_code": {
+      "0": "No fault",
+      "1": "Start failure",
+      "2": "Low oil pressure",
+      "3": "High temperature",
+      "4": "Generator undervoltage",
+      "5": "Overfrequency",
+      "6": "Emergency stop",
+      "7": "Underfrequency",
+      "8": "Overload",
+      "9": "Low water level",
+      "10": "Generator overvoltage",
+      "12": "Battery low",
+      "14": "Battery charger fault",
+      "15": "Low fuel level"
+    }
+  },
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Software version",
+      "group": "Information",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Serial number",
+      "group": "Information",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Mains voltage R-N",
+      "group": "Mains",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains voltage S-N",
+      "group": "Mains",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains voltage T-N",
+      "group": "Mains",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains voltage R-S",
+      "group": "Mains",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains voltage S-T",
+      "group": "Mains",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains voltage T-R",
+      "group": "Mains",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains frequency",
+      "group": "Mains",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R",
+      "description": "Raw value is tenths of a hertz (601 = 60.1 Hz)"
+    },
+    {
+      "name": "Generator voltage U-N",
+      "group": "Generator",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator voltage V-N",
+      "group": "Generator",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator voltage W-N",
+      "group": "Generator",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator voltage U-V",
+      "group": "Generator",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator voltage V-W",
+      "group": "Generator",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator voltage W-U",
+      "group": "Generator",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator frequency",
+      "group": "Generator",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R",
+      "description": "Raw value is tenths of a hertz (601 = 60.1 Hz)"
+    },
+    {
+      "name": "Current phase 1",
+      "group": "Generator",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not state the unit"
+    },
+    {
+      "name": "Current phase 2",
+      "group": "Generator",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not state the unit"
+    },
+    {
+      "name": "Current phase 3",
+      "group": "Generator",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not state the unit"
+    },
+    {
+      "name": "Active power phase 1",
+      "group": "Generator",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power phase 2",
+      "group": "Generator",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power phase 3",
+      "group": "Generator",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase 1",
+      "group": "Generator",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase 2",
+      "group": "Generator",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase 3",
+      "group": "Generator",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power phase 1",
+      "group": "Generator",
+      "area": "holding",
+      "address": 27,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power phase 2",
+      "group": "Generator",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power phase 3",
+      "group": "Generator",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Power factor phase 1",
+      "group": "Generator",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not state the scale"
+    },
+    {
+      "name": "Power factor phase 2",
+      "group": "Generator",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not state the scale"
+    },
+    {
+      "name": "Power factor phase 3",
+      "group": "Generator",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not state the scale"
+    },
+    {
+      "name": "Total active power",
+      "group": "Generator",
+      "area": "holding",
+      "address": 33,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Generator",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total apparent power",
+      "group": "Generator",
+      "area": "holding",
+      "address": 35,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Average power factor",
+      "group": "Generator",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not state the scale"
+    },
+    {
+      "name": "Battery voltage",
+      "group": "Engine",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value is tenths of a volt (135 = 13.5 V)"
+    },
+    {
+      "name": "Oil pressure",
+      "group": "Engine",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "bar",
+      "access": "R",
+      "description": "Raw value is hundredths of a bar (432 = 4.32 bar)"
+    },
+    {
+      "name": "Water temperature",
+      "group": "Engine",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Engine speed",
+      "group": "Engine",
+      "area": "holding",
+      "address": 40,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "Remaining cooling time",
+      "group": "Engine",
+      "area": "holding",
+      "address": 41,
+      "type": "uint16",
+      "access": "R",
+      "description": "Time left while the engine cools down. The manual does not state the unit"
+    },
+    {
+      "name": "Hours worked",
+      "group": "Engine",
+      "area": "holding",
+      "address": 42,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R",
+      "description": "Running time in seconds, a 32-bit value in registers 42 and 43"
+    },
+    {
+      "name": "Accumulated starts",
+      "group": "Engine",
+      "area": "holding",
+      "address": 44,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault",
+      "group": "Status",
+      "area": "holding",
+      "address": 59,
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault_code",
+      "description": "Fault code (table 6)"
+    },
+    {
+      "name": "Mains voltage present",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "Bit 0 of the status register (table 7)"
+    },
+    {
+      "name": "Generator voltage present",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "Bit 1 of the status register (table 7)"
+    },
+    {
+      "name": "Mains supplying",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "Bit 2 of the status register (table 7)"
+    },
+    {
+      "name": "Generator supplying",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 3,
+      "access": "R",
+      "description": "Bit 3 of the status register (table 7)"
+    },
+    {
+      "name": "Generator inhibited",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 4,
+      "access": "R",
+      "description": "Bit 4 of the status register (table 7)"
+    },
+    {
+      "name": "Generator in manual mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 5,
+      "access": "R",
+      "description": "Bit 5 of the status register (table 7)"
+    },
+    {
+      "name": "Generator in automatic mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 6,
+      "access": "R",
+      "description": "Bit 6 of the status register (table 7)"
+    },
+    {
+      "name": "Generator in test mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 7,
+      "access": "R",
+      "description": "Bit 7 of the status register (table 7)"
+    },
+    {
+      "name": "Start sequence started",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 8,
+      "access": "R",
+      "description": "Bit 8 of the status register (table 7)"
+    },
+    {
+      "name": "Stop procedure",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 9,
+      "access": "R",
+      "description": "Bit 9 of the status register (table 7)"
+    },
+    {
+      "name": "Pre-cooling started",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 10,
+      "access": "R",
+      "description": "Bit 10 of the status register (table 7)"
+    },
+    {
+      "name": "Fault detected",
+      "group": "Status",
+      "area": "holding",
+      "address": 60,
+      "type": "bool",
+      "bit": 11,
+      "access": "R",
+      "description": "Bit 11 of the status register (table 7)"
+    },
+    {
+      "name": "Minimum mains voltage",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 401,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 170,
+      "write_max": 470,
+      "unit": "V"
+    },
+    {
+      "name": "Maximum mains voltage",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 402,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 222,
+      "write_max": 520,
+      "unit": "V"
+    },
+    {
+      "name": "Mains return confirmation time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 403,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 5,
+      "write_max": 600,
+      "unit": "s"
+    },
+    {
+      "name": "Minimum generator voltage",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 404,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 170,
+      "write_max": 470,
+      "unit": "V"
+    },
+    {
+      "name": "Generator undervoltage delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 405,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Maximum generator voltage",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 406,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 222,
+      "write_max": 520,
+      "unit": "V"
+    },
+    {
+      "name": "Generator overvoltage delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 407,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 15,
+      "unit": "s"
+    },
+    {
+      "name": "Generator stabilisation time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 408,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Minimum generator frequency",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 409,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 44,
+      "write_max": 59,
+      "unit": "Hz"
+    },
+    {
+      "name": "Generator underfrequency delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 410,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 8,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Maximum generator frequency",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 411,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 51,
+      "write_max": 67,
+      "unit": "Hz"
+    },
+    {
+      "name": "Generator overfrequency delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 412,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 2,
+      "write_max": 15,
+      "unit": "s"
+    },
+    {
+      "name": "Current transformer ratio",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 413,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 20,
+      "write_max": 2500,
+      "unit": "/5 A"
+    },
+    {
+      "name": "Maximum load",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 414,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 20,
+      "write_max": 2500,
+      "unit": "/5 A",
+      "description": "Same range as the transformer ratio; the manual gives no other unit"
+    },
+    {
+      "name": "Overload delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 415,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 5,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Wait time before start",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 416,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Start attempts",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 417,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 5
+    },
+    {
+      "name": "Start time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 418,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 3,
+      "write_max": 12,
+      "unit": "s"
+    },
+    {
+      "name": "Start cut-off pressure",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 419,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0.3,
+      "write_max": 2.5,
+      "unit": "bar",
+      "scale": 0.01,
+      "description": "Raw value is hundredths of a bar (30 to 250)"
+    },
+    {
+      "name": "Start cut-off speed",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 420,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 200,
+      "write_max": 900,
+      "unit": "rpm"
+    },
+    {
+      "name": "Time before fault supervision starts",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 421,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 10,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Generator to mains retransfer time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 422,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 2,
+      "unit": "s"
+    },
+    {
+      "name": "Pre-cooling time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 423,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 30,
+      "write_max": 600,
+      "unit": "s"
+    },
+    {
+      "name": "Auxiliary input 1 function",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 424,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 7,
+      "enum": "aux_input_function"
+    },
+    {
+      "name": "Auxiliary input 1 delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 425,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Auxiliary input 2 function",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 426,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 7,
+      "enum": "aux_input_function"
+    },
+    {
+      "name": "Auxiliary input 2 delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 427,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Auxiliary input 3 function",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 428,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 7,
+      "enum": "aux_input_function"
+    },
+    {
+      "name": "Auxiliary input 3 delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 429,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Auxiliary input 4 function",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 430,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 7,
+      "enum": "aux_input_function"
+    },
+    {
+      "name": "Auxiliary input 4 delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 431,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 60,
+      "unit": "s"
+    },
+    {
+      "name": "Auxiliary output 1 function",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 432,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 20,
+      "enum": "aux_output_function"
+    },
+    {
+      "name": "Auxiliary output 2 function",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 433,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 20,
+      "enum": "aux_output_function"
+    },
+    {
+      "name": "Choke time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 434,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 10,
+      "write_max": 120,
+      "description": "The manual does not state the unit"
+    },
+    {
+      "name": "Temperature sensor",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 435,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3,
+      "enum": "temperature_sensor"
+    },
+    {
+      "name": "High temperature",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 436,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 70,
+      "write_max": 120,
+      "unit": "°C"
+    },
+    {
+      "name": "Pre-heater temperature",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 437,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 50,
+      "write_max": 80,
+      "unit": "°C"
+    },
+    {
+      "name": "High temperature delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 438,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 30,
+      "unit": "s"
+    },
+    {
+      "name": "Pressure sensor",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 439,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3,
+      "enum": "pressure_sensor"
+    },
+    {
+      "name": "Low pressure",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 440,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 5,
+      "unit": "bar",
+      "scale": 0.01,
+      "description": "Raw value is hundredths of a bar (100 to 500)"
+    },
+    {
+      "name": "Low pressure delay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 441,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 30,
+      "unit": "s"
+    },
+    {
+      "name": "Speed sensor",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 442,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 2,
+      "enum": "speed_sensor"
+    },
+    {
+      "name": "Flywheel teeth",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 443,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 100,
+      "write_max": 200
+    },
+    {
+      "name": "Maintenance alert",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 444,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "description": "0 = off, 1 = on"
+    },
+    {
+      "name": "Preventive maintenance interval",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 445,
+      "type": "uint16",
+      "unit": "h",
+      "access": "RW",
+      "write_min": 150,
+      "write_max": 350
+    },
+    {
+      "name": "Modbus addressing",
+      "group": "Communication",
+      "area": "holding",
+      "address": 446,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual gives no coding"
+    },
+    {
+      "name": "RS-232 port configuration",
+      "group": "Communication",
+      "area": "holding",
+      "address": 447,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual gives no coding"
+    },
+    {
+      "name": "RS-485 port configuration",
+      "group": "Communication",
+      "area": "holding",
+      "address": 448,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual gives no coding"
+    },
+    {
+      "name": "Keyboard command",
+      "group": "Commands",
+      "area": "holding",
+      "address": 30008,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 9,
+      "description": "Writing 0 to 9 equals pressing that key on the front panel (8 and 9 select manual mode, 1 starts the generator). The address is printed as 30008 in the manual"
+    }
+  ]
+}
