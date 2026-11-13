@@ -3,71 +3,2047 @@
   "mbmap": 2,
   "vendor": "Phoenix Contact",
   "model": "EEM EM3XX / EM325 / EM355 / EM375 / EM327 / EM357 / EM377",
-  "models": ["EEM EM3XX", "EM325", "EM355", "EM375", "EM327", "EM357", "EM377"],
+  "models": [
+    "EEM-EM325",
+    "EEM-EM355",
+    "EEM-EM375",
+    "EEM-EM327",
+    "EEM-EM357",
+    "EEM-EM377"
+  ],
   "vendor_website": "phoenixcontact.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table phoenix/contact-eem-em3xx-em325-em355-em375-em327-em357-em377; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/phoenix-contact-eem-em3xx-em325-em355-em375-em327-em357-em377.htm. Not verified against the manufacturer's documentation",
+  "description": "MID energy meters with Modbus RTU or Modbus TCP: voltages, currents, powers, power factor, frequency, total, tariff, partial and balancing energies and mean values as floats",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "Phoenix Contact, User manual UM EN EEM-EM3xx, MID energy meters, Revision 00 (2018-09-17, 108591_en_00), Appendix A Modbus register",
+  "sources": [
+    {
+      "title": "UM EN EEM-EM3xx: MID energy meters, user manual",
+      "version": "Revision 00, 2018-09-17 (108591_en_00)",
+      "url": "https://www.tti.com/content/dam/ttiinc/manufacturers/phoenix-contact/doc/phoenix-contact-eem-em375-energy-meters-with-mid-approval-user-manual.pdf",
+      "note": "Appendix A, tables A-5, A-7, A-9, A-11, A-13, A-15 (float) and A-17 (device information)"
+    }
+  ],
   "notes": [
-    "Phoenix Contact EEM EM3XX / EM325 / EM355 / EM375 / EM327 / EM357 / EM377.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Phoenix Contact EEM-EM3xx MID energy meters (EM325/EM355/EM375 with CT, EM327/EM357/EM377 direct). The floating-point register tables of Appendix A and the device information table; the integer tables (A-2 to A-4, A-6, A-8, A-10, A-12, A-14, A-16) carry the same values with fixed factors and are not in this map.",
+    "Addresses are the manual's decimal addresses; registers are read with function 03. Values are IEEE-754 floats in two registers, high word first (the manual reads words as AB-CD).",
+    "Where the manual's decimal and hexadecimal addresses disagree, the hexadecimal one is used: the partial and balancing energies from 5126 (0x1406) to 5144 (0x1418). The manual lists the total inductive apparent energy procurement Σ at 4372 like L3; it is at 4374 here. The second 'inductive reactive energy procurement' block (4416 to 4422) is taken to be the capacitive reactive energy procurement, following the order of the other blocks.",
+    "Tariff registers are not available on the Ethernet models.",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Conductor voltage to N U1", "area": "holding", "address": 4096, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Conductor voltage to N U2", "area": "holding", "address": 4098, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Conductor voltage to N U3", "area": "holding", "address": 4100, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Conductor voltage to conductor U12", "area": "holding", "address": 4102, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Conductor voltage to conductor U23", "area": "holding", "address": 4104, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Conductor voltage to conductor U31", "area": "holding", "address": 4106, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "External conductor voltage system", "area": "holding", "address": 4108, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Current in conductor I1", "area": "holding", "address": 4110, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current in conductor I2", "area": "holding", "address": 4112, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current in conductor I3", "area": "holding", "address": 4114, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current in conductor in", "area": "holding", "address": 4116, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "System current", "area": "holding", "address": 4118, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Power factor phase 1 +/", "area": "holding", "address": 4120, "type": "float32", "access": "R"},
-    {"name": "Power factor phase 2 +/", "area": "holding", "address": 4122, "type": "float32", "access": "R"},
-    {"name": "Power factor phase 3 +/", "area": "holding", "address": 4124, "type": "float32", "access": "R"},
-    {"name": "System power factor", "area": "holding", "address": 4126, "type": "float32", "access": "R"},
-    {"name": "Active power phase 1 +/", "area": "holding", "address": 4128, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Active power phase 2 +/", "area": "holding", "address": 4130, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Active power phase 3 +/", "area": "holding", "address": 4132, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Total active power +/", "area": "holding", "address": 4134, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Apparent power phase 1", "area": "holding", "address": 4136, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Apparent power phase 2", "area": "holding", "address": 4138, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Apparent power phase 3", "area": "holding", "address": 4140, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Total apparent power +/", "area": "holding", "address": 4142, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Reactive power phase 1 +/", "area": "holding", "address": 4144, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Reactive power phase 2 +/", "area": "holding", "address": 4146, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Reactive power phase 3 +/", "area": "holding", "address": 4148, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Total reactive power +/", "area": "holding", "address": 4150, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 4152, "type": "float32", "unit": "Hz", "access": "R"},
-    {"name": "Phase sequence 0.123", "area": "holding", "address": 4154, "type": "float32", "access": "R"},
-    {"name": "Total active energy procurement L1", "area": "holding", "address": 4352, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Total active energy procurement L2", "area": "holding", "address": 4354, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Total active energy procurement L3", "area": "holding", "address": 4356, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Total active energy procurement sum", "area": "holding", "address": 4358, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Total active energy supply L1", "area": "holding", "address": 4360, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Total active energy supply L2", "area": "holding", "address": 4362, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Total active energy supply L3", "area": "holding", "address": 4364, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Total active energy supply sum", "area": "holding", "address": 4366, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Total inductive apparent energy procurement L1", "area": "holding", "address": 4368, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total inductive apparent energy procurement L2", "area": "holding", "address": 4370, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total inductive apparent energy procurement L3", "area": "holding", "address": 4372, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total inductive apparent energy supply L1", "area": "holding", "address": 4376, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total inductive apparent energy supply L2", "area": "holding", "address": 4378, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total inductive apparent energy supply L3", "area": "holding", "address": 4380, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total inductive apparent energy supply sum", "area": "holding", "address": 4382, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total capacitive apparent energy procurement L1", "area": "holding", "address": 4384, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total capacitive apparent energy procurement L2", "area": "holding", "address": 4386, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total capacitive apparent energy procurement L3", "area": "holding", "address": 4388, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total capacitive apparent energy procurement sum", "area": "holding", "address": 4390, "type": "float32", "unit": "VAh", "access": "R"},
-    {"name": "Total capacitive apparent energy supply L1", "area": "holding", "address": 4392, "type": "float32", "unit": "VAh", "access": "R"}
+    {
+      "name": "Serial number",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1280,
+      "type": "string",
+      "length": 6,
+      "access": "R",
+      "role": "serial",
+      "description": "10 ASCII characters, for example AKHR790002."
+    },
+    {
+      "name": "Release number 1",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1290,
+      "type": "uint32",
+      "access": "R",
+      "role": "firmware",
+      "description": "For example 0x66 = 102 = version 1.02."
+    },
+    {
+      "name": "Release number 2",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1292,
+      "type": "uint32",
+      "access": "R",
+      "description": "For example 0x66 = 102 = version 1.02."
+    },
+    {
+      "name": "Active tariff",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1296,
+      "type": "uint32",
+      "access": "R",
+      "description": "1 = tariff 1 active, 2 = tariff 2 active."
+    },
+    {
+      "name": "Error code",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1300,
+      "type": "uint32",
+      "access": "R",
+      "description": "0 = no error, 0x01 = phase sequence error, 0x02 = memory error (Ethernet only), 0x04 = real-time clock lost (Ethernet only)."
+    },
+    {
+      "name": "Primary current",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1302,
+      "type": "uint32",
+      "unit": "A",
+      "access": "R",
+      "description": "1 to 50000 (0x0001 to 0xC350)."
+    },
+    {
+      "name": "Secondary rated current",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1306,
+      "type": "uint32",
+      "access": "R",
+      "description": "0x01 = 1 A, 0x05 = 5 A, 0x50 = 80 A."
+    },
+    {
+      "name": "Network type",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1308,
+      "type": "uint32",
+      "access": "R",
+      "description": "0x05 = 3 phases, 4 wires, 3 currents; 0x03 = 3 phases, 3 wires, 3 currents; 0x02 = 3 phases, 3 wires, 2 currents."
+    },
+    {
+      "name": "Modbus address",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1310,
+      "type": "uint32",
+      "access": "R",
+      "description": "1 to 247 (255 with Ethernet)."
+    },
+    {
+      "name": "Modbus/RTU baud rate",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1314,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "0": "2400",
+        "1": "4800",
+        "2": "9600",
+        "3": "19200",
+        "4": "38400",
+        "5": "57600",
+        "8": "300",
+        "9": "1200"
+      },
+      "description": "0xFFFFFFFF with Ethernet."
+    },
+    {
+      "name": "Status of the partial energy meter",
+      "group": "Device information and configuration",
+      "area": "holding",
+      "address": 1318,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit field, 1 = active: bit 0 +kWhΣ, 1 -kWhΣ, 2 +kVAhΣ-L, 3 -kVAhΣ-L, 4 +kVAhΣ-C, 5 -kVAhΣ-C, 6 +kvarhΣ-L, 7 -kvarhΣ-L, 8 +kvarhΣ-C, 9 -kvarhΣ-C, 10 kVAhΣ, 11 +kvarhΣ, 12 -kvarhΣ partial energy meter."
+    },
+    {
+      "name": "Conductor voltage to N U1",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4096,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Conductor voltage to N U2",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4098,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Conductor voltage to N U3",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4100,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Conductor voltage to conductor U12",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4102,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Conductor voltage to conductor U23",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4104,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Conductor voltage to conductor U31",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4106,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "External conductor voltage system",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4108,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current in conductor I1",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4110,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current in conductor I2",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4112,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current in conductor I3",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4114,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current in conductor In",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4116,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "System current",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4118,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Power factor phase 1 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4120,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor phase 2 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4122,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor phase 3 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4124,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "System power factor",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4126,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Active power phase 1 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4128,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Active power phase 2 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4130,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Active power phase 3 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4132,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Total active power +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4134,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power phase 1",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4136,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power phase 2",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4138,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power phase 3",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4140,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Total apparent power +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4142,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase 1 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4144,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase 2 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4146,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase 3 +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4148,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power +/-",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4150,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4152,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Phase sequence",
+      "group": "Instantaneous values (float)",
+      "area": "holding",
+      "address": 4154,
+      "type": "float32",
+      "access": "R",
+      "description": "0.123 = counterclockwise (CCW), 0.132 = clockwise (CW), 0 = not available."
+    },
+    {
+      "name": "Total active energy procurement L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4352,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy procurement L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4354,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy procurement L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4356,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy procurement Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4358,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy supply L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4360,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy supply L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4362,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy supply L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4364,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy supply Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4366,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive apparent energy procurement L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4368,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive apparent energy procurement L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4370,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive apparent energy procurement L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4372,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive apparent energy procurement Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4374,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive apparent energy supply L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4376,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive apparent energy supply L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4378,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive apparent energy supply L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4380,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive apparent energy supply Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4382,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive apparent energy procurement L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4384,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive apparent energy procurement L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4386,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive apparent energy procurement L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4388,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive apparent energy procurement Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4390,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive apparent energy supply L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4392,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive apparent energy supply L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4394,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive apparent energy supply L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4396,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive apparent energy supply Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4398,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive reactive energy procurement L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4400,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive reactive energy procurement L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4402,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive reactive energy procurement L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4404,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive reactive energy procurement Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4406,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive reactive energy supply L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4408,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive reactive energy supply L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4410,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive reactive energy supply L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4412,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total inductive reactive energy supply Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4414,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive reactive energy procurement L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4416,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive reactive energy procurement L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4418,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive reactive energy procurement L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4420,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive reactive energy procurement Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4422,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive reactive energy supply L1 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4424,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive reactive energy supply L2 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4426,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive reactive energy supply L3 (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4428,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Total capacitive reactive energy supply Σ (cannot be reset)",
+      "group": "Meter (float)",
+      "area": "holding",
+      "address": 4430,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – active energy procurement L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4608,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – active energy procurement L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4610,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – active energy procurement L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4612,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – active energy procurement Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4614,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – active energy supply L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4616,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – active energy supply L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4618,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – active energy supply L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4620,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – active energy supply Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4622,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive apparent energy procurement L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4624,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive apparent energy procurement L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4626,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive apparent energy procurement L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4628,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive apparent energy procurement Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4630,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive apparent energy supply L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4632,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive apparent energy supply L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4634,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive apparent energy supply L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4636,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive apparent energy supply Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4638,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive apparent energy procurement L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4640,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive apparent energy procurement L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4642,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive apparent energy procurement L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4644,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive apparent energy procurement Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4646,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive apparent energy supply L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4648,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive apparent energy supply L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4650,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive apparent energy supply L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4652,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive apparent energy supply Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4654,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive reactive energy procurement L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4656,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive reactive energy procurement L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4658,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive reactive energy procurement L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4660,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive reactive energy procurement Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4662,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive reactive energy supply L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4664,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive reactive energy supply L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4666,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive reactive energy supply L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4668,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – inductive reactive energy supply Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4670,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive reactive energy procurement L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4672,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive reactive energy procurement L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4674,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive reactive energy procurement L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4676,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive reactive energy procurement Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4678,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive reactive energy supply L1",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4680,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive reactive energy supply L2",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4682,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive reactive energy supply L3",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4684,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 1 – capacitive reactive energy supply Σ",
+      "group": "Meter tariff 1 (float)",
+      "area": "holding",
+      "address": 4686,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – active energy procurement L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4864,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – active energy procurement L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4866,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – active energy procurement L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4868,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – Active energy procurement Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4870,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – active energy supply L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4872,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – active energy supply L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4874,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – active energy supply L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4876,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – active energy supply Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4878,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive apparent energy procurement L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4880,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive apparent energy procurement L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4882,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive apparent energy procurement L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4884,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive apparent energy procurement Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4886,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive apparent energy supply L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4888,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive apparent energy supply L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4890,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive apparent energy supply L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4892,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive apparent energy supply Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4894,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive apparent energy procurement L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4896,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive apparent energy procurement L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4898,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive apparent energy procurement L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4900,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive apparent energy procurement Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4902,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive apparent energy supply L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4904,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive apparent energy supply L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4906,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive apparent energy supply L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4908,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive apparent energy supply Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4910,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive reactive energy procurement L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4912,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive reactive energy procurement L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4914,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive reactive energy procurement L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4916,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive reactive energy procurement Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4918,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive reactive energy supply L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4920,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive reactive energy supply L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4922,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive reactive energy supply L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4924,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – inductive reactive energy supply Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4926,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive reactive energy procurement L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4928,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive reactive energy procurement L 2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4930,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive reactive energy procurement L 3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4932,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive reactive energy procurement Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4934,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive reactive energy supply L1",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4936,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive reactive energy supply L2",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4938,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive reactive energy supply L3",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4940,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Tariff 2 – capacitive reactive energy supply Σ",
+      "group": "Meter tariff 2 (float)",
+      "area": "holding",
+      "address": 4942,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – active energy procurement system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5120,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – active energy supply system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5122,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – inductive apparent energy procurement system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5124,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – inductive apparent energy supply system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5126,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – capacitive apparent energy procurement system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5128,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – capacitive apparent energy supply system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5130,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – inductive reactive energy procurement system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5132,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – inductive reactive energy supply system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5134,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – capacitive reactive energy procurement system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5136,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Partial energy meter – capacitive reactive energy supply system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5138,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Balancing energy meter – active energy system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5140,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Balancing energy meter – inductive apparent energy system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5142,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Balancing energy meter – capacitive apparent energy system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5144,
+      "type": "float32",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Balancing energy meter – inductive reactive energy system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5146,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Balancing energy meter – capacitive reactive energy system",
+      "group": "Partial energy meters and balancing energy meters (float)",
+      "area": "holding",
+      "address": 5148,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – conductor voltage to conductor L12",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5376,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – conductor voltage to conductor L23",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5378,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – conductor voltage to conductor L31",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5380,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – conductor voltage to N L1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5382,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – conductor voltage to N L2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5384,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – conductor voltage to N L3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5386,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mean frequency value",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5388,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Mean value of current I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5390,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mean value of current I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5392,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mean value of current I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5394,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mean value of current In",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5396,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mean value of current Isys",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5398,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – active power procurement I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5400,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – active power supply I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5402,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – active power procurement I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5404,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – active power supply I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5406,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – active power procurement I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5408,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – active power supply I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5410,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – active power procurement system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5412,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – active power supply system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5414,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Balanced mean value – active power system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5416,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – apparent power procurement I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5418,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – apparent power supply I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5420,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – apparent power procurement I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5422,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – apparent power supply I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5424,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – apparent power procurement I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5426,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – apparent power supply I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5428,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – apparent power procurement system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5430,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – apparent power supply system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5432,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Balanced mean value – apparent power system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5434,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – reactive power procurement I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5436,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – reactive power supply I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5438,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – reactive power procurement I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5440,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – reactive power supply I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5442,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – reactive power procurement I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5444,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – reactive power supply I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5446,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – reactive power procurement system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5448,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – reactive power supply system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5450,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Balanced mean value – reactive power system",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5452,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – power factor procurement I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5454,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – power factor supply I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5456,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – inductive power factor I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5458,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – capacitive power factor I1",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5460,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – inductive power factor I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5462,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – capacitive power factor I2",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5464,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – inductive power factor I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5466,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mean value – capacitive power factor I3",
+      "group": "DMD (float)",
+      "area": "holding",
+      "address": 5468,
+      "type": "float32",
+      "access": "R"
+    }
   ]
 }
