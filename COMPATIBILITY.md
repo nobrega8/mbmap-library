@@ -32,7 +32,7 @@ Legend: **Yes** supported · **Kept** read and written back, not shown · **—*
 | Identity registers, `role`, and `models` (§4.7, §9) | Yes: the device is checked against the map's models and firmware | — | — |
 | Identity from the device, `identify` with FC17 or FC43 (§4.8, §9) | Yes: read, validated, kept when the map is saved, and compared with the map's models and firmware by Check device (app and command line). FC43 is complete. FC17 answers whose run-indicator byte is not `0x00` or `0xFF` are rejected by the Modbus library, so the check is unknown for those devices. The map builder has no fields for it yet | — | — |
 | Separate read requests, `read_alone` and `read_group` (§4.9) | Yes: validated, and honoured when reads are planned (polling and the Node-RED export). The map builder has no fields for them yet | — | — |
-| Writing in one request, `write_group` (§4.10) | Validated by the library tools. Not yet written as one FC16 in Modbench | — | — |
+| Parts of a block, `parts` (§4.10) | Validated by the library tools. Not yet shown as separate fields in Modbench | — | — |
 | Firmware ranges, per map and per register (§3.2, §9) | Yes: once the firmware is known, only its registers are read | — | — |
 | `revision` and `revised` (§3.1) | Yes: shown with the map | — | — |
 | `source`, `sources`, `notes`, `comment` (§3.3, §2) | Kept | Notes and descriptions: included when a map is saved as TXT or RTF | — |

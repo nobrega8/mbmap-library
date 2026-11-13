@@ -190,7 +190,7 @@ Each item of `registers` is an object. `name`, `area`, `address` and `type` are 
 | `role` | `"model"`, `"firmware"`, `"serial"` | | This register identifies the device (§4.7) |
 | `read_alone` | boolean | `false` | The register is read in a request of its own (§4.9) |
 | `read_group` | non-empty string | | The register is read only together with registers of the same group (§4.9) |
-| `write_group` | non-empty string | | The register is written together with the registers of the same group, in one request (§4.10) |
+| `parts` | array of objects | | Names the values inside a block register, so a tool can show and edit them one by one (§4.10) |
 | `description` | string | | Free text |
 | `comment` | string | | Free note about the register, for people editing the map |
 
@@ -363,23 +363,34 @@ A reader normally joins neighbouring registers into one request. Some devices re
 
 When both keys are present, `read_alone` wins. The keys only limit joining: a reader is free to make more requests than needed, and `max_read_registers` and `max_read_bits` still apply. They affect only how the registers are requested, not what they mean, so a reader that does not know them reads the same registers, joined as it always did. That is why they need no new `mbmap` version (§8): on a device that refuses the joined request, an older reader fails exactly as it would without the keys.
 
-### 4.10 Writing in one request
+### 4.10 Parts of a block
 
-Some devices keep several values in one block and only accept the block as a whole: a write that starts in the middle of it, or that does not cover it, is refused (exception `0x02` or `0x03`). A typical case is an SMS gateway whose block holds the recipient's number followed by the message text. `write_group` names the registers that belong to such a block:
+Some devices keep several values in one block and only accept the block as a whole: a write that starts in the middle of it, or that does not cover it, is refused (exception `0x02` or `0x03`). A typical case is an SMS gateway whose block holds the recipient's number followed by the message text. The map describes that block as **one** register, as it always did, and `parts` says what is inside it:
 
 ```json
-{"name": "SMS recipient", "area": "holding", "address": 397, "type": "string", "length": 10, "access": "RW", "write_group": "sms", "description": "Phone number as 00 + digits (00 stands for +)"},
-{"name": "SMS text", "area": "holding", "address": 407, "type": "string", "length": 80, "access": "RW", "write_group": "sms"},
-{"name": "Send SMS", "area": "holding", "address": 396, "type": "uint16", "access": "W", "write_min": 0, "write_max": 1, "description": "Write 1 after the SMS group has been written"}
+{
+  "name": "Add SMS", "area": "holding", "address": 397, "type": "string", "length": 90, "access": "RW",
+  "parts": [
+    {"name": "Recipient", "offset": 0, "length": 10, "description": "Phone number as 00 + digits (00 stands for +)"},
+    {"name": "Text", "offset": 10, "length": 80}
+  ]
+}
 ```
 
-- Registers with the same `write_group` are written in **one** Write Multiple Registers request (FC16). It starts at the lowest address of the group and ends after the last register of the group.
-- The registers of a group **MUST** be `holding` registers that can be written (`access` `"W"` or `"RW"`), and **MUST NOT** be `bool` or bit fields. They **MUST** follow each other with no gap and no overlap, and the group **MUST NOT** span more than 123 registers (the most one FC16 can carry).
-- A tool **SHOULD** show the registers of a group together, and **MUST** send all of them in the one request. A register the user left empty is sent as zero bytes (for a `string`, all NUL characters), so an empty field never keeps an old value by accident.
-- A group of one register is an ordinary write. Registers without a `write_group` are written alone, as before.
-- Each register of the group is encoded as usual (§6) and checked with its own `write_min` and `write_max` (§4.5) before the request is sent.
-- A `string` is written as ASCII, padded with NUL characters up to its `length`. The tool **MUST** refuse a text that is longer than `2 × length` characters.
-- `write_group` only affects how a write is sent, not what a register means, so it needs no new `mbmap` version (§8): a reader that does not know it writes the registers one by one, and a device that wants the whole block refuses that, exactly as it would without the key. Reading is not affected.
+| Key | JSON type | Default | Meaning |
+|---|---|---|---|
+| `name` | non-empty string | | Name shown to people |
+| `offset` | integer ≥ 0 | | Position of the part in the block, in **registers** from the first register of the register |
+| `type` | `"string"` or a numeric type (§6) | `"string"` | How the part is read and written |
+| `length` | integer ≥ 1 | | Number of registers. Required for `string`, ignored for the other types |
+| `description` | string | | Free text |
+
+- `parts` is only for a `string` register. It **MUST NOT** be empty. Every part **MUST** lie inside the block (`offset` plus its registers is at most the register's `length`), and parts **MUST NOT** overlap. Registers that no part covers are allowed: they are padding.
+- The register itself keeps its meaning. A reader that does not know `parts` reads and writes the whole block as one string, in one request, exactly as before, so such a map keeps working in every tool.
+- A tool that knows `parts` **SHOULD** show each part as a field of its own. To read, it decodes each part from the block, with the register's `byte_order` and `word_order` (§6). To write, it builds the **whole** block from the parts and sends it in one request (FC16): a part the user left empty is sent as zero bytes, so an empty field never keeps an old value by accident. A tool **MUST NOT** send a write that covers only some parts, as the device refuses it.
+- A `string` part is ASCII, padded with NUL characters up to its `length`. The tool **MUST** refuse a text that is longer than `2 × length` characters. A numeric part is encoded as usual (§6).
+- `access` is the register's: parts cannot be more writable than the block.
+- `parts` only describes what is inside a register, so it needs no new `mbmap` version (§8). Readers that ignore it behave as before.
 
 ## 5. Areas and addresses
 
@@ -465,7 +476,7 @@ Readers **SHOULD** report every problem with one of the codes below and a [JSON 
 | `bad-source` | error | An item of `sources` is not an object with a non-empty `title`, or has a `version`, `date`, `url` or `note` of the wrong form |
 | `bad-role` | error | `role` is not `"model"`, `"firmware"` or `"serial"`, is set on a register that cannot be read, or `"model"` or `"serial"` is used more than once |
 | `bad-identify` | error | `identify` is not valid (§4.8): `function` is not `17` or `43`, `fields` is empty, or a field lacks a `name`, has a `role` that is unknown or repeated for `"model"` or `"serial"`, or breaks the rules of its function (FC17: `offset` missing or negative, `type` missing or unknown, `string` without `length`, an `enum` that names no table or is not a valid table, an `object`; FC43: `object` missing or outside 0–255, an `offset`, `type`, `length` or `enum`) |
-| `bad-write-group` | error | `write_group` is an empty string, or is set on a register that is not a writable `holding` register or is a `bool` or bit field, or the registers of a group are not contiguous or span more than 123 registers (§4.10) |
+| `bad-parts` | error | `parts` is empty, is set on a register that is not a `string` with a valid `length`, or has a part without a `name` or `offset`, with a negative `offset`, an unknown or `bool` `type`, a `string` part without `length`, a part that goes beyond the block, or parts that overlap (§4.10) |
 | `no-rows` | warning | `registers` is empty |
 | `duplicate-name` | warning | A `name` is used more than once by registers whose firmware ranges overlap (§3.2) |
 | `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Registers that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`), nor registers whose firmware ranges do not overlap |

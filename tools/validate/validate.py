@@ -449,6 +449,71 @@ def check_identify(ck: Checker, at: str, value: object, meta: dict[str, str]) ->
             ck.error(child(here, "enum"), "bad-identify", "enum must be a table name or an object")
 
 
+def check_parts(ck: Checker, at: str, value: object, row: dict[str, str]) -> None:
+    """The parts of a string register (SPEC.md 4.10): named values inside one block."""
+    if not isinstance(value, list):
+        ck.error(at, "bad-json-type", f"expected an array of objects, found {json_kind(value)}")
+        return
+    if not value:
+        ck.error(at, "bad-parts", "parts cannot be empty")
+        return
+    size = parse_int(row.get("length", "")) if row.get("type", "").lower() == "string" else None
+    if size is None or size < 1:
+        ck.error(at, "bad-parts", "parts are only for a string register with a valid length")
+        return
+    used: list[tuple[int, int, str]] = []  # start, end, name
+    for i, part in enumerate(value):
+        here = child(at, i)
+        if not isinstance(part, dict):
+            ck.error(here, "bad-json-type", f"expected an object, found {json_kind(part)}")
+            continue
+        name = part.get("name")
+        if not isinstance(name, str):
+            ck.error(child(here, "name"), "bad-json-type" if "name" in part else "bad-parts",
+                     "a part needs a name" if "name" not in part else f"expected a string, found {json_kind(name)}")
+            continue
+        if not name.strip():
+            ck.error(child(here, "name"), "bad-parts", "a part needs a non-empty name")
+        offset = part.get("offset")
+        if "offset" not in part:
+            ck.error(here, "bad-parts", f"part {name!r} needs an offset")
+            continue
+        if not is_json_number(offset):
+            ck.error(child(here, "offset"), "bad-json-type", f"expected an integer, found {json_kind(offset)}")
+            continue
+        if not isinstance(offset, int) or isinstance(offset, bool) or offset < 0:
+            ck.error(child(here, "offset"), "bad-parts", f"offset must be a whole number from 0, not {offset!r}")
+            continue
+        typ = part.get("type", "string")
+        if not isinstance(typ, str):
+            ck.error(child(here, "type"), "bad-json-type", f"expected a string, found {json_kind(typ)}")
+            continue
+        if typ == "bool" or typ not in TYPE_REGISTERS:
+            ck.error(child(here, "type"), "bad-parts", f"unknown or unsupported part type {typ!r}")
+            continue
+        count = TYPE_REGISTERS[typ]
+        if typ == "string":
+            length = part.get("length")
+            if "length" not in part:
+                ck.error(here, "bad-parts", f"string part {name!r} needs a length")
+                continue
+            if not is_json_number(length):
+                ck.error(child(here, "length"), "bad-json-type", f"expected an integer, found {json_kind(length)}")
+                continue
+            if not isinstance(length, int) or isinstance(length, bool) or length < 1:
+                ck.error(child(here, "length"), "bad-parts", f"length must be a whole number from 1, not {length!r}")
+                continue
+            count = length
+        if offset + count > size:
+            ck.error(here, "bad-parts", f"part {name!r} ends at register {offset + count}, beyond the {size} of the block")
+            continue
+        clash = next((n for s0, e0, n in used if offset < e0 and s0 < offset + count), None)
+        if clash is not None:
+            ck.error(here, "bad-parts", f"part {name!r} overlaps part {clash!r}")
+            continue
+        used.append((offset, offset + count, name))
+
+
 def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
     try:
         doc = json.loads(text, object_pairs_hook=no_duplicates, parse_constant=not_json_constant)
@@ -636,13 +701,8 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
                     ck.error(here, "bad-read", "read_group must not be empty")
                 else:
                     row[key] = value
-            elif key == "write_group":
-                if not isinstance(value, str):
-                    wrong_type(here, "a string", value)
-                elif not value.strip():
-                    ck.error(here, "bad-write-group", "write_group must not be empty")
-                else:
-                    row[key] = value
+            elif key == "parts":
+                pass  # checked after the keys of the register, once its type and length are known
             elif key in V2_VERSION_KEYS or key == "role":
                 if isinstance(value, str):
                     row[key] = value
@@ -660,6 +720,8 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
                     warned.add(key)
                     ck.warn(here, "unknown-column", f"unknown key {key!r} (custom keys should start with 'x_')")
                 row[key] = as_text(value)
+        if "parts" in reg:
+            check_parts(ck, child(at, "parts"), reg["parts"], row)
         if reg_order:
             row["byte_order"] = JOIN_ORDER[
                 reg_order.get("byte_order", order["byte_order"]),
@@ -705,7 +767,6 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row], v2: bool = Fa
     locs: list[int | str] = [loc for loc, _ in rows]
     valid: dict[str, tuple[str, bool, str]] = {}  # name -> type, bit field, scale_factor
     scaled: list[tuple[int | str, str, str]] = []  # location, type, scale_factor
-    group_members: dict[str, list[tuple[int | str, int, int]]] = {}  # write_group -> location, start, count
 
     for index, (lineno, row) in enumerate(rows):
         get = lambda col: row.get(col, "")  # noqa: E731
@@ -825,17 +886,6 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row], v2: bool = Fa
         elif enum and not valid_enum(enum):
             ck.error(lineno, "bad-enum", f"malformed enum {enum!r} (expected 0=Off|1=On)")
 
-        group = get("write_group") if v2 else ""
-        if group:
-            if area != "holding":
-                ck.error(lineno, "bad-write-group", "write_group is only for holding registers")
-            elif access == "R":
-                ck.error(lineno, "bad-write-group", "a register in a write group must be writable")
-            elif typ == "bool" or bitfield:
-                ck.error(lineno, "bad-write-group", "bool and bit fields cannot be in a write group")
-            elif length_ok:
-                group_members.setdefault(group, []).append((lineno, wire, count))
-
         # Rows with errors are left out of the overlap check. Bits of the same
         # register (bool + bit) are meant to share it.
         row_ok = ck.errors() == errors_before
@@ -860,19 +910,6 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row], v2: bool = Fa
             ck.error(lineno, "bad-scale-factor", f"scale factor {sf!r} must be a whole integer register")
         elif sf_sf:
             ck.error(lineno, "bad-scale-factor", f"scale factor {sf!r} has a scale factor itself")
-
-    # The registers of a write group are written in one FC16 request, so they
-    # must follow each other without a gap or overlap and fit in one request.
-    for group, members in group_members.items():
-        members.sort(key=lambda m: m[1])
-        for (_l1, s1, c1), (l2, s2, _c2) in zip(members, members[1:]):
-            if s2 != s1 + c1:
-                ck.error(l2, "bad-write-group",
-                         f"write group {group!r} is not contiguous: expected a register at {s1 + c1}, found {s2}")
-        total = members[-1][1] + members[-1][2] - members[0][1]
-        if total > 123:
-            ck.error(members[0][0], "bad-write-group",
-                     f"write group {group!r} spans {total} registers, more than the 123 one write can hold")
 
     spans.sort()
     for i, (a2, s2, _e2, i2, n2) in enumerate(spans):
