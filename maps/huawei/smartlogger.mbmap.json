@@ -2,72 +2,790 @@
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
   "vendor": "Huawei",
-  "model": "Smartlogger",
-  "models": ["Smartlogger"],
+  "model": "SmartLogger",
+  "models": [
+    "SmartLogger",
+    "SmartLogger1000",
+    "SmartLogger2000",
+    "SmartLogger3000"
+  ],
   "vendor_website": "huawei.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table huawei/smartlogger; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/huawei-smartlogger.htm. Not verified against the manufacturer's documentation",
+  "description": "Data logger for Huawei SUN2000 inverters with Modbus RTU and TCP: plant totals (power, energy, currents, voltages), power scheduling, time, alarms and device control",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "Huawei, SmartLogger ModBus Interface Definitions, Issue 35 (2020-02-20), table 2-1 SmartLogger register definitions",
+  "sources": [
+    {
+      "title": "SmartLogger ModBus Interface Definitions",
+      "version": "Issue 35, 2020-02-20",
+      "url": "https://community.symcon.de/uploads/short-url/rIF4NzZBqBfB7S5WtTWW5jRamGn.pdf",
+      "note": "table 2-1; the inverter, power meter and environmental monitor tables (2-3 to 2-7) are not in this map"
+    }
+  ],
   "notes": [
-    "Huawei Smartlogger.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Huawei SmartLogger. The SmartLogger's own registers (table 2-1): plant totals over all connected inverters, scheduling, system time and control. The registers of the devices behind it (inverters, meters, EMI) are not in this map.",
+    "Values are big-endian. Engineering value = register / gain (the scale here). RO registers are read with 03, RW registers are read with 03 and written with 06 or 10, WO registers are written only. Over Modbus TCP the logical device ID of the SmartLogger is 0.",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "DateandTime", "area": "holding", "address": 40000, "type": "uint32", "access": "R"},
-    {"name": "City", "area": "holding", "address": 40002, "type": "uint32", "access": "R"},
-    {"name": "Daylight saving time (DST)", "area": "holding", "address": 40004, "type": "uint16", "access": "R"},
-    {"name": "Time zone", "area": "holding", "address": 40005, "type": "int32", "unit": "s", "access": "R"},
-    {"name": "DST state", "area": "holding", "address": 40007, "type": "uint16", "access": "R"},
-    {"name": "DST offset", "area": "holding", "address": 40008, "type": "uint16", "access": "R"},
-    {"name": "The local time", "area": "holding", "address": 40009, "type": "uint32", "access": "R"},
-    {"name": "Power on", "area": "holding", "address": 40200, "type": "uint16", "access": "R"},
-    {"name": "Power off", "area": "holding", "address": 40201, "type": "uint16", "access": "R"},
-    {"name": "Power on/off (40202)", "area": "holding", "address": 40202, "type": "uint16", "access": "R"},
-    {"name": "Power on/off (40203)", "area": "holding", "address": 40203, "type": "uint16", "access": "R"},
-    {"name": "Transfer trip", "area": "holding", "address": 40204, "type": "uint16", "access": "R"},
-    {"name": "Array reset", "area": "holding", "address": 40205, "type": "uint16", "access": "R"},
-    {"name": "DC current", "area": "holding", "address": 40500, "type": "int16", "access": "R"},
-    {"name": "Input power", "area": "holding", "address": 40521, "type": "uint32", "unit": "kW", "access": "R"},
-    {"name": "CO2 reduction (40523)", "area": "holding", "address": 40523, "type": "uint32", "unit": "kg", "access": "R"},
-    {"name": "Active power", "area": "holding", "address": 40525, "type": "int32", "unit": "kW", "access": "R"},
-    {"name": "Power factor", "area": "holding", "address": 40532, "type": "int16", "access": "R"},
-    {"name": "Plant status (40543)", "area": "holding", "address": 40543, "type": "uint16", "access": "R"},
-    {"name": "Reactive power", "area": "holding", "address": 40544, "type": "int32", "access": "R"},
-    {"name": "CO2 reduction (40550)", "area": "holding", "address": 40550, "type": "int64", "unit": "kg", "access": "R"},
-    {"name": "DC current 2", "area": "holding", "address": 40554, "type": "int32", "access": "R"},
-    {"name": "E total", "area": "holding", "address": 40560, "type": "uint32", "unit": "kWh", "access": "R"},
-    {"name": "E daily", "area": "holding", "address": 40562, "type": "uint32", "unit": "kWh", "access": "R"},
-    {"name": "Duration of daily power generation", "area": "holding", "address": 40564, "type": "uint32", "unit": "h", "access": "R"},
-    {"name": "Plant status (40566)", "area": "holding", "address": 40566, "type": "uint16", "access": "R"},
-    {"name": "Plant status (40567)", "area": "holding", "address": 40567, "type": "uint16", "access": "R"},
-    {"name": "Active alarm sequence number", "area": "holding", "address": 40568, "type": "uint32", "access": "R"},
-    {"name": "Historical alarm sequence number", "area": "holding", "address": 40570, "type": "uint32", "access": "R"},
-    {"name": "Phase A current", "area": "holding", "address": 40572, "type": "int16", "access": "R"},
-    {"name": "Phase B current", "area": "holding", "address": 40573, "type": "int16", "access": "R"},
-    {"name": "Phase C current", "area": "holding", "address": 40574, "type": "int16", "access": "R"},
-    {"name": "Uab", "area": "holding", "address": 40575, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Ubc", "area": "holding", "address": 40576, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Uca", "area": "holding", "address": 40577, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Inverter efficiency", "area": "holding", "address": 40685, "type": "uint16", "unit": "%", "access": "R"},
-    {"name": "Max. activeadjustm ent", "area": "holding", "address": 40697, "type": "uint32", "unit": "kW", "access": "R"},
-    {"name": "Locked", "area": "holding", "address": 40699, "type": "uint16", "access": "R"},
-    {"name": "DI status", "area": "holding", "address": 40700, "type": "uint16", "access": "R"},
-    {"name": "System reset", "area": "holding", "address": 40723, "type": "uint16", "access": "R"},
-    {"name": "Fast device access", "area": "holding", "address": 40724, "type": "uint16", "access": "R"},
-    {"name": "Device access status", "area": "holding", "address": 40736, "type": "uint16", "access": "R"},
-    {"name": "Active power control mode", "area": "holding", "address": 40737, "type": "uint16", "access": "R"},
-    {"name": "Active power scheduling target value", "area": "holding", "address": 40738, "type": "uint32", "unit": "kW", "access": "R"},
-    {"name": "Reactive power control mode", "area": "holding", "address": 40740, "type": "uint16", "access": "R"},
-    {"name": "Reactive power scheduling curve mode", "area": "holding", "address": 40741, "type": "uint16", "access": "R"},
-    {"name": "Active scheduling percentage", "area": "holding", "address": 40802, "type": "uint32", "unit": "%", "access": "R"},
-    {"name": "CO2 emission reduction coefficient", "area": "holding", "address": 41124, "type": "uint16", "access": "R"},
-    {"name": "PV module capacity", "area": "holding", "address": 41934, "type": "uint32", "unit": "kW", "access": "R"},
-    {"name": "Rated plant capacity", "area": "holding", "address": 41936, "type": "uint32", "unit": "kW", "access": "R"}
+    {
+      "name": "Date&Time",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40000,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Epoch seconds UTC"
+    },
+    {
+      "name": "City",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40002,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "Daylight Saving Time (DST)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40004,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0: Disabled 1: Enabled"
+    },
+    {
+      "name": "Time Zone",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40005,
+      "type": "int32",
+      "unit": "s",
+      "access": "R",
+      "description": "Time zone offset measured in seconds"
+    },
+    {
+      "name": "DST state",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40007,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: DST time not entered 1: DST time entered"
+    },
+    {
+      "name": "DST offset",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40008,
+      "type": "uint16",
+      "unit": "min",
+      "access": "R"
+    },
+    {
+      "name": "The Local Time",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40009,
+      "type": "uint32",
+      "access": "R",
+      "description": "Epoch seconds, local time of the SmartLogger"
+    },
+    {
+      "name": "Power on",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40200,
+      "type": "uint16",
+      "access": "W",
+      "description": "The data field can only be 0 for powering on all inverters."
+    },
+    {
+      "name": "Power off",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40201,
+      "type": "uint16",
+      "access": "W",
+      "description": "The data field can only be 0 for powering off all inverters."
+    },
+    {
+      "name": "Power on/off (40202)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40202,
+      "type": "uint16",
+      "access": "W",
+      "description": "0:Power off all inverters 1:Power on all inverters"
+    },
+    {
+      "name": "Power on/off (40203)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40203,
+      "type": "uint16",
+      "access": "W",
+      "description": "0:Power on all inverters 1:Power off all inverters"
+    },
+    {
+      "name": "Transfer trip",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40204,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0:Run 1:Fault outage The device shuts down when it stops due to faults and does not respond to the startup request."
+    },
+    {
+      "name": "Array reset",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40205,
+      "type": "uint16",
+      "access": "W",
+      "description": "The data domain can only be 0."
+    },
+    {
+      "name": "Active adjustment (40420)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40420,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "RW",
+      "description": "Adjusts the total active output power of all inverters connected to the SmartLogger. The adjustment value that is beyond the range is discarded."
+    },
+    {
+      "name": "Reactive adjustment (40422)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40422,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "RW",
+      "description": "Adjusts the total reactive output power of all inverters connected to the SmartLogger. The adjustment value that is beyond the range is discarded."
+    },
+    {
+      "name": "Active adjustment (40424)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40424,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "RW",
+      "description": "Adjusts the total active output power of all inverters connected to the SmartLogger."
+    },
+    {
+      "name": "Reactive adjustment (40426)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40426,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "RW",
+      "description": "Adjusts the total reactive output power of all inverters connected to the SmartLogger."
+    },
+    {
+      "name": "Active power adjustment by percentage",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40428,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "description": "Adjusts the total active output power of all inverters connected to the SmartLogger. The percentage range is 0–100%."
+    },
+    {
+      "name": "Power factor adjustment",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40429,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "Adjusts the total reactive output power of all inverters connected to the SmartLogger. The range is (-1,-0.8]U[0.8,1]."
+    },
+    {
+      "name": "DC current",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40500,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Equals the total input DC current of all inverters. If the value exceeds the range specified by I16, register 40554 is recommended."
+    },
+    {
+      "name": "Input power",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40521,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "kW",
+      "access": "R",
+      "description": "Equals the total input power of all inverters."
+    },
+    {
+      "name": "CO2 reduction (40523)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40523,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kg",
+      "access": "R",
+      "description": "Equals the total CO2 reduction of all inverters. If the value exceeds the range specified by U32, register 40550 is recommended."
+    },
+    {
+      "name": "Active power",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40525,
+      "type": "int32",
+      "scale": 0.001,
+      "unit": "kW",
+      "access": "R",
+      "description": "Equals the total active output power of all inverters."
+    },
+    {
+      "name": "Power factor",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40532,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Equals the total power factor of all inverters."
+    },
+    {
+      "name": "Plant status (40543)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40543,
+      "type": "uint16",
+      "access": "R",
+      "description": "Used by Qinghai 1: Unlimited power operation 2: Limited power operation 3: Idle 4: Outage (fault, maintenance etc.) 5: Communication interrupt"
+    },
+    {
+      "name": "Reactive power",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40544,
+      "type": "int32",
+      "scale": 0.001,
+      "unit": "kvar",
+      "access": "R",
+      "description": "Equals the total reactive output power of all inverters."
+    },
+    {
+      "name": "CO2 reduction (40550)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40550,
+      "type": "uint64",
+      "scale": 0.01,
+      "unit": "kg",
+      "access": "R",
+      "description": "Equals the total CO2 reduction of all inverters. This register represents a larger value range compared with register 40523."
+    },
+    {
+      "name": "DC current 2",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40554,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Equals the total input DC current of all inverters. This register represents a larger value range compared with register 40500."
+    },
+    {
+      "name": "E-Total",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40560,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R",
+      "description": "Equals the total energy yield generated by all inverters."
+    },
+    {
+      "name": "E-Daily",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40562,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R",
+      "description": "Equals daily energy yield generated by all inverters."
+    },
+    {
+      "name": "Duration of daily power generation",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40564,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Plant status (40566)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40566,
+      "type": "uint16",
+      "access": "R",
+      "description": "Used by Xinjiang 0: Idle 1: On-grid 2: On-grid: self derating 3: On-grid: Power limit 4: Planned outage 5: Power limit outage 6: Fault outage 7: Communication interrupt"
+    },
+    {
+      "name": "Plant status (40567)",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40567,
+      "type": "uint16",
+      "access": "R",
+      "description": "Used by Ningxia 1: On-grid 2: Outage 3: Maintenance 4: Idle"
+    },
+    {
+      "name": "Active alarm sequence number",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40568,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Historical alarm sequence number",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40570,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Phase A current",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40572,
+      "type": "int16",
+      "unit": "A",
+      "access": "R",
+      "description": "Equals the sum of phase A currents of all inverters."
+    },
+    {
+      "name": "Phase B current",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40573,
+      "type": "int16",
+      "unit": "A",
+      "access": "R",
+      "description": "Equals the sum of phase B currents of all inverters."
+    },
+    {
+      "name": "Phase C current",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40574,
+      "type": "int16",
+      "unit": "A",
+      "access": "R",
+      "description": "Equals the sum of phase C currents of all inverters."
+    },
+    {
+      "name": "Uab",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40575,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Ubc",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40576,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Uca",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40577,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Inverter Efficiency",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40685,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Max. reactive adjustment",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40693,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R",
+      "description": "Equals the total maximum power of all inverters connected in parallel multiplied by 60%."
+    },
+    {
+      "name": "Min. reactive adjustment",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40695,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R",
+      "description": "Equals the total maximum power of all inverters connected in parallel multiplied by 60% x (–1)."
+    },
+    {
+      "name": "Max. active adjustment",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40697,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R",
+      "description": "Equals the total maximum power of all inverters connected in parallel."
+    },
+    {
+      "name": "Locked",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40699,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: Locked 1: Unlocked If more than one inverter is on-grid and feeding power to the grid, the status is Unlocked."
+    },
+    {
+      "name": "DI status",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40700,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit0: DI1 – Bit7: DI8 1: Closed 0: Open Equals the status of the eight DIs of the SmartLogger."
+    },
+    {
+      "name": "ESN",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40713,
+      "type": "string",
+      "length": 10,
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "System reset",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40723,
+      "type": "uint16",
+      "access": "W",
+      "description": "Resets the SmartLogger. The data domain is not checked."
+    },
+    {
+      "name": "Fast device access",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40724,
+      "type": "uint16",
+      "access": "W",
+      "description": "Automatically allocates and searches for devices."
+    },
+    {
+      "name": "Device operation",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40725,
+      "type": "string",
+      "length": 11,
+      "access": "W",
+      "description": "First 10 registers: determine the device to be operated based on the ESN. The register content is the device ESN. Last register: If the operation type is0, the inverters. If the operation type is 1, theinverter alarm is reset on the SmartLogger side."
+    },
+    {
+      "name": "Device access status",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40736,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: Search completed 1: Search in progress 2: Search failed"
+    },
+    {
+      "name": "Active power control mode",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40737,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: No limit 1: DI active scheduling 3: Percentage fixed-value limitation(open loop) 4: Remote scheduling 6: Export Limitation(kW) 200: Remote output control 65533: Slave 65534: no scheduling"
+    },
+    {
+      "name": "Active power scheduling target value",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40738,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R",
+      "description": "Target total active power for the SmartLogger active power scheduling"
+    },
+    {
+      "name": "Reactive power control mode",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40740,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: No output 1: DI reactive scheduling 2: Reactive power fix control 3: Power factor fix control 4: Q-U characteristic curve 5: cos(Phi)-P/Pn characteristic curve 6: Q-U hysteresis curve (CEI0-16) 7: Remote scheduling 9: Power factor closed-loop control(old policy) 10: Power factor closed-loop control 65533: Slave 65534: no scheduling"
+    },
+    {
+      "name": "Reactive power scheduling curve mode",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40741,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: indicates the power factor 1: indicates the reactive power fixed value"
+    },
+    {
+      "name": "Reactive power scheduling target value",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40742,
+      "type": "int32",
+      "unit": "kvar",
+      "access": "R",
+      "description": "SmartLogger reactive power adjustment target value: power factor or total reactive power. The specific meaning depends on the reactive power scheduling mode. When the modeis the power factor, the gain is 1000. When the mode is the reactive powerfixed value, the gain is 10. Gain 10 for kvar, 1000 for a power factor (column \"10/10\" in the document)."
+    },
+    {
+      "name": "Active scheduling percentage",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 40802,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R",
+      "description": "[0, 100]"
+    },
+    {
+      "name": "CO2 emission reduction coefficient",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41124,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "[0, 10] Unit kg/kWh."
+    },
+    {
+      "name": "PV module capacity",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41934,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "kW",
+      "access": "R",
+      "description": "[0, 2000000]"
+    },
+    {
+      "name": "Rated plant capacity",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41936,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Total rated capacity of grid-connected inverters",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41938,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Conversion coefficient",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41940,
+      "type": "uint32",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Communication status",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41942,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status of communication between the SmartLogger and the servers of Japanese power companies: 0: Connection success 1: Connection failed"
+    },
+    {
+      "name": "Communication abnormal shutdown",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41947,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0: Disable 1: Enable"
+    },
+    {
+      "name": "Communication abnormal detection time",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41948,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "[60, 1800]"
+    },
+    {
+      "name": "Auto start upon communicati on recovery",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 41949,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0: Disable 1: Enable"
+    },
+    {
+      "name": "The system time: year",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42017,
+      "type": "uint16",
+      "access": "RW",
+      "description": "2000–2068 (local time)"
+    },
+    {
+      "name": "The system time: month",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42018,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1–12"
+    },
+    {
+      "name": "The system time: day",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42019,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1–31"
+    },
+    {
+      "name": "The system time: hour",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42020,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0–23"
+    },
+    {
+      "name": "The system time: minute",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42021,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0–59"
+    },
+    {
+      "name": "The system time: second",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42022,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0–59"
+    },
+    {
+      "name": "Current error during scanning",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42150,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "RW",
+      "description": "0~2"
+    },
+    {
+      "name": "Inspection",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42730,
+      "type": "uint16",
+      "access": "W",
+      "description": "00:Start 01:Stop"
+    },
+    {
+      "name": "IV curve scanning",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 42779,
+      "type": "uint16",
+      "access": "W",
+      "description": "00:Stop 01:Start(64 Points) 02:Start(128 Points) 03:Start(256 Points)"
+    },
+    {
+      "name": "Alarm Info 1",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 50000,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Alarm Info 2",
+      "group": "SmartLogger",
+      "area": "holding",
+      "address": 50001,
+      "type": "uint16",
+      "access": "R"
+    }
   ]
 }
