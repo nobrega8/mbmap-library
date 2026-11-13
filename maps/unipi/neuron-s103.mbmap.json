@@ -9,9 +9,9 @@
   ],
   "vendor_website": "www.unipi.technology",
   "description": "Unipi Neuron S103 PLC: 4 digital inputs, 4 digital outputs, 1 analog input, 1 analog output",
-  "x_status": "official",
-  "revision": 3,
-  "revised": "2026-11-10",
+  "x_status": "verified",
+  "revision": 4,
+  "revised": "2026-11-13",
   "source": "Neuron S103 Modbus map v2.0, Unipi technology",
   "sources": [
     {
@@ -24,15 +24,16 @@
   "notes": [
     "Addresses are those of the column 'Via Unit 0' (Modbus TCP unit id 0); the column 'Via Unit 1' gives the same addresses for this single-section model.",
     "Unipi Neuron uses Modbus TCP. By default the Modbus server listens only on the loopback interface; it can be opened to other interfaces by changing its systemd script (document, Brief protocol description). The TCP port and the unit id used here are not stated in the document: 502 is the Modbus default.",
-    "Registers marked Reserved or Obsolete in the document, and those named (Internal), are left out. Multi-register values are big-endian (most significant register first). The document types Real as a two-register floating point value, read here as float32; its text about half and single precision is ambiguous.",
+    "Registers marked Reserved or Obsolete in the document, and those named (Internal), are left out. Bytes are big-endian within a register, but a 32-bit value (counters, serial number, float32) has its least significant register first: the PCB serial number reads 4801 and the idle analog input about 0.01 V in this order, and nonsense in the other. The document types Real as a two-register floating point value, read here as float32; its text about half and single precision is ambiguous.",
     "Coils (suffix (coil)) repeat digital inputs, outputs and some settings that also appear as bits of holding registers. Analog values are in the unit selected by the analog input or output configuration register; the document gives no unit for them. Storage - Vendor specific 1 to 3 depend on the microSD card (Swissbit pSLC: card series, unrecoverable CRC errors, wear level threshold %).",
+    "Tested on a Neuron S103 (firmware register 0x0612, FC17 SPI3.1.4), November 2026, over Modbus TCP. All registers that can be read answered; the coils that only trigger an action (reset, save configuration) were not read. The counters were 0, so their word order was not checked and is assumed to match the other 32-bit values. The storage registers read 65535 without a microSD card.",
     "Some registers (the RS485 line configuration) have no address in the Via Unit 0 column; they are included with the Via Unit 1 address, which is identical."
   ],
   "protocol": "tcp",
   "port": 502,
   "unit_id": 0,
   "byte_order": "big",
-  "word_order": "big",
+  "word_order": "little",
   "address_base": 0,
   "enums": {
     "ao_mode": {"0": "Voltage 0 – 10V", "1": "Current 0 – 20mA", "3": "Resistance 0 – 2kΩ"},
