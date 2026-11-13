@@ -1,0 +1,2204 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "DENT Instruments",
+  "model": "PowerScout 3037",
+  "models": [
+    "PowerScout 3037",
+    "PS3037"
+  ],
+  "vendor_website": "dentinstruments.com",
+  "description": "Three-phase power meter with Modbus RTU: absolute, positive, negative and net energy and power, per-phase values, demand and per-CT configuration",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "DENT Instruments, Operator's Guide PowerScout 3037 Power Meter and ViewPoint Software (November 9, 2017), All Things Modbus",
+  "sources": [
+    {
+      "title": "Operator's Guide PowerScout 3037 Power Meter and ViewPoint Software",
+      "version": "November 9, 2017",
+      "url": "https://www.powerwisesystems.com/application/files/1715/1216/3585/Dent-PowerScout-PS3037_Manual.pdf",
+      "note": "All Things Modbus: device, configuration, pulse, absolute, positive, negative and net register tables; table 7 for the data scalars"
+    }
+  ],
+  "notes": [
+    "DENT Instruments PowerScout 3037. Register tables of the 'All Things Modbus' chapter: absolute (44xxx), positive (46xxx), negative (47xxx) and net (44150, 46150, 47150) measurements, device, configuration and pulse port registers. The Veris H8035/H8036 emulation registers (40001...) are not in this map.",
+    "The guide numbers registers from 40001 (offset 4000 = register 44001), so this map uses address_base 1 with the register numbers of the guide. Function 03 reads the registers.",
+    "All values are unsigned 16-bit. Values that need two registers are LSW first (word order little): value = MSW x 65536 + LSW.",
+    "Registers 44001 to 44061 (and the matching positive, negative and net registers) are scaled by the data scalar in register 44602. Scalar 0: kW/kvar/kVA and their energies x 0.00001, amps x 0.01, volts x 0.1. Scalar 1: x 0.001, amps x 0.1, volts x 0.1. Scalar 2: x 0.01, amps x 0.1, volts x 0.1. Scalar 3: x 0.1, amps x 0.1, volts x 0.1. Scalar 4: x 1, amps x 1, volts x 1. Scalar 5: x 10, amps x 1, volts x 1. Scalar 6 or more: x 100, amps x 1, volts x 1. Power factor is always x 0.01.",
+    "Not tested on a device."
+  ],
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Synchronize",
+      "group": "Control",
+      "area": "holding",
+      "address": 40129,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Synchronization register for several PowerScouts."
+    },
+    {
+      "name": "kWh System",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44001,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44001 (LSW) and 44002 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW System",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44003,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Unsigned sum of the absolute values of the three phases. Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Max",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44004,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Now",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44005,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW System Max",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44006,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW System Min",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44007,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVARh System",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44008,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44008 (LSW) and 44009 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAR System",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44010,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Unsigned sum of the absolute values of the three phases. Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh System",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44011,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44011 (LSW) and 44012 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA System",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44013,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Displacement PF System",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44014,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Apparent PF System",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44015,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Amps System Avg",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44016,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts Line to Line Avg",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44017,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts Line to Neutral Avg",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44018,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L1 to L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44019,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L2 to L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44020,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L1 to L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44021,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Line Frequency",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44022,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R",
+      "description": "The manual gives no scale here; the positive and negative tables (46022, 47022) give the frequency x 10."
+    },
+    {
+      "name": "kWh L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44023,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44023 (LSW) and 44024 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44025,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44025 (LSW) and 44026 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44027,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44027 (LSW) and 44028 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44029,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44030,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44031,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVARh L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44032,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44032 (LSW) and 44033 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVARh L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44034,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44034 (LSW) and 44035 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVARh L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44036,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44036 (LSW) and 44037 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAR L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44038,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAR L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44039,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAR L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44040,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44041,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44041 (LSW) and 44042 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44043,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44043 (LSW) and 44044 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44045,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44045 (LSW) and 44046 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44047,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44048,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44049,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Displacement PF L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44050,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Displacement PF L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44051,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Displacement PF L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44052,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Apparent PF L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44053,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Apparent PF L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44054,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Apparent PF L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44055,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Amps L1",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44056,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Amps L2",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44057,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Amps L3",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44058,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L1 to Neutral",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44059,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L2 to Neutral",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44060,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L3 to Neutral",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44061,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Time Since Reset",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44062,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44062 (LSW) and 44063 (MSW). Seconds since the accumulated values were reset."
+    },
+    {
+      "name": "Data tick counter",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44064,
+      "type": "uint16",
+      "access": "R",
+      "description": "Internal sample count, cleared every minute: shows whether a reading is a new sample."
+    },
+    {
+      "name": "Clear accumulated measurements",
+      "group": "Control",
+      "area": "holding",
+      "address": 44066,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 1234 to reset the accumulated 'H' registers (kWh, kvarh, kVAh, demand) to their default values."
+    },
+    {
+      "name": "Firmware major revision",
+      "group": "Identification",
+      "area": "holding",
+      "address": 44069,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Firmware minor revision",
+      "group": "Identification",
+      "area": "holding",
+      "address": 44070,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "kW System Average",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44080,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Min",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44081,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA Demand System Max",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44082,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA Demand System Now",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44083,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAR Demand System Max",
+      "group": "Absolute",
+      "area": "holding",
+      "address": 44084,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh System NET",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 44150,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44150 (LSW) and 44151 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L1 NET",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 44152,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44152 (LSW) and 44153 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L2 NET",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 44154,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44154 (LSW) and 44155 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L3 NET",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 44156,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 44156 (LSW) and 44157 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Model",
+      "group": "Identification",
+      "area": "holding",
+      "address": 44201,
+      "type": "string",
+      "length": 5,
+      "access": "R",
+      "role": "model",
+      "description": "10 ASCII characters in registers 44201 to 44205."
+    },
+    {
+      "name": "Serial number",
+      "group": "Identification",
+      "area": "holding",
+      "address": 44206,
+      "type": "string",
+      "length": 5,
+      "access": "R",
+      "role": "serial",
+      "description": "10 ASCII characters in registers 44206 to 44210."
+    },
+    {
+      "name": "Port 1 output control",
+      "group": "Pulse port",
+      "area": "holding",
+      "address": 44402,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Output low (closed)",
+        "1": "Output high (open)"
+      },
+      "description": "Used when the port is an on/off switch (45110 = 0)."
+    },
+    {
+      "name": "Hardware ID",
+      "group": "Identification",
+      "area": "holding",
+      "address": 44511,
+      "type": "uint16",
+      "access": "R",
+      "description": "Hardware revision."
+    },
+    {
+      "name": "CT type (all CTs)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44525,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Writes the same type for all CTs: 1 = mV, 2 = Rogowski."
+    },
+    {
+      "name": "Slave ID mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44526,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 = Veris, any other value = DENT."
+    },
+    {
+      "name": "CT phase shift (all CTs)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44599,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW"
+    },
+    {
+      "name": "CT integer value (all CTs)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44600,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "CT decimal value (all CTs)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44601,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "Data scalar",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44602,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 6; sets the scaling of registers 44001 to 44061 (see notes)."
+    },
+    {
+      "name": "Demand window size",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44603,
+      "type": "uint16",
+      "unit": "min",
+      "access": "RW",
+      "description": "Default 15 minutes."
+    },
+    {
+      "name": "Volts multiplier integer",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44604,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Volts are multiplied by this value + volts multiplier decimal / 1000, for a step-down transformer."
+    },
+    {
+      "name": "Amps multiplier",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44605,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Multiplies all current values, for x:5 A CTs or one CT on a balanced three-phase load."
+    },
+    {
+      "name": "Communication setting",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44606,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Baud code (900 = 9600, 1900 = 19200, 3800 = 38400, 5700 = 57600, 7600 = 76800, 11500 = 115200) plus parity (00 none, 10 odd, 20 even) plus stop bits (1 or 2). Example: 901 = 9600 baud, no parity, 1 stop bit."
+    },
+    {
+      "name": "Service type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44607,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Wye",
+        "1": "Delta"
+      }
+    },
+    {
+      "name": "Line frequency setting",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44609,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW",
+      "description": "50 or 60."
+    },
+    {
+      "name": "Snap to zero threshold, Rogowski CTs",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44610,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Snap to zero threshold, voltage",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44611,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Protocol switch",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44612,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 1833 to change to BACnet mode."
+    },
+    {
+      "name": "Volts multiplier decimal",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44616,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Volts are multiplied by volts multiplier integer + this value / 1000."
+    },
+    {
+      "name": "Digital port 1 configuration",
+      "group": "Pulse port",
+      "area": "holding",
+      "address": 45110,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = no pulses (port is an on/off switch); 44001 = system kWh pulses; 44008 = system kvarh pulses; 44011 = system kVAh pulses."
+    },
+    {
+      "name": "Port 1 pulse output relay type",
+      "group": "Pulse port",
+      "area": "holding",
+      "address": 45111,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Normally open (high)",
+        "1": "Normally closed (low)"
+      }
+    },
+    {
+      "name": "Positive kWh System",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46001,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46001 (LSW) and 46002 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kW System",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46003,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Max (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46004,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Now (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46005,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kW System Max",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46006,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kW System Min",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46007,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kVARh System",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46008,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46008 (LSW) and 46009 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kVAR System",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46010,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh System (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46011,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46011 (LSW) and 46012 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA System (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46013,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive Displacement PF",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46014,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Positive Apparent PF System",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46015,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Amps System Avg (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46016,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts Line to Line Avg (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46017,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts Line to Neutral Avg (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46018,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L1 to L2 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46019,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L2 to L3 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46020,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L3 to L1 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46021,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Measured Line Frequency (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46022,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Positive kWh L1",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46023,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46023 (LSW) and 46024 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kWh L2",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46025,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46025 (LSW) and 46026 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kWh L3",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46027,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46027 (LSW) and 46028 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kW L1",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46029,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kW L2",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46030,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kW L3",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46031,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kVARh L1",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46032,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46032 (LSW) and 46033 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kVARh L2",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46034,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46034 (LSW) and 46035 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kVARh L3",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46036,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46036 (LSW) and 46037 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kVAR L1",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46038,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kVAR L2",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46039,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive kVAR L3",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46040,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L1 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46041,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46041 (LSW) and 46042 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L2 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46043,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46043 (LSW) and 46044 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L3 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46045,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46045 (LSW) and 46046 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L1 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46047,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L2 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46048,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L3 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46049,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Positive Displacement PF L1",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46050,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Positive Displacement PF L2",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46051,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Positive Displacement PF L3",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46052,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Positive Apparent PF L1",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46053,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Positive Apparent PF L2",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46054,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Positive Apparent PF L3",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46055,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Amps L1 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46056,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Amps L2 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46057,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Amps L3 (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46058,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L1 to Neutral (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46059,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L2 to Neutral (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46060,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L3 to Neutral (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46061,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Time Since Reset (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46062,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46062 (LSW) and 46063 (MSW). Seconds since the accumulated values were reset."
+    },
+    {
+      "name": "Positive kW System Average",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46080,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Minimum (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46081,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA Demand System Maximum (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46082,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA Demand System Now (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46083,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAR Demand System Max (positive table)",
+      "group": "Positive",
+      "area": "holding",
+      "address": 46084,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh System NET POS",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 46150,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46150 (LSW) and 46151 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L1 NET POS",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 46152,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46152 (LSW) and 46153 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L2 NET POS",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 46154,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46154 (LSW) and 46155 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L3 NET POS",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 46156,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 46156 (LSW) and 46157 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kWh System",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47001,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47001 (LSW) and 47002 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kW System",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47003,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Max (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47004,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Now (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47005,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kW System Max",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47006,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kW System Min",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47007,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kVARh System",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47008,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47008 (LSW) and 47009 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kVAR System",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47010,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh System (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47011,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47011 (LSW) and 47012 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA System (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47013,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative Displacement PF",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47014,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Negative Apparent PF System",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47015,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Amps System Avg (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47016,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts Line to Line Avg (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47017,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts Line to Neutral Avg (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47018,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L1 to L2 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47019,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L2 to L3 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47020,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L3 to L1 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47021,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Measured Line Frequency (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47022,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Negative kWh L1",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47023,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47023 (LSW) and 47024 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kWh L2",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47025,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47025 (LSW) and 47026 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kWh L3",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47027,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47027 (LSW) and 47028 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kW L1",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47029,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kW L2",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47030,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kW L3",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47031,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kVARh L1",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47032,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47032 (LSW) and 47033 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kVARh L2",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47034,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47034 (LSW) and 47035 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kVARh L3",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47036,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47036 (LSW) and 47037 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kVAR L1",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47038,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kVAR L2",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47039,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative kVAR L3",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47040,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L1 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47041,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47041 (LSW) and 47042 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L2 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47043,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47043 (LSW) and 47044 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAh L3 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47045,
+      "type": "uint32",
+      "unit": "kVAh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47045 (LSW) and 47046 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L1 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47047,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L2 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47048,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA L3 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47049,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Negative Displacement PF L1",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47050,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Negative Displacement PF L2",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47051,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Negative Displacement PF L3",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47052,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Negative Apparent PF L1",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47053,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Negative Apparent PF L2",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47054,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Negative Apparent PF L3",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47055,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Amps L1 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47056,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Amps L2 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47057,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Amps L3 (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47058,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L1 to Neutral (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47059,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L2 to Neutral (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47060,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Volts L3 to Neutral (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47061,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "Time Since Reset (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47062,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47062 (LSW) and 47063 (MSW). Seconds since the accumulated values were reset."
+    },
+    {
+      "name": "Negative kW System Average",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47080,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kW Demand System Minimum (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47081,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA Demand System Maximum (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47082,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVA Demand System Now (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47083,
+      "type": "uint16",
+      "unit": "kVA",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kVAR Demand System Max (negative table)",
+      "group": "Negative",
+      "area": "holding",
+      "address": 47084,
+      "type": "uint16",
+      "unit": "kvar",
+      "access": "R",
+      "description": "Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh System NET NEG",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 47150,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47150 (LSW) and 47151 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L1 NET NEG",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 47152,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47152 (LSW) and 47153 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L2 NET NEG",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 47154,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47154 (LSW) and 47155 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "kWh L3 NET NEG",
+      "group": "Net energy",
+      "area": "holding",
+      "address": 47156,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 47156 (LSW) and 47157 (MSW). Raw value x the data scalar of register 44602 (see notes)."
+    },
+    {
+      "name": "CT1 integer value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50100,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "CT1 decimal value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50101,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "CT1 type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50125,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "mV",
+        "2": "Rogowski"
+      }
+    },
+    {
+      "name": "CT1 phase shift",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50199,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW"
+    },
+    {
+      "name": "CT2 integer value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50200,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "CT2 decimal value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50201,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "CT2 type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50225,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "mV",
+        "2": "Rogowski"
+      }
+    },
+    {
+      "name": "CT2 phase shift",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50299,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW"
+    },
+    {
+      "name": "CT3 integer value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50300,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "CT3 decimal value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50301,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "CT3 type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50325,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "mV",
+        "2": "Rogowski"
+      }
+    },
+    {
+      "name": "CT3 phase shift",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50399,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW"
+    }
+  ]
+}
