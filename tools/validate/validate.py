@@ -636,6 +636,13 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
                     ck.error(here, "bad-read", "read_group must not be empty")
                 else:
                     row[key] = value
+            elif key == "write_group":
+                if not isinstance(value, str):
+                    wrong_type(here, "a string", value)
+                elif not value.strip():
+                    ck.error(here, "bad-write-group", "write_group must not be empty")
+                else:
+                    row[key] = value
             elif key in V2_VERSION_KEYS or key == "role":
                 if isinstance(value, str):
                     row[key] = value
@@ -698,6 +705,7 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row], v2: bool = Fa
     locs: list[int | str] = [loc for loc, _ in rows]
     valid: dict[str, tuple[str, bool, str]] = {}  # name -> type, bit field, scale_factor
     scaled: list[tuple[int | str, str, str]] = []  # location, type, scale_factor
+    group_members: dict[str, list[tuple[int | str, int, int]]] = {}  # write_group -> location, start, count
 
     for index, (lineno, row) in enumerate(rows):
         get = lambda col: row.get(col, "")  # noqa: E731
@@ -817,6 +825,17 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row], v2: bool = Fa
         elif enum and not valid_enum(enum):
             ck.error(lineno, "bad-enum", f"malformed enum {enum!r} (expected 0=Off|1=On)")
 
+        group = get("write_group") if v2 else ""
+        if group:
+            if area != "holding":
+                ck.error(lineno, "bad-write-group", "write_group is only for holding registers")
+            elif access == "R":
+                ck.error(lineno, "bad-write-group", "a register in a write group must be writable")
+            elif typ == "bool" or bitfield:
+                ck.error(lineno, "bad-write-group", "bool and bit fields cannot be in a write group")
+            elif length_ok:
+                group_members.setdefault(group, []).append((lineno, wire, count))
+
         # Rows with errors are left out of the overlap check. Bits of the same
         # register (bool + bit) are meant to share it.
         row_ok = ck.errors() == errors_before
@@ -841,6 +860,19 @@ def check_rows(ck: Checker, meta: dict[str, str], rows: list[Row], v2: bool = Fa
             ck.error(lineno, "bad-scale-factor", f"scale factor {sf!r} must be a whole integer register")
         elif sf_sf:
             ck.error(lineno, "bad-scale-factor", f"scale factor {sf!r} has a scale factor itself")
+
+    # The registers of a write group are written in one FC16 request, so they
+    # must follow each other without a gap or overlap and fit in one request.
+    for group, members in group_members.items():
+        members.sort(key=lambda m: m[1])
+        for (_l1, s1, c1), (l2, s2, _c2) in zip(members, members[1:]):
+            if s2 != s1 + c1:
+                ck.error(l2, "bad-write-group",
+                         f"write group {group!r} is not contiguous: expected a register at {s1 + c1}, found {s2}")
+        total = members[-1][1] + members[-1][2] - members[0][1]
+        if total > 123:
+            ck.error(members[0][0], "bad-write-group",
+                     f"write group {group!r} spans {total} registers, more than the 123 one write can hold")
 
     spans.sort()
     for i, (a2, s2, _e2, i2, n2) in enumerate(spans):
