@@ -15,8 +15,8 @@
   ],
   "vendor_website": "se.com",
   "description": "Power meter",
-  "revision": 3,
-  "revised": "2026-10-18",
+  "revision": 4,
+  "revised": "2026-11-13",
   "source": "Schneider Electric, PM5100 and PM5300 Modbus register list",
   "sources": [
     {
@@ -32,8 +32,29 @@
     "Values the meter cannot provide read as the N/A value of their data type (0xFFFF, 0xFFFFFFFF, 0x8000 or a float NaN).",
     "Power factor registers are four-quadrant values from -2 to 2, not plain power factors: 0° = 1, 90° = 0, 180° = -1, 270° = 2. Above 1, the power factor is 2 minus the value and leading; below -1 it is -2 minus the value and leading; otherwise it is the value, lagging (unity at ±1).",
     "Registers that exist only on some of the models say so in their description.",
-    "Where the register list names the models PM5110_11, PM5330_31 or PM5340_41, the description shows those names."
+    "Where the register list names the models PM5110_11, PM5330_31 or PM5340_41, the description shows those names.",
+    "32-bit and 64-bit values and floats have the most significant register first, as in the PM5000 family; the register list does not state it.",
+    "Tested on a PM5320, firmware 2.1.1 (register 1637 reads 2011, Read Device Identification reports V2011), read over a Modbus TCP gateway, November 2026: all 2277 registers read without errors, 41 of them as the N/A value. Checked: identification (name, model, manufacturer, serial number, the Read Device Identification objects), voltages, currents, frequency, power (active 512.3 kW and reactive 222.1 kvar give 558.5 kVA, the apparent power read), power factor, the 64-bit accumulated energies (25929162172 Wh, equal to the 32-bit float in kWh), the 32-bit timers and the date-time registers; the word order is most significant register first. The meter answers FC17 with illegal function. Not working as the register list says: the Enable/Disable registers of the four digital outputs (9208, 9232, 9256, 9280) read text (0x4469 or 0x5265, the start of a label) instead of 0 or 1, and the labels of outputs DO3 and DO4 carry leftover text after the first NUL character. The models other than the PM5320 were not tested.",
+    "The integer power factors at 3196 and 3197 are sign-magnitude: bit 15 is the sign and bits 0-14 are thousandths (0x8395 = -0.917 with the float at -0.917). The map reads the magnitude only; the sign is not decoded."
   ],
+  "identify": {
+    "function": 43,
+    "fields": [
+      {
+        "name": "Vendor name",
+        "object": 0
+      },
+      {
+        "name": "Product code",
+        "object": 1,
+        "role": "model"
+      },
+      {
+        "name": "Major/minor revision",
+        "object": 2
+      }
+    ]
+  },
   "protocol": "rtu",
   "unit_id": 1,
   "baudrate": 19200,
@@ -43,7 +64,8 @@
   "byte_order": "big",
   "word_order": "big",
   "address_base": 1,
-  "x_status": "official",
+  "x_status": "verified",
+  "firmware": "2.1.1",
   "registers": [
     {
       "name": "Meter Name",
@@ -2026,8 +2048,11 @@
       "area": "holding",
       "address": 3196,
       "type": "uint16",
+      "bit": 0,
+      "bits": 15,
+      "scale": 0.001,
       "access": "R",
-      "description": "Range: -1 to 1. If a negative value is reported, add 32768 then divide by 1000 to find the lagging PF reported. If the number is positive just divide that number by 1000 to get the PF reported"
+      "description": "Range: -1 to 1. Raw value divided by 1000 (917 = 0.917); bit 15 is the sign and is not decoded"
     },
     {
       "name": "Power Factor, Alternate Format: Power Factor Total Lead Lag",
@@ -2035,8 +2060,11 @@
       "area": "holding",
       "address": 3197,
       "type": "uint16",
+      "bit": 0,
+      "bits": 15,
+      "scale": 0.001,
       "access": "R",
-      "description": "Range: -1 to 1. If a negative value is reported, add 32768 then divide by 1000 to find the lagging PF reported. If the number is positive just divide that number by 1000 to get the PF reported"
+      "description": "Range: -1 to 1. Raw value divided by 1000 (917 = 0.917); bit 15 is the sign and is not decoded"
     },
     {
       "name": "Accumulated Energy Reset Date/Time",

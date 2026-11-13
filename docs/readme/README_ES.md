@@ -54,8 +54,8 @@ Los mapas de esta biblioteca indican en `x_status` hasta qué punto se puede con
 ```mermaid
 pie showData
     title Mapas por estado
-    "Verificado" : 20
-    "Oficial" : 457
+    "Verificado" : 21
+    "Oficial" : 456
     "No oficial" : 153
 ```
 <!-- status-chart:end -->
