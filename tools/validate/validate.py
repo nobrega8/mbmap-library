@@ -17,6 +17,7 @@ import datetime
 import json
 import re
 import sys
+import unicodedata
 from dataclasses import dataclass, replace
 from pathlib import Path
 
@@ -961,6 +962,46 @@ def check_location(path: Path) -> list[Diagnostic]:
                        "maps must be at maps/<vendor-slug>/<model-slug>.mbmap.json (lowercase, a-z 0-9 -)")]
 
 
+def vendor_key(name: str) -> str:
+    """Vendor name without case, accents, spaces or punctuation ("DENT Instruments" == "Dent Instruments")."""
+    plain = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]", "", plain)
+
+
+def check_vendor_folders(files: list[Path]) -> list[tuple[Path, Diagnostic]]:
+    """Across the library: one folder per vendor, and one spelling of the vendor per folder."""
+    folders: dict[str, dict[str, list[Path]]] = {}   # folder -> vendor -> files
+    keys: dict[str, set[str]] = {}                   # vendor key -> folders
+    for f in files:
+        parts = f.as_posix().split("/")
+        if "maps" not in parts or len(parts) - parts.index("maps") != 3:
+            continue
+        try:
+            vendor = json.loads(f.read_text(encoding="utf-8")).get("vendor")
+        except (ValueError, OSError):
+            continue
+        if not isinstance(vendor, str) or not vendor.strip():
+            continue
+        folder = parts[parts.index("maps") + 1]
+        folders.setdefault(folder, {}).setdefault(vendor, []).append(f)
+        keys.setdefault(vendor_key(vendor), set()).add(folder)
+    out: list[tuple[Path, Diagnostic]] = []
+    for folder, vendors in sorted(folders.items()):
+        if len(vendors) > 1:
+            names = ", ".join(f'"{v}"' for v in sorted(vendors))
+            for f in sorted(p for ps in vendors.values() for p in ps):
+                out.append((f, Diagnostic("error", "vendor", "bad-vendor-folder",
+                                          f"maps/{folder}/ holds more than one vendor name ({names}): use one spelling")))
+    for key, fs in sorted(keys.items()):
+        if len(fs) > 1:
+            where = ", ".join(f"maps/{x}/" for x in sorted(fs))
+            for folder in sorted(fs):
+                for f in sorted(p for ps in folders[folder].values() for p in ps):
+                    out.append((f, Diagnostic("error", "vendor", "bad-vendor-folder",
+                                              f"the same vendor is in more than one folder ({where}): keep its maps in one folder")))
+    return out
+
+
 def main(argv: list[str]) -> int:
     targets = [Path(a) for a in argv] or [Path("maps"), Path("examples")]
     files: list[Path] = []
@@ -973,8 +1014,11 @@ def main(argv: list[str]) -> int:
             print(f"warning: {t} not found", file=sys.stderr)
 
     errors = warnings = 0
+    library: dict[Path, list[Diagnostic]] = {}
+    for f, d in check_vendor_folders(files):
+        library.setdefault(f, []).append(d)
     for f in files:
-        diags = check_file(f) + check_location(f)
+        diags = check_file(f) + check_location(f) + library.get(f, [])
         diags.sort(key=lambda d: (isinstance(d.line, str), d.line or 0, d.severity))
         for d in diags:
             where = f"{f}:{d.line}" if isinstance(d.line, int) else f"{f}#{d.line}" if d.line else str(f)
