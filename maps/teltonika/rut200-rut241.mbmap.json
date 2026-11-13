@@ -9,7 +9,7 @@
   ],
   "vendor_website": "teltonika-networks.com",
   "description": "LTE routers (RUT200 and RUT241): system, mobile data and I/O values over the Modbus server",
-  "revision": 3,
+  "revision": 4,
   "revised": "2026-11-13",
   "source": "Teltonika Networks Wiki, \"RUT200 Modbus\"; https://wiki.teltonika-networks.com/view/RUT200_Modbus; Teltonika Networks Wiki, \"RUT241 Modbus\"; https://wiki.teltonika-networks.com/view/RUT241_Modbus",
   "sources": [
@@ -34,6 +34,7 @@
     "With 'Enable custom register block' on, registers from 1025 onward are a user-defined block that is not in this map.",
     "Left out because the manual is not clear: Mobile data received last month (SIM1), Mobile data sent last month (SIM1), Mobile data received last week (SIM1), Mobile data sent last week (SIM1), Change APN (length not fixed).",
     "Teltonika RUT241 LTE router: the Modbus TCP server and the serial Modbus server both answer with the same system values. The registers are holding registers (function 3 to read, 6 and 16 to write).",
+    "Sending an SMS was tested on the RUT200 with a SIM card in November 2026: the recipient (00 + country code + number) and the text were written as one 90-register block in a single request (FC16) from 397, then 1 was written to Send SMS. Writing the text on its own, from 407, is refused with exception 0x02, and Send SMS answered 0x03 while the text was still empty.",
     "Tested on a RUT200 (no SIM card inserted), read over Modbus TCP, November 2026; the firmware version could not be read, as the router answers neither FC17 nor FC43. 30 of the 34 readable registers read without errors, including system uptime, temperature (raw 340 = 34.0 °C), the text values (hostname, serial number, MAC, device name, SIM name, registration info, network type, modem ID, ISO times), the mobile data counters, the I/O pins, the active SIM index, the Unix timestamp (agrees with the ISO times) and the LAN IP (0xC0A80101 = 192.168.1.1). Mobile signal strength, GSM operator name, WAN IP address and IMSI answered with exception 0x04 because there was no SIM or connection; the write-only registers and the RUT241 were not tested."
   ],
   "unit_id": 1,
