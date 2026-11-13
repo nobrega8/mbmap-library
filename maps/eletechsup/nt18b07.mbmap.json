@@ -1,0 +1,238 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Eletechsup",
+  "model": "NT18B07",
+  "models": [
+    "NT18B07"
+  ],
+  "description": "7-channel RS485 temperature acquisition module, Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-13",
+  "source": "NT18B07 modbus rtu protocol (Eletechsup, undated)",
+  "sources": [
+    {
+      "title": "NT18B07 modbus rtu protocol",
+      "url": "https://github.com/nobrega8/mbmap-library/issues/398",
+      "note": "Register table and examples; the Word file is attached to the map request. The submitter believes it is not an official document"
+    }
+  ],
+  "notes": [
+    "Function codes 0x03 (read) and 0x06 (write). Addresses are the ones in the manual's frames (channel 1 is read at 0x0000), so the map is 0-based.",
+    "Serial settings: 9600 bit/s (default), 8 data bits, no parity, 1 stop bit; the address is 1-247 (the frames also allow 0xFE).",
+    "The document says a correction of 0 disables the function and also says the register must not be set to 0x0000; the default is 0.",
+    "The automatic report setting makes the module send temperatures without a request, so leave it at 0 on a bus with other masters or slaves.",
+    "Not tested on a device."
+  ],
+  "enums": {
+    "baud_rate": {
+      "0": "1200",
+      "1": "2400",
+      "2": "4800",
+      "3": "9600",
+      "4": "19200",
+      "5": "Factory reset"
+    }
+  },
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "CH1 temperature",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 0,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Tenths of a degree, two's complement (0x00DB is 21.9 °C, 0xFF90 is -11.2 °C). 0xF555 (-2731) means no sensor or an error"
+    },
+    {
+      "name": "CH2 temperature",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Tenths of a degree, two's complement (0x00DB is 21.9 °C, 0xFF90 is -11.2 °C). 0xF555 (-2731) means no sensor or an error"
+    },
+    {
+      "name": "CH3 temperature",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Tenths of a degree, two's complement (0x00DB is 21.9 °C, 0xFF90 is -11.2 °C). 0xF555 (-2731) means no sensor or an error"
+    },
+    {
+      "name": "CH4 temperature",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Tenths of a degree, two's complement (0x00DB is 21.9 °C, 0xFF90 is -11.2 °C). 0xF555 (-2731) means no sensor or an error"
+    },
+    {
+      "name": "CH5 temperature",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Tenths of a degree, two's complement (0x00DB is 21.9 °C, 0xFF90 is -11.2 °C). 0xF555 (-2731) means no sensor or an error"
+    },
+    {
+      "name": "CH6 temperature",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Tenths of a degree, two's complement (0x00DB is 21.9 °C, 0xFF90 is -11.2 °C). 0xF555 (-2731) means no sensor or an error"
+    },
+    {
+      "name": "CH7 temperature",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 6,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Tenths of a degree, two's complement (0x00DB is 21.9 °C, 0xFF90 is -11.2 °C). 0xF555 (-2731) means no sensor or an error"
+    },
+    {
+      "name": "CH1 temperature correction",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "Added to the measured temperature, in steps of 0.1 °C (0x0064 is +10.0 °C, 0xFFF1 is -1.5 °C). Default 0"
+    },
+    {
+      "name": "CH2 temperature correction",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 9,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "Added to the measured temperature, in steps of 0.1 °C (0x0064 is +10.0 °C, 0xFFF1 is -1.5 °C). Default 0"
+    },
+    {
+      "name": "CH3 temperature correction",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "Added to the measured temperature, in steps of 0.1 °C (0x0064 is +10.0 °C, 0xFFF1 is -1.5 °C). Default 0"
+    },
+    {
+      "name": "CH4 temperature correction",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "Added to the measured temperature, in steps of 0.1 °C (0x0064 is +10.0 °C, 0xFFF1 is -1.5 °C). Default 0"
+    },
+    {
+      "name": "CH5 temperature correction",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "Added to the measured temperature, in steps of 0.1 °C (0x0064 is +10.0 °C, 0xFFF1 is -1.5 °C). Default 0"
+    },
+    {
+      "name": "CH6 temperature correction",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "Added to the measured temperature, in steps of 0.1 °C (0x0064 is +10.0 °C, 0xFFF1 is -1.5 °C). Default 0"
+    },
+    {
+      "name": "CH7 temperature correction",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 14,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "Added to the measured temperature, in steps of 0.1 °C (0x0064 is +10.0 °C, 0xFFF1 is -1.5 °C). Default 0"
+    },
+    {
+      "name": "Automatic report interval",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 253,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 255,
+      "description": "0 = the module answers queries only (default); 1 to 255 = the module sends the temperatures by itself every n seconds"
+    },
+    {
+      "name": "Device address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 254,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 247,
+      "description": "Modbus slave address. A read sent to the broadcast address 0xFF returns it (only with one module on the bus)"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 255,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "baud_rate",
+      "write_min": 0,
+      "write_max": 5,
+      "description": "Applies after a power cycle. Writing 5 restores the factory settings"
+    }
+  ]
+}
