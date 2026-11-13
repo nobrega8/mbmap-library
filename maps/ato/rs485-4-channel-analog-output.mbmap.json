@@ -3,34 +3,110 @@
   "mbmap": 2,
   "vendor": "ATO",
   "model": "RS485 4-Channel Analog Output",
-  "models": ["RS485 4-Channel Analog Output"],
+  "models": [
+    "RS485 4-Channel Analog Output"
+  ],
   "vendor_website": "ato.com",
-  "description": "4-channel RS485 Modbus RTU analog output module (4-20mA / 0-5V / 0-10V selectable); 12-bit DAC, raw 0–4095 per channel (FC03/06, 8N1, 4800 baud default).",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/ato-rs485-4ch-analog-out.toml; Source: ato-rs485-4-20ma-0-10v-converter-4ch-modbus.pdf. Not verified against the manufacturer's documentation",
+  "description": "4-channel analog output module (4-20 mA, 0-20 mA, 0-5 V or 0-10 V) controlled over RS485 with Modbus RTU",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "ATO, RS485 to 4-20mA/0-5V/0-10V Converter, 4 Channel, User Manual: holding register address definition",
+  "sources": [
+    {
+      "title": "RS485 to 4-20mA/0-5V/0-10V Converter, 4 Channel, User Manual",
+      "url": "https://www.ato.com/Content/doc/rs485-4-20mA-0-10V-converter-4-channel-user-manual.pdf",
+      "note": "holding register table, output scaling and examples"
+    }
+  ],
   "notes": [
-    "ATO RS485 4-Channel Analog Output.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| ATO RS485 to 4-20mA/0-5V/0-10V Converter — 4 Channel",
-    "|",
-    "| Source: ato-rs485-4-20ma-0-10v-converter-4ch-modbus.pdf",
-    "| - 4-channel analog output module (current or voltage, selectable per hardware jumper).",
-    "| - Modbus RTU, FC03/04/06, 8N1, factory default 4800 baud, slave address 1.",
-    "| - All addresses are raw protocol addresses (0x0000 = 0 decimal).",
-    "| - Channel values: u16, 12-bit DAC, range 0–4095.",
-    "| 4-20mA: mA = (Rx/4095)×16 + 4; 0-5V: V = (Rx/4095)×5; 0-10V: V = (Rx/4095)×10."
+    "ATO RS485 to 4-20mA/0-5V/0-10V converter, 4 channels.",
+    "Addresses are the hex addresses of the manual's register table (07D0H = 2000). Functions 03 and 04 read the registers and 06 writes them.",
+    "Factory default: address 1, 4800 bit/s, 8 data bits, no parity, 1 stop bit.",
+    "The manual's table lists channel 4 as '0001 H' with PLC address 40004; the PLC address and the sequence give 0003H, used here.",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
+  "x_status": "official",
   "registers": [
-    {"name": "Channel 1 output value", "area": "holding", "address": 0, "type": "uint16", "access": "R"},
-    {"name": "Channel 2 output value", "area": "holding", "address": 1, "type": "uint16", "access": "R"},
-    {"name": "Channel 3 output value", "area": "holding", "address": 2, "type": "uint16", "access": "R"},
-    {"name": "Channel 4 output value", "area": "holding", "address": 3, "type": "uint16", "access": "R"}
+    {
+      "name": "Channel 1 output value",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 4095 (12-bit) over the output range: 4-20 mA = value / 4095 x 16 + 4 mA; 0-20 mA = value / 4095 x 20 mA; 0-5 V = value / 4095 x 5 V; 0-10 V = value / 4095 x 10 V."
+    },
+    {
+      "name": "Channel 2 output value",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 4095 (12-bit) over the output range: 4-20 mA = value / 4095 x 16 + 4 mA; 0-20 mA = value / 4095 x 20 mA; 0-5 V = value / 4095 x 5 V; 0-10 V = value / 4095 x 10 V."
+    },
+    {
+      "name": "Channel 3 output value",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 4095 (12-bit) over the output range: 4-20 mA = value / 4095 x 16 + 4 mA; 0-20 mA = value / 4095 x 20 mA; 0-5 V = value / 4095 x 5 V; 0-10 V = value / 4095 x 10 V."
+    },
+    {
+      "name": "Channel 4 output value",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 4095 (12-bit) over the output range: 4-20 mA = value / 4095 x 16 + 4 mA; 0-20 mA = value / 4095 x 20 mA; 0-5 V = value / 4095 x 5 V; 0-10 V = value / 4095 x 10 V."
+    },
+    {
+      "name": "Device address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 2000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 254, default 1."
+    },
+    {
+      "name": "Baud rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 2001,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "2400",
+        "1": "4800",
+        "2": "9600",
+        "3": "19200",
+        "4": "38400",
+        "5": "57600",
+        "6": "115200",
+        "7": "1200"
+      },
+      "description": "Default 1 (4800 bit/s)."
+    },
+    {
+      "name": "Parity",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 2002,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Odd",
+        "2": "Even"
+      },
+      "description": "Default none."
+    }
   ]
 }
