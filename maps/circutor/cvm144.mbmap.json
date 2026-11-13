@@ -2,72 +2,1637 @@
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
   "vendor": "Circutor",
-  "model": "CVM144",
-  "models": ["CVM144"],
+  "model": "CVM-144",
+  "models": [
+    "CVM-144",
+    "CVM144"
+  ],
   "vendor_website": "circutor.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table circutor/cvm144; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/circutor-cvm144.htm. Not verified against the manufacturer's documentation",
+  "description": "Panel power analyser with RS485 Modbus RTU: present, maximum and minimum values of voltages, currents, powers, power factor, frequency and THD, energies and current harmonics",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "Circutor, Supply network analyzer CVM-144 series instruction manual (version 6.11 and higher), M98170101-03, section 11.4 MODBUS protocol",
+  "sources": [
+    {
+      "title": "Supply network analyzer CVM-144 series, instruction manual (Ver 6.11 and higher)",
+      "version": "M98170101-03",
+      "url": "https://docs.circutor.com/docs/M98170101-03.pdf",
+      "note": "section 11.4, Modbus registers, example and relay/input functions"
+    }
+  ],
   "notes": [
-    "Circutor CVM144.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Circutor CVM-144 (firmware 6.11 and later). Registers of section 11.4 of the manual.",
+    "Each parameter is a 32-bit value in two registers, high word first (as in the manual's example). Functions 03 and 04 both read them; at most 20 parameters per request.",
+    "Units follow the manual: voltages in V x 10, currents in mA, powers in W and var, power factor and cos phi x 100, frequency and THD x 10, energies in Wh and varh.",
+    "Relay outputs are read with function 01 from 0 and written with function 05; the digital inputs of the input module are read with function 01 from 0x10.",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Current A1", "area": "holding", "address": 2, "type": "uint32", "access": "R"},
-    {"name": "Active power kW1", "area": "holding", "address": 4, "type": "uint32", "access": "R"},
-    {"name": "Reactive power kvar1", "area": "holding", "address": 6, "type": "uint32", "access": "R"},
-    {"name": "Power factor PF1", "area": "holding", "address": 8, "type": "uint32", "access": "R"},
-    {"name": "Phase voltage V2", "area": "holding", "address": 10, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Current A2", "area": "holding", "address": 12, "type": "uint32", "access": "R"},
-    {"name": "Active power kW2", "area": "holding", "address": 14, "type": "uint32", "access": "R"},
-    {"name": "Reactive power kvar2", "area": "holding", "address": 16, "type": "uint32", "access": "R"},
-    {"name": "Power factor PF2", "area": "holding", "address": 18, "type": "uint32", "access": "R"},
-    {"name": "Phase voltage V3", "area": "holding", "address": 20, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Current A3", "area": "holding", "address": 22, "type": "uint32", "access": "R"},
-    {"name": "Active power kW3", "area": "holding", "address": 24, "type": "uint32", "access": "R"},
-    {"name": "Reactive power kvar3", "area": "holding", "address": 26, "type": "uint32", "access": "R"},
-    {"name": "Power factor PF3", "area": "holding", "address": 28, "type": "uint32", "access": "R"},
-    {"name": "Three phase active power kWIII", "area": "holding", "address": 30, "type": "uint32", "access": "R"},
-    {"name": "Three phase inductive power kvarL III", "area": "holding", "address": 32, "type": "uint32", "access": "R"},
-    {"name": "Three phase capacitive power kvarC III", "area": "holding", "address": 34, "type": "uint32", "access": "R"},
-    {"name": "Cos M III", "area": "holding", "address": 36, "type": "uint32", "access": "R"},
-    {"name": "Three phase power factor PF III", "area": "holding", "address": 38, "type": "uint32", "access": "R"},
-    {"name": "Frequency (L1) hz", "area": "holding", "address": 40, "type": "uint32", "unit": "Hz", "access": "R"},
-    {"name": "Line voltage L1 L2 v12", "area": "holding", "address": 42, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Line voltage L2 L3 v23", "area": "holding", "address": 44, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Line voltage L3 L1 v31", "area": "holding", "address": 46, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "%THD V1", "area": "holding", "address": 48, "type": "uint32", "unit": "%", "access": "R"},
-    {"name": "%THD V2", "area": "holding", "address": 50, "type": "uint32", "unit": "%", "access": "R"},
-    {"name": "%THD V3", "area": "holding", "address": 52, "type": "uint32", "unit": "%", "access": "R"},
-    {"name": "%THD I1", "area": "holding", "address": 54, "type": "uint32", "unit": "%", "access": "R"},
-    {"name": "%THD I2", "area": "holding", "address": 56, "type": "uint32", "unit": "%", "access": "R"},
-    {"name": "%THD I3", "area": "holding", "address": 58, "type": "uint32", "unit": "%", "access": "R"},
-    {"name": "Active energy kWh", "area": "holding", "address": 60, "type": "uint32", "access": "R"},
-    {"name": "Inductive reactive energy kvarh L", "area": "holding", "address": 62, "type": "uint32", "access": "R"},
-    {"name": "Capacitive reactive energy kvarh C", "area": "holding", "address": 64, "type": "uint32", "access": "R"},
-    {"name": "Three phase apparent power", "area": "holding", "address": 66, "type": "uint32", "access": "R"},
-    {"name": "Power demand (L1)", "area": "holding", "address": 68, "type": "uint32", "access": "R"},
-    {"name": "Three phase current", "area": "holding", "address": 70, "type": "uint32", "access": "R"},
-    {"name": "Neutral current", "area": "holding", "address": 72, "type": "uint32", "access": "R"},
-    {"name": "Analog input 1", "area": "holding", "address": 74, "type": "uint32", "access": "R"},
-    {"name": "Analog input 2", "area": "holding", "address": 76, "type": "uint32", "access": "R"},
-    {"name": "Analog input 3", "area": "holding", "address": 78, "type": "uint32", "access": "R"},
-    {"name": "Residual (earth leakage) current", "area": "holding", "address": 80, "type": "uint32", "access": "R"},
-    {"name": "Power demand (L2)", "area": "holding", "address": 82, "type": "uint32", "access": "R"},
-    {"name": "Power demand (L3)", "area": "holding", "address": 84, "type": "uint32", "access": "R"},
-    {"name": "Fundamental", "area": "holding", "address": 500, "type": "uint32", "access": "R"},
-    {"name": "Harmonic 2", "area": "holding", "address": 502, "type": "uint32", "access": "R"},
-    {"name": "Harmonic 3", "area": "holding", "address": 504, "type": "uint32", "access": "R"},
-    {"name": "Harmonic 4", "area": "holding", "address": 506, "type": "uint32", "access": "R"},
-    {"name": "Harmonic 5", "area": "holding", "address": 508, "type": "uint32", "access": "R"},
-    {"name": "Harmonic 6", "area": "holding", "address": 510, "type": "uint32", "access": "R"},
-    {"name": "Harmonic 7", "area": "holding", "address": 512, "type": "uint32", "access": "R"},
-    {"name": "Harmonic 8", "area": "holding", "address": 514, "type": "uint32", "access": "R"}
+    {
+      "name": "Phase voltage - V 1",
+      "group": "Present values",
+      "area": "holding",
+      "address": 0,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 1",
+      "group": "Present values",
+      "area": "holding",
+      "address": 2,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW1",
+      "group": "Present values",
+      "area": "holding",
+      "address": 4,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 1",
+      "group": "Present values",
+      "area": "holding",
+      "address": 6,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF1",
+      "group": "Present values",
+      "area": "holding",
+      "address": 8,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase voltage - V 2",
+      "group": "Present values",
+      "area": "holding",
+      "address": 10,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 2",
+      "group": "Present values",
+      "area": "holding",
+      "address": 12,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW2",
+      "group": "Present values",
+      "area": "holding",
+      "address": 14,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 2",
+      "group": "Present values",
+      "area": "holding",
+      "address": 16,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF2",
+      "group": "Present values",
+      "area": "holding",
+      "address": 18,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase voltage - V 3",
+      "group": "Present values",
+      "area": "holding",
+      "address": 20,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 3",
+      "group": "Present values",
+      "area": "holding",
+      "address": 22,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW3",
+      "group": "Present values",
+      "area": "holding",
+      "address": 24,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 3",
+      "group": "Present values",
+      "area": "holding",
+      "address": 26,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF3",
+      "group": "Present values",
+      "area": "holding",
+      "address": 28,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Three-phase active power-kWIII",
+      "group": "Present values",
+      "area": "holding",
+      "address": 30,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Three-phase inductive power-kvarL III",
+      "group": "Present values",
+      "area": "holding",
+      "address": 32,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Three-phase capacitive power-kvarC III",
+      "group": "Present values",
+      "area": "holding",
+      "address": 34,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Cos ϕ III",
+      "group": "Present values",
+      "area": "holding",
+      "address": 36,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Three-phase power factor - PF III",
+      "group": "Present values",
+      "area": "holding",
+      "address": 38,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Frequency (L1) - Hz",
+      "group": "Present values",
+      "area": "holding",
+      "address": 40,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L1-L2 - V12",
+      "group": "Present values",
+      "area": "holding",
+      "address": 42,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L2-L3 - V23",
+      "group": "Present values",
+      "area": "holding",
+      "address": 44,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L3-L1 - V31",
+      "group": "Present values",
+      "area": "holding",
+      "address": 46,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 1",
+      "group": "Present values",
+      "area": "holding",
+      "address": 48,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 2",
+      "group": "Present values",
+      "area": "holding",
+      "address": 50,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 3",
+      "group": "Present values",
+      "area": "holding",
+      "address": 52,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 1",
+      "group": "Present values",
+      "area": "holding",
+      "address": 54,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 2",
+      "group": "Present values",
+      "area": "holding",
+      "address": 56,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 3",
+      "group": "Present values",
+      "area": "holding",
+      "address": 58,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Active energy – kWh",
+      "group": "Present values",
+      "area": "holding",
+      "address": 60,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Inductive reactive energy - kvarh L",
+      "group": "Present values",
+      "area": "holding",
+      "address": 62,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Capacitive reactive energy - kvarh C",
+      "group": "Present values",
+      "area": "holding",
+      "address": 64,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Three phase apparent power",
+      "group": "Present values",
+      "area": "holding",
+      "address": 66,
+      "type": "uint32",
+      "access": "R",
+      "description": "The manual gives the unit as \"kVA III\"."
+    },
+    {
+      "name": "Power demand (L1)",
+      "group": "Present values",
+      "area": "holding",
+      "address": 68,
+      "type": "uint32",
+      "access": "R",
+      "description": "Power demand."
+    },
+    {
+      "name": "Three-phase current",
+      "group": "Present values",
+      "area": "holding",
+      "address": 70,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Neutral current",
+      "group": "Present values",
+      "area": "holding",
+      "address": 72,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 1",
+      "group": "Present values",
+      "area": "holding",
+      "address": 74,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Analog input 2",
+      "group": "Present values",
+      "area": "holding",
+      "address": 76,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Analog input 3",
+      "group": "Present values",
+      "area": "holding",
+      "address": 78,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Residual (earth leakage) current",
+      "group": "Present values",
+      "area": "holding",
+      "address": 80,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R",
+      "description": "Only with the currents module (770575 and 770578)."
+    },
+    {
+      "name": "Power demand (L2)",
+      "group": "Present values",
+      "area": "holding",
+      "address": 82,
+      "type": "uint32",
+      "access": "R",
+      "description": "Power demand; only when maximum demand by line current is programmed."
+    },
+    {
+      "name": "Power demand (L3)",
+      "group": "Present values",
+      "area": "holding",
+      "address": 84,
+      "type": "uint32",
+      "access": "R",
+      "description": "Power demand; only when maximum demand by line current is programmed."
+    },
+    {
+      "name": "Phase voltage - V 1 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 96,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 1 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 98,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW1 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 100,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 1 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 102,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF1 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 104,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase voltage - V 2 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 106,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 2 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 108,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW2 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 110,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 2 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 112,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF2 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 114,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase voltage - V 3 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 116,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 3 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 118,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW3 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 120,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 3 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 122,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF3 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 124,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Three-phase active power-kWIII maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 126,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Three-phase inductive power-kvarL III maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 128,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Three-phase capacitive power-kvarC III maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 130,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Cos ϕ III maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 132,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Three-phase power factor - PF III maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 134,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Frequency (L1) - Hz maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 136,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L1-L2 - V12 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 138,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L2-L3 - V23 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 140,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L3-L1 - V31 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 142,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 1 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 144,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 2 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 146,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 3 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 148,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 1 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 150,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 2 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 152,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 3 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 154,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Three phase apparent power maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 162,
+      "type": "uint32",
+      "access": "R",
+      "description": "The manual gives the unit as \"kVA III\"."
+    },
+    {
+      "name": "Power demand (L1) maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 164,
+      "type": "uint32",
+      "access": "R",
+      "description": "Power demand."
+    },
+    {
+      "name": "Three-phase current maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 166,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Neutral current maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 168,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 1 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 170,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Analog input 2 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 172,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Analog input 3 maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 174,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Residual (earth leakage) current maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 176,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R",
+      "description": "Only with the currents module (770575 and 770578)."
+    },
+    {
+      "name": "Power demand (L2) maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 178,
+      "type": "uint32",
+      "access": "R",
+      "description": "Power demand; only when maximum demand by line current is programmed."
+    },
+    {
+      "name": "Power demand (L3) maximum",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 180,
+      "type": "uint32",
+      "access": "R",
+      "description": "Power demand; only when maximum demand by line current is programmed."
+    },
+    {
+      "name": "Phase voltage - V 1 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 192,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 1 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 194,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW1 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 196,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 1 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 198,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF1 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 200,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase voltage - V 2 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 202,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 2 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 204,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW2 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 206,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 2 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 208,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF2 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 210,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase voltage - V 3 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 212,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current - A 3 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 214,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power - kW3 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 216,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power - kvar 3 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 218,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor - PF3 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 220,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Three-phase active power-kWIII minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 222,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Three-phase inductive power-kvarL III minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 224,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Three-phase capacitive power-kvarC III minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 226,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Cos ϕ III minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 228,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Three-phase power factor - PF III minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 230,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Frequency (L1) - Hz minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 232,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L1-L2 - V12 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 234,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L2-L3 - V23 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 236,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Line voltage L3-L1 - V31 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 238,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 1 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 240,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 2 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 242,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD V 3 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 244,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 1 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 246,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 2 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 248,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "%THD I 3 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 250,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Three phase apparent power minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 258,
+      "type": "uint32",
+      "access": "R",
+      "description": "The manual gives the unit as \"kVA III\"."
+    },
+    {
+      "name": "Three-phase current minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 262,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Neutral current minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 264,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 1 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 266,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Analog input 2 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 268,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Analog input 3 minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 270,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value of the analogue input module (770574 and 770577 only)."
+    },
+    {
+      "name": "Residual (earth leakage) current minimum",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 272,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R",
+      "description": "Only with the currents module (770575 and 770578)."
+    },
+    {
+      "name": "Fundamental IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 500,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 2 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 502,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 3 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 504,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 4 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 506,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 5 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 508,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 6 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 510,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 7 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 512,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 8 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 514,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 9 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 516,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 10 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 518,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 11 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 520,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 12 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 522,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 13 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 524,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 14 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 526,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 15 IL1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 528,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Fundamental IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 530,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 2 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 532,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 3 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 534,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 4 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 536,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 5 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 538,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 6 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 540,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 7 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 542,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 8 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 544,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 9 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 546,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 10 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 548,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 11 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 550,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 12 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 552,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 13 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 554,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 14 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 556,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 15 IL2",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 558,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Fundamental IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 560,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 2 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 562,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 3 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 564,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 4 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 566,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 5 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 568,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 6 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 570,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 7 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 572,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 8 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 574,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 9 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 576,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 10 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 578,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 11 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 580,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 12 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 582,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 13 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 584,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 14 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 586,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Harmonic 15 IL3",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": 588,
+      "type": "uint32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Relay 1",
+      "group": "Relays and inputs",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "RW",
+      "description": "Read with function 01, written with function 05 (FF00 activate, 0000 deactivate)."
+    },
+    {
+      "name": "Relay 2",
+      "group": "Relays and inputs",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW",
+      "description": "Read with function 01, written with function 05."
+    },
+    {
+      "name": "Digital input 1",
+      "group": "Relays and inputs",
+      "area": "coil",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "description": "Read with function 01 from address 0x10 (digital input module 770579 and 770580)."
+    },
+    {
+      "name": "Digital input 2",
+      "group": "Relays and inputs",
+      "area": "coil",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "description": "Read with function 01 from address 0x10 (digital input module 770579 and 770580)."
+    },
+    {
+      "name": "Digital input 3",
+      "group": "Relays and inputs",
+      "area": "coil",
+      "address": 18,
+      "type": "bool",
+      "access": "R",
+      "description": "Read with function 01 from address 0x10 (digital input module 770579 and 770580)."
+    },
+    {
+      "name": "Digital input 4",
+      "group": "Relays and inputs",
+      "area": "coil",
+      "address": 19,
+      "type": "bool",
+      "access": "R",
+      "description": "Read with function 01 from address 0x10 (digital input module 770579 and 770580)."
+    }
   ]
 }
