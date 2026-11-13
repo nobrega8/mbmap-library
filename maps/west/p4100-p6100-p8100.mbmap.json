@@ -1,0 +1,566 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "West",
+  "model": "P4100 / P6100 / P8100",
+  "models": [
+    "P4100",
+    "P6100",
+    "P8100"
+  ],
+  "vendor_website": "west-cs.com",
+  "description": "Process and temperature controllers, 1/4, 1/16 and 1/8 DIN (RS485 option)",
+  "revision": 1,
+  "revised": "2026-11-13",
+  "source": "West, Controladores e Indicadores de 1/4 DIN, 1/8 DIN e 1/16 DIN - Manual do Produto (59305, edition 7, March 2014)",
+  "sources": [
+    {
+      "title": "Controladores e Indicadores de 1/4 DIN, 1/8 DIN e 1/16 DIN - Manual do Produto (Serie P Plus)",
+      "version": "59305 edition 7",
+      "date": "2014-03",
+      "note": "section 8 (communication parameters) and section 13 (Modbus)"
+    }
+  ],
+  "notes": [
+    "Needs the RS485 communications module in option input A, with the protocol set to Modbus (not ASCII) in configuration mode.",
+    "Every value is a 16-bit integer and the decimal point follows the Decimal point position register: a PV of 235 with one decimal is 23.5. A scale of 1 means the raw integer.",
+    "Addresses are the Modbus parameter numbers printed in the manual. The manual does not say whether they are sent as is or minus one; if a read returns the neighbouring parameter, switch to address_base 1.",
+    "Writes need the front-panel Comms write setting to be read/write. Function 16 writes one word at a time; function 6 also works.",
+    "Flags are read with function 1/2 and written with function 5.",
+    "Not tested on a device. The P6170, P8170 and P4170 valve motor drive models use a different table and are not covered."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 4800,
+  "parity": "N",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "enums": {
+    "control_action": {
+      "0": "Reverse",
+      "1": "Direct"
+    },
+    "decimal_point": {
+      "0": "xxxx",
+      "1": "xxx.x",
+      "2": "xx.xx",
+      "3": "x.xxx"
+    },
+    "setpoint_select": {
+      "1": "Setpoint 1 / local",
+      "2": "Setpoint 2",
+      "256": "Remote setpoint"
+    }
+  },
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Process variable",
+      "group": "Process",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "description": "Current PV. Raw 62976 is under range, 63232 over range and 63488 sensor break (read as int16: -2560, -2304, -2048)"
+    },
+    {
+      "name": "Target setpoint",
+      "group": "Process",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "access": "RW",
+      "description": "Selected setpoint. Read-only when the target is the remote setpoint"
+    },
+    {
+      "name": "Output power",
+      "group": "Process",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "scale": 1,
+      "unit": "%",
+      "access": "RW",
+      "description": "0 to 100 % (single output) or -100 to +100 % (dual output). Writable only in manual control"
+    },
+    {
+      "name": "Deviation",
+      "group": "Process",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "R",
+      "description": "PV minus setpoint"
+    },
+    {
+      "name": "Actual setpoint",
+      "group": "Process",
+      "area": "holding",
+      "address": 21,
+      "type": "int16",
+      "access": "R",
+      "description": "Current setpoint value; follows the ramp while the setpoint ramp is active"
+    },
+    {
+      "name": "Remote setpoint",
+      "group": "Process",
+      "area": "holding",
+      "address": 30,
+      "type": "int16",
+      "access": "R",
+      "description": "Remote setpoint value. Reads 0xFFFF when no remote setpoint is fitted"
+    },
+    {
+      "name": "Input status",
+      "group": "Status",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 sensor break, bit 1 under range, bit 2 over range"
+    },
+    {
+      "name": "Secondary proportional band",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "description": "0.0 to 999.9 % of the input span. Read-only during auto-tune"
+    },
+    {
+      "name": "Primary proportional band",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "description": "0.0 to 999.9 % of the input span. Read-only during auto-tune"
+    },
+    {
+      "name": "Control action",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 = direct action, 0 = reverse action",
+      "enum": "control_action"
+    },
+    {
+      "name": "Integral time",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "s",
+      "access": "RW",
+      "description": "Also the loop alarm time. Read-only during auto-tune"
+    },
+    {
+      "name": "Derivative time",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 5999 (99 min 59 s). Read-only during auto-tune"
+    },
+    {
+      "name": "Output cycle time 1",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256 or 512 s"
+    },
+    {
+      "name": "Manual reset",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "%",
+      "access": "RW",
+      "description": "Bias, 0 to 100 % for a single output, -100 to +100 % for dual outputs"
+    },
+    {
+      "name": "Overlap / deadband",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 16,
+      "type": "int16",
+      "access": "RW",
+      "description": "-20 to +20 % of the sum of the two proportional bands; negative is deadband, positive is overlap"
+    },
+    {
+      "name": "On/off differential",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "description": "0.1 to 10.0 % of the input span"
+    },
+    {
+      "name": "Output cycle time 2",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256 or 512 s"
+    },
+    {
+      "name": "Output power limit",
+      "group": "Tuning",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "%",
+      "access": "RW",
+      "description": "Safety limit on the output power, 0 to 100 %"
+    },
+    {
+      "name": "Scale range lower limit",
+      "group": "Setup",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "access": "RW",
+      "description": "Lower limit of the scaled input range"
+    },
+    {
+      "name": "Scale range upper limit",
+      "group": "Setup",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "access": "RW",
+      "description": "Upper limit of the scaled input range"
+    },
+    {
+      "name": "Decimal point position",
+      "group": "Setup",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Number of decimals of the process values. Only writable on a linear input",
+      "enum": "decimal_point"
+    },
+    {
+      "name": "Setpoint upper limit",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "access": "RW",
+      "description": "Highest setpoint that can be set"
+    },
+    {
+      "name": "Setpoint lower limit",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "access": "RW",
+      "description": "Lowest setpoint that can be set"
+    },
+    {
+      "name": "Setpoint ramp rate",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = off, 1 to 9999 units per hour"
+    },
+    {
+      "name": "Setpoint 1",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 34,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Setpoint 2",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 29,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Setpoint selection",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 35,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Active setpoint. An assigned digital input takes priority over this value",
+      "enum": "setpoint_select"
+    },
+    {
+      "name": "Remote setpoint offset",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 31,
+      "type": "int16",
+      "access": "RW",
+      "description": "Added to the remote setpoint, limited by the scale range"
+    },
+    {
+      "name": "Remote setpoint lower limit",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 2123,
+      "type": "int16",
+      "access": "RW",
+      "description": "Value used when the remote setpoint input is at its minimum"
+    },
+    {
+      "name": "Remote setpoint upper limit",
+      "group": "Setpoint",
+      "area": "holding",
+      "address": 2124,
+      "type": "int16",
+      "access": "RW",
+      "description": "Value used when the remote setpoint input is at its maximum"
+    },
+    {
+      "name": "Input filter time constant",
+      "group": "Input",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 100 s"
+    },
+    {
+      "name": "Process value offset",
+      "group": "Input",
+      "area": "holding",
+      "address": 26,
+      "type": "int16",
+      "access": "RW",
+      "description": "Added to the PV, limited by the scale range"
+    },
+    {
+      "name": "Alarm 1 value",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "access": "RW",
+      "description": "Level at which alarm 1 trips"
+    },
+    {
+      "name": "Alarm 2 value",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 14,
+      "type": "int16",
+      "access": "RW",
+      "description": "Level at which alarm 2 trips"
+    },
+    {
+      "name": "Alarm 1 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100 % of the span"
+    },
+    {
+      "name": "Alarm 2 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100 % of the span"
+    },
+    {
+      "name": "Retransmit output 1 maximum",
+      "group": "Retransmission",
+      "area": "holding",
+      "address": 2214,
+      "type": "int16",
+      "access": "RW",
+      "description": "Scale maximum of the first retransmission output, -1999 to 9999"
+    },
+    {
+      "name": "Retransmit output 1 minimum",
+      "group": "Retransmission",
+      "area": "holding",
+      "address": 2215,
+      "type": "int16",
+      "access": "RW",
+      "description": "Scale minimum of the first retransmission output, -1999 to 9999"
+    },
+    {
+      "name": "Retransmit output 2 maximum",
+      "group": "Retransmission",
+      "area": "holding",
+      "address": 2224,
+      "type": "int16",
+      "access": "RW",
+      "description": "Scale maximum of the second retransmission output, -1999 to 9999"
+    },
+    {
+      "name": "Retransmit output 2 minimum",
+      "group": "Retransmission",
+      "area": "holding",
+      "address": 2225,
+      "type": "int16",
+      "access": "RW",
+      "description": "Scale minimum of the second retransmission output, -1999 to 9999"
+    },
+    {
+      "name": "Retransmit output 3 maximum",
+      "group": "Retransmission",
+      "area": "holding",
+      "address": 2234,
+      "type": "int16",
+      "access": "RW",
+      "description": "Scale maximum of the third retransmission output, -1999 to 9999"
+    },
+    {
+      "name": "Retransmit output 3 minimum",
+      "group": "Retransmission",
+      "area": "holding",
+      "address": 2235,
+      "type": "int16",
+      "access": "RW",
+      "description": "Scale minimum of the third retransmission output, -1999 to 9999"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Info",
+      "area": "holding",
+      "address": 130,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits 0-4 revision number, bits 5-9 alpha version (A = 0), bits 10-15 numeric version"
+    },
+    {
+      "name": "Product revision level",
+      "group": "Info",
+      "area": "holding",
+      "address": 129,
+      "type": "uint16",
+      "access": "R",
+      "description": "Low byte alpha part (A = 1), high byte numeric part"
+    },
+    {
+      "name": "Manufacture date",
+      "group": "Info",
+      "area": "holding",
+      "address": 126,
+      "type": "uint16",
+      "access": "R",
+      "description": "Binary coded month and year; 0403 (April 2003) reads as 0x0193"
+    },
+    {
+      "name": "Comms write enabled",
+      "group": "Flags",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = writes enabled, 0 = disabled (writes then get exception 3)"
+    },
+    {
+      "name": "Manual control",
+      "group": "Flags",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = manual control, 0 = automatic control"
+    },
+    {
+      "name": "Auto-tune",
+      "group": "Flags",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = on, 0 = off"
+    },
+    {
+      "name": "Pre-tune",
+      "group": "Flags",
+      "area": "coil",
+      "address": 4,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = on, 0 = off"
+    },
+    {
+      "name": "Alarm 1 active",
+      "group": "Flags",
+      "area": "coil",
+      "address": 5,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = active"
+    },
+    {
+      "name": "Alarm 2 active",
+      "group": "Flags",
+      "area": "coil",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = active"
+    },
+    {
+      "name": "Setpoint ramp enable",
+      "group": "Flags",
+      "area": "coil",
+      "address": 7,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = enabled, 0 = disabled"
+    },
+    {
+      "name": "Loop alarm enable",
+      "group": "Flags",
+      "area": "coil",
+      "address": 12,
+      "type": "bool",
+      "access": "RW",
+      "description": "Read for the loop alarm state; write 1 to enable, 0 to disable"
+    },
+    {
+      "name": "Digital input 2",
+      "group": "Flags",
+      "area": "coil",
+      "address": 13,
+      "type": "bool",
+      "access": "R",
+      "description": "State of the option B digital input"
+    }
+  ]
+}
