@@ -3,42 +3,134 @@
   "mbmap": 2,
   "vendor": "Advantech",
   "model": "ADAM-4021-F",
-  "models": ["ADAM-4021-F"],
+  "models": [
+    "ADAM-4021-F"
+  ],
   "vendor_website": "advantech.com",
-  "description": "1-channel analog output module (4-20mA/0-20mA/0-10V/0-5V, u16 12-bit 0-4095 raw, FC03/FC06, addr 0). Output range set by type code at addr 200.",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/advantech-adam-4021f-ao.toml; Source: advantech-adam-4000-modbus.pdf (Appendix G, Module 5). Not verified against the manufacturer's documentation",
+  "description": "One-channel analog output module (0-20 mA, 4-20 mA or 0-10 V) with Modbus RTU",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "Advantech, ADAM-4000 Series User Manual, Edition 9, Appendix G (I/O Modbus Mapping Table), module 5: ADAM-4021-F",
+  "sources": [
+    {
+      "title": "ADAM-4000 Series User Manual",
+      "version": "Edition 9 (2023)",
+      "url": "https://advdownload.advantech.com/productfile/Downloadfile1/1-2IIGU49/ADAM-4000_Series_User_manual_Ed.9_FINAL.pdf",
+      "note": "Appendix G, module 5; table 6.2 for the output range codes"
+    }
+  ],
   "notes": [
-    "Advantech ADAM-4021-F.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Advantech ADAM-4021-F — 1-Channel Analog Output Module",
-    "|",
-    "| Source: advantech-adam-4000-modbus.pdf (Appendix G, Module 5)",
-    "| - 1-channel analog output (4-20mA / 0-20mA / 0-10V / 0-5V selectable via type code).",
-    "| - Modbus RTU, FC03/FC06.",
-    "| - FC03 40001 (addr 0): Current Output Value (u16, 0-0xFFF, R/W).",
-    "| - FC03 40201 (addr 200): Type Code (R/W).",
-    "| - FC03 40215 (addr 214): Watchdog Timer (R/W).",
-    "| - FC03 40216 (addr 215): Safety Flag (R/W).",
-    "| - FC03 40221 (addr 220): Startup Value (u16, 0-0xFFF, R/W).",
-    "| - FC03 40223 (addr 222): Slew Rate (R/W).",
-    "| - FC03 40231 (addr 230): Safety Value (u16, 0-0xFFF, R/W).",
-    "| - Factory defaults: slave=1, 9600 baud, 8N1."
+    "Advantech ADAM-4021-F one-channel analog output module.",
+    "The manual lists 4X addresses from 40001; address 0 here is 40001. Function 03 reads and 06/16 write.",
+    "The module may ship set to the ADAM ASCII protocol: switch it to Modbus with the Adam/Apax .NET utility (Appendix H).",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
+  "x_status": "official",
   "registers": [
-    {"name": "Channel 0 output value", "area": "holding", "address": 0, "type": "uint16", "access": "R"},
-    {"name": "Type code", "area": "holding", "address": 200, "type": "uint16", "access": "R"},
-    {"name": "Watchdog timer", "area": "holding", "address": 214, "type": "uint16", "access": "R"},
-    {"name": "Safety flag", "area": "holding", "address": 215, "type": "uint16", "access": "R"},
-    {"name": "Startup value", "area": "holding", "address": 220, "type": "uint16", "access": "R"},
-    {"name": "Slew rate", "area": "holding", "address": 222, "type": "uint16", "access": "R"},
-    {"name": "Safety value", "area": "holding", "address": 230, "type": "uint16", "access": "R"}
+    {
+      "name": "Output value",
+      "group": "Output",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Channel 0 output, 0 to 0xFFF over the range set by the type code."
+    },
+    {
+      "name": "Type code",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 200,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "48": "0 to 20 mA",
+        "49": "4 to 20 mA",
+        "50": "0 to 10 V"
+      },
+      "description": "Output range code (table 6.2): 0x30, 0x31 or 0x32."
+    },
+    {
+      "name": "Module name 1",
+      "group": "Identification",
+      "area": "holding",
+      "address": 210,
+      "type": "uint16",
+      "access": "R",
+      "reference": 16417,
+      "description": "0x40 0x21."
+    },
+    {
+      "name": "Module name 2",
+      "group": "Identification",
+      "area": "holding",
+      "address": 211,
+      "type": "uint16",
+      "access": "R",
+      "description": "0x00 0x00."
+    },
+    {
+      "name": "Version 1",
+      "group": "Identification",
+      "area": "holding",
+      "address": 212,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware",
+      "description": "0xA4 0x01 in the manual."
+    },
+    {
+      "name": "Version 2",
+      "group": "Identification",
+      "area": "holding",
+      "address": 213,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Watchdog timer",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 214,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Safety flag",
+      "group": "Status",
+      "area": "holding",
+      "address": 215,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Startup value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 220,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Output at power-up, 0 to 0xFFF."
+    },
+    {
+      "name": "Slew rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 222,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Safety value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 230,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Output when the watchdog trips, 0 to 0xFFF."
+    }
   ]
 }

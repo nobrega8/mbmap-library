@@ -3,46 +3,211 @@
   "mbmap": 2,
   "vendor": "Advantech",
   "model": "ADAM-4080",
-  "models": ["ADAM-4080"],
+  "models": [
+    "ADAM-4080"
+  ],
   "vendor_website": "advantech.com",
-  "description": "2-channel counter/frequency input + 2 DO module. Counter values as u32 at FC03 addr 0-3. Counter/frequency mode selectable per addr 200. DO and counter control via FC01 coils.",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/advantech-adam-4080-counter.toml; Source: advantech-adam-4000-modbus.pdf (Appendix G, Module 16). Not verified against the manufacturer's documentation",
+  "description": "Two-channel 32-bit counter/frequency input module with two alarm digital outputs, Modbus RTU",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "Advantech, ADAM-4000 Series User Manual, Edition 9, Appendix G (I/O Modbus Mapping Table), module 16: ADAM-4080",
+  "sources": [
+    {
+      "title": "ADAM-4000 Series User Manual",
+      "version": "Edition 9 (2023)",
+      "url": "https://advdownload.advantech.com/productfile/Downloadfile1/1-2IIGU49/ADAM-4000_Series_User_manual_Ed.9_FINAL.pdf",
+      "note": "Appendix G, module 16"
+    }
+  ],
   "notes": [
-    "Advantech ADAM-4080.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Advantech ADAM-4080 — 2-Channel Counter/Frequency Module",
-    "|",
-    "| Source: advantech-adam-4000-modbus.pdf (Appendix G, Module 16)",
-    "| - 2-channel counter/frequency input + 2 digital outputs.",
-    "| - Modbus RTU, FC01 for coil control; FC03 for counter values and configuration.",
-    "| - FC01 00017 (coil addr 16): DO0 / Counter0 Alarm Status (R/W).",
-    "| - FC01 00018 (coil addr 17): DO1 / Counter1 Alarm Status (R/W).",
-    "| - FC01 00033 (coil addr 32): Counter0 Start/Stop (R/W, 1=start, 0=stop).",
-    "| - FC01 00034 (coil addr 33): Counter0 Clear (W, 1=clear).",
-    "| - FC01 00035 (coil addr 34): Counter0 Overflow (R).",
-    "| - FC01 00037 (coil addr 36): Counter1 Start/Stop (R/W).",
-    "| - FC01 00038 (coil addr 37): Counter1 Clear (W).",
-    "| - FC01 00039 (coil addr 38): Counter1 Overflow (R).",
-    "| - FC03 40001-40002 (addr 0-1): Counter 0 Value (u32, 2 registers)."
+    "Advantech ADAM-4080 two-channel counter/frequency module.",
+    "The manual lists 0X coils from 00001 and 4X registers from 40001; address 0 here is 00001 or 40001. Coils are read with 01 and written with 05; registers are read with 03.",
+    "The counter values use two registers each. The manual does not say which word comes first; this map assumes high word first.",
+    "The module may ship set to the ADAM ASCII protocol: switch it to Modbus with the Adam/Apax .NET utility (Appendix H).",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
+  "x_status": "official",
   "registers": [
-    {"name": "Counter 0 value", "area": "holding", "address": 0, "type": "uint32", "access": "R"},
-    {"name": "Counter 1 value", "area": "holding", "address": 2, "type": "uint32", "access": "R"},
-    {"name": "Counter mode", "area": "holding", "address": 200, "type": "uint16", "access": "R"},
-    {"name": "Signal input mode", "area": "holding", "address": 201, "type": "uint16", "access": "R"},
-    {"name": "Gate mode", "area": "holding", "address": 202, "type": "uint16", "access": "R"},
-    {"name": "Gate time", "area": "holding", "address": 203, "type": "uint16", "access": "R"},
-    {"name": "Counter 0 alarm output enable", "area": "holding", "address": 204, "type": "uint16", "access": "R"},
-    {"name": "Counter 1 alarm output enable", "area": "holding", "address": 205, "type": "uint16", "access": "R"},
-    {"name": "Module name 1", "area": "holding", "address": 210, "type": "uint16", "access": "R"},
-    {"name": "Firmware version 1", "area": "holding", "address": 212, "type": "uint16", "access": "R"}
+    {
+      "name": "DO0 / counter 0 alarm status",
+      "group": "Coils",
+      "area": "coil",
+      "address": 16,
+      "type": "bool",
+      "access": "RW",
+      "description": "Alarm state is read only."
+    },
+    {
+      "name": "DO1 / counter 1 alarm status",
+      "group": "Coils",
+      "area": "coil",
+      "address": 17,
+      "type": "bool",
+      "access": "RW",
+      "description": "Alarm state is read only."
+    },
+    {
+      "name": "Counter 0 start/stop",
+      "group": "Coils",
+      "area": "coil",
+      "address": 32,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = start, 0 = stop."
+    },
+    {
+      "name": "Counter 0 clear",
+      "group": "Coils",
+      "area": "coil",
+      "address": 33,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 to clear the counter."
+    },
+    {
+      "name": "Counter 0 overflow",
+      "group": "Coils",
+      "area": "coil",
+      "address": 34,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Counter 1 start/stop",
+      "group": "Coils",
+      "area": "coil",
+      "address": 36,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = start, 0 = stop."
+    },
+    {
+      "name": "Counter 1 clear",
+      "group": "Coils",
+      "area": "coil",
+      "address": 37,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 to clear the counter."
+    },
+    {
+      "name": "Counter 1 overflow",
+      "group": "Coils",
+      "area": "coil",
+      "address": 38,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Counter 0 value",
+      "group": "Counters",
+      "area": "holding",
+      "address": 0,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 40001-40002. The manual does not give the word order."
+    },
+    {
+      "name": "Counter 1 value",
+      "group": "Counters",
+      "area": "holding",
+      "address": 2,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 40003-40004. The manual does not give the word order."
+    },
+    {
+      "name": "Counter mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 200,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "50": "Counter",
+        "51": "Frequency"
+      }
+    },
+    {
+      "name": "Signal input mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Non-isolated (TTL) input",
+        "1": "Photo-isolated input"
+      }
+    },
+    {
+      "name": "Gate mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Gate low",
+        "1": "Gate high",
+        "2": "Gate disabled"
+      }
+    },
+    {
+      "name": "Gate time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "0.1 s",
+        "1": "1 s"
+      }
+    },
+    {
+      "name": "Counter 0 alarm output",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      }
+    },
+    {
+      "name": "Counter 1 alarm output",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      }
+    },
+    {
+      "name": "Module name 1",
+      "group": "Identification",
+      "area": "holding",
+      "address": 210,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Version 1",
+      "group": "Identification",
+      "area": "holding",
+      "address": 212,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    }
   ]
 }
