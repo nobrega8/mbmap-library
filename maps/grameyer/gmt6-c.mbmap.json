@@ -1,0 +1,488 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Grameyer",
+  "model": "GMT6-C",
+  "models": [
+    "GMT6-C"
+  ],
+  "vendor_website": "www.grameyer.com.br",
+  "description": "Digital temperature monitor with six Pt100 channels, two relays (alarm and protection) and an RS485 Modbus RTU port",
+  "revision": 1,
+  "revised": "2026-11-13",
+  "source": "GRAMEYER, GMT6-C Manual de Instalação e Operação, revision 03 of 29-10-2009 (MGBR08231)",
+  "sources": [
+    {
+      "title": "GMT6-C Manual de Instalação e Operação (MGBR08231)",
+      "version": "Rev. 03",
+      "date": "2009-10-29",
+      "url": "https://github.com/nobrega8/mbmap-library/issues/397",
+      "note": "Table 2.1 (parameters and addresses), chapter 12 (communication) and tables 12.1 and 12.2; the PDF is attached to the map request"
+    }
+  ],
+  "notes": [
+    "Modbus RTU with functions 0x03 (read) and 0x06 (write). The addresses in the manual are hexadecimal and are the ones used in the frames (the example reads the first channel at 0x0040), so the map is 0-based.",
+    "Serial settings in the manual: 9600 bit/s, 8 data bits, no parity, 1 stop bit. The factory address given in the parameter table is 2.",
+    "The manual's parameter table lists addresses 0x40-0x45 as 'Faixa de temperatura Canal 1-6' (temperature range, factory value 200) among the write parameters, but the read example in chapter 12 reads the temperature of channel 1 at 0x0040, and 0x40-0x4D form one block together with the maximum values and the alarm and protection words. The map follows the example and reads them as the measured temperatures. Not tested on a device.",
+    "The factory values in the table for the gain (200) and offset (125) differ from the ones on the calibration screens (100 and 50); the units of gain and offset are not stated, so the map gives no scale for them.",
+    "The display shows '---' for a channel with no Pt100 connected or a temperature below 1 °C and 'erro' above 250 °C; the manual does not say what these cases read over Modbus. Switch off the alarm of unused channels."
+  ],
+  "protocol": "rtu",
+  "unit_id": 2,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Temperature channel 1",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Measured temperature in whole degrees (the manual's read example gives 0x00A0 = 160 °C). The manual's register table lists this address as 'Faixa de temperatura' (temperature range, factory value 200)"
+    },
+    {
+      "name": "Temperature channel 2",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 65,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Measured temperature in whole degrees (the manual's read example gives 0x00A0 = 160 °C). The manual's register table lists this address as 'Faixa de temperatura' (temperature range, factory value 200)"
+    },
+    {
+      "name": "Temperature channel 3",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Measured temperature in whole degrees (the manual's read example gives 0x00A0 = 160 °C). The manual's register table lists this address as 'Faixa de temperatura' (temperature range, factory value 200)"
+    },
+    {
+      "name": "Temperature channel 4",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Measured temperature in whole degrees (the manual's read example gives 0x00A0 = 160 °C). The manual's register table lists this address as 'Faixa de temperatura' (temperature range, factory value 200)"
+    },
+    {
+      "name": "Temperature channel 5",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 68,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Measured temperature in whole degrees (the manual's read example gives 0x00A0 = 160 °C). The manual's register table lists this address as 'Faixa de temperatura' (temperature range, factory value 200)"
+    },
+    {
+      "name": "Temperature channel 6",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 69,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Measured temperature in whole degrees (the manual's read example gives 0x00A0 = 160 °C). The manual's register table lists this address as 'Faixa de temperatura' (temperature range, factory value 200)"
+    },
+    {
+      "name": "Maximum temperature channel 1",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Highest temperature reached on the channel. Reset with the Flags register"
+    },
+    {
+      "name": "Maximum temperature channel 2",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 71,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Highest temperature reached on the channel. Reset with the Flags register"
+    },
+    {
+      "name": "Maximum temperature channel 3",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 72,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Highest temperature reached on the channel. Reset with the Flags register"
+    },
+    {
+      "name": "Maximum temperature channel 4",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Highest temperature reached on the channel. Reset with the Flags register"
+    },
+    {
+      "name": "Maximum temperature channel 5",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 74,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Highest temperature reached on the channel. Reset with the Flags register"
+    },
+    {
+      "name": "Maximum temperature channel 6",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 75,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Highest temperature reached on the channel. Reset with the Flags register"
+    },
+    {
+      "name": "Alarms occurred",
+      "group": "Status",
+      "area": "holding",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 1 = channel 1 ... bit 6 = channel 6 (table 12.2)"
+    },
+    {
+      "name": "Protections occurred",
+      "group": "Status",
+      "area": "holding",
+      "address": 77,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 1 = channel 1 ... bit 6 = channel 6 (table 12.2)"
+    },
+    {
+      "name": "Alarm limit channel 1",
+      "group": "Limits",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 1 (alarm). Factory value 120 °C"
+    },
+    {
+      "name": "Protection limit channel 1",
+      "group": "Limits",
+      "area": "holding",
+      "address": 33,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 2 (protection). Factory value 150 °C"
+    },
+    {
+      "name": "Alarm limit channel 2",
+      "group": "Limits",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 1 (alarm). Factory value 120 °C"
+    },
+    {
+      "name": "Protection limit channel 2",
+      "group": "Limits",
+      "area": "holding",
+      "address": 35,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 2 (protection). Factory value 150 °C"
+    },
+    {
+      "name": "Alarm limit channel 3",
+      "group": "Limits",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 1 (alarm). Factory value 120 °C"
+    },
+    {
+      "name": "Protection limit channel 3",
+      "group": "Limits",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 2 (protection). Factory value 150 °C"
+    },
+    {
+      "name": "Alarm limit channel 4",
+      "group": "Limits",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 1 (alarm). Factory value 120 °C"
+    },
+    {
+      "name": "Protection limit channel 4",
+      "group": "Limits",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 2 (protection). Factory value 150 °C"
+    },
+    {
+      "name": "Alarm limit channel 5",
+      "group": "Limits",
+      "area": "holding",
+      "address": 40,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 1 (alarm). Factory value 120 °C"
+    },
+    {
+      "name": "Protection limit channel 5",
+      "group": "Limits",
+      "area": "holding",
+      "address": 41,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 2 (protection). Factory value 150 °C"
+    },
+    {
+      "name": "Alarm limit channel 6",
+      "group": "Limits",
+      "area": "holding",
+      "address": 42,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 1 (alarm). Factory value 120 °C"
+    },
+    {
+      "name": "Protection limit channel 6",
+      "group": "Limits",
+      "area": "holding",
+      "address": 43,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Limit of relay 2 (protection). Factory value 150 °C"
+    },
+    {
+      "name": "Maximum rate of change",
+      "group": "Settings",
+      "area": "holding",
+      "address": 44,
+      "type": "uint16",
+      "unit": "°C/s",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 250,
+      "description": "Largest temperature change per second the monitor accepts; faster changes are limited to this value (noise filter). The manual recommends 250"
+    },
+    {
+      "name": "Alarm relay delay",
+      "group": "Settings",
+      "area": "holding",
+      "address": 45,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 10,
+      "description": "Time the alarm relay waits to act after the limit is exceeded"
+    },
+    {
+      "name": "Protection relay delay",
+      "group": "Settings",
+      "area": "holding",
+      "address": 46,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 10,
+      "description": "Time the protection relay waits to act after the limit is exceeded"
+    },
+    {
+      "name": "Device address",
+      "group": "Settings",
+      "area": "holding",
+      "address": 47,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 250,
+      "description": "Modbus slave address, shown as 'Endereço' on screen 12. The table gives 2 as the factory value"
+    },
+    {
+      "name": "Gain channel 1",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Gain used to calibrate the temperature measurement of the channel (calibration screens 15 and 16). The unit is not stated"
+    },
+    {
+      "name": "Gain channel 2",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Gain used to calibrate the temperature measurement of the channel (calibration screens 15 and 16). The unit is not stated"
+    },
+    {
+      "name": "Gain channel 3",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Gain used to calibrate the temperature measurement of the channel (calibration screens 15 and 16). The unit is not stated"
+    },
+    {
+      "name": "Gain channel 4",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 51,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Gain used to calibrate the temperature measurement of the channel (calibration screens 15 and 16). The unit is not stated"
+    },
+    {
+      "name": "Gain channel 5",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 52,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Gain used to calibrate the temperature measurement of the channel (calibration screens 15 and 16). The unit is not stated"
+    },
+    {
+      "name": "Gain channel 6",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 53,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Gain used to calibrate the temperature measurement of the channel (calibration screens 15 and 16). The unit is not stated"
+    },
+    {
+      "name": "Flags",
+      "group": "Commands",
+      "area": "holding",
+      "address": 54,
+      "type": "uint16",
+      "access": "W",
+      "description": "Control word (table 12.1): bit 0 resets the alarms, bits 1 to 6 reset the maximum of channels 1 to 6, bits 7-15 are reserved"
+    },
+    {
+      "name": "Offset channel 1",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 78,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Offset used to calibrate the temperature measurement of the channel (calibration screens 17 and 18). The unit is not stated"
+    },
+    {
+      "name": "Offset channel 2",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 79,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Offset used to calibrate the temperature measurement of the channel (calibration screens 17 and 18). The unit is not stated"
+    },
+    {
+      "name": "Offset channel 3",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 80,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Offset used to calibrate the temperature measurement of the channel (calibration screens 17 and 18). The unit is not stated"
+    },
+    {
+      "name": "Offset channel 4",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Offset used to calibrate the temperature measurement of the channel (calibration screens 17 and 18). The unit is not stated"
+    },
+    {
+      "name": "Offset channel 5",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Offset used to calibrate the temperature measurement of the channel (calibration screens 17 and 18). The unit is not stated"
+    },
+    {
+      "name": "Offset channel 6",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 83,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Offset used to calibrate the temperature measurement of the channel (calibration screens 17 and 18). The unit is not stated"
+    }
+  ]
+}
