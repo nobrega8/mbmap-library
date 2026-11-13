@@ -2,72 +2,1664 @@
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
   "vendor": "IME",
-  "model": "Nemo 72",
-  "models": ["Nemo 72"],
+  "model": "Nemo 72Le",
+  "models": [
+    "Nemo 72Le",
+    "MF724",
+    "Nemo 72"
+  ],
   "vendor_website": "imeitaly.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table ime/nemo-72; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/ime-nemo-72.htm. Not verified against the manufacturer's documentation",
+  "description": "Three-phase multifunction meter (72x72) with RS485 Modbus RTU: voltages, currents, powers, power factor, frequency, THD, energies, demand, crest factors and phase angles",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "IME, Communication Modbus protocol PR141, MF724 Nemo 72Le, rev. B (20/10/2016, software 1.04), section 4.0 Variables",
+  "sources": [
+    {
+      "title": "Communication Modbus protocol MF724 NEMO 72Le (PR141)",
+      "version": "Rev. B, 20/10/2016",
+      "url": "https://assets.legrand.com/pim/DOCUMENT/PR141FR.pdf",
+      "note": "section 4.0, variables from 0x100 to 0x1736; the harmonics (0x7000) and setup parameters (0x2000) are not in this map"
+    }
+  ],
   "notes": [
-    "IME Nemo 72.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "IME Nemo 72Le (MF724). Variables of section 4.0 of protocol PR141.",
+    "Addresses are the hex addresses of the protocol. Read with function 03; 32-bit values are MSW first (the meter can be set to swap words).",
+    "Voltages are in mV and currents in mA (scale 0.001 here). The powers marked as depending on KTA x KTV are W, var or VA / 100 when KTA x KTV < 5000 and W, var or VA otherwise. The energies of 0x101C to 0x1022 and 0x1250 to 0x125E depend on KTA x KTV too: below 10 the unit is 10 Wh (varh), below 100 it is 100 Wh, below 1000 1 kWh, below 10000 10 kWh, from 10000 100 kWh. The blocks from 0x1500 and 0x1700 have fixed units (Wh, MWh, W, var).",
+    "The device identifier (0x300 and 0x1204) reads 0x05.",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Phase 1 : phase voltage", "area": "holding", "address": 4096, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Phase 2 : phase voltage", "area": "holding", "address": 4098, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Phase 3 : phase voltage", "area": "holding", "address": 4100, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Phase 1 : current", "area": "holding", "address": 4102, "type": "uint32", "unit": "A", "access": "R"},
-    {"name": "Phase 2 : current", "area": "holding", "address": 4104, "type": "uint32", "unit": "A", "access": "R"},
-    {"name": "Phase 3 : current", "area": "holding", "address": 4106, "type": "uint32", "unit": "A", "access": "R"},
-    {"name": "Neutral current", "area": "holding", "address": 4108, "type": "uint32", "unit": "A", "access": "R"},
-    {"name": "Chained voltage : L1 L2", "area": "holding", "address": 4110, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Chained voltage : L2 L3", "area": "holding", "address": 4112, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "Chained voltage : L3 L1", "area": "holding", "address": 4114, "type": "uint32", "unit": "V", "access": "R"},
-    {"name": "3 phase : active power", "area": "holding", "address": 4116, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "3 phase : reactive power", "area": "holding", "address": 4118, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "3 phase : apparent power", "area": "holding", "address": 4120, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "3 phase : sign of active power", "area": "holding", "address": 4122, "type": "uint16", "access": "R"},
-    {"name": "3 phase : sign of reactive power", "area": "holding", "address": 4123, "type": "uint16", "access": "R"},
-    {"name": "3 phase : positive active energy", "area": "holding", "address": 4124, "type": "uint32", "unit": "Wh", "access": "R"},
-    {"name": "3 phase : positive reactive energy", "area": "holding", "address": 4126, "type": "uint32", "unit": "Wh", "access": "R"},
-    {"name": "3 phase : negative active energy", "area": "holding", "address": 4128, "type": "uint32", "unit": "Wh", "access": "R"},
-    {"name": "3 phase : negative reactive energy", "area": "holding", "address": 4130, "type": "uint32", "unit": "Wh", "access": "R"},
-    {"name": "3 phase : power factor", "area": "holding", "address": 4132, "type": "int16", "unit": "s", "access": "R"},
-    {"name": "3 phase : sector of power factor (cap or ind)", "area": "holding", "address": 4133, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 4134, "type": "uint16", "unit": "Hz", "access": "R"},
-    {"name": "3 phase : average power", "area": "holding", "address": 4135, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "3 phase : peak maximum demand", "area": "holding", "address": 4137, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Time counter for average power", "area": "holding", "address": 4139, "type": "uint16", "unit": "min", "access": "R"},
-    {"name": "Phase 1 : active power", "area": "holding", "address": 4140, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 2 : active power", "area": "holding", "address": 4142, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 3 : active power", "area": "holding", "address": 4144, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 1 : sign of active power", "area": "holding", "address": 4146, "type": "uint16", "access": "R"},
-    {"name": "Phase 2 : sign of active power", "area": "holding", "address": 4147, "type": "uint16", "access": "R"},
-    {"name": "Phase 3 : sign of active power", "area": "holding", "address": 4148, "type": "uint16", "access": "R"},
-    {"name": "Phase 1 : reactive power", "area": "holding", "address": 4149, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 2 : reactive power", "area": "holding", "address": 4151, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 3 : reactive power", "area": "holding", "address": 4153, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 1 : sign of reactive power", "area": "holding", "address": 4155, "type": "uint16", "access": "R"},
-    {"name": "Phase 2 : sign of reactive power", "area": "holding", "address": 4156, "type": "uint16", "access": "R"},
-    {"name": "Phase 3 : sign of reactive power", "area": "holding", "address": 4157, "type": "uint16", "access": "R"},
-    {"name": "Phase 1 : apparent power", "area": "holding", "address": 4158, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 2 : apparent power", "area": "holding", "address": 4160, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 3 : apparent power", "area": "holding", "address": 4162, "type": "uint32", "access": "R", "description": "unit: W/var/VA"},
-    {"name": "Phase 1 : power factor", "area": "holding", "address": 4164, "type": "int16", "unit": "s", "access": "R"},
-    {"name": "Phase 2 : power factor", "area": "holding", "address": 4165, "type": "int16", "unit": "s", "access": "R"},
-    {"name": "Phase 3 : power factor", "area": "holding", "address": 4166, "type": "int16", "unit": "s", "access": "R"},
-    {"name": "Phase 1 : power factor sector", "area": "holding", "address": 4167, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Phase 2 : power factor sector", "area": "holding", "address": 4168, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Phase 3 : power factor sector", "area": "holding", "address": 4169, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Phase 1 : thd V1", "area": "holding", "address": 4170, "type": "uint16", "unit": "%", "access": "R"},
-    {"name": "Phase 2 : thd V2", "area": "holding", "address": 4171, "type": "uint16", "unit": "%", "access": "R"},
-    {"name": "Phase 3 : thd V3", "area": "holding", "address": 4172, "type": "uint16", "unit": "%", "access": "R"},
-    {"name": "Phase 1 : thd I1", "area": "holding", "address": 4173, "type": "uint16", "unit": "%", "access": "R"}
+    {
+      "name": "Current transformer ratio (KTA)",
+      "group": "Identification and ratios",
+      "area": "holding",
+      "address": 256,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Voltage transformer ratio (KTV)",
+      "group": "Identification and ratios",
+      "area": "holding",
+      "address": 258,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Device identifier",
+      "group": "Identification and ratios",
+      "area": "holding",
+      "address": 768,
+      "type": "uint16",
+      "access": "R",
+      "reference": 5,
+      "description": "Reads 0x05."
+    },
+    {
+      "name": "Phase 1: phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4096,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4098,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4100,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4102,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4104,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4106,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Neutral current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4108,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Chained voltage: L1-L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4110,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Chained voltage: L2-L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4112,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Chained voltage: L3-L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4114,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4116,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4118,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4120,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: sign of active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4122,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      }
+    },
+    {
+      "name": "3-phase: sign of reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4123,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      }
+    },
+    {
+      "name": "3-phase: positive active energy",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4124,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase: positive reactive energy",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4126,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase: negative active energy",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4128,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase: negative reactive energy",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4130,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase: power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4132,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "3-phase: sector of power factor (cap or ind)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4133,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "PF = 1",
+        "1": "Inductive",
+        "2": "Capacitive"
+      }
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4134,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: average power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4135,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: peak maximum demand",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4137,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Time counter for average power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4139,
+      "type": "uint16",
+      "unit": "min",
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4140,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 2: active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4142,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 3: active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4144,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 1: sign of active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4146,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      }
+    },
+    {
+      "name": "Phase 2: sign of active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4147,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      }
+    },
+    {
+      "name": "Phase 3: sign of active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4148,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      }
+    },
+    {
+      "name": "Phase 1: reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4149,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 2: reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4151,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 3: reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4153,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 1: sign of reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4155,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      }
+    },
+    {
+      "name": "Phase 2: sign of reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4156,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      }
+    },
+    {
+      "name": "Phase 3: sign of reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4157,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      }
+    },
+    {
+      "name": "Phase 1: apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4158,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 2: apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4160,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 3: apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4162,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Phase 1: power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4164,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4165,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4166,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: power factor sector",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4167,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "PF = 1",
+        "1": "Inductive",
+        "2": "Capacitive"
+      }
+    },
+    {
+      "name": "Phase 2: power factor sector",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4168,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "PF = 1",
+        "1": "Inductive",
+        "2": "Capacitive"
+      }
+    },
+    {
+      "name": "Phase 3: power factor sector",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4169,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "PF = 1",
+        "1": "Inductive",
+        "2": "Capacitive"
+      }
+    },
+    {
+      "name": "Phase 1: THD V1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4170,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: THD V2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4171,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: THD V3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4172,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: THD I1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4173,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: THD I2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4174,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: THD I3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4175,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: I1 average",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4176,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: I2 average",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4178,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: I3 average",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4180,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: I1 peak maximum",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4182,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: I2 peak maximum",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4184,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: I3 peak maximum",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4186,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "(I1+I2+I3)/3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4188,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: V1 min",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4190,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: V2 min",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4192,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: V3 min",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4194,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: V1 max",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4196,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: V2 max",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4198,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: V3 max",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4200,
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: active partial energy",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4202,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase: reactive partial energy",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4204,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "Run hour meter",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4206,
+      "type": "uint16",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Output relay status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4207,
+      "type": "uint16",
+      "access": "R",
+      "description": "Alarm output mode: 0 = no active alarm, 1 = alarm active."
+    },
+    {
+      "name": "3-phase: active average power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4208,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: reactive average power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4210,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: apparent average power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4212,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: active PMD power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4214,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: reactive PMD power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4216,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "3-phase: apparent PMD power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4218,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV: W, var or VA / 100 when KTA x KTV < 5000, otherwise W, var or VA."
+    },
+    {
+      "name": "Run hour meter (0x107c)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4220,
+      "type": "uint32",
+      "unit": "min",
+      "access": "R"
+    },
+    {
+      "name": "Current transformer ratio (KTA) (0x1200)",
+      "group": "Identification and ratios",
+      "area": "holding",
+      "address": 4608,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Voltage transformer ratio (KTV) (0x1201)",
+      "group": "Identification and ratios",
+      "area": "holding",
+      "address": 4609,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Device identifier (0x1204)",
+      "group": "Identification and ratios",
+      "area": "holding",
+      "address": 4612,
+      "type": "uint16",
+      "access": "R",
+      "reference": 5,
+      "description": "Reads 0x05."
+    },
+    {
+      "name": "3-phase Positive total active energy",
+      "group": "Energy counters",
+      "area": "holding",
+      "address": 4688,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase Positive total reactive energy",
+      "group": "Energy counters",
+      "area": "holding",
+      "address": 4690,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase Negative total active energy",
+      "group": "Energy counters",
+      "area": "holding",
+      "address": 4692,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase Negative total reactive energy",
+      "group": "Energy counters",
+      "area": "holding",
+      "address": 4694,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes)."
+    },
+    {
+      "name": "3-phase Positive partial active energy",
+      "group": "Energy counters",
+      "area": "holding",
+      "address": 4696,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes). Or tariff 1 active energy (if option tariffs)."
+    },
+    {
+      "name": "3-phase Negative partial active energy",
+      "group": "Energy counters",
+      "area": "holding",
+      "address": 4698,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes). Or tariff 2 active energy (if option tariffs)."
+    },
+    {
+      "name": "3-phase Positive partial reactive energy",
+      "group": "Energy counters",
+      "area": "holding",
+      "address": 4700,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes). Or tariff 3 active energy (if option tariffs)."
+    },
+    {
+      "name": "3-phase Negative partial reactive energy",
+      "group": "Energy counters",
+      "area": "holding",
+      "address": 4702,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit depends on KTA x KTV (see notes). Or tariff 4 active energy (if option tariffs)."
+    },
+    {
+      "name": "Positive Active Energy - Low",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5376,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Positive Active Energy – High",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5378,
+      "type": "uint32",
+      "unit": "MWh",
+      "access": "R"
+    },
+    {
+      "name": "Positive Reactive Energy - Low",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5380,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Positive Reactive Energy – High",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5382,
+      "type": "uint32",
+      "unit": "Mvarh",
+      "access": "R"
+    },
+    {
+      "name": "Negative Active Energy - Low",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5384,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Negative Active Energy – High",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5386,
+      "type": "uint32",
+      "unit": "MWh",
+      "access": "R"
+    },
+    {
+      "name": "Negative Reactive Energy - Low",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5388,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Negative Reactive Energy – High",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5390,
+      "type": "uint32",
+      "unit": "Mvarh",
+      "access": "R"
+    },
+    {
+      "name": "Partial Active Energy - Low",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5392,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Partial Active Energy - High",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5394,
+      "type": "uint32",
+      "unit": "MWh",
+      "access": "R"
+    },
+    {
+      "name": "Partial Reactive Energy – Low",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5396,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Partial Reactive Energy - High",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5398,
+      "type": "uint32",
+      "unit": "Mvarh",
+      "access": "R"
+    },
+    {
+      "name": "Signed 3-ph Active Power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5400,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Signed 3-ph Reactive Power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5402,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase1 Active Power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5404,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase2 Active Power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5406,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase3 Active Power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5408,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase1 Reactive Power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5410,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase2 Reactive Power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5412,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase3 Reactive Power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5414,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Signed 3-ph Power Factor",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5416,
+      "type": "int32",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase1 Power Factor",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5418,
+      "type": "int32",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase2 Power Factor",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5420,
+      "type": "int32",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Signed Phase3 Power Factor",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5422,
+      "type": "int32",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Apparent power",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5424,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: active average power (0x1532)",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5426,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: reactive average power (0x1534)",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5428,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: apparent average power (0x1536)",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5430,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: active PMD power (0x1538)",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5432,
+      "type": "uint32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: reactive PMD power (0x153a)",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5434,
+      "type": "uint32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "3-phase: apparent PMD power (0x153c)",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5436,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Active positive energy wrap around",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5440,
+      "type": "uint16",
+      "access": "R",
+      "description": "Incremented each time the energy register passes 100 000 000 and restarts from 0."
+    },
+    {
+      "name": "Reactive positive energy wrap around",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5441,
+      "type": "uint16",
+      "access": "R",
+      "description": "Incremented each time the energy register passes 100 000 000 and restarts from 0."
+    },
+    {
+      "name": "Active negative energy wrap around",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5442,
+      "type": "uint16",
+      "access": "R",
+      "description": "Incremented each time the energy register passes 100 000 000 and restarts from 0."
+    },
+    {
+      "name": "Reactive negative energy wrap around",
+      "group": "Energies and signed powers (fixed units)",
+      "area": "holding",
+      "address": 5443,
+      "type": "uint16",
+      "access": "R",
+      "description": "Incremented each time the energy register passes 100 000 000 and restarts from 0."
+    },
+    {
+      "name": "Phase 1: phase voltage crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5504,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: phase voltage crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5505,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: phase voltage crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5506,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Phase 1: current crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5507,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Phase 2: current crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5508,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Phase 3: current crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5509,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Chained voltage: L1-L2 crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5510,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Chained voltage: L2-L3 crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5511,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Chained voltage: L3-L1 crest factor",
+      "group": "Crest factors",
+      "area": "holding",
+      "address": 5512,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "phase displacement V1-V2 (V12-V23)",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5632,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement V2-V3 (V23-V31)",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5633,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement V3-V1 (V31-V12)",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5634,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement I1-I2",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5635,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement I2-I3",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5636,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement I3-I1",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5637,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement V1-I1",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5638,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement V2-I2",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5639,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement V3-I3",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5640,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "phase displacement 3-ph",
+      "group": "Phase displacement",
+      "area": "holding",
+      "address": 5641,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Positive Active Energy - Low (0x1700)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5888,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Positive Active Energy – High (0x1702)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5890,
+      "type": "uint32",
+      "unit": "MWh",
+      "access": "R"
+    },
+    {
+      "name": "Positive Reactive Energy - Low (0x1704)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5892,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Positive Reactive Energy – High (0x1706)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5894,
+      "type": "uint32",
+      "unit": "Mvarh",
+      "access": "R"
+    },
+    {
+      "name": "Negative Active Energy - Low (0x1708)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5896,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Negative Active Energy – High (0x170a)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5898,
+      "type": "uint32",
+      "unit": "MWh",
+      "access": "R"
+    },
+    {
+      "name": "Negative Reactive Energy - Low (0x170c)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5900,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Negative Reactive Energy – High (0x170e)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5902,
+      "type": "uint32",
+      "unit": "Mvarh",
+      "access": "R"
+    },
+    {
+      "name": "Partial+ Active Energy - Low",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5904,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Partial+ Active Energy - High",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5906,
+      "type": "uint32",
+      "unit": "MWh",
+      "access": "R"
+    },
+    {
+      "name": "Partial+ Reactive Energy – Low",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5908,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Partial+ Reactive Energy - High",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5910,
+      "type": "uint32",
+      "unit": "Mvarh",
+      "access": "R"
+    },
+    {
+      "name": "Partial- Active Energy - Low",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5912,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Partial- Active Energy - High",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5914,
+      "type": "uint32",
+      "unit": "MWh",
+      "access": "R"
+    },
+    {
+      "name": "Partial- Reactive Energy – Low",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5916,
+      "type": "uint32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Partial- Reactive Energy – High",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5918,
+      "type": "uint32",
+      "unit": "Mvarh",
+      "access": "R"
+    },
+    {
+      "name": "Signed 3-ph active power",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5920,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Signed 3-ph reactive power",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5922,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Signed phase1 active power",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5924,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Signed phase2 active power",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5926,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Signed phase3 active power",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5928,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Signed phase1 reactive power",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5930,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Signed phase2 reactive power",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5932,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Signed phase3 reactive power",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5934,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Signed 3-ph Power Factor (0x1730)",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5936,
+      "type": "int32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Signed phase1 Power Factor",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5938,
+      "type": "int32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Signed phase2 Power Factor",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5940,
+      "type": "int32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Signed phase3 Power Factor",
+      "group": "Energies and signed powers, block 2 (fixed units)",
+      "area": "holding",
+      "address": 5942,
+      "type": "int32",
+      "scale": 0.01,
+      "access": "R"
+    }
   ]
 }
