@@ -1,0 +1,175 @@
+---
+// Stacked area chart of the number of maps per status over time.
+import { statusHistory } from "../lib/history.ts";
+import { STATUS_INFO, type Status } from "../lib/mbmap.ts";
+
+const points = statusHistory();
+// Bottom to top: the most trusted maps sit on the baseline.
+const ORDER: Status[] = ["verified", "official", "unofficial"];
+
+const W = 720;
+const H = 260;
+const PAD = { l: 44, r: 12, t: 12, b: 28 };
+const iw = W - PAD.l - PAD.r;
+const ih = H - PAD.t - PAD.b;
+
+const day = (d: string) => Date.parse(`${d}T00:00:00Z`) / 86400000;
+const t0 = points.length ? day(points[0].date) : 0;
+const t1 = points.length ? day(points[points.length - 1].date) : 1;
+const span = Math.max(1, t1 - t0);
+const total = (p: (typeof points)[number]) => ORDER.reduce((n, s) => n + p.counts[s], 0);
+const maxTotal = Math.max(1, ...points.map(total));
+const step = maxTotal > 400 ? 200 : maxTotal > 200 ? 100 : 50;
+const yMax = Math.ceil(maxTotal / step) * step;
+
+const x = (d: string) => PAD.l + ((day(d) - t0) / span) * iw;
+const y = (v: number) => PAD.t + ih - (v / yMax) * ih;
+
+// A step chart: each day's counts hold until the next day.
+function band(i: number): string {
+  const below = ORDER.slice(0, i);
+  const upTo = ORDER.slice(0, i + 1);
+  const sum = (p: (typeof points)[number], ss: Status[]) => ss.reduce((n, s) => n + p.counts[s], 0);
+  const top: string[] = [];
+  const bottom: string[] = [];
+  points.forEach((p, k) => {
+    const xa = x(p.date);
+    const xb = k + 1 < points.length ? x(points[k + 1].date) : PAD.l + iw;
+    top.push(`${xa.toFixed(1)},${y(sum(p, upTo)).toFixed(1)}`, `${xb.toFixed(1)},${y(sum(p, upTo)).toFixed(1)}`);
+    bottom.unshift(`${xb.toFixed(1)},${y(sum(p, below)).toFixed(1)}`, `${xa.toFixed(1)},${y(sum(p, below)).toFixed(1)}`);
+  });
+  return `M${[...top, ...bottom].join("L")}Z`;
+}
+
+const yTicks = Array.from({ length: yMax / step + 1 }, (_, k) => k * step);
+const fmtDate = (d: string) =>
+  new Date(`${d}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+const xTicks = points.length > 1 ? [points[0], points[Math.floor(points.length / 2)], points[points.length - 1]] : points;
+const last = points[points.length - 1];
+---
+
+{
+  points.length > 1 && (
+    <figure class="history card pad">
+      <figcaption>
+        <span class="key">Maps by status over time</span>
+        <ul class="legend">
+          {[...ORDER].reverse().map((s) => (
+            <li>
+              <span class={`swatch ${s}`} />
+              {STATUS_INFO[s].label} <span class="mono faint">{last.counts[s]}</span>
+            </li>
+          ))}
+        </ul>
+      </figcaption>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Maps by status from ${points[0].date} to ${last.date}: ${ORDER.map((s) => `${last.counts[s]} ${s}`).join(", ")} now.`}>
+        {yTicks.map((v) => (
+          <g class="grid">
+            <line x1={PAD.l} x2={PAD.l + iw} y1={y(v)} y2={y(v)} />
+            <text x={PAD.l - 8} y={y(v) + 4} text-anchor="end">{v}</text>
+          </g>
+        ))}
+        {ORDER.map((s, i) => <path class={`area ${s}`} d={band(i)} />)}
+        {xTicks.map((p, k) => (
+          <text class="xt" x={x(p.date)} y={H - 8} text-anchor={k === 0 ? "start" : k === xTicks.length - 1 ? "end" : "middle"}>
+            {fmtDate(p.date)}
+          </text>
+        ))}
+      </svg>
+      <details class="small faint">
+        <summary>Data</summary>
+        <table>
+          <thead>
+            <tr><th>Date</th>{ORDER.map((s) => <th class="r">{STATUS_INFO[s].label}</th>)}</tr>
+          </thead>
+          <tbody>
+            {points.map((p) => (
+              <tr><td class="mono">{p.date}</td>{ORDER.map((s) => <td class="r mono">{p.counts[s]}</td>)}</tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+    </figure>
+  )
+}
+
+<style>
+  .history {
+    margin-top: 1.25rem;
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+  }
+  .legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+  .swatch.verified,
+  .area.verified {
+    background: var(--status-verified);
+    fill: var(--status-verified);
+  }
+  .swatch.official,
+  .area.official {
+    background: var(--status-official);
+    fill: var(--status-official);
+  }
+  .swatch.unofficial,
+  .area.unofficial {
+    background: var(--status-unofficial);
+    fill: var(--status-unofficial);
+  }
+  .area {
+    fill-opacity: 0.85;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .grid line {
+    stroke: currentColor;
+    stroke-opacity: 0.12;
+  }
+  .grid text,
+  .xt {
+    fill: currentColor;
+    fill-opacity: 0.55;
+    font-size: 12px;
+  }
+  details {
+    margin-top: 0.5rem;
+  }
+  table {
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+  }
+  th,
+  td {
+    padding: 0.15rem 0.75rem 0.15rem 0;
+    text-align: left;
+  }
+  .r {
+    text-align: right;
+  }
+</style>
