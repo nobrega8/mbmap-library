@@ -1,0 +1,278 @@
+---
+// Stacked area chart of the number of maps per status over time, with smooth
+// (monotone) curves through the daily points.
+import Icon from "./Icon.astro";
+import { statusHistory } from "../lib/history.ts";
+import { STATUS_INFO, type Status } from "../lib/mbmap.ts";
+
+const points = statusHistory();
+// Bottom to top: the most trusted maps sit on the baseline.
+const ORDER: Status[] = ["verified", "official", "unofficial"];
+
+const day = (d: string) => Date.parse(`${d}T00:00:00Z`) / 86400000;
+const t0 = points.length ? day(points[0].date) : 0;
+const t1 = points.length ? day(points[points.length - 1].date) : 1;
+const span = Math.max(1, t1 - t0);
+const sum = (p: (typeof points)[number], ss: Status[]) => ss.reduce((n, s) => n + p.counts[s], 0);
+const maxTotal = Math.max(1, ...points.map((p) => sum(p, ORDER)));
+const step = maxTotal > 400 ? 200 : maxTotal > 200 ? 100 : 50;
+const yMax = Math.ceil((maxTotal * 1.05) / step) * step;
+
+type Pt = [number, number];
+
+// Monotone cubic interpolation (Fritsch–Carlson): smooth, and never overshoots
+// the data, so a band never dips below the one under it.
+function smooth(pts: Pt[], move = true): string {
+  const n = pts.length;
+  const f = (v: number) => v.toFixed(1);
+  if (n < 2) return pts.map(([a, b]) => `${move ? "M" : "L"}${f(a)},${f(b)}`).join("");
+  const d: number[] = [];
+  const m: number[] = [];
+  for (let i = 0; i < n - 1; i++) d.push((pts[i + 1][1] - pts[i][1]) / (pts[i + 1][0] - pts[i][0]));
+  m.push(d[0]);
+  for (let i = 1; i < n - 1; i++) m.push(d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2);
+  m.push(d[n - 2]);
+  for (let i = 0; i < n - 1; i++) {
+    if (d[i] === 0) {
+      m[i] = 0;
+      m[i + 1] = 0;
+      continue;
+    }
+    const a = m[i] / d[i];
+    const b = m[i + 1] / d[i];
+    const h = a * a + b * b;
+    if (h > 9) {
+      const t = 3 / Math.sqrt(h);
+      m[i] = t * a * d[i];
+      m[i + 1] = t * b * d[i];
+    }
+  }
+  let path = `${move ? "M" : "L"}${f(pts[0][0])},${f(pts[0][1])}`;
+  for (let i = 0; i < n - 1; i++) {
+    const [x0, y0] = pts[i];
+    const [x1, y1] = pts[i + 1];
+    const dx = (x1 - x0) / 3;
+    path += `C${f(x0 + dx)},${f(y0 + m[i] * dx)} ${f(x1 - dx)},${f(y1 - m[i + 1] * dx)} ${f(x1)},${f(y1)}`;
+  }
+  return path;
+}
+
+const fmtDate = (d: string) =>
+  new Date(`${d}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+// Two layouts: wide for desktop (text keeps about its CSS size) and a taller,
+// narrower one for phones.
+function layout(W: number, H: number, nTicks: number) {
+  const PAD = { l: 40, r: 10, t: 16, b: 30 };
+  const iw = W - PAD.l - PAD.r;
+  const ih = H - PAD.t - PAD.b;
+  const x = (d: string) => PAD.l + ((day(d) - t0) / span) * iw;
+  const y = (v: number) => PAD.t + ih - (v / yMax) * ih;
+  const line = (ss: Status[]): Pt[] => points.map((p) => [x(p.date), y(sum(p, ss))]);
+  const bands = ORDER.map((s, i) => {
+    const top = line(ORDER.slice(0, i + 1));
+    const bottom = line(ORDER.slice(0, i)).reverse();
+    return { s, area: `${smooth(top)}${smooth(bottom, false)}Z`, edge: smooth(top) };
+  });
+  const yTicks = Array.from({ length: yMax / step + 1 }, (_, k) => k * step);
+  const xTicks = (() => {
+    if (points.length < 2) return points;
+    const out = [points[0]];
+    for (let k = 1; k < nTicks - 1; k++) {
+      const target = t0 + (span * k) / (nTicks - 1);
+      out.push(points.reduce((a, b) => (Math.abs(day(b.date) - target) < Math.abs(day(a.date) - target) ? b : a)));
+    }
+    out.push(points[points.length - 1]);
+    return [...new Set(out)];
+  })();
+  return { W, H, PAD, iw, x, y, bands, yTicks, xTicks };
+}
+const views = [
+  { cls: "wide", ...layout(1100, 300, 5) },
+  { cls: "narrow", ...layout(400, 260, 3) },
+];
+const last = points[points.length - 1];
+const lastTotal = last ? sum(last, ORDER) : 0;
+---
+
+{
+  points.length > 1 && (
+    <figure class="history card pad">
+      <figcaption>
+        <div>
+          <p class="key">Growth</p>
+          <p class="headline">
+            <span class="mono">{lastTotal}</span> maps, <span class="mono">{last.counts.verified + last.counts.official}</span> from
+            the manufacturer's documentation or tested on a device
+          </p>
+        </div>
+        <ul class="legend">
+          {[...ORDER].reverse().map((s) => (
+            <li class={`status ${s}`}>
+              <Icon name={s} size={14} /> {STATUS_INFO[s].label}
+              <span class="mono n">{last.counts[s]}</span>
+            </li>
+          ))}
+        </ul>
+      </figcaption>
+      {views.map((v) => (
+        <svg
+          class={v.cls}
+          viewBox={`0 0 ${v.W} ${v.H}`}
+          role="img"
+          aria-label={`Maps by status from ${points[0].date} to ${last.date}: ${ORDER.map((s) => `${last.counts[s]} ${s}`).join(", ")} now.`}
+        >
+          <defs>
+            {ORDER.map((s) => (
+              <linearGradient id={`hist-${v.cls}-${s}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" class={`stop-${s}`} stop-opacity="0.32" />
+                <stop offset="1" class={`stop-${s}`} stop-opacity="0.08" />
+              </linearGradient>
+            ))}
+          </defs>
+          {v.yTicks.map((t) => (
+            <g class="grid">
+              <line x1={v.PAD.l} x2={v.PAD.l + v.iw} y1={v.y(t)} y2={v.y(t)} />
+              <text x={v.PAD.l - 10} y={v.y(t) + 4} text-anchor="end">{t}</text>
+            </g>
+          ))}
+          {v.bands.map((b) => <path class="area" d={b.area} fill={`url(#hist-${v.cls}-${b.s})`} />)}
+          {v.bands.map((b) => <path class={`edge ${b.s}`} d={b.edge} />)}
+          {ORDER.map((s, i) => (
+            <circle class={`end ${s}`} cx={v.x(last.date)} cy={v.y(sum(last, ORDER.slice(0, i + 1)))} r="4" />
+          ))}
+          {v.xTicks.map((p, k) => (
+            <text class="xt" x={v.x(p.date)} y={v.H - 6} text-anchor={k === 0 ? "start" : k === v.xTicks.length - 1 ? "end" : "middle"}>
+              {fmtDate(p.date)}
+            </text>
+          ))}
+        </svg>
+      ))}
+      <details class="small faint">
+        <summary>Data</summary>
+        <table>
+          <thead>
+            <tr><th>Date</th>{ORDER.map((s) => <th class="r">{STATUS_INFO[s].label}</th>)}</tr>
+          </thead>
+          <tbody>
+            {points.map((p) => (
+              <tr><td class="mono">{p.date}</td>{ORDER.map((s) => <td class="r mono">{p.counts[s]}</td>)}</tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+    </figure>
+  )
+}
+
+<style>
+  .history {
+    margin: 1rem 0 0;
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .headline {
+    margin: 0.35rem 0 0;
+    font-size: 1.05rem;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .legend .n {
+    color: inherit;
+    opacity: 0.7;
+  }
+  svg.narrow {
+    display: none;
+  }
+  @media (max-width: 640px) {
+    svg.wide {
+      display: none;
+    }
+    svg.narrow {
+      display: block;
+    }
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .grid line {
+    stroke: currentColor;
+    stroke-opacity: 0.1;
+    stroke-dasharray: 3 5;
+  }
+  .grid text,
+  .xt {
+    fill: currentColor;
+    fill-opacity: 0.5;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stop-verified {
+    stop-color: var(--status-verified);
+  }
+  .stop-official {
+    stop-color: var(--status-official);
+  }
+  .stop-unofficial {
+    stop-color: var(--status-unofficial);
+  }
+  .edge {
+    fill: none;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .edge.verified,
+  .end.verified {
+    stroke: var(--status-verified);
+  }
+  .edge.official,
+  .end.official {
+    stroke: var(--status-official);
+  }
+  .edge.unofficial,
+  .end.unofficial {
+    stroke: var(--status-unofficial);
+  }
+  .end {
+    fill: var(--card);
+    stroke-width: 2;
+  }
+  details {
+    margin-top: 0.75rem;
+  }
+  summary {
+    cursor: pointer;
+  }
+  table {
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+  }
+  th,
+  td {
+    padding: 0.15rem 0.9rem 0.15rem 0;
+    text-align: left;
+  }
+  .r {
+    text-align: right;
+  }
+</style>
