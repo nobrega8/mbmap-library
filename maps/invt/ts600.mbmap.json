@@ -1,0 +1,143 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "INVT",
+  "model": "TS600",
+  "vendor_website": "invt.com",
+  "description": "TS600 series programmable logic controllers. The map holds the first element of each Modbus block.",
+  "revision": 1,
+  "revised": "2026-11-13",
+  "sources": [
+    {
+      "title": "TS600 Series Programmable Logic Controller Programming and Application Manual",
+      "version": "V1.2",
+      "date": "2025-02",
+      "note": "section 6.8.3, Slave Related Information"
+    }
+  ],
+  "x_status": "official",
+  "notes": [
+    "A PLC has no fixed list of registers: what you read is the program's own elements. Only the first element of each block is listed here; the others follow by counting from it (the wire address of Dn is D0's address plus n).",
+    "X and Y numbers are octal (X0-X7, X10-X17...). Convert to decimal before adding to the base address.",
+    "Timer and counter contacts are bits (FC01/05/15) and their current values are words (FC03/06/16).",
+    "Reads use FC01, FC02 (X only) and FC03; writes use FC05, FC06, FC15 and FC16. X is read-only.",
+    "The 32-bit counters C200-C255 use two registers each, low 16 bits first. Reading from an odd address returns illegal data address, and an odd count returns illegal data value.",
+    "The pages used do not give the serial defaults (baud rate, parity, station number): set them to match the PLC's port configuration.",
+    "Not tested on a device."
+  ],
+  "protocol": "rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "registers": [
+    {
+      "name": "M0",
+      "group": "Bit elements",
+      "area": "coil",
+      "address": "0x0000",
+      "type": "bool",
+      "access": "RW",
+      "description": "First of M0-M32767 (0x0000-0x7FFF). M0-M999 are not saved on power-down"
+    },
+    {
+      "name": "S0",
+      "group": "Bit elements",
+      "area": "coil",
+      "address": "0x8000",
+      "type": "bool",
+      "access": "RW",
+      "description": "First of S0-S4095 (0x8000-0x8FFF). S0-S999 are not saved on power-down"
+    },
+    {
+      "name": "X0",
+      "group": "Bit elements",
+      "area": "discrete",
+      "address": "0xA000",
+      "type": "bool",
+      "access": "R",
+      "description": "First of X0-X1777 (0xA000-0xA3FF), inputs, numbered in octal"
+    },
+    {
+      "name": "Y0",
+      "group": "Bit elements",
+      "area": "coil",
+      "address": "0xB000",
+      "type": "bool",
+      "access": "RW",
+      "description": "First of Y0-Y1777 (0xB000-0xB3FF), outputs, numbered in octal"
+    },
+    {
+      "name": "T0 contact",
+      "group": "Bit elements",
+      "area": "coil",
+      "address": "0xC000",
+      "type": "bool",
+      "access": "RW",
+      "description": "First of T0-T399 contacts (0xC000-0xC18F)"
+    },
+    {
+      "name": "C0 contact",
+      "group": "Bit elements",
+      "area": "coil",
+      "address": "0xC200",
+      "type": "bool",
+      "access": "RW",
+      "description": "First of C0-C255 contacts (0xC200-0xC2FF)"
+    },
+    {
+      "name": "D0",
+      "group": "Word elements",
+      "area": "holding",
+      "address": "0x0000",
+      "type": "uint16",
+      "access": "RW",
+      "description": "First of D0-D32767 (0x0000-0x7FFF)"
+    },
+    {
+      "name": "R0",
+      "group": "Word elements",
+      "area": "holding",
+      "address": "0x8000",
+      "type": "uint16",
+      "access": "RW",
+      "description": "First of R0-R16383 (0x8000-0xBFFF). R16384-R32767 have no protocol address"
+    },
+    {
+      "name": "T0 value",
+      "group": "Word elements",
+      "area": "holding",
+      "address": "0xE000",
+      "type": "uint16",
+      "access": "RW",
+      "description": "First of T0-T399 current values (0xE000-0xE18F)"
+    },
+    {
+      "name": "C0 value",
+      "group": "Word elements",
+      "area": "holding",
+      "address": "0xE200",
+      "type": "uint16",
+      "access": "RW",
+      "description": "First of the 16-bit counters C0-C199 (0xE200-0xE2C7)"
+    },
+    {
+      "name": "C200 value",
+      "group": "Word elements",
+      "area": "holding",
+      "address": "0xE2C8",
+      "type": "uint32",
+      "access": "RW",
+      "description": "First of the 32-bit counters C200-C255 (0xE2C8-0xE337), two registers each. Start address and count must be even",
+      "word_order": "little"
+    },
+    {
+      "name": "Z0",
+      "group": "Word elements",
+      "area": "holding",
+      "address": "0xE400",
+      "type": "uint16",
+      "access": "RW",
+      "description": "First of Z0-Z15 (0xE400-0xE40F)"
+    }
+  ]
+}
