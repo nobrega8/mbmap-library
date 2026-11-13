@@ -41,6 +41,7 @@ export function registerRow(r: Register, query = ""): string {
   const desc = r.description ?? "";
   const tags = [
     r.enumTable ? `<span class="tag" title="Has a translation table">enum</span>` : "",
+    r.parts ? `<span class="tag" title="Holds several named values, written as one block">parts</span>` : "",
     r.role ? `<span class="tag role" title="${escapeHtml(roleTitle(r.role))}">${escapeHtml(ROLE_INFO[r.role]?.label ?? r.role)}</span>` : "",
     r.firmwareMin || r.firmwareMax ? `<span class="tag" title="Only some firmware versions">fw</span>` : "",
   ].join("");
@@ -103,5 +104,14 @@ export function registerDetail(r: Register, addressBase: number, columns: number
         .map(([k, v]) => `<tr><td class="mono">${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`)
         .join("")}</tbody></table></div>`
     : "";
-  return `<tr class="reg-detail" id="reg-d-${r.i}"><td colspan="${columns}"><div class="detail-in"><dl class="facts">${facts}</dl>${table}</div></td></tr>`;
+  const parts = r.parts
+    ? `<div class="enum"><div class="key">Parts of the block <span class="faint">· the device takes the block whole, written in one request</span></div><table class="table"><thead><tr><th>Part</th><th>Registers</th><th>Type</th><th>Description</th></tr></thead><tbody>${r.parts
+        .map((p) => {
+          const first = r.address + p.offset;
+          const range = p.count > 1 ? `${first}–${first + p.count - 1}` : String(first);
+          return `<tr><td>${escapeHtml(p.name)}</td><td class="mono">${range}</td><td class="mono">${escapeHtml(p.type)}</td><td>${p.description ? escapeHtml(p.description) : ""}</td></tr>`;
+        })
+        .join("")}</tbody></table></div>`
+    : "";
+  return `<tr class="reg-detail" id="reg-d-${r.i}"><td colspan="${columns}"><div class="detail-in"><dl class="facts">${facts}</dl>${parts}${table}</div></td></tr>`;
 }

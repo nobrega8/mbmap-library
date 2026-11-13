@@ -21,6 +21,17 @@ export interface Source {
   note?: string;
 }
 
+/** A named value inside a block register (SPEC.md section 4.10). */
+export interface RegisterPart {
+  name: string;
+  /** Position in the block, in registers */
+  offset: number;
+  type: string;
+  /** Registers the part covers */
+  count: number;
+  description?: string;
+}
+
 export interface Register {
   /** Position in the file's registers array */
   i: number;
@@ -47,6 +58,8 @@ export interface Register {
   /** Translation table, resolved from a name in enums when needed */
   enumName?: string;
   enumTable?: [string, string][];
+  /** Named values inside a string register that holds a block */
+  parts?: RegisterPart[];
   reference?: string;
   role?: string;
   firmwareMin?: string;
@@ -140,6 +153,30 @@ function table(v: unknown): [string, string][] | undefined {
   return rows.sort((a, b) => (parseInteger(a[0]) ?? 0) - (parseInteger(b[0]) ?? 0));
 }
 
+const PART_TYPE_REGISTERS: Record<string, number> = {
+  int16: 1, uint16: 1, int32: 2, uint32: 2, float32: 2, int64: 4, uint64: 4, float64: 4,
+};
+
+/** The parts of a block register that fit in it; anything else is left out. */
+function partsOf(v: unknown, size: number | undefined): RegisterPart[] | undefined {
+  if (!Array.isArray(v) || size == null) return undefined;
+  const out: RegisterPart[] = [];
+  for (const p of v) {
+    if (!isObject(p)) continue;
+    const name = str(p.name);
+    const offset = parseInteger(p.offset);
+    const type = p.type === undefined ? "string" : str(p.type);
+    if (!name || offset == null || offset < 0 || !type) continue;
+    const count = type === "string" ? parseInteger(p.length) : PART_TYPE_REGISTERS[type];
+    if (count == null || count < 1 || offset + count > size) continue;
+    const part: RegisterPart = { name, offset, type, count };
+    const description = str(p.description);
+    if (description) part.description = description;
+    out.push(part);
+  }
+  return out.length ? out.sort((a, b) => a.offset - b.offset) : undefined;
+}
+
 function register(raw: unknown, i: number, map: MapInfo, enums: Json): Register | null {
   if (!isObject(raw)) return null;
   const name = str(raw.name);
@@ -186,6 +223,10 @@ function register(raw: unknown, i: number, map: MapInfo, enums: Json): Register 
     r.enumTable = table(raw.enum);
   }
   if (!r.enumTable) delete r.enumTable;
+  if (type === "string") {
+    const parts = partsOf(raw.parts, r.length);
+    if (parts) r.parts = parts;
+  }
   if (raw.reference !== undefined) {
     r.reference = typeof raw.reference === "string" ? raw.reference : JSON.stringify(raw.reference);
   }
