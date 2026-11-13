@@ -3,121 +3,922 @@
   "mbmap": 2,
   "vendor": "Entes",
   "model": "EPM-04CS/EPM-06CS",
-  "models": ["EPM-04CS", "EPM-06CS"],
+  "models": [
+    "EPM-04CS",
+    "EPM-06CS"
+  ],
   "vendor_website": "entes.com.tr",
-  "description": "3-phase multimeter, Modbus RTU. Phase-neutral voltages at addr 0-4 (V ×0.1); phase currents at 6-12 (A ×0.001); phase-phase voltages at 14-18; cos-phi per phase at 38-42 (★); avg cos-phi at 54-56 (★); frequency at 58 (Hz ×0.01); voltage/current angles at 60-70 (★). Min measurements at 118-136; max at 168-182; max current demand at 204/212/220. Settings: VT/CT ratio at 32766/32769, demand time at 32771, comms at 32777-32784. Alarm functions at 33026+; warning setpoints at 33046+; tripping/releasing times at 33070+.",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/entes-epm-04cs-06cs.toml; Source: entes-epm-04cs-epm-06cs-register-table.pdf (A4263/Rev.2). Not verified against the manufacturer's documentation",
+  "description": "3-phase multimeters, Modbus RTU",
+  "revision": 3,
+  "source": "Entes EPM-04CS / EPM-06CS Modbus register table (A4263 Rev.2)",
   "notes": [
-    "Entes EPM-04CS/EPM-06CS.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| ENTES EPM-04CS / EPM-06CS Multimeter (Modbus RTU RS-485)",
-    "|",
-    "| Source: entes-epm-04cs-epm-06cs-register-table.pdf (A4263/Rev.2)",
-    "| Models: EPM-04CS (3-phase multimeter), EPM-06CS (adds cos-phi, angles, harmonics)",
-    "| Protocol: Modbus RTU, FC03 read holding registers, FC06 write single register",
-    "| Baud: 0=9600, 1=4800, 2=2400, 3=19200, 4=4800, 5=38400 bps; default 9600 8N2",
-    "| All addresses are 0-based decimal.",
-    "| Multiplier applies to raw value: e.g. voltage raw 2300 × 0.1 = 230.0 V",
-    "| ★ = EPM-06CS only"
+    "Entes EPM-04CS and EPM-06CS, rebuilt from the manufacturer's register table: several addresses of the previous map (minimum and maximum values, demand, voltage transformer ratio, connection selection and the alarm block) were wrong.",
+    "Voltages are in 0.1 V, currents in 0.001 A, cos phi in 0.001, frequency in 0.01 Hz; the ranges in the table are multiples of the voltage (UT) and current (CT) transformer ratios.",
+    "The table spaces its addresses by 2 and gives the format as unsigned int / int / short-int without a width; the map reads each as a 16-bit register.",
+    "Warning levels and times of the alarm block are shown as plain integers (units as printed in the table). Some alarm rows of the table were hard to read; tripping times are listed in the same order as the releasing times.",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
+  "x_status": "official",
   "registers": [
-    {"name": "L1 phase voltage", "area": "holding", "address": 0, "type": "uint16", "access": "R"},
-    {"name": "L2 phase voltage", "area": "holding", "address": 2, "type": "uint16", "access": "R"},
-    {"name": "L3 phase voltage", "area": "holding", "address": 4, "type": "uint16", "access": "R"},
-    {"name": "L1 phase current", "area": "holding", "address": 6, "type": "uint16", "access": "R"},
-    {"name": "L2 phase current", "area": "holding", "address": 8, "type": "uint16", "access": "R"},
-    {"name": "L3 phase current", "area": "holding", "address": 10, "type": "uint16", "access": "R"},
-    {"name": "Neutral current", "area": "holding", "address": 12, "type": "uint16", "access": "R"},
-    {"name": "L1-L2 phase-phase voltage", "area": "holding", "address": 14, "type": "uint16", "access": "R"},
-    {"name": "L2-L3 phase-phase voltage", "area": "holding", "address": 16, "type": "uint16", "access": "R"},
-    {"name": "L3-L1 phase-phase voltage", "area": "holding", "address": 18, "type": "uint16", "access": "R"},
-    {"name": "L1 phase cos-phi", "area": "holding", "address": 38, "type": "int16", "access": "R"},
-    {"name": "L2 phase cos-phi", "area": "holding", "address": 40, "type": "int16", "access": "R"},
-    {"name": "L3 phase cos-phi", "area": "holding", "address": 42, "type": "int16", "access": "R"},
-    {"name": "Average inductive total cos-phi", "area": "holding", "address": 54, "type": "int16", "access": "R"},
-    {"name": "Average capacitive total cos-phi", "area": "holding", "address": 56, "type": "int16", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 58, "type": "uint16", "access": "R"},
-    {"name": "L1 phase voltage angle", "area": "holding", "address": 60, "type": "uint16", "access": "R"},
-    {"name": "L2 phase voltage angle", "area": "holding", "address": 62, "type": "uint16", "access": "R"},
-    {"name": "L3 phase voltage angle", "area": "holding", "address": 64, "type": "uint16", "access": "R"},
-    {"name": "L1 phase current angle", "area": "holding", "address": 66, "type": "uint16", "access": "R"},
-    {"name": "L2 phase current angle", "area": "holding", "address": 68, "type": "uint16", "access": "R"},
-    {"name": "L3 phase current angle", "area": "holding", "address": 70, "type": "uint16", "access": "R"},
-    {"name": "L1 phase min voltage", "area": "holding", "address": 118, "type": "uint16", "access": "R"},
-    {"name": "L2 phase min voltage", "area": "holding", "address": 120, "type": "uint16", "access": "R"},
-    {"name": "L3 phase min voltage", "area": "holding", "address": 122, "type": "uint16", "access": "R"},
-    {"name": "L1-L2 phase-phase min voltage", "area": "holding", "address": 124, "type": "uint16", "access": "R"},
-    {"name": "L2-L3 phase-phase min voltage", "area": "holding", "address": 126, "type": "uint16", "access": "R"},
-    {"name": "L3-L1 phase-phase min voltage", "area": "holding", "address": 128, "type": "uint16", "access": "R"},
-    {"name": "L1 phase min current", "area": "holding", "address": 132, "type": "uint16", "access": "R"},
-    {"name": "L2 phase min current", "area": "holding", "address": 134, "type": "uint16", "access": "R"},
-    {"name": "L3 phase min current", "area": "holding", "address": 136, "type": "uint16", "access": "R"},
-    {"name": "L1 phase max voltage", "area": "holding", "address": 168, "type": "uint16", "access": "R"},
-    {"name": "L2 phase max voltage", "area": "holding", "address": 170, "type": "uint16", "access": "R"},
-    {"name": "L3 phase max voltage", "area": "holding", "address": 172, "type": "uint16", "access": "R"},
-    {"name": "L1-L2 phase-phase max voltage", "area": "holding", "address": 174, "type": "uint16", "access": "R"},
-    {"name": "L2-L3 phase-phase max voltage", "area": "holding", "address": 176, "type": "uint16", "access": "R"},
-    {"name": "L3-L1 phase-phase max voltage", "area": "holding", "address": 178, "type": "uint16", "access": "R"},
-    {"name": "L1 phase max current", "area": "holding", "address": 180, "type": "uint16", "access": "R"},
-    {"name": "L2 phase max current", "area": "holding", "address": 182, "type": "uint16", "access": "R"},
-    {"name": "L3 phase max current", "area": "holding", "address": 184, "type": "uint16", "access": "R"},
-    {"name": "L1 phase max current demand", "area": "holding", "address": 204, "type": "uint16", "access": "R"},
-    {"name": "L2 phase max current demand", "area": "holding", "address": 212, "type": "uint16", "access": "R"},
-    {"name": "L3 phase max current demand", "area": "holding", "address": 220, "type": "uint16", "access": "R"},
-    {"name": "Voltage transformer ratio", "area": "holding", "address": 32766, "type": "int16", "access": "R"},
-    {"name": "Current transformer ratio", "area": "holding", "address": 32769, "type": "int16", "access": "R"},
-    {"name": "Demand time", "area": "holding", "address": 32771, "type": "int16", "access": "R"},
-    {"name": "Modbus address", "area": "holding", "address": 32777, "type": "int16", "access": "R"},
-    {"name": "Baud rate", "area": "holding", "address": 32778, "type": "int16", "access": "R"},
-    {"name": "Parity", "area": "holding", "address": 32779, "type": "int16", "access": "R"},
-    {"name": "Password enable", "area": "holding", "address": 32780, "type": "int16", "access": "R"},
-    {"name": "Password", "area": "holding", "address": 32781, "type": "int16", "access": "R"},
-    {"name": "Connection selection", "area": "holding", "address": 32784, "type": "int16", "access": "R"},
-    {"name": "Output function enable", "area": "holding", "address": 33026, "type": "int16", "access": "R"},
-    {"name": "Latch function enable", "area": "holding", "address": 33027, "type": "int16", "access": "R"},
-    {"name": "Output inverse enable", "area": "holding", "address": 33028, "type": "int16", "access": "R"},
-    {"name": "Phase sequence monitoring enable", "area": "holding", "address": 33029, "type": "int16", "access": "R"},
-    {"name": "Voltage instant trip enable", "area": "holding", "address": 33030, "type": "int16", "access": "R"},
-    {"name": "Auto reset enable", "area": "holding", "address": 33032, "type": "int16", "access": "R"},
-    {"name": "Start-up delay time", "area": "holding", "address": 33033, "type": "int16", "access": "R"},
-    {"name": "L1 high voltage warning", "area": "holding", "address": 33046, "type": "int16", "access": "R"},
-    {"name": "L2 high voltage warning", "area": "holding", "address": 33047, "type": "int16", "access": "R"},
-    {"name": "L3 high voltage warning", "area": "holding", "address": 33048, "type": "int16", "access": "R"},
-    {"name": "L1 low voltage warning", "area": "holding", "address": 33049, "type": "int16", "access": "R"},
-    {"name": "L2 low voltage warning", "area": "holding", "address": 33050, "type": "int16", "access": "R"},
-    {"name": "L3 low voltage warning", "area": "holding", "address": 33051, "type": "int16", "access": "R"},
-    {"name": "L1 high current warning", "area": "holding", "address": 33054, "type": "int16", "access": "R"},
-    {"name": "L2 high current warning", "area": "holding", "address": 33055, "type": "int16", "access": "R"},
-    {"name": "L3 high current warning", "area": "holding", "address": 33056, "type": "int16", "access": "R"},
-    {"name": "L1 low current warning", "area": "holding", "address": 33057, "type": "int16", "access": "R"},
-    {"name": "L2 low current warning", "area": "holding", "address": 33058, "type": "int16", "access": "R"},
-    {"name": "L3 low current warning", "area": "holding", "address": 33059, "type": "int16", "access": "R"},
-    {"name": "High frequency warning", "area": "holding", "address": 33061, "type": "int16", "access": "R"},
-    {"name": "Low frequency warning", "area": "holding", "address": 33062, "type": "int16", "access": "R"},
-    {"name": "High voltage warning hysteresis", "area": "holding", "address": 33063, "type": "int16", "access": "R"},
-    {"name": "High current warning hysteresis", "area": "holding", "address": 33064, "type": "int16", "access": "R"},
-    {"name": "High frequency warning hysteresis", "area": "holding", "address": 33065, "type": "int16", "access": "R"},
-    {"name": "Low voltage warning hysteresis", "area": "holding", "address": 33066, "type": "int16", "access": "R"},
-    {"name": "Low current warning hysteresis", "area": "holding", "address": 33067, "type": "int16", "access": "R"},
-    {"name": "Low frequency warning hysteresis", "area": "holding", "address": 33068, "type": "int16", "access": "R"},
-    {"name": "High voltage tripping time", "area": "holding", "address": 33070, "type": "int16", "access": "R"},
-    {"name": "High current tripping time", "area": "holding", "address": 33071, "type": "int16", "access": "R"},
-    {"name": "High frequency tripping time", "area": "holding", "address": 33072, "type": "int16", "access": "R"},
-    {"name": "Low voltage tripping time", "area": "holding", "address": 33073, "type": "int16", "access": "R"},
-    {"name": "Low current tripping time", "area": "holding", "address": 33074, "type": "int16", "access": "R"},
-    {"name": "Low frequency tripping time", "area": "holding", "address": 33075, "type": "int16", "access": "R"},
-    {"name": "High voltage releasing time", "area": "holding", "address": 33079, "type": "int16", "access": "R"},
-    {"name": "Low voltage releasing time", "area": "holding", "address": 33080, "type": "int16", "access": "R"},
-    {"name": "High current releasing time", "area": "holding", "address": 33081, "type": "int16", "access": "R"},
-    {"name": "Low current releasing time", "area": "holding", "address": 33082, "type": "int16", "access": "R"},
-    {"name": "Frequency releasing time", "area": "holding", "address": 33083, "type": "int16", "access": "R"}
+    {
+      "name": "L1 phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L2 phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L3 phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L1 phase current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L2 phase current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L3 phase current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Neutral current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L1-L2 phase-phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L2-L3 phase-phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L3-L1 phase-phase voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L1 phase cos phi",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 38,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "L2 phase cos phi",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 40,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "L3 phase cos phi",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 42,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Average inductive cos phi",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 54,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Average capacitive cos phi",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 58,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "L1 phase voltage angle",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 60,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "L2 phase voltage angle",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 62,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "L3 phase voltage angle",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "L1 phase current angle",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "L2 phase current angle",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 68,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "L3 phase current angle",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "scale": 1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "L1 phase min voltage",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L2 phase min voltage",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 120,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L3 phase min voltage",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 122,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L1-L2 phase-phase min voltage",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 124,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L2-L3 phase-phase min voltage",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 126,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L3-L1 phase-phase min voltage",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 128,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L1 phase min current",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 130,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L2 phase min current",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 132,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L3 phase min current",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L1 phase max voltage",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L2 phase max voltage",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 166,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L3 phase max voltage",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 168,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L1-L2 phase-phase max voltage",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 170,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L2-L3 phase-phase max voltage",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 172,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L3-L1 phase-phase max voltage",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 174,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L1 phase max current",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 176,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L2 phase max current",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 178,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L3 phase max current",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 180,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L1 phase max current demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 210,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L2 phase max current demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 212,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L3 phase max current demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 214,
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "Voltage transformer ratio",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32768,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "RW"
+    },
+    {
+      "name": "Current transformer ratio",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32769,
+      "type": "int16",
+      "scale": 1,
+      "access": "RW"
+    },
+    {
+      "name": "Demand time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32771,
+      "type": "int16",
+      "scale": 1,
+      "unit": "min",
+      "access": "RW"
+    },
+    {
+      "name": "Modbus address",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32777,
+      "type": "int16",
+      "access": "RW",
+      "description": "1 to 247"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32778,
+      "type": "int16",
+      "access": "RW",
+      "enum": "baud"
+    },
+    {
+      "name": "Parity",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32779,
+      "type": "int16",
+      "access": "RW",
+      "enum": "parity"
+    },
+    {
+      "name": "Password enable",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32780,
+      "type": "int16",
+      "access": "RW",
+      "enum": "off_on"
+    },
+    {
+      "name": "Password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32781,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Connection selection",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32782,
+      "type": "int16",
+      "access": "RW",
+      "enum": "connection"
+    },
+    {
+      "name": "Output function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33026,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 or 1"
+    },
+    {
+      "name": "Latch function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33027,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 or 1"
+    },
+    {
+      "name": "Output inverse",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33028,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 or 1"
+    },
+    {
+      "name": "Phase sequence monitoring",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33029,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 or 1"
+    },
+    {
+      "name": "Voltage instant trip function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33030,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Current instant trip function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33031,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Auto reset function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33032,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Start-up delay time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33033,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW"
+    },
+    {
+      "name": "L1 high-voltage warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33034,
+      "type": "int16",
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L2 high-voltage warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33035,
+      "type": "int16",
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L3 high-voltage warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33036,
+      "type": "int16",
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L1 high-current warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33037,
+      "type": "int16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L2 high-current warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33038,
+      "type": "int16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L3 high-current warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33039,
+      "type": "int16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "LN high-current warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33040,
+      "type": "int16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "High-frequency warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33041,
+      "type": "int16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "L1 low-voltage warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33046,
+      "type": "int16",
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L2 low-voltage warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33047,
+      "type": "int16",
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L3 low-voltage warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33048,
+      "type": "int16",
+      "unit": "V",
+      "access": "RW"
+    },
+    {
+      "name": "L1 low-current warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33049,
+      "type": "int16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L2 low-current warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33050,
+      "type": "int16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "L3 low-current warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33051,
+      "type": "int16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "LN low-current warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33052,
+      "type": "int16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "Low-frequency warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33053,
+      "type": "int16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "High-voltage warning hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33057,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "High-current warning hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33058,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "High-frequency warning hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33059,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Low-voltage warning hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33064,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Low-current warning hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33065,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Low-frequency warning hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33066,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "High-voltage tripping time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33070,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "High-current tripping time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33071,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "Low-voltage tripping time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33072,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "Low-current tripping time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33073,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "Frequency tripping time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33074,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "High-voltage releasing time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33079,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "High-current releasing time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33080,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "Low-voltage releasing time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33081,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "Low-current releasing time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33082,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    },
+    {
+      "name": "Frequency releasing time",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33083,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999"
+    }
+  ],
+  "enums": {
+    "baud": {
+      "1": "38400",
+      "2": "19200",
+      "3": "9600",
+      "4": "4800",
+      "5": "2400"
+    },
+    "parity": {
+      "0": "None",
+      "1": "Odd",
+      "2": "Even"
+    },
+    "off_on": {
+      "0": "Disabled",
+      "1": "Enabled"
+    },
+    "connection": {
+      "0": "Star",
+      "1": "Delta"
+    }
+  },
+  "revised": "2026-11-13",
+  "sources": [
+    {
+      "title": "EPM-04CS / EPM-06CS DIN Modbus register table",
+      "version": "A4263 Rev.2",
+      "url": "https://www.entes.com.tr/uploads/files/EPM-06CS-DIN_Register_Tablosu-865.pdf"
+    }
   ]
 }
