@@ -56,7 +56,7 @@ pie showData
     title Mapas por estado
     "Verificado" : 22
     "Oficial" : 491
-    "No oficial" : 121
+    "No oficial" : 119
 ```
 <!-- status-chart:end -->
 
