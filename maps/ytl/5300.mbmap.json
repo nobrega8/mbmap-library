@@ -2,72 +2,873 @@
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
   "vendor": "YTL",
-  "model": "5300",
-  "models": ["5300"],
-  "revision": 2,
+  "model": "5300 (DTS353F)",
+  "models": [
+    "5300",
+    "DTS353F"
+  ],
   "vendor_website": "ytl-e.com",
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table ytl/5300; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/ytl-5300.htm. Not verified against the manufacturer's documentation",
+  "description": "Three-phase DIN-rail energy meter with RS485 Modbus RTU: voltages, currents, powers, power factor, frequency and energies (total, per phase and per tariff) as floats",
+  "revision": 3,
+  "revised": "2026-11-13",
+  "source": "YTL5300 Modbus register matrix (manufacturer's table, distributed by Elektramat, article 5299)",
+  "sources": [
+    {
+      "title": "YTL5300 registry matrix (artikel 5299)",
+      "url": "https://www.elektramat.nl/media/wysiwyg/Specsheet/Modbus_register_matrix.pdf",
+      "note": "read and write register tables, communication settings"
+    },
+    {
+      "title": "cFos YTL DTS353 Modbus Registers",
+      "note": "the same table as published by cFos for its EV charger integration; matches the matrix"
+    },
+    {
+      "title": "Home Assistant community: Read YTL5300 (DTS353F2) with Modbus",
+      "url": "https://community.home-assistant.io/t/read-ytl5300-dts353f2-with-modbus-modbus-crc-check-failed/388371",
+      "note": "a user reads the voltages, currents, powers and energy from 0x000E and 0x0100 as FP32 holding registers at 9600 8E1; no values were compared"
+    }
+  ],
   "notes": [
-    "YTL 5300.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "YTL (Zhejiang Yongtailong) 5300 / DTS353F three-phase meter, as sold by Elektramat and used by cFos. Registers of the manufacturer's register matrix.",
+    "Addresses are the hex addresses of the matrix; function 03 reads them. The length column is in bytes: 4-byte values are IEEE 754 floats in two registers, 2-byte values one 16-bit register. The matrix gives no units; the units here are those used by cFos and Home Assistant users (V, A, Hz, kW, kvar, kVA, kWh, kvarh).",
+    "Default: address 1, 9600 bit/s (1200, 2400 or 4800 optional), 8 data bits, even parity, 1 stop bit.",
+    "Meter ID, baud rate, combined code, holiday/weekend tariff, cycle time, time and the tariff schedule are written with functions 06 or 16 (0x10).",
+    "Not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Meter ID", "area": "holding", "address": 2, "type": "float32", "access": "R"},
-    {"name": "Baud rate", "area": "holding", "address": 3, "type": "float32", "access": "R"},
-    {"name": "Software version", "area": "holding", "address": 4, "type": "float32", "access": "R"},
-    {"name": "Hardware version", "area": "holding", "address": 6, "type": "float32", "access": "R"},
-    {"name": "S0 output rate", "area": "holding", "address": 9, "type": "float32", "access": "R"},
-    {"name": "Combined code", "area": "holding", "address": 11, "type": "float32", "access": "R"},
-    {"name": "HOLIDAY WEEKEND T", "area": "holding", "address": 12, "type": "float32", "access": "R"},
-    {"name": "Cycle time", "area": "holding", "address": 13, "type": "float32", "access": "R"},
-    {"name": "L1 voltage", "area": "holding", "address": 14, "type": "float32", "access": "R"},
-    {"name": "L2 voltage", "area": "holding", "address": 16, "type": "float32", "access": "R"},
-    {"name": "L3 voltage", "area": "holding", "address": 18, "type": "float32", "access": "R"},
-    {"name": "Grid frequency", "area": "holding", "address": 20, "type": "float32", "access": "R"},
-    {"name": "L1 current", "area": "holding", "address": 22, "type": "float32", "access": "R"},
-    {"name": "L2 current", "area": "holding", "address": 24, "type": "float32", "access": "R"},
-    {"name": "L3 current", "area": "holding", "address": 26, "type": "float32", "access": "R"},
-    {"name": "Total active power", "area": "holding", "address": 28, "type": "float32", "access": "R"},
-    {"name": "L1 active power", "area": "holding", "address": 30, "type": "float32", "access": "R"},
-    {"name": "L2 active power", "area": "holding", "address": 32, "type": "float32", "access": "R"},
-    {"name": "L3 active power", "area": "holding", "address": 34, "type": "float32", "access": "R"},
-    {"name": "Total reactive power", "area": "holding", "address": 36, "type": "float32", "access": "R"},
-    {"name": "L1 reactive power", "area": "holding", "address": 38, "type": "float32", "access": "R"},
-    {"name": "L2 reactive power", "area": "holding", "address": 40, "type": "float32", "access": "R"},
-    {"name": "L3 reactive power", "area": "holding", "address": 42, "type": "float32", "access": "R"},
-    {"name": "Total apparent power", "area": "holding", "address": 44, "type": "float32", "access": "R"},
-    {"name": "L1 apparent power", "area": "holding", "address": 46, "type": "float32", "access": "R"},
-    {"name": "L2 apparent power", "area": "holding", "address": 48, "type": "float32", "access": "R"},
-    {"name": "L3 apparent power", "area": "holding", "address": 50, "type": "float32", "access": "R"},
-    {"name": "Total power factor", "area": "holding", "address": 52, "type": "float32", "access": "R"},
-    {"name": "Power factor (54)", "area": "holding", "address": 54, "type": "float32", "access": "R"},
-    {"name": "Power factor (56)", "area": "holding", "address": 56, "type": "float32", "access": "R"},
-    {"name": "Power factor (58)", "area": "holding", "address": 58, "type": "float32", "access": "R"},
-    {"name": "Time", "area": "holding", "address": 60, "type": "float32", "access": "R"},
-    {"name": "Season ON/OFF", "area": "holding", "address": 64, "type": "float32", "access": "R"},
-    {"name": "CRC CODE", "area": "holding", "address": 65, "type": "float32", "access": "R"},
-    {"name": "Total active energy", "area": "holding", "address": 256, "type": "float32", "access": "R"},
-    {"name": "L1 total active energy", "area": "holding", "address": 258, "type": "float32", "access": "R"},
-    {"name": "L2 total active energy", "area": "holding", "address": 260, "type": "float32", "access": "R"},
-    {"name": "L3 total active energy", "area": "holding", "address": 262, "type": "float32", "access": "R"},
-    {"name": "Forward active energy", "area": "holding", "address": 264, "type": "float32", "access": "R"},
-    {"name": "L1 forward active energy", "area": "holding", "address": 266, "type": "float32", "access": "R"},
-    {"name": "L2 forward active energy", "area": "holding", "address": 268, "type": "float32", "access": "R"},
-    {"name": "L3 forward active energy", "area": "holding", "address": 270, "type": "float32", "access": "R"},
-    {"name": "Reverse active energy", "area": "holding", "address": 272, "type": "float32", "access": "R"},
-    {"name": "L1 reverse active energy", "area": "holding", "address": 274, "type": "float32", "access": "R"},
-    {"name": "L2 reverse active energy", "area": "holding", "address": 276, "type": "float32", "access": "R"},
-    {"name": "L3 reverse active energy", "area": "holding", "address": 278, "type": "float32", "access": "R"},
-    {"name": "Total reactive energy", "area": "holding", "address": 280, "type": "float32", "access": "R"},
-    {"name": "L1 reactive energy", "area": "holding", "address": 282, "type": "float32", "access": "R"},
-    {"name": "L2 reactive energy", "area": "holding", "address": 284, "type": "float32", "access": "R"},
-    {"name": "L3 reactive energy", "area": "holding", "address": 286, "type": "float32", "access": "R"}
+    {
+      "name": "Serial number",
+      "group": "Device",
+      "area": "holding",
+      "address": 0,
+      "type": "uint32",
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "Meter ID",
+      "group": "Device",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Written with function 06."
+    },
+    {
+      "name": "Baud Rate",
+      "group": "Device",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Written with function 06."
+    },
+    {
+      "name": "Software Version",
+      "group": "Device",
+      "area": "holding",
+      "address": 4,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Hardware Version",
+      "group": "Device",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "S0 output rate",
+      "group": "Device",
+      "area": "holding",
+      "address": 9,
+      "type": "float32",
+      "access": "RW",
+      "description": "Written with function 16 (0x10)."
+    },
+    {
+      "name": "Combined Code",
+      "group": "Device",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Written with function 06."
+    },
+    {
+      "name": "HOLIDAY-WEEKEND T",
+      "group": "Device",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Written with function 06."
+    },
+    {
+      "name": "Cycle time",
+      "group": "Device",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Written with function 06."
+    },
+    {
+      "name": "L1 Voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L2 Voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 16,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L3 Voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Grid Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "L1 Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L2 Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "L3 Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 26,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Total Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 28,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "L1 Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 30,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "L2 Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "L3 Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 34,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "L1 reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 38,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "L2 reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "L3 reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 42,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 44,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "L1 Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 46,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "L2 Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 48,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "L3 Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 50,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Total Power Factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 52,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "L1 power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 54,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "L2 power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 56,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "L3 power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 58,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Time",
+      "group": "Device",
+      "area": "holding",
+      "address": 60,
+      "type": "string",
+      "length": 4,
+      "access": "RW",
+      "description": "8 bytes (4 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "Season ON/OFF",
+      "group": "Device",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CRC CODE",
+      "group": "Device",
+      "area": "holding",
+      "address": 65,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Total Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 256,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L1 Total Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 258,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L2 Total Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 260,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L3 Total Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 262,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Forward Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 264,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L1 Forward Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 266,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L2 Forward Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 268,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L3 Forward Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 270,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reverse Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 272,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L1 Reverse Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 274,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L2 Reverse Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 276,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "L3 Reverse Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 278,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Total Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 280,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L1 Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 282,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L2 Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 284,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L3 Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 286,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Forward Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 288,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L1 Forward Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 290,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L2 Forward Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 292,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L3 Forward Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 294,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reverse Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 296,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L1 Reverse Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 298,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L2 Reverse Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 300,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "L3 Reverse Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 302,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T1 Total Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 304,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T1 Forward Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 306,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T1 Reverse Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 308,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T1 Total Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 310,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T1 Forward Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 312,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T1 Reverse Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 314,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T2 Total Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 316,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T2 Forward Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 318,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T2 Reverse Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 320,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T2 Total Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 322,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T2 Forward Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 324,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T2 Reverse Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 326,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T3 Total Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 328,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T3 Forward Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 330,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T3 Reverse Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 332,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T3 Total Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 334,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T3 Forward Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 336,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T3 Reverse Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 338,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T4 Total Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 340,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T4 Forward Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 342,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T4 Reverse Active Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 344,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "T4 Total Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 346,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T4 Forward Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 348,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "T4 Reverse Reactive Energy",
+      "group": "Energy",
+      "area": "holding",
+      "address": 350,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "TIME interval 1",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 768,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "TIME interval 2",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 780,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "TIME interval 3",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 792,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "TIME interval 4",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 804,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "TIME interval 5",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 816,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "TIME interval 6",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 828,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "TIME interval 7",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 840,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "TIME interval 8",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 852,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    },
+    {
+      "name": "TIME zone",
+      "group": "Tariff schedule",
+      "area": "holding",
+      "address": 864,
+      "type": "string",
+      "length": 12,
+      "access": "RW",
+      "description": "24 bytes (12 registers); the matrix does not describe the format. Written with function 16 (0x10)."
+    }
   ]
 }
