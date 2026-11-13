@@ -1,0 +1,1685 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Trinity",
+  "model": "GOBLIN-PLUS",
+  "models": [
+    "GOBLIN-PLUS"
+  ],
+  "vendor_website": "trinityenergy.co.in",
+  "description": "Multifunction power analyser with RS485 Modbus RTU: live values, power factor, powers, frequency, temperature, import/export/net energies and demands",
+  "revision": 1,
+  "source": "Trinity Energy Systems, GOBLIN-PLUS Operational Manual, Appendix (Modbus address map)",
+  "sources": [
+    {
+      "title": "GOBLIN-PLUS Operational Manual",
+      "note": "section 'Modbus RTU on RS485 Port' and the Appendix address map; 'Energy parameter reading' and 'Defining multiplication factor'"
+    }
+  ],
+  "notes": [
+    "Trinity GOBLIN-PLUS. The live value, energy and demand block of the Appendix (200 to 445); the minimum/maximum, event and sag/swell logs from 446 are not in this map. The register map differs from the older Goblin (see trinity/goblin) from address 226 on.",
+    "The manual gives the addresses in decimal but no example frame. This map sends address 200 of the table as 199 (address_base 1), as the Trinity maps of this library do; if a device answers one register off, use address_base 0.",
+    "Function 03 reads the registers; at most 254 bytes per request. 9600, 19200 or 38400 baud, 8N1. Names are those of the 3P4W column; registers marked as not used in 3P3W or 1P2W read zero there.",
+    "Values are integers multiplied by the factor in the table (the scale here): x100 for voltages, currents, powers, frequency and temperature, x1000 for power factor.",
+    "Energies are split in two registers: energy = KxH1 x 10,000,000 + KxH2 / 100, and the net energies are multiplied by the sign register (+1 or -1). The worked example in the manual uses addresses two lower than the table (265 for KWH1 import); this map follows the table.",
+    "Not tested on a device."
+  ],
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "VRN",
+      "group": "Live values",
+      "area": "holding",
+      "address": 200,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R",
+      "description": "Not used in 3P3W."
+    },
+    {
+      "name": "VYN",
+      "group": "Live values",
+      "area": "holding",
+      "address": 202,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "VBN",
+      "group": "Live values",
+      "area": "holding",
+      "address": 204,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "AVG_VPN",
+      "group": "Live values",
+      "area": "holding",
+      "address": 206,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "VRY",
+      "group": "Live values",
+      "area": "holding",
+      "address": 208,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "VYB",
+      "group": "Live values",
+      "area": "holding",
+      "address": 210,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "VBR",
+      "group": "Live values",
+      "area": "holding",
+      "address": 212,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "AVG_VPP",
+      "group": "Live values",
+      "area": "holding",
+      "address": 214,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "IR",
+      "group": "Live values",
+      "area": "holding",
+      "address": 216,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "IY",
+      "group": "Live values",
+      "area": "holding",
+      "address": 218,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "IB",
+      "group": "Live values",
+      "area": "holding",
+      "address": 220,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "AVG_AMP",
+      "group": "Live values",
+      "area": "holding",
+      "address": 222,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "IN",
+      "group": "Live values",
+      "area": "holding",
+      "address": 224,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "PF_R",
+      "group": "Live values",
+      "area": "holding",
+      "address": 226,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "PF_Y",
+      "group": "Live values",
+      "area": "holding",
+      "address": 227,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "PF_B",
+      "group": "Live values",
+      "area": "holding",
+      "address": 228,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "SYS_PF",
+      "group": "Live values",
+      "area": "holding",
+      "address": 229,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "PF_R_DISPLACEMENT",
+      "group": "Live values",
+      "area": "holding",
+      "address": 230,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W."
+    },
+    {
+      "name": "PF_Y_DISPLACEMENT",
+      "group": "Live values",
+      "area": "holding",
+      "address": 231,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "PF_B_DISPLACEMENT",
+      "group": "Live values",
+      "area": "holding",
+      "address": 232,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "PF_R_DISTORTION",
+      "group": "Live values",
+      "area": "holding",
+      "address": 233,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W."
+    },
+    {
+      "name": "PF_Y_DISTORTION",
+      "group": "Live values",
+      "area": "holding",
+      "address": 234,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "PF_B_DISTORTION",
+      "group": "Live values",
+      "area": "holding",
+      "address": 235,
+      "type": "int16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "KW_R",
+      "group": "Live values",
+      "area": "holding",
+      "address": 236,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "KW_Y",
+      "group": "Live values",
+      "area": "holding",
+      "address": 238,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "KW_B",
+      "group": "Live values",
+      "area": "holding",
+      "address": 240,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "SYS_KW",
+      "group": "Live values",
+      "area": "holding",
+      "address": 242,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "KVA_R",
+      "group": "Live values",
+      "area": "holding",
+      "address": 244,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kVA",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "KVA_Y",
+      "group": "Live values",
+      "area": "holding",
+      "address": 246,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kVA",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "KVA_B",
+      "group": "Live values",
+      "area": "holding",
+      "address": 248,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kVA",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "SYS_KVA",
+      "group": "Live values",
+      "area": "holding",
+      "address": 250,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "KVAR_R",
+      "group": "Live values",
+      "area": "holding",
+      "address": 252,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kvar",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "KVAR_Y",
+      "group": "Live values",
+      "area": "holding",
+      "address": 254,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kvar",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "KVAR_B",
+      "group": "Live values",
+      "area": "holding",
+      "address": 256,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kvar",
+      "access": "R",
+      "description": "Not used in 1P2W."
+    },
+    {
+      "name": "SYS_KVAR",
+      "group": "Live values",
+      "area": "holding",
+      "address": 258,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "SYS_FREQ",
+      "group": "Live values",
+      "area": "holding",
+      "address": 260,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "TEMPERATURE",
+      "group": "Live values",
+      "area": "holding",
+      "address": 261,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "R PHASE CURRENT DIRECTION INFO",
+      "group": "Live values",
+      "area": "holding",
+      "address": 262,
+      "type": "uint16",
+      "access": "R",
+      "description": "Not used in 3P3W."
+    },
+    {
+      "name": "Y PHASE CURRENT DIRECTION INFO",
+      "group": "Live values",
+      "area": "holding",
+      "address": 263,
+      "type": "uint16",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "B PHASE CURRENT DIRECTION INFO",
+      "group": "Live values",
+      "area": "holding",
+      "address": 264,
+      "type": "uint16",
+      "access": "R",
+      "description": "Not used in 3P3W. Not used in 1P2W."
+    },
+    {
+      "name": "SYSTEM IMP - EXP INIDICATION",
+      "group": "Live values",
+      "area": "holding",
+      "address": 265,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DUAL INDICATION",
+      "group": "Live values",
+      "area": "holding",
+      "address": 266,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "EB-IMPORT-KWH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 267,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "EB-IMPORT-KWH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 269,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "EB-EXPORT-KWH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 271,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "EB-EXPORT-KWH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 273,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "NET-KWH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 275,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "NET-KWH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 277,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "NET - KWH - SIGN - INFO",
+      "group": "Energy",
+      "area": "holding",
+      "address": 279,
+      "type": "int16",
+      "access": "R",
+      "description": "Sign multiplier of the net energy: +1 or -1."
+    },
+    {
+      "name": "DG-KWH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 280,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "DG-KWH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 282,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "EB-IMPORT-KVAH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 284,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "EB-IMPORT-KVAH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 286,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "EB-EXPORT-KVAH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 288,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "EB-EXPORT-KVAH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 290,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "NET-KVAH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 292,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "NET-KVAH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 294,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "NET - KVAH - SIGN - INFO",
+      "group": "Energy",
+      "area": "holding",
+      "address": 296,
+      "type": "int16",
+      "access": "R",
+      "description": "Sign multiplier of the net energy: +1 or -1."
+    },
+    {
+      "name": "DG-KVAH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 297,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "DG-KVAH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 299,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "EB-IMPORT-KVARH1 - Total",
+      "group": "Energy",
+      "area": "holding",
+      "address": 301,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "EB-IMPORT-KVARH2 - Total",
+      "group": "Energy",
+      "area": "holding",
+      "address": 303,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "EB-IMPORT-KVARH1 -LG",
+      "group": "Energy",
+      "area": "holding",
+      "address": 305,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "EB-IMPORT-KVARH2 - LG",
+      "group": "Energy",
+      "area": "holding",
+      "address": 307,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "EB-IMPORT-KVARH1 -LD",
+      "group": "Energy",
+      "area": "holding",
+      "address": 309,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "EB-IMPORT-KVARH2 - LD",
+      "group": "Energy",
+      "area": "holding",
+      "address": 311,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "EB-EXPORT-KVARH1 - Total",
+      "group": "Energy",
+      "area": "holding",
+      "address": 313,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "EB-EXPORT-KVARH2 - Total",
+      "group": "Energy",
+      "area": "holding",
+      "address": 315,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "EB-EXPORT-KVARH1 - LG",
+      "group": "Energy",
+      "area": "holding",
+      "address": 317,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "EB-EXPORT-KVARH2 - LG",
+      "group": "Energy",
+      "area": "holding",
+      "address": 319,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "EB-EXPORT-KVARH1 - LD",
+      "group": "Energy",
+      "area": "holding",
+      "address": 321,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "EB-EXPORT-KVARH2 - LD",
+      "group": "Energy",
+      "area": "holding",
+      "address": 323,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "NET-KVARH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 325,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "NET-KVARH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 327,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "NET - KVARH - SIGN - INFO",
+      "group": "Energy",
+      "area": "holding",
+      "address": 329,
+      "type": "int16",
+      "access": "R",
+      "description": "Sign multiplier of the net energy: +1 or -1."
+    },
+    {
+      "name": "DG-KVARH1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 330,
+      "type": "uint32",
+      "access": "R",
+      "description": "High part: energy = KxH1 x 10,000,000 + KxH2 / 100."
+    },
+    {
+      "name": "DG-KVARH2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 332,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Low part: energy = KxH1 x 10,000,000 + KxH2 / 100 (scale 0.01 here)."
+    },
+    {
+      "name": "PRESENT-KW-DMD- IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 334,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PRESENT-KW-DMD- EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 335,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PREDICTED - KW-DMD- IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 336,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PREDICTED - KW-DMD- EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 337,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-MD-IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 338,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-MD -IMPORT-DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 339,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-MD -IMPORT- MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 340,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - MD-IMPORT - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 341,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - MD -IMPORT- HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 342,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - MD-IMPORT - MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 343,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - MD-IMPORT - SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 344,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-MD-EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 345,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-MD -EXPORT-DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 346,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-MD -EXPORT- MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 347,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - MD-EXPORT - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 348,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - MD -EXPORT- HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 349,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - MD-EXPORT - MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 350,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - MD-EXPORT - SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 351,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-LMD-IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 352,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-LMD-IMPORT -DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 353,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-LMD-IMPORT - MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 354,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - LMD -IMPORT- YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 355,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - LMD -IMPORT- HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 356,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - LMD-IMPORT - MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 357,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW -LMD -IMPORT- SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 358,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-LMD-EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 359,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-LMD-EXPORT -DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 360,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW-LMD-EXPORT - MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 361,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - LMD -EXPORT- YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 362,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - LMD -EXPORT- HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 363,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW - LMD-EXPORT - MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 364,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KW -LMD -EXPORT- SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 365,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PRESENT - KVA-DMD- IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 366,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PRESENT - KVA-DMD- EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 367,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PREDICTED - KVA-DMD- IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 368,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PREDICTED - KVA-DMD- EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 369,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-MD-IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 370,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-MD-IMPORT -DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 371,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-MD-IMPORT - MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 372,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - MD-IMPORT - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 373,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - MD-IMPORT - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 374,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - MD -IMPORT- MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 375,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - MD-IMPORT - SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 376,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-MD-EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 377,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-MD-EXPORT -DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 378,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-MD-EXPORT - MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 379,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - MD-EXPORT - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 380,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - MD-EXPORT - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 381,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - MD -EXPORT- MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 382,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - MD-EXPORT - SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 383,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-LMD-IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 384,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-LMD -IMPORT-DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 385,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-LMD -IMPORT- MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 386,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - LMD -IMPORT- YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 387,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - LMD-IMPORT - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 388,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - LMD -IMPORT- MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 389,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA -LMD -IMPORT- SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 390,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-LMD-EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 391,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-LMD -EXPORT-DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 392,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA-LMD -EXPORT- MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 393,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - LMD -EXPORT- YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 394,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - LMD-EXPORT - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 395,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA - LMD -EXPORT- MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 396,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVA -LMD -EXPORT- SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 397,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PRESENT - KVAR-DMD- IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 398,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PRESENT - KVAR-DMD- EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 399,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PREDICTED - KVAR-DMD- IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 400,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PREDICTED - KVAR-DMD- EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 401,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-MD-IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 402,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-MD-IMPORT -DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 403,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-MD -IMPORT- MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 404,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - MD-IMPORT - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 405,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - MD-IMPORT - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 406,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - MD -IMPORT- MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 407,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - MD -IMPORT- SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 408,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-MD-EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 409,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-MD-EXPORT -DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 410,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-MD -EXPORT- MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 411,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - MD-EXPORT - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 412,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - MD-EXPORT - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 413,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - MD -EXPORT- MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 414,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - MD -EXPORT- SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 415,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-LMD-IMPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 416,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-LMD-IMPORT - DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 417,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-LMD-IMPORT - MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 418,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - LMD-IMPORT - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 419,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - LMD-IMPORT - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 420,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - LMD-IMPORT - MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 421,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR -LMD-IMPORT - SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 422,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-LMD-EXPORT",
+      "group": "Demand",
+      "area": "holding",
+      "address": 423,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-LMD-EXPORT - DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 424,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR-LMD-EXPORT - MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 425,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - LMD-EXPORT - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 426,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - LMD-EXPORT - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 427,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR - LMD-EXPORT - MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 428,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "KVAR -LMD-EXPORT - SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 429,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PRESENT - IAVG-DMD",
+      "group": "Demand",
+      "area": "holding",
+      "address": 430,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PREDICTED - IAVG-DMD",
+      "group": "Demand",
+      "area": "holding",
+      "address": 431,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG-MD",
+      "group": "Demand",
+      "area": "holding",
+      "address": 432,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG-MD -DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 433,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG-MD - MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 434,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG - MD - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 435,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG - MD - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 436,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG - MD - MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 437,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG - MD - SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 438,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG-LMD",
+      "group": "Demand",
+      "area": "holding",
+      "address": 439,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG-LMD -DATE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 440,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG-LMD - MONTH",
+      "group": "Demand",
+      "area": "holding",
+      "address": 441,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG - LMD - YEAR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 442,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG - LMD - HOUR",
+      "group": "Demand",
+      "area": "holding",
+      "address": 443,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG - LMD - MINUTE",
+      "group": "Demand",
+      "area": "holding",
+      "address": 444,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "IAVG - LMD - SECOND",
+      "group": "Demand",
+      "area": "holding",
+      "address": 445,
+      "type": "uint16",
+      "access": "R"
+    }
+  ]
+}
