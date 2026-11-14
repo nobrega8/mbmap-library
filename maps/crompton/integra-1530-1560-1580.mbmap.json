@@ -1,0 +1,960 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Crompton",
+  "model": "Integra 1530 / 1560 / 1580",
+  "models": [
+    "Integra 1530",
+    "Integra 1560",
+    "Integra 1580"
+  ],
+  "vendor_website": "crompton-instruments.com",
+  "description": "Panel multifunction meters: voltages, currents, powers, power factors, phase angles, frequency, energies, demand, THD, setup and analogue outputs",
+  "revision": 1,
+  "source": "Crompton Instruments, Integra 1530, 1560, 1580 Communications Guide, Issue 1, January 2006, section 1 (Modbus)",
+  "sources": [
+    {
+      "title": "Integra 1530, 1560, 1580 – Communications Guide",
+      "version": "Issue 1, Jan 2006",
+      "url": "https://arccontrol.ccontrols.com/support/dp/Integra15xx.pdf",
+      "note": "sections 1.2 (input registers) and 1.3 (holding registers)"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS485, address 1 to 247 (no broadcast). 2400 to 19200 baud. Function 04 reads input registers, 03 reads and 16 writes holding registers. At most 40 parameters per request; up to 150 ms before the reply.",
+    "Every value is an IEEE 754 float in two registers, most significant register first by default (see Register order, holding register 40041).",
+    "The manual gives 3X/4X register numbers and the address bytes; the map uses the address bytes, as sent.",
+    "Settings marked r/wp need the password written to holding register 40025 first.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Voltage L1-N (4-wire) or L1-L2 (3-wire)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 0,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Valid on every system."
+    },
+    {
+      "name": "Voltage L2-N (4-wire) or L2-L3 (3-wire)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Valid on 3P4W, 3P3W, 1P3W."
+    },
+    {
+      "name": "Voltage L3-N (4-wire) or L3-L1 (3-wire)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 4,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Valid on 3P4W, 3P3W."
+    },
+    {
+      "name": "Current L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 6,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 8,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Valid on 3P4W, 3P3W, 1P3W."
+    },
+    {
+      "name": "Current L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 10,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Valid on 3P4W, 3P3W."
+    },
+    {
+      "name": "Active power L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 12,
+      "type": "float32",
+      "unit": "W",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W, 1P2W."
+    },
+    {
+      "name": "Active power L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 14,
+      "type": "float32",
+      "unit": "W",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W."
+    },
+    {
+      "name": "Active power L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 16,
+      "type": "float32",
+      "unit": "W",
+      "access": "R",
+      "description": "Valid on 3P4W."
+    },
+    {
+      "name": "Apparent power L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 18,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W, 1P2W."
+    },
+    {
+      "name": "Apparent power L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 20,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W."
+    },
+    {
+      "name": "Apparent power L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 22,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R",
+      "description": "Valid on 3P4W."
+    },
+    {
+      "name": "Reactive power L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 24,
+      "type": "float32",
+      "unit": "var",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W, 1P2W."
+    },
+    {
+      "name": "Reactive power L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 26,
+      "type": "float32",
+      "unit": "var",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W."
+    },
+    {
+      "name": "Reactive power L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 28,
+      "type": "float32",
+      "unit": "var",
+      "access": "R",
+      "description": "Valid on 3P4W."
+    },
+    {
+      "name": "Power factor L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30,
+      "type": "float32",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W, 1P2W."
+    },
+    {
+      "name": "Power factor L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 32,
+      "type": "float32",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W."
+    },
+    {
+      "name": "Power factor L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 34,
+      "type": "float32",
+      "access": "R",
+      "description": "Valid on 3P4W."
+    },
+    {
+      "name": "Phase angle L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 36,
+      "type": "float32",
+      "unit": "°",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W, 1P2W."
+    },
+    {
+      "name": "Phase angle L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 38,
+      "type": "float32",
+      "unit": "°",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W."
+    },
+    {
+      "name": "Phase angle L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 40,
+      "type": "float32",
+      "unit": "°",
+      "access": "R",
+      "description": "Valid on 3P4W."
+    },
+    {
+      "name": "Voltage L-N average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 42,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 46,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 48,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Total active power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 52,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Total apparent power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 56,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 60,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 62,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 66,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "input",
+      "address": 70,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import",
+      "group": "Energy",
+      "area": "input",
+      "address": 72,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy export",
+      "group": "Energy",
+      "area": "input",
+      "address": 74,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy import",
+      "group": "Energy",
+      "area": "input",
+      "address": 76,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy export",
+      "group": "Energy",
+      "area": "input",
+      "address": 78,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Apparent energy",
+      "group": "Energy",
+      "area": "input",
+      "address": 80,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Active power demand import",
+      "group": "Demand",
+      "area": "input",
+      "address": 84,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Active power maximum demand import",
+      "group": "Demand",
+      "area": "input",
+      "address": 86,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Current demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 104,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current maximum demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 106,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L1-L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 200,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W."
+    },
+    {
+      "name": "Voltage L2-L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 202,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Valid on 3P4W."
+    },
+    {
+      "name": "Voltage L3-L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 204,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Valid on 3P4W."
+    },
+    {
+      "name": "Voltage L-L average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 206,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W."
+    },
+    {
+      "name": "Neutral current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 224,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Valid on 3P4W, 1P3W, 1P2W."
+    },
+    {
+      "name": "Voltage THD L1",
+      "group": "Power quality",
+      "area": "input",
+      "address": 234,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Voltage THD L2",
+      "group": "Power quality",
+      "area": "input",
+      "address": 236,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Valid on 3P4W, 3P3W, 1P3W."
+    },
+    {
+      "name": "Voltage THD L3",
+      "group": "Power quality",
+      "area": "input",
+      "address": 238,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Valid on 3P4W, 3P3W."
+    },
+    {
+      "name": "Current THD L1",
+      "group": "Power quality",
+      "area": "input",
+      "address": 240,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Current THD L2",
+      "group": "Power quality",
+      "area": "input",
+      "address": 242,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Valid on 3P4W, 3P3W, 1P3W."
+    },
+    {
+      "name": "Current THD L3",
+      "group": "Power quality",
+      "area": "input",
+      "address": 244,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Valid on 3P4W, 3P3W."
+    },
+    {
+      "name": "Voltage THD average",
+      "group": "Power quality",
+      "area": "input",
+      "address": 248,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Current THD average",
+      "group": "Power quality",
+      "area": "input",
+      "address": 250,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Power factor (+ inductive, - capacitive)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 254,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Demand time",
+      "group": "Setup",
+      "area": "holding",
+      "address": 0,
+      "type": "float32",
+      "access": "RW",
+      "description": "Minutes of demand data so far; write 0 to reset the demand period."
+    },
+    {
+      "name": "Demand period",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2,
+      "type": "float32",
+      "access": "RW",
+      "description": "8, 15, 20, 30 or 60 minutes."
+    },
+    {
+      "name": "System voltage",
+      "group": "Setup",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "access": "RW",
+      "description": "VT primary voltage, 1 V to 400 kV. Password needed."
+    },
+    {
+      "name": "System current",
+      "group": "Setup",
+      "area": "holding",
+      "address": 8,
+      "type": "float32",
+      "access": "RW",
+      "description": "CT primary current, 1 to 9999 A. Password needed."
+    },
+    {
+      "name": "System type",
+      "group": "Setup",
+      "area": "holding",
+      "address": 10,
+      "type": "float32",
+      "access": "RW",
+      "enum": {
+        "1": "1-phase 2-wire",
+        "2": "3-phase 3-wire",
+        "3": "3-phase 4-wire",
+        "4": "1-phase 3-wire"
+      },
+      "description": "Password needed."
+    },
+    {
+      "name": "Relay pulse width",
+      "group": "Setup",
+      "area": "holding",
+      "address": 12,
+      "type": "float32",
+      "access": "RW",
+      "description": "In units of 20 ms: 3, 5 or 10."
+    },
+    {
+      "name": "Energy reset",
+      "group": "Control",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "access": "W",
+      "description": "Write 0 to reset the energy readings."
+    },
+    {
+      "name": "RS485 set-up code",
+      "group": "Setup",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "access": "RW",
+      "enum": {
+        "30": "19200 none 2",
+        "14": "19200 none 1",
+        "13": "19200 odd 1",
+        "12": "19200 even 1",
+        "26": "9600 none 2",
+        "10": "9600 none 1",
+        "9": "9600 odd 1",
+        "8": "9600 even 1",
+        "22": "4800 none 2",
+        "6": "4800 none 1",
+        "5": "4800 odd 1",
+        "4": "4800 even 1",
+        "18": "2400 none 2",
+        "2": "2400 none 1",
+        "1": "2400 odd 1",
+        "0": "2400 even 1"
+      }
+    },
+    {
+      "name": "Node address",
+      "group": "Setup",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 to 247."
+    },
+    {
+      "name": "Pulse divisor",
+      "group": "Setup",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "access": "RW",
+      "description": "1, 10, 100 or 1000."
+    },
+    {
+      "name": "Password",
+      "group": "Setup",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "access": "RW",
+      "description": "0000 to 9999. Reads 1 when unprotected, 0 when protected."
+    },
+    {
+      "name": "System power",
+      "group": "Setup",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "access": "R",
+      "description": "Maximum system power from the system type, voltage and current."
+    },
+    {
+      "name": "Register order",
+      "group": "Setup",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "access": "RW",
+      "description": "Write 2141.0 in the wanted order to set the float register order for all transactions."
+    },
+    {
+      "name": "Secondary volts",
+      "group": "Setup",
+      "area": "holding",
+      "address": 298,
+      "type": "float32",
+      "access": "RW",
+      "description": "VT secondary voltage. Password needed."
+    },
+    {
+      "name": "Maximum energy count",
+      "group": "Setup",
+      "area": "holding",
+      "address": 306,
+      "type": "float32",
+      "access": "RW",
+      "description": "6, 7 or 8 digits before the energy counters roll over. Password needed."
+    },
+    {
+      "name": "Analogue hardware maximum",
+      "group": "Setup",
+      "area": "holding",
+      "address": 308,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Analogue hardware minimum",
+      "group": "Setup",
+      "area": "holding",
+      "address": 310,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Analogue output 1 parameter",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 312,
+      "type": "float32",
+      "access": "RW",
+      "description": "Number of the input parameter on the output; 0 = unused. Password needed."
+    },
+    {
+      "name": "Analogue output 1 parameter maximum",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 314,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Analogue output 1 parameter minimum",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 316,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Analogue output 1 reading top",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 318,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed."
+    },
+    {
+      "name": "Analogue output 1 reading bottom",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 320,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed."
+    },
+    {
+      "name": "Analogue output 1 output top",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 322,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed."
+    },
+    {
+      "name": "Analogue output 1 output bottom",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 324,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed."
+    },
+    {
+      "name": "Analogue output 2 parameter",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 328,
+      "type": "float32",
+      "access": "RW",
+      "description": "Number of the input parameter on the output; 0 = unused. Password needed."
+    },
+    {
+      "name": "Analogue output 2 parameter maximum",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 330,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Analogue output 2 parameter minimum",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 332,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Analogue output 2 reading top",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 334,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed."
+    },
+    {
+      "name": "Analogue output 2 reading bottom",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 336,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed."
+    },
+    {
+      "name": "Analogue output 2 output top",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 338,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed."
+    },
+    {
+      "name": "Analogue output 2 output bottom",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 340,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed."
+    },
+    {
+      "name": "Analogue output 3 parameter",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 344,
+      "type": "float32",
+      "access": "RW",
+      "description": "Number of the input parameter on the output; 0 = unused. Password needed. 1560 and 1580 only."
+    },
+    {
+      "name": "Analogue output 3 parameter maximum",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 346,
+      "type": "float32",
+      "access": "R",
+      "description": "1560 and 1580 only."
+    },
+    {
+      "name": "Analogue output 3 parameter minimum",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 348,
+      "type": "float32",
+      "access": "R",
+      "description": "1560 and 1580 only."
+    },
+    {
+      "name": "Analogue output 3 reading top",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 350,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed. 1560 and 1580 only."
+    },
+    {
+      "name": "Analogue output 3 reading bottom",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 352,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed. 1560 and 1580 only."
+    },
+    {
+      "name": "Analogue output 3 output top",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 354,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed. 1560 and 1580 only."
+    },
+    {
+      "name": "Analogue output 3 output bottom",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 356,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed. 1560 and 1580 only."
+    },
+    {
+      "name": "Analogue output 4 parameter",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 360,
+      "type": "float32",
+      "access": "RW",
+      "description": "Number of the input parameter on the output; 0 = unused. Password needed. 1560 and 1580 only. Address from the pattern of outputs 1 to 3; the manual's rows for output 4 are garbled."
+    },
+    {
+      "name": "Analogue output 4 parameter maximum",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 362,
+      "type": "float32",
+      "access": "R",
+      "description": "1560 and 1580 only. Address from the pattern of outputs 1 to 3; the manual's rows for output 4 are garbled."
+    },
+    {
+      "name": "Analogue output 4 parameter minimum",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 364,
+      "type": "float32",
+      "access": "R",
+      "description": "1560 and 1580 only. Address from the pattern of outputs 1 to 3; the manual's rows for output 4 are garbled."
+    },
+    {
+      "name": "Analogue output 4 reading top",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 366,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed. 1560 and 1580 only. Address from the pattern of outputs 1 to 3; the manual's rows for output 4 are garbled."
+    },
+    {
+      "name": "Analogue output 4 reading bottom",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 368,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed. 1560 and 1580 only. Address from the pattern of outputs 1 to 3; the manual's rows for output 4 are garbled."
+    },
+    {
+      "name": "Analogue output 4 output top",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 370,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed. 1560 and 1580 only. Address from the pattern of outputs 1 to 3; the manual's rows for output 4 are garbled."
+    },
+    {
+      "name": "Analogue output 4 output bottom",
+      "group": "Analogue outputs",
+      "area": "holding",
+      "address": 372,
+      "type": "float32",
+      "access": "RW",
+      "description": "Password needed. 1560 and 1580 only. Address from the pattern of outputs 1 to 3; the manual's rows for output 4 are garbled."
+    }
+  ]
+}
