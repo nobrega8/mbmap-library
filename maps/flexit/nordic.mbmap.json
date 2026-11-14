@@ -1,0 +1,797 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Flexit",
+  "model": "Nordic air handling units",
+  "models": [
+    "Flexit Nordic"
+  ],
+  "vendor_website": "flexit.no",
+  "description": "Residential air handling units with the built-in Modbus interface: temperatures, fan speeds and feedback, pressures, humidity and air quality, ventilation mode and setpoints, heating and cooling outputs, alarms and filter time",
+  "revision": 1,
+  "source": "Flexit, Nordic Modbus register list (Flexit GO, built-in Modbus)",
+  "sources": [
+    {
+      "title": "Flexit Nordic – Modbus register list",
+      "url": "https://flexitwebsiteprodstorage.blob.core.windows.net/product-documents/2883",
+      "note": "Excel register list",
+      "accessed": "2026-11-14",
+      "sha256": "ab5091afe1da9df3dbeef03ad96c89347bd963ad2d8adc13b4eec52d148b6f7d"
+    }
+  ],
+  "notes": [
+    "Addresses are those of the list, which it calls base 0: 3x0001 is input register 1 on the wire. Input registers are read with function 04, holding registers with 03 and written with 06 or 16.",
+    "Values are big endian; 32-bit floats are taken as high word first (the list states the byte order only).",
+    "Many registers exist only when the matching function is configured; their entries say which.",
+    "Writable registers are only accessible while System Status (4x9001) is Operation mode.",
+    "Written from the manufacturer's register list; not tested on a device."
+  ],
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "System Status",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 9001,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Operation mode",
+        "2": "Configuration mode"
+      },
+      "description": "Modbus registers only accessable during System Status: Operation mode."
+    },
+    {
+      "name": "Outside air temperature",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 1,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R",
+      "description": "Range -50 to 50."
+    },
+    {
+      "name": "Supply air temperature",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 5,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R",
+      "description": "Range -50 to 80."
+    },
+    {
+      "name": "Extract air temperature",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 9,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R",
+      "description": "Range -50 to 80."
+    },
+    {
+      "name": "Exhaust air temperature",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 13,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R",
+      "description": "Range -50 to 80."
+    },
+    {
+      "name": "Room temperature",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 17,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R",
+      "description": "Temperature sensor on CI70. Range 0 to 50."
+    },
+    {
+      "name": "Supply air fan speed feedback",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 21,
+      "type": "float32",
+      "unit": "rpm",
+      "access": "R",
+      "description": "Range 0 to 18000."
+    },
+    {
+      "name": "Exhaust air fan speed feedback",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 25,
+      "type": "float32",
+      "unit": "rpm",
+      "access": "R",
+      "description": "Range 0 to 18000."
+    },
+    {
+      "name": "Frost protection temp.for heating coil",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 33,
+      "type": "float32",
+      "unit": "Pa",
+      "access": "R",
+      "description": "Only exists if Water heating is configured. Range -3000 to 3000."
+    },
+    {
+      "name": "Supply air pressure",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 37,
+      "type": "float32",
+      "unit": "Pa",
+      "access": "R",
+      "description": "Only exists if Fan control is configured as duct pressure (CI80). Range -3000 to 3000."
+    },
+    {
+      "name": "Extract air pressure",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 41,
+      "type": "float32",
+      "unit": "Pa",
+      "access": "R",
+      "description": "Only exists if Fan control is configured as duct pressure (CI80). Range -3000 to 3000."
+    },
+    {
+      "name": "Relative humidity for extract air",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 61,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only exists if configured on X3. Range 0 to 100."
+    },
+    {
+      "name": "Room air quality input value (CU)",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 149,
+      "type": "float32",
+      "unit": "ppm",
+      "access": "R",
+      "description": "Only exists if configured on X3. Range 0 to 2000."
+    },
+    {
+      "name": "Room air humidity 1",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 1001,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "RH value from CI77 - RH sensor 1. Only exists if CI75 - Wireless adapter is configured. Range 0 to 100."
+    },
+    {
+      "name": "Room air humidity 2",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 1003,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "RH value from CI77 - RH sensor 2. Only exists if CI75 - Wireless adapter is configured. Range 0 to 100."
+    },
+    {
+      "name": "Room air humidity 3",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 1005,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "RH value from CI77 - RH sensor 3. Only exists if CI75 - Wireless adapter is configured. Range 0 to 100."
+    },
+    {
+      "name": "Room air quality 1",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 1007,
+      "type": "float32",
+      "unit": "ppm",
+      "access": "R",
+      "description": "CO2 value from CI76 - CO2 sensor. Only exists if CI75 - Wireless adapter is configured. Range 0 to 2000."
+    },
+    {
+      "name": "High",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3006,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on DI1 or DI2."
+    },
+    {
+      "name": "Home",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3007,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on DI1, DI2 or X8."
+    },
+    {
+      "name": "Away",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3008,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on DI1, DI2 or X8."
+    },
+    {
+      "name": "Stop",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3009,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on DI1 or DI2."
+    },
+    {
+      "name": "Fireplace ventilation input",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3010,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on DI1 or DI2."
+    },
+    {
+      "name": "Fume hood ventilation input",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3011,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Cooker hood. Only exists if configured on DI1 or DI2."
+    },
+    {
+      "name": "Fire damper feedback",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3013,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if Fire damper is configured and fire damper feedback is selected on DI1, DI2 or X8."
+    },
+    {
+      "name": "Emergency off",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3015,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on X8."
+    },
+    {
+      "name": "CO detector",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3016,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on X8."
+    },
+    {
+      "name": "Smoke/fire exhaust fan operation",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3017,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on X8."
+    },
+    {
+      "name": "Smoke/fire supply fan operation",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3018,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on X8."
+    },
+    {
+      "name": "Smoke/fire fan off operation",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3019,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on X8."
+    },
+    {
+      "name": "Smoke/fire supply & exhaust fan op.",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3020,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if configured on X8."
+    },
+    {
+      "name": "Heating coil overtemperature detector",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3023,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if Electric heater is configured."
+    },
+    {
+      "name": "Remaining time of rapid ventilation",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 1035,
+      "type": "float32",
+      "unit": "min",
+      "access": "R",
+      "description": "Rapid ventilation = Ventilation mode Temporary High. Range 0 to 360."
+    },
+    {
+      "name": "Remaining time of fireplace ventilation",
+      "group": "Temperatures and sensors",
+      "area": "input",
+      "address": 1037,
+      "type": "float32",
+      "unit": "min",
+      "access": "R",
+      "description": "Range 0 to 360."
+    },
+    {
+      "name": "Setpoint temperature when home",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1155,
+      "type": "float32",
+      "unit": "°C",
+      "access": "RW",
+      "description": "Range 10 to 30."
+    },
+    {
+      "name": "Setpoint temperature when away",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1163,
+      "type": "float32",
+      "unit": "°C",
+      "access": "RW",
+      "description": "Range 10 to 30."
+    },
+    {
+      "name": "Heat recovery ventilation state",
+      "group": "Inputs",
+      "area": "input",
+      "address": 3034,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Off",
+        "2": "Away",
+        "3": "Home",
+        "4": "High",
+        "5": "Fume hood",
+        "6": "Fireplace",
+        "7": "Temporary high"
+      },
+      "description": "Present Ventilation mode."
+    },
+    {
+      "name": "Room operating mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 2013,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Stop",
+        "2": "Away",
+        "3": "Home",
+        "4": "High"
+      },
+      "description": "Select Ventilation mode. Only works if Comfort button [4x2040] = 1 If Comfort button [4x2040] = 0, this register is Away. (If ventilation mode control is active on a digital input, the digital input overrides this register.)."
+    },
+    {
+      "name": "Comfort button",
+      "group": "Settings",
+      "area": "holding",
+      "address": 2040,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "0 = Ventilation mode Away after Away delay timer duration [4x1615]. Also overrides Room operating mode [4x2013]. 1 = Ventilation mode according to Room operating mode [4x2013]."
+    },
+    {
+      "name": "Trigger temporary rapid ventilation",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3006,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Ready",
+        "2": "Trigger"
+      },
+      "description": "Rapid ventilation = Ventilation mode Temporary High."
+    },
+    {
+      "name": "Trigger temporary fireplace ventilation",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3007,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Ready",
+        "2": "Trigger"
+      }
+    },
+    {
+      "name": "Rapid ventilation runtime",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1103,
+      "type": "uint32",
+      "unit": "min",
+      "access": "RW",
+      "description": "Rapid ventilation = Ventilation mode Temporary High. Range 1 to 360."
+    },
+    {
+      "name": "Fireplace ventilation runtime",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1105,
+      "type": "uint32",
+      "unit": "min",
+      "access": "RW",
+      "description": "Range 0 to 360."
+    },
+    {
+      "name": "AWAY delay timer duration",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1615,
+      "type": "uint32",
+      "unit": "min",
+      "access": "RW",
+      "description": "Sets the delay time for Comfort button [4x2040]. Range 0 to 600."
+    },
+    {
+      "name": "Rotary heat exchanger speed",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 1,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Range 0 to 100."
+    },
+    {
+      "name": "Supply air fan speed",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 5,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Range 0 to 100."
+    },
+    {
+      "name": "Exhaust air fan speed",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 9,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Range 0 to 100."
+    },
+    {
+      "name": "Heating coil electric position",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 13,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only exists if Electric heater is configured. Range 0 to 100."
+    },
+    {
+      "name": "Heating coil valve position",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 17,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only exists if Water heating is configured. Range 0 to 100."
+    },
+    {
+      "name": "Cooling coil valve position",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 25,
+      "type": "float32",
+      "unit": "%",
+      "access": "R",
+      "description": "Only exists if Water cooling is configured and Water cooling valve is selected on X7. Range 0 to 100."
+    },
+    {
+      "name": "Heating coil pump command",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 2001,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if Water heating is configured."
+    },
+    {
+      "name": "Cooling coil pump command",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 2004,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if Water cooling or DX cooling is configured and Cooling pump is selected on Q1, Q2 or Q3."
+    },
+    {
+      "name": "Outside air damper command",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 2007,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if Outside air damper is configured on Q1, Q2 or Q3."
+    },
+    {
+      "name": "Fire damper command",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 2043,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "Only exists if Fire damper is configured and fire damper command is selected on Q1, Q2 or Q3."
+    },
+    {
+      "name": "A-Alarm code",
+      "group": "Alarms",
+      "area": "input",
+      "address": 1021,
+      "type": "float32",
+      "access": "R",
+      "description": "Range 0 to 9999."
+    },
+    {
+      "name": "B-Alarm code",
+      "group": "Alarms",
+      "area": "input",
+      "address": 1023,
+      "type": "float32",
+      "access": "R",
+      "description": "Range 0 to 9999."
+    },
+    {
+      "name": "Fault counter",
+      "group": "Alarms",
+      "area": "input",
+      "address": 1025,
+      "type": "float32",
+      "access": "R",
+      "description": "Number of alarms in fault list. Range 0 to 2000."
+    },
+    {
+      "name": "Fault list number",
+      "group": "Alarms",
+      "area": "input",
+      "address": 1027,
+      "type": "float32",
+      "access": "R",
+      "description": "Current place in fault list. Range 1 to 10000."
+    },
+    {
+      "name": "Display fault list",
+      "group": "Alarms",
+      "area": "input",
+      "address": 1029,
+      "type": "float32",
+      "access": "R",
+      "description": "Alarm code for current place in fault list. Range 0 to 10000."
+    },
+    {
+      "name": "Operating time for filter replacement",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1269,
+      "type": "float32",
+      "unit": "h",
+      "access": "RW",
+      "description": "Range 0 to 99990."
+    },
+    {
+      "name": "Operating time filter",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1271,
+      "type": "float32",
+      "unit": "h",
+      "access": "RW",
+      "description": "Range 0 to 99999."
+    },
+    {
+      "name": "A-Alarm indication",
+      "group": "Alarms",
+      "area": "input",
+      "address": 3001,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Normal",
+        "2": "Alarm"
+      }
+    },
+    {
+      "name": "A-Alarm state",
+      "group": "Alarms",
+      "area": "input",
+      "address": 3002,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Acknowledged, unlocked",
+        "2": "Unacknowledged",
+        "3": "Locked"
+      }
+    },
+    {
+      "name": "B-Alarm indication",
+      "group": "Alarms",
+      "area": "input",
+      "address": 3003,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Normal",
+        "2": "Alarm"
+      }
+    },
+    {
+      "name": "B-Alarm state",
+      "group": "Alarms",
+      "area": "input",
+      "address": 3004,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Acknowledged, unlocked",
+        "2": "Unacknowledged",
+        "3": "Locked"
+      }
+    },
+    {
+      "name": "A-Alarm acknowledgement",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3002,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Ready",
+        "2": "Acknowledge",
+        "3": "Reset"
+      }
+    },
+    {
+      "name": "B-Alarm acknowledgement",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3003,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Ready",
+        "2": "Acknowledge"
+      }
+    },
+    {
+      "name": "Fault list operation",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3004,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Ready",
+        "2": "Next fault",
+        "3": "Refresh"
+      },
+      "description": "Operates the fault list. 3: Refresh, removes all inactive alarms. (All inactive alarms will also be removed if the product is powered down)."
+    }
+  ]
+}
