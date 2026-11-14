@@ -1,0 +1,678 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Siemens",
+  "model": "VersiCharge AC series",
+  "models": [
+    "VersiCharge AC",
+    "VersiCharge"
+  ],
+  "vendor_website": "siemens.com",
+  "description": "AC wallbox (EV charger): identity and firmware, RFID authorisation, charging state and errors, current limit, fallback settings, per-phase currents, voltages, powers, power factor and session energy",
+  "revision": 1,
+  "firmware": "V2.135 or higher",
+  "firmware_min": "2.135",
+  "source": "Siemens, VersiCharge wallbox Modbus map (en-US)",
+  "sources": [
+    {
+      "title": "VersiCharge wallbox Modbus map",
+      "url": "https://cache.industry.siemens.com/dl/files/359/109814359/att_1291322/v1/versicharge_wallbox_modBus_map_en-US.pdf",
+      "note": "register table; the internal start address is the address sent on the wire",
+      "accessed": "2026-11-14",
+      "sha256": "8bf40ac5e3b78390feb0da56fa3f5bb77b6c02133d4e0e4dc0845695ab93d842"
+    }
+  ],
+  "notes": [
+    "Modbus RTU (38400 baud, 8 data bits, even parity, 1 stop bit) and Modbus TCP (port 502). The default RTU slave address is 2.",
+    "Addresses are the manual's internal start addresses, which are the addresses on the wire (the 4xxxx external addresses less 40001). Read with function 03; write with 06 or 16.",
+    "Poll no faster than every 5 s and allow at least 10 s for a timeout, as the manual asks.",
+    "If the Modbus connection is lost for the fallback time, the charger falls back to the fallback current.",
+    "Not in this map: the RFID card blocks and whitelists, and the factory reset sequence (salt and password).",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "unit_id": 2,
+  "port": 502,
+  "baudrate": 38400,
+  "parity": "E",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Manufacturer Name",
+      "group": "OEM/Production",
+      "area": "holding",
+      "address": 0,
+      "type": "string",
+      "length": 5,
+      "access": "R",
+      "description": "The user can get the Manufacturer Name using this register."
+    },
+    {
+      "name": "Serial Number",
+      "group": "OEM/Production",
+      "area": "holding",
+      "address": 7,
+      "type": "string",
+      "length": 5,
+      "access": "R",
+      "description": "The user can get the Product Serial Number using this register.",
+      "role": "serial"
+    },
+    {
+      "name": "MLFB Number",
+      "group": "OEM/Production",
+      "area": "holding",
+      "address": 12,
+      "type": "string",
+      "length": 10,
+      "access": "R",
+      "description": "The user can get the Product Catalog Number using this register.",
+      "role": "model"
+    },
+    {
+      "name": "Platform Type",
+      "group": "Charger HW",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "2": "Commercial",
+        "3": "ERK"
+      },
+      "description": "The user can get the charger platform type: 1 -Residential, 2 - Commercial 3 - ERK"
+    },
+    {
+      "name": "Number of Outlets",
+      "group": "Charger HW",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "1 outlet",
+        "2": "2 outlets"
+      },
+      "description": "The user can get the number of charging outlets: 1 - 1 outlet 2 - 2 outlets"
+    },
+    {
+      "name": "Type of Outlet",
+      "group": "Charger HW",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "access": "R",
+      "description": "The user can get the type of outlet: 0 - Left: socket type 2"
+    },
+    {
+      "name": "Delay Button Status",
+      "group": "Charger HW",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No delay",
+        "1": "2 Hours delay",
+        "2": "4 Hours delay",
+        "3": "6 Hours delay",
+        "4": "8 Hours delay"
+      },
+      "description": "Get Delay state of the charger: 0 - No delay 1 - 2 Hours delay 2 - 4 Hours delay 3 - 6 Hours delay 4 - 8 Hours delay"
+    },
+    {
+      "name": "Utilized Connectivity Stream",
+      "group": "Charger HW",
+      "area": "holding",
+      "address": 27,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not Commissioned",
+        "1": "Wi-Fi",
+        "2": "Cellular",
+        "3": "Ethernet"
+      },
+      "description": "This register returns the stream through which the charger is commissioned: 0 - Not Commissioned 1 - Wi-Fi 2 – Cellular 3 - Ethernet Note: - Modbus application will not start if charger is not commissioned. - Modbus application will only start in commissioned charger if \"Modbus\" configuration is \"Tr…"
+    },
+    {
+      "name": "Rated Current",
+      "group": "Charger HW",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Rated (Maximum) Amps value which is configured from system configuration (6 to 80 Amps)"
+    },
+    {
+      "name": "Installation Current (DIP switch)",
+      "group": "Charger HW",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Derated setting Value in Ampere (Based on Amp switch setting) (6 to 80 Amps) Below table for ampere rating as per switch position Switch ------- UL -------- IEC position ------ (amps) --- (amps) 0 --------- 12 --------- 10 1 --------- 16 --------- 13 2 --------- 24 --------- 16 3 --------- 32 ------…"
+    },
+    {
+      "name": "Meter Type",
+      "group": "Charger HW",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "no metering",
+        "1": "Basic",
+        "2": "ANSI",
+        "3": "MID",
+        "4": "integrated meter MID",
+        "5": "Eichrechtskonform Metering (ERK)",
+        "7": "CMC Meter",
+        "9": "Onboard CMC",
+        "25": "Blocked"
+      },
+      "description": "0 - no metering 1 - Basic 2 - ANSI 3 - MID 4 - integrated meter MID 5 - Eichrechtskonform Metering (ERK) 7 - CMC Meter 9 - Onboard CMC 25 - Blocked"
+    },
+    {
+      "name": "A8 FW Version",
+      "group": "Charger SW",
+      "area": "holding",
+      "address": 31,
+      "type": "string",
+      "length": 5,
+      "access": "R",
+      "description": "Firmware Flashed in A8: For example, 2.113 / 2.115 / 2.116 / 2.117…"
+    },
+    {
+      "name": "M0 FW Version",
+      "group": "Charger SW",
+      "area": "holding",
+      "address": 36,
+      "type": "string",
+      "length": 5,
+      "access": "R",
+      "description": "Firmware Flashed in A8: For example, 4.3.5/4.3.10…"
+    },
+    {
+      "name": "Modbus App Version",
+      "group": "Charger SW",
+      "area": "holding",
+      "address": 41,
+      "type": "uint16",
+      "access": "R",
+      "description": "Firmware Flashed in A8: For example, 1/2/3/4/5/6/7/8/9…"
+    },
+    {
+      "name": "A8 FW Variant",
+      "group": "Charger SW",
+      "area": "holding",
+      "address": 42,
+      "type": "string",
+      "length": 6,
+      "access": "R",
+      "description": "This register returns the FW variant name. For example, Amazon, 80A, Ford 80A, etc. The value of this register group will be derived from the build name as follows: Build Name <-----> Register Value - 2.134.12-siemens+80A.24-05 <-----> 80A - 2.134.12-siemens+Amazon.24-05 <-----> Amazon - 2.135.22+24…"
+    },
+    {
+      "name": "A8 FW Release Date",
+      "group": "Charger SW",
+      "area": "holding",
+      "address": 48,
+      "type": "string",
+      "length": 3,
+      "access": "R",
+      "description": "This register returns the FW release year and work week. The value of this register group will be derived from the build name as follows: Build Name <-----> Register Value - 2.134.12-siemens+80A.24-05 <-----> Year: 24 and WW: 05 - 2.134.12-siemens+Amazon.23-12 <-----> Year: 23 and WW: 12 - 2.134.12-…"
+    },
+    {
+      "name": "RFID Authorization Status",
+      "group": "Authentication",
+      "area": "holding",
+      "address": 79,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "RFID Authorization Disabled",
+        "1": "RFID Authorization Enabled"
+      },
+      "description": "Get/Set the RFID Authorization: 0 - RFID Authorization Disabled 1 - RFID Authorization Enabled"
+    },
+    {
+      "name": "EVSE State",
+      "group": "(Mode 3) Charging States",
+      "area": "holding",
+      "address": 1599,
+      "type": "string",
+      "length": 1,
+      "access": "R",
+      "description": "Supported J1772 STATES List: - A1 - A2 - B1 - B2 - C1 - C2 - F"
+    },
+    {
+      "name": "EVSE Error Code",
+      "group": "Charger States",
+      "area": "holding",
+      "address": 1600,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "No fault",
+        "1": "Reserved",
+        "2": "Line phase A under volt",
+        "3": "Line phase B under volt",
+        "4": "Line phase C under volt",
+        "5": "Reserved",
+        "6": "Line phase A over volt",
+        "7": "Line phase B over volt",
+        "8": "Line phase C over volt",
+        "9": "Reserved",
+        "10": "Line phase A zero volt",
+        "11": "Line phase B zero volt",
+        "12": "Line phase C zero volt",
+        "13": "Reserved",
+        "14": "Reserved",
+        "15": "Reserved",
+        "16": "Reserved",
+        "17": "Reserved",
+        "18": "Reserved",
+        "19": "Reserved",
+        "20": "Reserved",
+        "21": "Reserved",
+        "22": "Load phase A zero volt",
+        "23": "Load phase B zero volt",
+        "24": "Load phase C zero volt",
+        "25": "Bad pilot voltage",
+        "26": "Bad amp switch position",
+        "27": "ADC fault",
+        "28": "Static memory fault",
+        "29": "CCID fault 30 :CCID self test fault 31 :Reserved 32 :Reserved 33 :Reserved"
+      },
+      "description": "Supported Error Codes: 0: No fault 1: Reserved 2: Line phase A under volt 3: Line phase B under volt 4: Line phase C under volt 5: Reserved 6: Line phase A over volt 7: Line phase B over volt 8: Line phase C over volt 9: Reserved 10: Line phase A zero volt 11: Line phase B zero volt 12: Line phase C…"
+    },
+    {
+      "name": "OCPP State",
+      "group": "Charger States",
+      "area": "holding",
+      "address": 1601,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Available",
+        "2": "Preparing",
+        "3": "Charging",
+        "4": "Suspended EV",
+        "5": "Suspended EVSE",
+        "6": "Faulted"
+      },
+      "description": "If charger is connected to the OCPP backend the value of this register will be as follows: 1Available 2 - Preparing 3 - Charging 4 - Suspended EV 5Suspended EVSE 6 - Faulted 7Finishing If charger is not connected to the OCPP backend this register value will be 1."
+    },
+    {
+      "name": "PCBA Temperature",
+      "group": "Charger States",
+      "area": "holding",
+      "address": 1602,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Get the on board temperature value in Celsius"
+    },
+    {
+      "name": "Charging Current Limit",
+      "group": "Limit Charging Power & Energy Delivered",
+      "area": "holding",
+      "address": 1633,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW",
+      "description": "The user can get/set the Modbus charging current limit using this register. Values <= 100 are interpreted as A unit. Values > 100 are interpreted as 0.01A unit. Which means that values 0 to 100 are in A units. And values 101 to 8000 are in 0.01A units. Example: - The user should write 6 or 600 for 6… Range: 0 to 8000."
+    },
+    {
+      "name": "Charging Session Energy Phase Sum",
+      "group": "Limit Charging Power & Energy Delivered",
+      "area": "holding",
+      "address": 1640,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "RW",
+      "description": "The user can get/set the Charging Session Energy Phase Sum using this register. The user can set the kWh value after which charging should stop automatically. For example, If current energy value is 200 and user set 100 in this register then charging will stop automatically when energy consumption r… Range: 50 to 81910 00."
+    },
+    {
+      "name": "Charger Phase",
+      "group": "Switch between 1ph- & 3ph-charging",
+      "area": "holding",
+      "address": 1642,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "1-Phase Charger",
+        "1": "3-Phase Charger"
+      },
+      "description": "0 : 1-Phase Charger 1 : 3-Phase Charger"
+    },
+    {
+      "name": "Charging Current Phase L1",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1647,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Actual Irms of Phase 1"
+    },
+    {
+      "name": "Charging Current Phase L2",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1648,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Actual Irms of Phase 2 Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Charging Current Phase L3",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1649,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Actual Irms of Phase 3 Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Average Charging Current",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1650,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Actual Irms of Phase Sum Note: Value in this register will populate for #1 and #3 phase chargers."
+    },
+    {
+      "name": "Charging Voltage Phase V(L1N)",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1651,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Actual Vrms of Phase 1 Note: Value in this register will populate for #1 and #3 phase chargers."
+    },
+    {
+      "name": "Charging Voltage Phase V(L2N)",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1652,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Actual Vrms of Phase 2 Note: This register is relevant for 3 phase charger only."
+    },
+    {
+      "name": "Charging Voltage Phase V(L3N)",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1653,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Actual Vrms of Phase 3 Note: This register is relevant for 3 phase charger only."
+    },
+    {
+      "name": "Charging Voltage Line V(L1-L2)",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1654,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "The user can get the line to line voltage of Line 1 to Line 2 using this register. Note: This register is relevant for 3 phase chargers excluding ERK variant. For ERK variant, this register value will be 0."
+    },
+    {
+      "name": "Charging Voltage Line V(L2-L3)",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1655,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "The user can get the line to line voltage of Line 2 to Line 3 using this register. Note: This register is relevant for 3 phase chargers excluding ERK variant. For ERK variant, this register value will be 0."
+    },
+    {
+      "name": "Charging Voltage Line V(L3-L1)",
+      "group": "Actual charging values",
+      "area": "holding",
+      "address": 1656,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "The user can get the line to line voltage of Line 3 to Line 1 using this register. Note: This register is relevant for 3 phase chargers excluding ERK variant. For ERK variant, this register value will be 0."
+    },
+    {
+      "name": "Fallback Current Phase Sum",
+      "group": "Charging Fallback Settings",
+      "area": "holding",
+      "address": 1660,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW",
+      "description": "This current phase sum will be set if Modbus connection lost for \"Fallback time\". Note1: The user must set this register again after power cycle or Modbus application soft reset as it is not persistent. Range: 0 or 6 to Max Charg er Capaci ty."
+    },
+    {
+      "name": "Fallback Time",
+      "group": "Charging Fallback Settings",
+      "area": "holding",
+      "address": 1661,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "If the Modbus connection is lost for this period, the configured current Phase Sum value in register 41661 will be set. Note1: Set this value between 60-600 as per the requirement if load management feature is required. Note2: The user must set this register again after power cycle or Modbus applica… Range: 0, 60600 s."
+    },
+    {
+      "name": "Current Charging Speed L1",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1662,
+      "type": "uint16",
+      "unit": "W",
+      "access": "R",
+      "description": "The user can get the active power of phase 1 using this register."
+    },
+    {
+      "name": "Current Charging Speed L2",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1663,
+      "type": "uint16",
+      "unit": "W",
+      "access": "R",
+      "description": "The user can get the active power of phase 2 using this register. Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Current Charging Speed L3",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1664,
+      "type": "uint16",
+      "unit": "W",
+      "access": "R",
+      "description": "The user can get the active power of phase 3 using this register. Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Current Charging Speed Phase Sum",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1665,
+      "type": "uint16",
+      "unit": "W",
+      "access": "R",
+      "description": "The user can get the total active power using this register. Note: For 1 phase charger, read this register to get L1 charging speed."
+    },
+    {
+      "name": "Power Factor Phase L1",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1666,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "The user can get the power factor of Phase 1 using this register."
+    },
+    {
+      "name": "Power Factor Phase L2",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1667,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "The user can get the power factor of Phase 2 using this register. Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Power Factor Phase L3",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1668,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "The user can get the power factor of Phase 3 using this register. Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Average Power Factor",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1669,
+      "type": "uint16",
+      "scale": 0.001,
+      "access": "R",
+      "description": "The user can get the Average Power Factor using this register. Note: For 1 phase charger, this register value will be same as L1 Power Factor. Note: For 3 phase chargers, this register value will return the average of all phases thus for 1 phase load, the value will be [ Power Factor Phase L1 / 3 ]."
+    },
+    {
+      "name": "Apparent Power Phase L1",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1670,
+      "type": "uint16",
+      "unit": "VA",
+      "access": "R",
+      "description": "The user can get the Apparent power of Phase 1 using this register."
+    },
+    {
+      "name": "Apparent Power Phase L2",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1671,
+      "type": "uint16",
+      "unit": "VA",
+      "access": "R",
+      "description": "The user can get the Apparent power of Phase 2 using this register. Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Apparent Power Phase L3",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1672,
+      "type": "uint16",
+      "unit": "VA",
+      "access": "R",
+      "description": "The user can get the Apparent power of Phase 3 using this register. Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Apparent Power Phase Sum",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1673,
+      "type": "uint16",
+      "unit": "VA",
+      "access": "R",
+      "description": "The user can get the average Apparent Power using this register. Note: For 1 phase charger, read this register to get L1 Apparent Power."
+    },
+    {
+      "name": "Reactive Power Phase L1",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1674,
+      "type": "int16",
+      "unit": "var",
+      "access": "R",
+      "description": "The user can get the Reactive power of Phase 1 using this register."
+    },
+    {
+      "name": "Reactive Power Phase L2",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1675,
+      "type": "int16",
+      "unit": "var",
+      "access": "R",
+      "description": "The user can get the Reactive power of Phase 2 using this register. Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Reactive Power Phase L3",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1676,
+      "type": "int16",
+      "unit": "var",
+      "access": "R",
+      "description": "The user can get the Reactive power of Phase 3 using this register. Note: Value in this register will populate for #3 phase charger only."
+    },
+    {
+      "name": "Reactive Power Phase Sum",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1677,
+      "type": "uint16",
+      "unit": "var",
+      "access": "R",
+      "description": "The user can get the average Reactive power using this register. Note: For 1 phase charger, read this register to get L1 Reactive Power."
+    },
+    {
+      "name": "Real Energy Consumed Phase Sum",
+      "group": "Additional charging session information",
+      "area": "holding",
+      "address": 1692,
+      "type": "uint32",
+      "unit": "Wh",
+      "access": "R",
+      "description": "The user can get the total consumed Real Energy using this register."
+    },
+    {
+      "name": "RTU Slave Address",
+      "group": "Reset",
+      "area": "holding",
+      "address": 1825,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Set Modbus RTU slave address Note: After setting new slave address, the application will require ~20 seconds to reconfigure slave address. Range: 1 - 247 but not existin g slave addres s."
+    },
+    {
+      "name": "Reboot Charger",
+      "group": "Reset",
+      "area": "holding",
+      "address": 1826,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "1": "Soft Reset (Modbus Application reset)",
+        "2": "Hard Reset (A8 board reset)"
+      },
+      "description": "1 - Soft Reset (Modbus Application reset) 2 - Hard Reset (A8 board reset) Note: After Soft reset, the Modbus application will restart after 60 seconds. So wait for 60 seconds after applying soft reset command."
+    },
+    {
+      "name": "Reset RTU Slave Address",
+      "group": "Admin Whitelist",
+      "area": "holding",
+      "address": 1878,
+      "type": "uint16",
+      "access": "W",
+      "description": "The User can reset the Modbus RTU slave address to default value (2) by writing 1 to this register: 1 - Reset Modbus RTU slave address to the default value Range: 1."
+    }
+  ]
+}
