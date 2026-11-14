@@ -3,101 +3,1082 @@
   "mbmap": 2,
   "vendor": "GE",
   "model": "EPM 5100",
-  "models": ["EPM 5100"],
+  "models": [
+    "EPM 5100"
+  ],
   "vendor_website": "gevernova.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table ge/epm-5100; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/ge-epm-5100.htm. Not verified against the manufacturer's documentation",
+  "description": "Three-phase electronic power meter: voltages, currents, powers, power factors, frequency, demand, maximum demand, energies, error flags and setup",
+  "revision": 3,
+  "source": "GE Multilin EPM 5100 instruction manual GEK-113391A (1601-0164-A2), chapter 5, table 5-2",
+  "sources": [
+    {
+      "title": "EPM 5100 Electronic Power Meter – Instruction manual",
+      "version": "GEK-113391A (1601-0164-A2)",
+      "url": "https://www.manualslib.com/manual/2040014/Ge-Epm-5100.html?page=71",
+      "note": "chapter 5: Modbus memory map (table 5-2) and format codes (table 5-3); GE's manual, read from the ManualsLib copy"
+    }
+  ],
   "notes": [
-    "GE EPM 5100.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "The manual numbers registers R00000 to R00003 (command coils), R31000 to R31118 (dynamic values, read only), R40000 to R40009 (fixed values) and R43000 to R43029 (setpoints). The first digit is the area and the other four the address as sent: R31000 is input register 1000.",
+    "Values marked F in the manual are 32-bit floats and those marked L 32-bit integers, each in two registers. The manual does not give the word order; high word first is assumed.",
+    "Setpoints can only be changed from the faceplate, except the clock.",
+    "Written from the manufacturer's manual; not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Initialize meter", "area": "holding", "address": 1, "type": "uint16", "access": "R"},
-    {"name": "Clear energy (var hour)", "area": "holding", "address": 2, "type": "uint16", "access": "R"},
-    {"name": "Clear meter errors", "area": "holding", "address": 3, "type": "uint16", "access": "R"},
-    {"name": "Serial number", "area": "holding", "address": 4, "type": "int32", "access": "R"},
-    {"name": "Firmware revision", "area": "holding", "address": 6, "type": "float32", "access": "R"},
-    {"name": "COC software revision", "area": "holding", "address": 8, "type": "float32", "access": "R"},
-    {"name": "Number of pending event messages", "area": "holding", "address": 1000, "type": "int16", "access": "R"},
-    {"name": "KVA max, total of all phases", "area": "holding", "address": 1002, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "KW max, total of all phases", "area": "holding", "address": 1004, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Kvar lag max, total of all phases", "area": "holding", "address": 1006, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Kvar lead max, total of all phases", "area": "holding", "address": 1008, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Current max phase A", "area": "holding", "address": 1010, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current max phase B", "area": "holding", "address": 1012, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current max phase C", "area": "holding", "address": 1014, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Kvarh lag, total of all phases", "area": "holding", "address": 1016, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Kvarh lead, total of all phases", "area": "holding", "address": 1018, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "KWh, total of all phases", "area": "holding", "address": 1020, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "KQh, total of all phases", "area": "holding", "address": 1022, "type": "float32", "access": "R"},
-    {"name": "KVAh, total of all phases", "area": "holding", "address": 1024, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Average power factor since last reset, all phases", "area": "holding", "address": 1026, "type": "float32", "access": "R"},
-    {"name": "Power factor, total of all phases, at maximum kVA", "area": "holding", "address": 1028, "type": "float32", "access": "R"},
-    {"name": "Apparent power demand (kVA), total of all phases", "area": "holding", "address": 1030, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Real power demand (kW) total of all phases", "area": "holding", "address": 1032, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Reactive power demand (kvar lag), total of all phases", "area": "holding", "address": 1034, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power demand (kvar lead), total of all phases", "area": "holding", "address": 1036, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Current demand, phase A", "area": "holding", "address": 1038, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current demand, phase B", "area": "holding", "address": 1040, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current demand, phase C", "area": "holding", "address": 1042, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Power factor, all phases (over last demand interval)", "area": "holding", "address": 1044, "type": "float32", "access": "R"},
-    {"name": "Real power (kW), phase A", "area": "holding", "address": 1046, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Real power (kW), phase B", "area": "holding", "address": 1048, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Real power (kW), phase C", "area": "holding", "address": 1050, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Reactive power (kvar), phase A", "area": "holding", "address": 1052, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power (kvar), phase B", "area": "holding", "address": 1054, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power (kvar), phase C", "area": "holding", "address": 1056, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Apparent power (kVA), phase A", "area": "holding", "address": 1058, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power (kVA), phase B", "area": "holding", "address": 1060, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power (kVA), phase C", "area": "holding", "address": 1062, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Power factor, phase A", "area": "holding", "address": 1064, "type": "float32", "access": "R"},
-    {"name": "Power factor, phase B", "area": "holding", "address": 1066, "type": "float32", "access": "R"},
-    {"name": "Power factor, phase C", "area": "holding", "address": 1068, "type": "float32", "access": "R"},
-    {"name": "Apparent power (kVA), total of all phases", "area": "holding", "address": 1070, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Real power (kW), total of all phases", "area": "holding", "address": 1072, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Reactive power (kvar), total of all phases", "area": "holding", "address": 1074, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "L N voltage, phase A N", "area": "holding", "address": 1076, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "L N voltage, phase B N", "area": "holding", "address": 1078, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "L N voltage, phase C N", "area": "holding", "address": 1080, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "L L voltage, phase A B", "area": "holding", "address": 1082, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "L L voltage, phase B C", "area": "holding", "address": 1084, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "L L voltage, phase C A", "area": "holding", "address": 1086, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Total power factor of all phases", "area": "holding", "address": 1088, "type": "float32", "access": "R"},
-    {"name": "Real power (KW), total of all phases at maximum kVA", "area": "holding", "address": 1090, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Current, phase A", "area": "holding", "address": 1092, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, phase B", "area": "holding", "address": 1094, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current, phase C", "area": "holding", "address": 1096, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Neutral current", "area": "holding", "address": 1098, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Hour", "area": "holding", "address": 3000, "type": "int16", "access": "R"},
-    {"name": "Minute", "area": "holding", "address": 3001, "type": "int16", "access": "R"},
-    {"name": "Seconds", "area": "holding", "address": 3002, "type": "int16", "access": "R"},
-    {"name": "Password", "area": "holding", "address": 3003, "type": "int16", "access": "R"},
-    {"name": "Pulse value interval time for pulse KYZ output 1", "area": "holding", "address": 3005, "type": "float32", "access": "R"},
-    {"name": "Pulse value interval time for pulse KYZ output 2", "area": "holding", "address": 3007, "type": "float32", "access": "R"},
-    {"name": "Pulse units for KYZ output 1", "area": "holding", "address": 3009, "type": "uint16", "access": "R"},
-    {"name": "Pulse units for KYZ output 2", "area": "holding", "address": 3010, "type": "uint16", "access": "R"},
-    {"name": "Programming flags", "area": "holding", "address": 3011, "type": "uint16", "access": "R"},
-    {"name": "Demand interval length (in minutes)", "area": "holding", "address": 3013, "type": "int16", "access": "R"},
-    {"name": "Number of sub intervals", "area": "holding", "address": 3014, "type": "int16", "access": "R"},
-    {"name": "Display scroll time", "area": "holding", "address": 3015, "type": "int16", "access": "R"},
-    {"name": "Meter configuration", "area": "holding", "address": 3016, "type": "uint16", "access": "R"},
-    {"name": "Potential transformer ratio", "area": "holding", "address": 3017, "type": "float32", "access": "R"},
-    {"name": "Current transformer ratio", "area": "holding", "address": 3019, "type": "float32", "access": "R"},
-    {"name": "Energy display format", "area": "holding", "address": 3021, "type": "uint16", "access": "R"},
-    {"name": "Demand display format", "area": "holding", "address": 3022, "type": "uint16", "access": "R"},
-    {"name": "Voltage display format", "area": "holding", "address": 3023, "type": "uint16", "access": "R"},
-    {"name": "Amps display format", "area": "holding", "address": 3024, "type": "uint16", "access": "R"},
-    {"name": "Energy display scale (kWh, MWh)", "area": "holding", "address": 3025, "type": "uint16", "access": "R"},
-    {"name": "Demand display scale (W, kW, MW)", "area": "holding", "address": 3026, "type": "uint16", "access": "R"},
-    {"name": "Voltage display scale (V, kV)", "area": "holding", "address": 3027, "type": "uint16", "access": "R"},
-    {"name": "Amps display scale (A, kA)", "area": "holding", "address": 3028, "type": "uint16", "access": "R"},
-    {"name": "Local faceplate password", "area": "holding", "address": 3029, "type": "uint16", "access": "R"}
+    {
+      "name": "Clear power demand (watts)",
+      "group": "Commands",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 to perform the command."
+    },
+    {
+      "name": "Initialize meter",
+      "group": "Commands",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 to perform the command."
+    },
+    {
+      "name": "Clear energy (var-hour)",
+      "group": "Commands",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 to perform the command."
+    },
+    {
+      "name": "Clear meter errors",
+      "group": "Commands",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 to perform the command."
+    },
+    {
+      "name": "Number of pending event messages",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1000,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 8."
+    },
+    {
+      "name": "kVA max, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1002,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "kW max, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1004,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "kvar lag max, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "kvar lead max, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1008,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Current max phase A",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1010,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current max phase B",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1012,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current max phase C",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1014,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "kvarh lag, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1016,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "kvarh lead, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1018,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "kWh, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1020,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "kQh, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1022,
+      "type": "float32",
+      "access": "R",
+      "description": "Q = (√3 × var + W) / 2. kqhQ = ( 3 x var + W."
+    },
+    {
+      "name": "kVAh, total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1024,
+      "type": "float32",
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Average power factor since last reset, all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1026,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor, total of all phases, at maximum kVA",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1028,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power demand (kVA), total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1030,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Real power demand (kW) total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1032,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power demand (kvar lag), total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1034,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power demand (kvar lead), total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1036,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Current demand, phase A",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1038,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current demand, phase B",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1040,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current demand, phase C",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1042,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Power factor, all phases (over last demand interval)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1044,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Real power (kW), phase A",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1046,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Real power (kW), phase B",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1048,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Real power (kW), phase C",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1050,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power (kvar), phase A",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1052,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power (kvar), phase B",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1054,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power (kvar), phase C",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1056,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power (kVA), phase A",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1058,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power (kVA), phase B",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1060,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power (kVA), phase C",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1062,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Power factor, phase A",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1064,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor, phase B",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1066,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor, phase C",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1068,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power (kVA), total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1070,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Real power (kW), total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1072,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power (kvar), total of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1074,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "L-N voltage, phase A-N",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1076,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L-N voltage, phase B-N",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1078,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L-N voltage, phase C-N",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1080,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L-L voltage, phase A-B",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1082,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L-L voltage, phase B-C",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1084,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "L-L voltage, phase C-A",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1086,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Total power factor of all phases",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1088,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Real power (kW), total of all phases at maximum kVA",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1090,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Current, phase A",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1092,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, phase B",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1094,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current, phase C",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1096,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Neutral current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1098,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1100,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Time left in demand interval",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1102,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Number of resets",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1103,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 255, wraps to 0."
+    },
+    {
+      "name": "Number of power failures",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1104,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 255, wraps to 0."
+    },
+    {
+      "name": "All energy lost",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1105,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "Meter error flags (bit 1)."
+    },
+    {
+      "name": "Internal comm error",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1105,
+      "type": "bool",
+      "bit": 4,
+      "access": "R",
+      "description": "Meter error flags (bit 4)."
+    },
+    {
+      "name": "Energy data loss (<12 h)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1105,
+      "type": "bool",
+      "bit": 7,
+      "access": "R",
+      "description": "Meter error flags (bit 7)."
+    },
+    {
+      "name": "A-N voltage lost",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1106,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "Voltage phase loss errors (bit 0)."
+    },
+    {
+      "name": "B-N voltage lost",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1106,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "Voltage phase loss errors (bit 1)."
+    },
+    {
+      "name": "C-N voltage lost",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1106,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "Voltage phase loss errors (bit 2)."
+    },
+    {
+      "name": "Lead/lag qualifier for all phases (instantaneous)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1107,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Lagging",
+        "1": "Leading"
+      }
+    },
+    {
+      "name": "Lead/lag qualifier for phase A (instantaneous)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1108,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Lagging",
+        "1": "Leading"
+      }
+    },
+    {
+      "name": "Lead/lag qualifier for phase B (instantaneous)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1109,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Lagging",
+        "1": "Leading"
+      }
+    },
+    {
+      "name": "Lead/lag qualifier for phase C (instantaneous)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1110,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Lagging",
+        "1": "Leading"
+      }
+    },
+    {
+      "name": "Demand reset",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1111,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "Data Resetting flags (bit 0)."
+    },
+    {
+      "name": "Energy reset",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1111,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "Data Resetting flags (bit 1)."
+    },
+    {
+      "name": "Meter initialize",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1111,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "Data Resetting flags (bit 2)."
+    },
+    {
+      "name": "Errors clear",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1111,
+      "type": "bool",
+      "bit": 3,
+      "access": "R",
+      "description": "Data Resetting flags (bit 3)."
+    },
+    {
+      "name": "Previous accumulated Wh",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1112,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Previous accumulated varh lagging",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1114,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Previous accumulated varh leading",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1116,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Data cleared status",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1118,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not cleared",
+        "1": "Cleared"
+      }
+    },
+    {
+      "name": "Product ID",
+      "group": "Device",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "role": "model",
+      "reference": 14,
+      "description": "Always 0x0E."
+    },
+    {
+      "name": "Modbus address",
+      "group": "Device",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "description": "33 to 215."
+    },
+    {
+      "name": "Serial number",
+      "group": "Device",
+      "area": "holding",
+      "address": 4,
+      "type": "int32",
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "Firmware revision",
+      "group": "Device",
+      "area": "holding",
+      "address": 6,
+      "type": "int32",
+      "scale": 0.01,
+      "access": "R",
+      "role": "firmware",
+      "description": "00.00 to 99.99."
+    },
+    {
+      "name": "COC software revision",
+      "group": "Device",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Clock hour",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 23 hrs.."
+    },
+    {
+      "name": "Clock minute",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3001,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 59 min.."
+    },
+    {
+      "name": "Clock second",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3002,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 59 sec.."
+    },
+    {
+      "name": "Password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3003,
+      "type": "uint16",
+      "access": "R",
+      "description": "Always 0."
+    },
+    {
+      "name": "Pulse value interval time for pulse KYZ output 1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3005,
+      "type": "float32",
+      "access": "R",
+      "description": "0 to 999.999999."
+    },
+    {
+      "name": "Pulse value interval time for pulse KYZ output 2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3007,
+      "type": "float32",
+      "access": "R",
+      "description": "0 to 999.999999."
+    },
+    {
+      "name": "Pulse units for KYZ output 1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3009,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "VAh",
+        "1": "Wh",
+        "2": "varh",
+        "3": "Qh"
+      }
+    },
+    {
+      "name": "Pulse units for KYZ output 2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3010,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "VAh",
+        "1": "Wh",
+        "2": "varh",
+        "3": "Qh"
+      }
+    },
+    {
+      "name": "Programming flags",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3011,
+      "type": "uint32",
+      "access": "R",
+      "description": "Programming flags (bit mask): B0 to B3 restrict the data resetting, formatting, KYZ pulse and configuration menus; B8 leading zeros; B9 single meter configuration; B11 no pulse output option; B13 test mode active edge; B24 to B27 restrict demand reset, energy reset, meter initialize and errors clear."
+    },
+    {
+      "name": "Demand interval length (in minutes)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3013,
+      "type": "uint16",
+      "access": "R",
+      "description": "15, 20, 30, or 60."
+    },
+    {
+      "name": "Number of sub-intervals",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3014,
+      "type": "uint16",
+      "access": "R",
+      "description": "1 to 6."
+    },
+    {
+      "name": "Display scroll time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3015,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 99 sec.."
+    },
+    {
+      "name": "Meter configuration",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3016,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "2 element delta 120 V",
+        "2": "2.5 element wye 120 V",
+        "3": "3 element wye 120 V",
+        "5": "2 element delta 240 V",
+        "6": "2.5 element wye 240 V",
+        "7": "3 element wye 240 V",
+        "11": "2 element delta 480 V",
+        "13": "2 element delta 600 V",
+        "54": "2.5 element wye 69 V",
+        "55": "3 element wye 69 V",
+        "56": "2.5 element wye 277 V",
+        "57": "3 element wye 277 V"
+      }
+    },
+    {
+      "name": "PT ratio",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3017,
+      "type": "float32",
+      "access": "R",
+      "description": "PTR:1."
+    },
+    {
+      "name": "CT ratio",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3019,
+      "type": "float32",
+      "access": "R",
+      "description": "CTR:1."
+    },
+    {
+      "name": "Energy display format",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3021,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "48": "XXX",
+        "49": "XXX.X",
+        "50": "XXX.XX",
+        "51": "XXX.XXX",
+        "64": "XXXX",
+        "65": "XXXX.X",
+        "66": "XXXX.XX",
+        "80": "XXXXX",
+        "81": "XXXXX.X",
+        "96": "XXXXXX"
+      }
+    },
+    {
+      "name": "Demand display format",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3022,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "48": "XXX",
+        "49": "XXX.X",
+        "50": "XXX.XX",
+        "51": "XXX.XXX",
+        "64": "XXXX",
+        "65": "XXXX.X",
+        "66": "XXXX.XX",
+        "80": "XXXXX",
+        "81": "XXXXX.X",
+        "96": "XXXXXX"
+      }
+    },
+    {
+      "name": "Voltage display format",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3023,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "48": "XXX",
+        "49": "XXX.X",
+        "50": "XXX.XX",
+        "51": "XXX.XXX",
+        "64": "XXXX",
+        "65": "XXXX.X",
+        "66": "XXXX.XX",
+        "80": "XXXXX",
+        "81": "XXXXX.X",
+        "96": "XXXXXX"
+      }
+    },
+    {
+      "name": "Amps display format",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3024,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "48": "XXX",
+        "49": "XXX.X",
+        "50": "XXX.XX",
+        "51": "XXX.XXX",
+        "64": "XXXX",
+        "65": "XXXX.X",
+        "66": "XXXX.XX",
+        "80": "XXXXX",
+        "81": "XXXXX.X",
+        "96": "XXXXXX"
+      }
+    },
+    {
+      "name": "Energy display scale (kWh, MWh)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3025,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "32": "Unit",
+        "77": "Mega (×10^6)",
+        "107": "Kilo (×10^3)"
+      }
+    },
+    {
+      "name": "Demand display scale (W, kW, MW)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3026,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "32": "Unit",
+        "77": "Mega (×10^6)",
+        "107": "Kilo (×10^3)"
+      }
+    },
+    {
+      "name": "Voltage display scale (V, kV)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3027,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "32": "Unit",
+        "77": "Mega (×10^6)",
+        "107": "Kilo (×10^3)"
+      }
+    },
+    {
+      "name": "Amps display scale (A, kA)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3028,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "32": "Unit",
+        "77": "Mega (×10^6)",
+        "107": "Kilo (×10^3)"
+      }
+    },
+    {
+      "name": "Local faceplate password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3029,
+      "type": "string",
+      "length": 3,
+      "access": "R",
+      "description": "Six digits encoded one per byte: 0 is 0xD5, 1 is 0xD4 … 9 is 0xCC."
+    }
   ]
 }
