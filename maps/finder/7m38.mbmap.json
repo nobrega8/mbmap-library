@@ -1,0 +1,1308 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Finder",
+  "model": "7M.38",
+  "models": [
+    "7M.38",
+    "7M.38.8.400.0212",
+    "7M.38.8.400.0112"
+  ],
+  "vendor_website": "findernet.com",
+  "description": "Three-phase DIN rail energy meter with Modbus RTU: voltages, currents, powers, power factors, angles, THD, frequency, energy counters, tariffs, identity and communication settings",
+  "revision": 1,
+  "source": "Finder, \"Modbus communication protocol 7M24 - 7M38\", v2, 30-06-2021, 7M38 section",
+  "sources": [
+    {
+      "title": "Modbus communication protocol 7M24 - 7M38",
+      "version": "v2, 30-06-2021",
+      "url": "https://cdn.findernet.com/app/uploads/Modbus-7M24-7M38_v2_30062021.pdf",
+      "note": "7M38 section",
+      "accessed": "2026-11-14",
+      "sha256": "7c7c1fb3c8e2f709ebb755b58069a4a21067f6a1d1c6ef2b6ab3b9f916ecef80"
+    }
+  ],
+  "notes": [
+    "Addresses are register numbers minus 30000 (input registers, FC04) or 40000 (holding registers, FC03/06/16): register 32480 is input address 2480.",
+    "This map uses the IEEE 754 float copies of the measurements (32480 onwards); the protocol also has scaled-integer copies (30101-30499) and average, maximum and minimum blocks (35xxx, 36xxx), which are not included.",
+    "Energy counters n1-n4 and 1-16 count what their settings select; their unit depends on that setting (Wh, varh or VAh).",
+    "Settings that need a password level require the user password written to 40001 first; save them with the operator command (40012 = 1).",
+    "The document gives no factory serial settings for the 7M.38.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Model Number",
+      "group": "Info",
+      "area": "input",
+      "address": 1,
+      "type": "string",
+      "length": 8,
+      "access": "R",
+      "role": "model"
+    },
+    {
+      "name": "Serial Number",
+      "group": "Info",
+      "area": "input",
+      "address": 9,
+      "type": "string",
+      "length": 4,
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "Software Reference",
+      "group": "Info",
+      "area": "input",
+      "address": 13,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Hardware Reference",
+      "group": "Info",
+      "area": "input",
+      "address": 14,
+      "type": "string",
+      "length": 1,
+      "access": "R"
+    },
+    {
+      "name": "Calibration voltage",
+      "group": "Info",
+      "area": "input",
+      "address": 15,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Calibration current",
+      "group": "Info",
+      "area": "input",
+      "address": 17,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Accuracy class",
+      "group": "Info",
+      "area": "input",
+      "address": 19,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "MiNet Flag",
+      "group": "Info",
+      "area": "input",
+      "address": 20,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "COM1: Communication Type",
+      "group": "Info",
+      "area": "input",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No Communication",
+        "2": "RS485",
+        "13": "M-bus",
+        "15": "WiFi"
+      }
+    },
+    {
+      "name": "I/O 1",
+      "group": "Info",
+      "area": "input",
+      "address": 29,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No I/O",
+        "5": "Tariff Input",
+        "10": "Digital input",
+        "12": "Pulse Output (SO)"
+      }
+    },
+    {
+      "name": "I/O 2",
+      "group": "Info",
+      "area": "input",
+      "address": 30,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "I/O 3",
+      "group": "Info",
+      "area": "input",
+      "address": 31,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Status register",
+      "group": "Info",
+      "area": "input",
+      "address": 44,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Ethernet Software Reference",
+      "group": "Info",
+      "area": "input",
+      "address": 58,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Ethernet: IP Address",
+      "group": "Info",
+      "area": "input",
+      "address": 59,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "phase module 1 Software reference",
+      "group": "Info",
+      "area": "input",
+      "address": 61,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "phase module 2 Software reference",
+      "group": "Info",
+      "area": "input",
+      "address": 62,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "phase module 3 Software reference",
+      "group": "Info",
+      "area": "input",
+      "address": 63,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "phase module 1 CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 64,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "phase module 2 CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 65,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "phase module 3 CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 66,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "phase m. 1 Calibration Data CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 67,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "phase m. 2 Calibration Data CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 68,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "phase m. 3 Calibration Data CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 69,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Measurement module Software ref.",
+      "group": "Info",
+      "area": "input",
+      "address": 70,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Measurement module CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 71,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Meas. m. Calibration Data CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 72,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "MID Setting Data CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 73,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Setting Data CheckSum",
+      "group": "Info",
+      "area": "input",
+      "address": 74,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Software Checksum",
+      "group": "Info",
+      "area": "input",
+      "address": 75,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "MID lock status",
+      "group": "Info",
+      "area": "input",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "unlocked",
+        "1": "locked"
+      }
+    },
+    {
+      "name": "MID unlock counter",
+      "group": "Info",
+      "area": "input",
+      "address": 79,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "FW upgrade counter",
+      "group": "Info",
+      "area": "input",
+      "address": 80,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Active Communication Port",
+      "group": "Info",
+      "area": "input",
+      "address": 98,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus Max. Register Read at Once",
+      "group": "Info",
+      "area": "input",
+      "address": 99,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Run time",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2480,
+      "type": "float32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Uavg (phase to neutral)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2484,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Uavg (phase to phase)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2486,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Sum of currents",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2488,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active Power Total (Pt)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2490,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power Total (Qt)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2492,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power Total (St)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2494,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor Total (PFt)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2496,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2498,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "U1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2500,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "U2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2502,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "U3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2504,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Uavg (phase to neutral) (2506)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2506,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "U12",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2508,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "U23",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2510,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "U31",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2512,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Uavg (phase to phase) (2514)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2514,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "I1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2516,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "I2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2518,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "I3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2520,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Sum of currents (2522)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2522,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Iavg",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2528,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active Power Phase L1 (P1)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2530,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Active Power Phase L2 (P2)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2532,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Active Power Phase L3 (P3)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2534,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Active Power Total (Pt) (2536)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2536,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power Phase L1 (Q1)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2538,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power Phase L2 (Q2)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2540,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power Phase L3 (Q3)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2542,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power Total (Qt) (2544)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2544,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power Phase L1 (S1)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2546,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power Phase L2 (S2)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2548,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power Phase L3 (S3)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2550,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power Total (St) (2552)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2552,
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor Phase 1 (PF1)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2554,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor Phase 2 (PF2)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2556,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor Phase 3 (PF3)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2558,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor Total (PFt) (2560)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2560,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "CAP/IND P. F. Phase 1 (PF1)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2562,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "CAP/IND P. F. Phase 2 (PF2)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2564,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "CAP/IND P. F. Phase 3 (PF3)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2566,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "CAP/IND P. F. Total (PFt)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2568,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "j1 (angle between U1 and I1)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2570,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "j2 (angle between U2 and I2)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2572,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "j3 (angle between U3 and I3)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2574,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Power Angle Total (atan2(Pt,Qt))",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2576,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "j12 (angle between U1 and U2)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2578,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "j23 (angle between U2 and U3)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2580,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "j31 (angle between U3 and U1)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2582,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Frequency (2584)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2584,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "I1 THD%",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2588,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "I2 THD%",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2590,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "I3 THD%",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2592,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "U1 THD%",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2594,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "U2 THD%",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2596,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "U3 THD%",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2598,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter n1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2638,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter n2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2640,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter n3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2642,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter n4",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2644,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Internal Temperature",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2658,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Active tariff",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2750,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter n1 (2752)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2752,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter n2 (2754)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2754,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter n3 (2756)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2756,
+      "type": "float32",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter n4 (2758)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2758,
+      "type": "float32",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2760,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2762,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2764,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 4",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2766,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 5",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2768,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 6",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2770,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 7",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2772,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 8",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2774,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 9",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2776,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 10",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2778,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 11",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2780,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 12",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2782,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 13",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2784,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 14",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2786,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 15",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2788,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Energy Counter 16",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2790,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "nominal phase voltage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2985,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "nominal phase current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2987,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "nominal phase power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2989,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "nominal total power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2991,
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "nominal total current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2993,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "nominal frequency",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2995,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "User Password (L1, L2)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1,
+      "type": "string",
+      "length": 2,
+      "access": "RW"
+    },
+    {
+      "name": "Factory Password (FAC)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3,
+      "type": "string",
+      "length": 3,
+      "access": "RW"
+    },
+    {
+      "name": "Level 1 - User password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 6,
+      "type": "string",
+      "length": 2,
+      "access": "RW"
+    },
+    {
+      "name": "Level 2 - User password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 8,
+      "type": "string",
+      "length": 2,
+      "access": "RW"
+    },
+    {
+      "name": "Active Access Level",
+      "group": "Settings",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Manual password activation",
+      "group": "Settings",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Operator Command Register",
+      "group": "Settings",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Save Settings",
+        "2": "Abort Settings",
+        "3": "Restart Instrument",
+        "4": "Restart Ethernet",
+        "5": "Save Settings and Restart Ethernet"
+      }
+    },
+    {
+      "name": "Reset command register 2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "IR external relay command action",
+      "group": "Settings",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Select Active Tariff",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Reset energy command register 1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "LCD Back Light Intensity",
+      "group": "Settings",
+      "area": "holding",
+      "address": 172,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "LCD Back Light Time Off",
+      "group": "Settings",
+      "area": "holding",
+      "address": 173,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "LCD scroll interval",
+      "group": "Settings",
+      "area": "holding",
+      "address": 174,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Port 1: Device Address (Modbus)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Port 1: Baud Rate",
+      "group": "Settings",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Baud rate 1200",
+        "1": "Baud rate 2400",
+        "2": "Baud rate 4800",
+        "3": "Baud rate 9600",
+        "4": "Baud rate 19200",
+        "5": "Baud rate 38400",
+        "6": "Baud rate 57600",
+        "7": "Baud rate 115200"
+      }
+    },
+    {
+      "name": "Port 1: Stop Bit",
+      "group": "Settings",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1 Stop bit",
+        "1": "2 Stop bits"
+      }
+    },
+    {
+      "name": "Port 1: Parity",
+      "group": "Settings",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No parity",
+        "1": "Odd parity",
+        "2": "Even parity"
+      }
+    },
+    {
+      "name": "Port 1: Data Bits",
+      "group": "Settings",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Port 1: TCP Port",
+      "group": "Settings",
+      "area": "holding",
+      "address": 207,
+      "type": "uint16",
+      "access": "RW"
+    }
+  ]
+}
