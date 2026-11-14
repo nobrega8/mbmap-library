@@ -1,0 +1,891 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "DLG Automação",
+  "model": "IM-111",
+  "models": [
+    "IM-111"
+  ],
+  "vendor_website": "dlg.com.br",
+  "description": "Universal indicator with thermocouple, Pt100, mA, V, logic and frequency input, two alarms with relays and analog retransmission: displayed value, status, alarms, input, linearisation and output settings",
+  "revision": 1,
+  "source": "DLG IM-111 user manual MAN-PT-DE-IM111-01.00_13 (Portuguese), section 8",
+  "sources": [
+    {
+      "title": "Indicador Universal Modbus IM-111 – Manual do usuário",
+      "version": "MAN-PT-DE-IM111-01.00_13",
+      "url": "https://www.dlg.com.br/manuaisdownload/IM-111%20-%20Iindicador%20Universal%20Modbus.pdf",
+      "note": "linked in issue #444; section 8, Modbus table and bit masks"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS485 (terminals 10 +, 11 -, 12 shield). Address 1 to 255; 9600 to 115200 baud; even, odd or no parity; response delay 10 to 200 ms.",
+    "The manual lists the registers as 40001 on with an offset column from 0; the map uses the offset, as sent on the wire.",
+    "Values are signed 16-bit integers; the displayed and engineering values use the decimal places in 40018. The manual does not give the scaling of the ambient temperature or the analog output value.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "databits": 8,
+  "byte_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Displayed value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "int16",
+      "access": "R",
+      "description": "With the decimal places set in 40018."
+    },
+    {
+      "name": "Alarm 1",
+      "group": "Status",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 2",
+      "group": "Status",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Relay 1",
+      "group": "Status",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Relay 2",
+      "group": "Status",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Burn-out low",
+      "group": "Status",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Burn-out high",
+      "group": "Status",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Digital input 1",
+      "group": "Status",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Digital input 2",
+      "group": "Status",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Ambient temperature (TC compensation)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "R",
+      "description": "-40.0 to 120.0 °C in the manual; it does not give the register scaling."
+    },
+    {
+      "name": "Analog output value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "access": "R",
+      "description": "0 to 100.0 in the manual; it does not give the register scaling."
+    },
+    {
+      "name": "Relay command",
+      "group": "Control",
+      "area": "holding",
+      "address": 6,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 turns relay 1 off, 1 turns relay 2 off, 2 turns relay 1 on, 3 turns relay 2 on."
+    },
+    {
+      "name": "Modbus address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 7,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 255, default 1. Kept at power loss."
+    },
+    {
+      "name": "Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "9600",
+        "1": "19200",
+        "2": "38400",
+        "3": "57600",
+        "4": "115200"
+      },
+      "description": "Default 1. Kept at power loss."
+    },
+    {
+      "name": "Parity",
+      "group": "Communication",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Even",
+        "1": "Odd",
+        "2": "None"
+      },
+      "description": "Default 2. Kept at power loss."
+    },
+    {
+      "name": "Response delay",
+      "group": "Communication",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "access": "RW",
+      "description": "10 to 100 ms. Kept at power loss."
+    },
+    {
+      "name": "Input type",
+      "group": "Input",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Thermocouple J",
+        "1": "Thermocouple K",
+        "2": "Thermocouple T",
+        "3": "Thermocouple R",
+        "4": "Thermocouple S",
+        "5": "Thermocouple E",
+        "6": "Thermocouple N",
+        "7": "Thermocouple B",
+        "8": "Pt100",
+        "9": "0-20 mA",
+        "10": "4-20 mA",
+        "11": "0-100 mV",
+        "12": "0-5 V",
+        "13": "0-10 V",
+        "14": "Logic",
+        "15": "No input",
+        "16": "Frequency"
+      },
+      "description": "Default 13. Kept at power loss."
+    },
+    {
+      "name": "Temperature unit",
+      "group": "Input",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Celsius",
+        "1": "Fahrenheit"
+      },
+      "description": "Default 0. Kept at power loss."
+    },
+    {
+      "name": "Input frequency minimum",
+      "group": "Input",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Input frequency maximum",
+      "group": "Input",
+      "area": "holding",
+      "address": 14,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 30000, default 30000. Kept at power loss."
+    },
+    {
+      "name": "Engineering range low",
+      "group": "Input",
+      "area": "holding",
+      "address": 15,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Engineering range high",
+      "group": "Input",
+      "area": "holding",
+      "address": 16,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 30000. Kept at power loss."
+    },
+    {
+      "name": "Decimal point",
+      "group": "Input",
+      "area": "holding",
+      "address": 17,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 3 decimal places. Kept at power loss."
+    },
+    {
+      "name": "Offset",
+      "group": "Input",
+      "area": "holding",
+      "address": 18,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Input filter",
+      "group": "Input",
+      "area": "holding",
+      "address": 19,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Linearisation",
+      "group": "Input",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "Default 1. Kept at power loss."
+    },
+    {
+      "name": "Burn-out selection",
+      "group": "Input",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Low and high"
+      },
+      "description": "Default 1. Kept at power loss."
+    },
+    {
+      "name": "Burn-out low value",
+      "group": "Input",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 1. Kept at power loss."
+    },
+    {
+      "name": "Burn-out high value",
+      "group": "Input",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 1. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 setpoint",
+      "group": "Alarm 1",
+      "area": "holding",
+      "address": 24,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 type",
+      "group": "Alarm 1",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Default 0. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 hysteresis",
+      "group": "Alarm 1",
+      "area": "holding",
+      "address": 26,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 15. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 time 1",
+      "group": "Alarm 1",
+      "area": "holding",
+      "address": 27,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 100, default 0. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 time 2",
+      "group": "Alarm 1",
+      "area": "holding",
+      "address": 28,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 100, default 0. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 setpoint",
+      "group": "Alarm 2",
+      "area": "holding",
+      "address": 29,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 type",
+      "group": "Alarm 2",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Default 0. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 hysteresis",
+      "group": "Alarm 2",
+      "area": "holding",
+      "address": 31,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 time 1",
+      "group": "Alarm 2",
+      "area": "holding",
+      "address": 32,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 100, default 0. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 time 2",
+      "group": "Alarm 2",
+      "area": "holding",
+      "address": 33,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to 100, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 1",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 34,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 2",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 35,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 3",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 36,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 4",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 37,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 5",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 38,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 6",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 39,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 7",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 40,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 8",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 41,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 9",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 42,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 10",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 43,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 11",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 44,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 12",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 45,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 13",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 46,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 14",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 47,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 15",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 48,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 16",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 49,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 17",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 50,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 18",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 51,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 19",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 52,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation input point 20",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 53,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 1",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 54,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 2",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 3",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 4",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 57,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 5",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 58,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 6",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 59,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 7",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 60,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 8",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 61,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 9",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 62,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 10",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 63,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 11",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 64,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 12",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 65,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 13",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 66,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 14",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 67,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 15",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 16",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 69,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 17",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 70,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 18",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 71,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 19",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 72,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Linearisation output point 20",
+      "group": "Linearisation",
+      "area": "holding",
+      "address": 73,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "PV retransmission type",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 74,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "0-20 mA or 0-10 V on the engineering range (40016-40017)",
+        "1": "0-20 mA or 0-10 V on the retransmission limits (40076-40077)",
+        "2": "4-20 mA or 2-10 V on the engineering range (40016-40017)",
+        "3": "4-20 mA or 2-10 V on the retransmission limits (40076-40077)"
+      },
+      "description": "Default 4. Kept at power loss."
+    },
+    {
+      "name": "Retransmission low limit",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 75,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Retransmission high limit",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 76,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Analog output at burn-out",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 77,
+      "type": "int16",
+      "access": "RW",
+      "description": "-9999 to 30000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Analog output zero adjustment",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 78,
+      "type": "int16",
+      "access": "RW",
+      "description": "-5000 to 5000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Analog output span adjustment",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 79,
+      "type": "int16",
+      "access": "RW",
+      "description": "5000 to 15000, default 0. Kept at power loss."
+    },
+    {
+      "name": "Input value for linearisation",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 80,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Keypad lock",
+      "group": "Settings",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Unlocked",
+        "1": "Locked"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Program loop time left",
+      "group": "Status",
+      "area": "holding",
+      "address": 82,
+      "type": "int16",
+      "access": "R"
+    }
+  ]
+}

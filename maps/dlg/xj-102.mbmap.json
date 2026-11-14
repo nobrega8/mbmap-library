@@ -1,0 +1,1335 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "DLG Automação",
+  "model": "XJ-102",
+  "models": [
+    "XJ-102"
+  ],
+  "vendor_website": "dlg.com.br",
+  "description": "Load cell converter with relay and analog output: gross, net, maximum, minimum and average weight, status, tare, 16 alarms and retransmission settings",
+  "revision": 1,
+  "source": "DLG XJ-102 user manual MAN-PT-DE-XJ102-01.00_14 (Portuguese), table 7",
+  "sources": [
+    {
+      "title": "XJ-102 – Conversor para Célula de Carga – Manual do usuário",
+      "version": "MAN-PT-DE-XJ102-01.00_14",
+      "url": "https://www.dlg.com.br/manuaisdownload/XJ-102%20-%20Conversor%20para%20C%E2%80%9Alula%20de%20Carga.pdf",
+      "note": "linked in issue #445; table 7 (Modbus table) and the bit masks after it"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS485. Defaults: address 1, 19200 baud, no parity, response delay 10 ms.",
+    "The manual lists the registers as 40001 on; the map uses 40001 less one, as sent on the wire. The manual's offset column is wrong for the alarm blocks and the analog output (it counts each block of 16 as one).",
+    "Weights are signed 16-bit integers with the decimal places in register 40007.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "databits": 8,
+  "byte_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Gross weight",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "int16",
+      "access": "R",
+      "description": "Signed, with the decimal places in register 40007. -30000 to 30000."
+    },
+    {
+      "name": "Net weight",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "description": "Signed, with the decimal places in register 40007. -30000 to 30000."
+    },
+    {
+      "name": "Maximum weight",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "access": "R",
+      "description": "Signed, with the decimal places in register 40007. -30000 to 30000."
+    },
+    {
+      "name": "Minimum weight",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "access": "R",
+      "description": "Signed, with the decimal places in register 40007. -30000 to 30000."
+    },
+    {
+      "name": "Average weight",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "R",
+      "description": "Signed, with the decimal places in register 40007. -30000 to 30000."
+    },
+    {
+      "name": "Standard deviation",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "access": "R",
+      "description": "Signed, with the decimal places in register 40007. -30000 to 30000."
+    },
+    {
+      "name": "Decimal point",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No decimals",
+        "1": "One decimal",
+        "2": "Two decimals",
+        "3": "Three decimals"
+      }
+    },
+    {
+      "name": "Alarm status",
+      "group": "Status",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit n is alarm n+1 (1 = on). The manual lists bits 0 to 11 and labels each one \"Alarme 1\"."
+    },
+    {
+      "name": "Relay 1",
+      "group": "Status",
+      "area": "holding",
+      "address": 8,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Calibration memory fault",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Untared",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Internal temperature exceeded",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "At 55 °C or above."
+    },
+    {
+      "name": "Cell supply voltage abnormal",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 3,
+      "access": "R",
+      "description": "Damaged supply."
+    },
+    {
+      "name": "Cell current abnormal",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 4,
+      "access": "R",
+      "description": "Load cell damaged or missing."
+    },
+    {
+      "name": "Cell overload",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Negative weight",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Measurement unstable",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Ambient temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "access": "R",
+      "description": "-40.0 to 120.0 in the unit set in 40019; the manual does not give the register scaling."
+    },
+    {
+      "name": "Analog output value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "access": "R",
+      "description": "-30000 to 30000."
+    },
+    {
+      "name": "Modbus address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 255, default 1. Kept at power loss."
+    },
+    {
+      "name": "Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "9600",
+        "1": "19200",
+        "2": "38400",
+        "3": "57600",
+        "4": "115200"
+      },
+      "description": "Default 19200. Kept at power loss."
+    },
+    {
+      "name": "Parity",
+      "group": "Communication",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Even",
+        "1": "Odd",
+        "2": "None"
+      },
+      "description": "Default none. Kept at power loss."
+    },
+    {
+      "name": "Response delay",
+      "group": "Communication",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "RW",
+      "description": "10 to 100 ms, default 10. Kept at power loss."
+    },
+    {
+      "name": "Tare",
+      "group": "Control",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No action",
+        "1": "Tare",
+        "2": "Clear tare"
+      }
+    },
+    {
+      "name": "Temperature unit",
+      "group": "Settings",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Celsius",
+        "1": "Fahrenheit",
+        "2": "Kelvin"
+      }
+    },
+    {
+      "name": "Reset maximum and minimum weight",
+      "group": "Control",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No action",
+        "1": "Reset maximum",
+        "2": "Reset minimum",
+        "3": "Reset both"
+      }
+    },
+    {
+      "name": "Relay alarm assignment",
+      "group": "Settings",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Alarm that drives the relay. The manual lists 0 for alarm 1, 1 for alarm 2, then 4, 8, 16 … 32768 for alarms 3 to 16. Kept at power loss."
+    },
+    {
+      "name": "Unstable weighing threshold",
+      "group": "Settings",
+      "area": "holding",
+      "address": 21,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Input filter",
+      "group": "Settings",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "RW",
+      "description": "10 to 100, divided by 10 internally: the number of readings averaged. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 24,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 3 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 25,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 4 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 26,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 5 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 27,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 6 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 28,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 7 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 8 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 30,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 9 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 31,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 10 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 11 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 12 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 13 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 14 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 36,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 15 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 16 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 38,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 40,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 3 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 41,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 4 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 42,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 5 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 43,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 6 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 7 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 8 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 46,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 9 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 47,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 10 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 11 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 12 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 13 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 51,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 14 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 52,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 15 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 53,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 16 type",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 54,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 3 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 57,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 4 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 58,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 5 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 59,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 6 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 60,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 7 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 61,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 8 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 62,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 9 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 63,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 10 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 64,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 11 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 65,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 12 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 66,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 13 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 67,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 14 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 15 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 69,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 16 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 70,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 71,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 72,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 3 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 73,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 4 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 74,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 5 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 75,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 6 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 76,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 7 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 77,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 8 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 78,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 9 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 79,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 10 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 80,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 11 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 81,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 12 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 82,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 13 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 83,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 14 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 84,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 15 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 85,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 16 pre-mass",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 86,
+      "type": "int16",
+      "access": "RW",
+      "description": "Offset from the setpoint, to allow for material still in flight. -30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 87,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 88,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 3 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 89,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 4 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 90,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 5 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 91,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 6 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 92,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 7 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 93,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 8 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 94,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 9 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 95,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 10 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 96,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 11 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 97,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 12 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 98,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 13 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 14 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 15 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 16 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 1 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 2 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 3 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 4 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 5 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 6 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 7 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 8 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 9 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 10 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 11 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 113,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 12 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 114,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 13 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 14 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 116,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 15 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 117,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "Alarm 16 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 100. Kept at power loss."
+    },
+    {
+      "name": "PV retransmission type",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 119,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "0-20 mA or 0-10 V on the engineering range",
+        "1": "0-20 mA or 0-10 V on the retransmission limits",
+        "2": "4-20 mA or 2-10 V on the engineering range",
+        "3": "4-20 mA or 2-10 V on the retransmission limits",
+        "4": "Value written over Modbus"
+      },
+      "description": "Kept at power loss."
+    },
+    {
+      "name": "Retransmission low limit",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 120,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Retransmission high limit",
+      "group": "Analog output",
+      "area": "holding",
+      "address": 121,
+      "type": "int16",
+      "access": "RW",
+      "description": "-30000 to 30000. Kept at power loss."
+    },
+    {
+      "name": "Relay command",
+      "group": "Control",
+      "area": "holding",
+      "address": 122,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No action",
+        "3": "Relay 1 off",
+        "4": "Relay 1 on"
+      }
+    }
+  ]
+}
