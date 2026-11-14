@@ -151,12 +151,16 @@ When the differences are large (most addresses change, or the connection setting
 | `date` | string `YYYY`, `YYYY-MM` or `YYYY-MM-DD` | Publication date of that edition |
 | `url` | `http(s)://` URL | Where the document can be found |
 | `note` | string | Which part was used, or how the map was checked (e.g. `"tables 4.1-4.24"`, `"tested on a device with firmware 2.1"`) |
+| `accessed` | string `YYYY-MM-DD` | When the document was downloaded or read, since a document at the same URL can change without a new version |
+| `sha256` | string of 64 hex digits | SHA-256 of the file that was used, so a reader can tell whether the document at `url` is still the same one |
 
 ```json
 "sources": [
-  {"title": "EM530/EM540 Modbus communication protocol", "version": "1.3", "date": "2024-02-13", "url": "https://www.gavazziautomation.com/...", "note": "tables 4.1-4.24"}
+  {"title": "EM530/EM540 Modbus communication protocol", "version": "1.3", "date": "2024-02-13", "url": "https://www.gavazziautomation.com/...", "note": "tables 4.1-4.24", "accessed": "2026-11-14", "sha256": "9f2b…"}
 ]
 ```
+
+`sha256` is shown above shortened; in a file it is all 64 hex digits. A tool **MAY** compare it with the document it downloads and warn when they differ: the document was updated, and the map may need checking again.
 
 `source` remains a one-line, free-text summary for people and for maps whose sources are not known in this detail. A map **MAY** have both.
 
@@ -473,7 +477,7 @@ Readers **SHOULD** report every problem with one of the codes below and a [JSON 
 | `bad-scale-factor` | error | `scale_factor` is set on a `bool` or `string`, or names a register that is not a whole integer (a float, `bool`, `string` or bit field) or that has a `scale_factor` itself |
 | `bad-version` | error | `firmware_min` or `firmware_max`, in the file or a register, is not a version string (§3.2) |
 | `bad-firmware-range` | error | `firmware_min` is after `firmware_max`, in the file or a register |
-| `bad-source` | error | An item of `sources` is not an object with a non-empty `title`, or has a `version`, `date`, `url` or `note` of the wrong form |
+| `bad-source` | error | An item of `sources` is not an object with a non-empty `title`, or has a `version`, `date`, `url`, `note`, `accessed` or `sha256` of the wrong form |
 | `bad-role` | error | `role` is not `"model"`, `"firmware"` or `"serial"`, is set on a register that cannot be read, or `"model"` or `"serial"` is used more than once |
 | `bad-identify` | error | `identify` is not valid (§4.8): `function` is not `17` or `43`, `fields` is empty, or a field lacks a `name`, has a `role` that is unknown or repeated for `"model"` or `"serial"`, or breaks the rules of its function (FC17: `offset` missing or negative, `type` missing or unknown, `string` without `length`, an `enum` that names no table or is not a valid table, an `object`; FC43: `object` missing or outside 0–255, an `offset`, `type`, `length` or `enum`) |
 | `bad-parts` | error | `parts` is empty, is set on a register that is not a `string` with a valid `length`, or has a part without a `name` or `offset`, with a negative `offset`, an unknown or `bool` `type`, a `string` part without `length`, a part that goes beyond the block, or parts that overlap (§4.10) |

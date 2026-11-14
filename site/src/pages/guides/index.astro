@@ -1,0 +1,62 @@
+---
+import Base from "../../layouts/Base.astro";
+import { href } from "../../lib/base.ts";
+import { GUIDES } from "../../lib/guides.ts";
+import { guideSummary, renderGuide } from "../../lib/markdown.ts";
+
+const items = await Promise.all(
+  GUIDES.map(async (g) => ({ ...g, title: (await renderGuide(g.slug))?.title ?? g.short, summary: guideSummary(g.slug) })),
+);
+---
+
+<Base
+  title="Modbus Guides"
+  description="Practical Modbus guides: addresses that are one off, byte and word order, scaling, exception codes, timeouts, CRC errors, unit IDs, function codes and writing safely."
+  nav="guides"
+>
+  <header class="page-head">
+    <p class="key">Guides</p>
+    <h1>Modbus guides</h1>
+    <p class="lead muted">Short answers to the problems that come up when you connect a Modbus device: why a value is wrong, why nothing answers, and what the manual means.</p>
+  </header>
+  <ul class="guide-list">
+    {items.map((g) => (
+      <li class="card pad">
+        <a href={href(`/guides/${g.slug}`)}><h2>{g.title}</h2></a>
+        <p class="muted">{g.summary}</p>
+      </li>
+    ))}
+  </ul>
+</Base>
+
+<style>
+  .page-head {
+    margin: 4px 0 18px;
+  }
+  .lead {
+    max-width: 70ch;
+    margin: 8px 0 0;
+  }
+  .guide-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .guide-list h2 {
+    margin: 0 0 6px;
+    font-size: 17px;
+  }
+  .guide-list a {
+    text-decoration: none;
+  }
+  .guide-list a:hover h2 {
+    text-decoration: underline;
+  }
+  .guide-list p {
+    margin: 0;
+    font-size: 14px;
+  }
+</style>

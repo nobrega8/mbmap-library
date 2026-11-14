@@ -752,6 +752,12 @@ def check_source(ck: Checker, at: str, source: object) -> None:
     url = source.get("url")
     if url is not None and not (isinstance(url, str) and URL_RE.match(url)):
         ck.error(child(at, "url"), "bad-source", f"url must be an http(s):// URL, not {url!r}")
+    accessed = source.get("accessed")
+    if accessed is not None and not (isinstance(accessed, str) and len(accessed) == 10 and valid_date(accessed)):
+        ck.error(child(at, "accessed"), "bad-source", f"accessed must be a date YYYY-MM-DD, not {accessed!r}")
+    sha = source.get("sha256")
+    if sha is not None and not (isinstance(sha, str) and re.fullmatch(r"[0-9A-Fa-f]{64}", sha)):
+        ck.error(child(at, "sha256"), "bad-source", "sha256 must be 64 hex digits")
 
 
 # ---- rules shared by both versions

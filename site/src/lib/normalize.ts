@@ -19,6 +19,10 @@ export interface Source {
   date?: string;
   url?: string;
   note?: string;
+  /** When the document was downloaded or read (YYYY-MM-DD) */
+  accessed?: string;
+  /** SHA-256 of the document file that was used */
+  sha256?: string;
 }
 
 /** A named value inside a block register (SPEC.md section 4.10). */
@@ -290,12 +294,14 @@ export function normalizeMap(doc: unknown): MapInfo {
         const title = str(s.title);
         if (!title) return [];
         const out: Source = { title };
-        for (const k of ["version", "date", "note"] as const) {
+        for (const k of ["version", "date", "note", "accessed"] as const) {
           const v = str(s[k]);
           if (v) out[k] = v;
         }
         const url = str(s.url);
         if (url && /^https?:\/\//.test(url)) out.url = url;
+        const sha = str(s.sha256);
+        if (sha && /^[0-9a-f]{64}$/i.test(sha)) out.sha256 = sha.toLowerCase();
         return [out];
       })
     : [];
