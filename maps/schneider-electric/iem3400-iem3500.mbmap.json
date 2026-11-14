@@ -1,0 +1,1277 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Schneider Electric",
+  "model": "iEM3400 / iEM3500 series (iEM3455 / iEM3465 / iEM3555 / iEM3565)",
+  "models": [
+    "iEM3455",
+    "iEM3465",
+    "iEM3555",
+    "iEM3565",
+    "iEM3455C1",
+    "iEM3455C2"
+  ],
+  "vendor_website": "se.com",
+  "description": "Three-phase DIN rail energy meters for LVCT (iEM3455/3465) or Rogowski coils (iEM3555/3565): currents, voltages, power, power factor, frequency, energies, demand, tariffs, overload alarm and setup",
+  "revision": 1,
+  "source": "Schneider Electric, iEM3400 / iEM3500 series user manual, 7EN02-0438-15 (05/2026), Modbus register list",
+  "sources": [
+    {
+      "title": "iEM3400 / iEM3500 series – User manual",
+      "version": "7EN02-0438-15 (05/2026)",
+      "url": "https://www.se.com/ww/en/download/document/7EN02-0438/",
+      "note": "chapter Communications using Modbus: register list, data types and command interface"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS485 on the iEM3455 and iEM3555; the iEM3465 and iEM3565 use BACnet MS/TP instead.",
+    "Addresses are the manual's register numbers (address on the wire = register - 1).",
+    "Function 03 reads; function 16 writes the tariff and sends commands. Settings marked WC in the manual are changed through the command interface (registers 5250 on), so they are listed here as read-only.",
+    "Energies are given both as 64-bit integers (Wh, varh) and as 32-bit floats (kWh, kvarh).",
+    "DATETIME values (4 registers) are shown as 64-bit raw values; the bit layout is in the description of register 132.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Meter name",
+      "group": "Info",
+      "area": "holding",
+      "address": 30,
+      "type": "string",
+      "length": 20,
+      "access": "R"
+    },
+    {
+      "name": "Meter model",
+      "group": "Info",
+      "area": "holding",
+      "address": 50,
+      "type": "string",
+      "length": 20,
+      "role": "model",
+      "access": "R"
+    },
+    {
+      "name": "Manufacturer",
+      "group": "Info",
+      "area": "holding",
+      "address": 70,
+      "type": "string",
+      "length": 20,
+      "access": "R"
+    },
+    {
+      "name": "Serial number",
+      "group": "Info",
+      "area": "holding",
+      "address": 130,
+      "type": "uint32",
+      "role": "serial",
+      "access": "R"
+    },
+    {
+      "name": "Date of manufacture",
+      "group": "Info",
+      "area": "holding",
+      "address": 132,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, 4 registers: year from 2000 (b6:b0), month (b11:b8) and day (b4:b0), hour (b12:b8) and minute (b5:b0), milliseconds."
+    },
+    {
+      "name": "Hardware revision",
+      "group": "Info",
+      "area": "holding",
+      "address": 136,
+      "type": "string",
+      "length": 5,
+      "access": "R"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Info",
+      "area": "holding",
+      "address": 1637,
+      "type": "uint16",
+      "role": "firmware",
+      "access": "R",
+      "description": "DLF format X.Y.ZTT."
+    },
+    {
+      "name": "Clock year",
+      "group": "Info",
+      "area": "holding",
+      "address": 1845,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits 6 to 0: year from 2000 (0 to 99). Set through the command interface."
+    },
+    {
+      "name": "Clock month, weekday and day",
+      "group": "Info",
+      "area": "holding",
+      "address": 1846,
+      "type": "uint16",
+      "access": "R",
+      "description": "Month in bits 11 to 8, weekday in bits 7 to 5, day in bits 4 to 0."
+    },
+    {
+      "name": "Clock hour and minute",
+      "group": "Info",
+      "area": "holding",
+      "address": 1847,
+      "type": "uint16",
+      "access": "R",
+      "description": "Hour in bits 12 to 8, minute in bits 5 to 0."
+    },
+    {
+      "name": "Clock millisecond",
+      "group": "Info",
+      "area": "holding",
+      "address": 1848,
+      "type": "uint16",
+      "unit": "ms",
+      "access": "R"
+    },
+    {
+      "name": "Diagnostic code 101",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Diagnostic code 102",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Diagnostic code 201",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Diagnostic code 202",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 3,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Diagnostic code 203",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 4,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Diagnostic code 204",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 5,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Diagnostic code 205",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 6,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Diagnostic code 206",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 7,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Diagnostic code 207",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 45000,
+      "type": "bool",
+      "bit": 8,
+      "access": "R",
+      "description": "1 = active."
+    },
+    {
+      "name": "Meter operation timer",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2004,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Number of phases",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2014,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Number of wires",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2015,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Power system",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2016,
+      "type": "uint16",
+      "enum": {
+        "0": "1PH2W L-N",
+        "1": "1PH2W L-L",
+        "2": "1PH3W L-L with N",
+        "3": "3PH3W",
+        "11": "3PH4W",
+        "13": "1PH4W multi L with N"
+      },
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Nominal frequency",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2017,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Number of VTs",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2025,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "VT primary",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2026,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "VT secondary",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2028,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Number of CTs",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2029,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CT primary",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2030,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "CT secondary",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2031,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "VT connection type",
+      "group": "Setup",
+      "area": "holding",
+      "address": 2036,
+      "type": "uint16",
+      "enum": {
+        "0": "Direct connect",
+        "1": "3PH3W (2 VTs)",
+        "2": "3PH4W (3 VTs)"
+      },
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Energy pulse duration",
+      "group": "Pulse output",
+      "area": "holding",
+      "address": 2129,
+      "type": "uint16",
+      "unit": "ms",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Digital output association",
+      "group": "Pulse output",
+      "area": "holding",
+      "address": 2131,
+      "type": "uint16",
+      "enum": {
+        "0": "Disabled",
+        "1": "DO1 active energy pulse output"
+      },
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Pulse weight",
+      "group": "Pulse output",
+      "area": "holding",
+      "address": 2132,
+      "type": "float32",
+      "unit": "pulse/kWh",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Requested command",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 5250,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Command parameter 1",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 5252,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Parameters 1 to 123 are registers 5252 to 5374."
+    },
+    {
+      "name": "Command status",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 5375,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Command result",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 5376,
+      "type": "uint16",
+      "enum": {
+        "0": "Valid operation",
+        "3000": "Invalid command",
+        "3001": "Invalid parameter",
+        "3002": "Invalid number of parameters",
+        "3007": "Operation not performed"
+      },
+      "access": "R"
+    },
+    {
+      "name": "Command data 1",
+      "group": "Command interface",
+      "area": "holding",
+      "address": 5377,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Data 1 to 123 are registers 5377 to 5499."
+    },
+    {
+      "name": "Protocol",
+      "group": "Communication",
+      "area": "holding",
+      "address": 6500,
+      "type": "uint16",
+      "enum": {
+        "0": "Modbus"
+      },
+      "access": "R"
+    },
+    {
+      "name": "Modbus address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 6501,
+      "type": "uint16",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 6502,
+      "type": "uint16",
+      "enum": {
+        "0": "9600",
+        "1": "19200",
+        "2": "38400"
+      },
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Parity",
+      "group": "Communication",
+      "area": "holding",
+      "address": 6503,
+      "type": "uint16",
+      "enum": {
+        "0": "Even",
+        "1": "Odd",
+        "2": "None"
+      },
+      "access": "R",
+      "description": "One stop bit. Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Input metering label",
+      "group": "Input metering",
+      "area": "holding",
+      "address": 7032,
+      "type": "string",
+      "length": 20,
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Input metering pulse constant",
+      "group": "Input metering",
+      "area": "holding",
+      "address": 7052,
+      "type": "float32",
+      "unit": "pulse/unit",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Digital input association",
+      "group": "Input metering",
+      "area": "holding",
+      "address": 7055,
+      "type": "uint16",
+      "enum": {
+        "0": "Disabled for input metering",
+        "1": "Enabled for input metering"
+      },
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Digital input control mode",
+      "group": "Digital input",
+      "area": "holding",
+      "address": 7274,
+      "type": "uint16",
+      "enum": {
+        "0": "Normal (input status)",
+        "2": "Multi-tariff control",
+        "3": "Input metering",
+        "5": "All energy reset"
+      },
+      "access": "R"
+    },
+    {
+      "name": "Digital input status",
+      "group": "Digital input",
+      "area": "holding",
+      "address": 8906,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bit 1: 0 relay open, 1 relay closed. The manual gives address 0x22C8 (register 8905) next to register 8906; the map follows the register number, as the iEM3000 map does."
+    },
+    {
+      "name": "Digital output control mode",
+      "group": "Digital output",
+      "area": "holding",
+      "address": 9673,
+      "type": "uint16",
+      "enum": {
+        "2": "Alarm",
+        "3": "Pulse (kWh)",
+        "65535": "Disabled"
+      },
+      "access": "R"
+    },
+    {
+      "name": "Current L1",
+      "group": "Current",
+      "area": "holding",
+      "address": 3000,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L2",
+      "group": "Current",
+      "area": "holding",
+      "address": 3002,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L3",
+      "group": "Current",
+      "area": "holding",
+      "address": 3004,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Neutral current",
+      "group": "Current",
+      "area": "holding",
+      "address": 3006,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "iEM3555 and iEM3565 only."
+    },
+    {
+      "name": "Current average",
+      "group": "Current",
+      "area": "holding",
+      "address": 3010,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L1-L2",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 3020,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L2-L3",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 3022,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L3-L1",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 3024,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L-L average",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 3026,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L1-N",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 3028,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L2-N",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 3030,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L3-N",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 3032,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L-N average",
+      "group": "Voltage",
+      "area": "holding",
+      "address": 3036,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Active power L1",
+      "group": "Power",
+      "area": "holding",
+      "address": 3054,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power L2",
+      "group": "Power",
+      "area": "holding",
+      "address": 3056,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power L3",
+      "group": "Power",
+      "area": "holding",
+      "address": 3058,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Total active power",
+      "group": "Power",
+      "area": "holding",
+      "address": 3060,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Power",
+      "area": "holding",
+      "address": 3068,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total apparent power",
+      "group": "Power",
+      "area": "holding",
+      "address": 3076,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Total power factor",
+      "group": "Power",
+      "area": "holding",
+      "address": 3084,
+      "type": "float32",
+      "access": "R",
+      "description": "Four-quadrant: 0 to 1 quadrant 1 (import, inductive); 1 to 2 quadrant 4 (import, capacitive); -1 to 0 quadrant 2 (export, capacitive); -2 to -1 quadrant 3 (export, inductive)."
+    },
+    {
+      "name": "Frequency",
+      "group": "Power",
+      "area": "holding",
+      "address": 3110,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Energy reset date and time",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3252,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Input metering reset date and time",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3554,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Active tariff",
+      "group": "Energy",
+      "area": "holding",
+      "address": 4191,
+      "type": "uint16",
+      "enum": {
+        "0": "Multi-tariff disabled",
+        "1": "Rate A",
+        "2": "Rate B",
+        "3": "Rate C",
+        "4": "Rate D"
+      },
+      "access": "R",
+      "description": "Can be set only when the tariff mode is by communication. Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Total active energy import",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3204,
+      "type": "int64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Cannot be reset."
+    },
+    {
+      "name": "Total active energy export",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3208,
+      "type": "int64",
+      "unit": "Wh",
+      "access": "R",
+      "description": "Cannot be reset."
+    },
+    {
+      "name": "Total reactive energy import",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3220,
+      "type": "int64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Cannot be reset."
+    },
+    {
+      "name": "Total reactive energy export",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3224,
+      "type": "int64",
+      "unit": "varh",
+      "access": "R",
+      "description": "Cannot be reset."
+    },
+    {
+      "name": "Partial active energy import",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3256,
+      "type": "int64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Partial reactive energy import",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3272,
+      "type": "int64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import L1",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3518,
+      "type": "int64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import L2",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3522,
+      "type": "int64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import L3",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3526,
+      "type": "int64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Input metering accumulation",
+      "group": "Energy",
+      "area": "holding",
+      "address": 3558,
+      "type": "int64",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy import (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45100,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy export (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45102,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive energy import (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45104,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive energy export (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45106,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Partial active energy import (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45108,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Partial reactive energy import (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45110,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import L1 (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45112,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import L2 (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45114,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Active energy import L3 (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45116,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Input metering accumulation (float)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 45118,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Demand method",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3701,
+      "type": "uint16",
+      "enum": {
+        "1": "Timed interval sliding block",
+        "2": "Timed interval fixed block"
+      },
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Demand interval",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3702,
+      "type": "uint16",
+      "unit": "min",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Demand peak reset date and time",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3706,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Active power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3766,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3770,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power peak demand date and time",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3772,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Reactive power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3782,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3786,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power peak demand date and time",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3788,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Apparent power demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3798,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3802,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power peak demand date and time",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3804,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Current L1 demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3814,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L1 peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3818,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L1 peak demand date and time",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3820,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Current L2 demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3830,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L2 peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3834,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L2 peak demand date and time",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3836,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Current L3 demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3846,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L3 peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3850,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current L3 peak demand date and time",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3852,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Current average demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3878,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current average peak demand",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3882,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current average peak demand date and time",
+      "group": "Demand",
+      "area": "holding",
+      "address": 3884,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Overload alarm",
+      "group": "Overload alarm",
+      "area": "holding",
+      "address": 45001,
+      "type": "uint16",
+      "enum": {
+        "0": "Disabled",
+        "256": "Enabled"
+      },
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Overload pickup setpoint",
+      "group": "Overload alarm",
+      "area": "holding",
+      "address": 45002,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Overload alarm digital output",
+      "group": "Overload alarm",
+      "area": "holding",
+      "address": 45004,
+      "type": "uint16",
+      "enum": {
+        "0": "Not associated",
+        "256": "Associated"
+      },
+      "access": "R",
+      "description": "Changed through the command interface (5250 on)."
+    },
+    {
+      "name": "Overload alarm active",
+      "group": "Overload alarm",
+      "area": "holding",
+      "address": 45005,
+      "type": "uint16",
+      "enum": {
+        "0": "Inactive",
+        "256": "Active"
+      },
+      "access": "R"
+    },
+    {
+      "name": "Overload alarm unacknowledged",
+      "group": "Overload alarm",
+      "area": "holding",
+      "address": 45006,
+      "type": "uint16",
+      "enum": {
+        "0": "Acknowledged",
+        "256": "Unacknowledged"
+      },
+      "access": "R"
+    },
+    {
+      "name": "Last overload alarm time stamp",
+      "group": "Overload alarm",
+      "area": "holding",
+      "address": 45007,
+      "type": "uint64",
+      "access": "R",
+      "description": "DATETIME, see register 132."
+    },
+    {
+      "name": "Last overload alarm value",
+      "group": "Overload alarm",
+      "area": "holding",
+      "address": 45011,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "LVCT angle compensation",
+      "group": "LVCT",
+      "area": "holding",
+      "address": 57015,
+      "type": "float32",
+      "unit": "rad",
+      "access": "R",
+      "description": "-7 to 1."
+    },
+    {
+      "name": "LVCT ratio compensation",
+      "group": "LVCT",
+      "area": "holding",
+      "address": 57017,
+      "type": "float32",
+      "access": "R",
+      "description": "0 to 2."
+    }
+  ]
+}
