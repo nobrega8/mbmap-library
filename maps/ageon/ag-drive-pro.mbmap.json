@@ -1,0 +1,1072 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Ageon",
+  "model": "AG Drive Pro",
+  "models": [
+    "AG Drive Pro"
+  ],
+  "vendor_website": "ageon.com.br",
+  "description": "V/f and sensorless vector frequency inverter: output frequency, voltages, current, temperature, errors, parameters, PID and run commands",
+  "revision": 1,
+  "source": "Ageon AG Drive Pro user manual (Portuguese), table 1 and chapter 5",
+  "sources": [
+    {
+      "title": "AG Drive Pro – Manual",
+      "url": "https://ageon.com.br/wp-content/uploads/2024/12/Manual-AG-Drive-Pro-0.5-a-2-cv-xxxx0093V10R2.pdf",
+      "note": "linked in issue #442; parameter list (table 1) and chapter 5, Modbus RTU"
+    }
+  ],
+  "notes": [
+    "Parameter Pnnn is register 5000 + nnn.",
+    "Factory serial settings: 9600 baud, no parity (2 stop bits).",
+    "Modbus RTU over RS485: functions 03 and 06 on holding registers only, one register per read. The only exception code is 04. A request with a parity error gets no answer.",
+    "The manual gives the register number of each parameter but not its scaling. Its read example returns 10 for P011 at its factory 10.0 s.",
+    "To run the drive over Modbus set P301 = 4 and P302 = 3; otherwise the command registers answer with exception 4. Parameters can be read and written either way.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "parity": "N",
+  "stopbits": 2,
+  "databits": 8,
+  "byte_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "P001 Output frequency",
+      "group": "Status",
+      "area": "holding",
+      "address": 5001,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R",
+      "description": "0.00 to 500.0 Hz."
+    },
+    {
+      "name": "P002 DC bus voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": 5002,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "P003 Output current",
+      "group": "Status",
+      "area": "holding",
+      "address": 5003,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "P004 Output voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": 5004,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "P005 IGBT module temperature",
+      "group": "Status",
+      "area": "holding",
+      "address": 5005,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R",
+      "description": "Some models show ---."
+    },
+    {
+      "name": "P006 Last errors",
+      "group": "Status",
+      "area": "holding",
+      "address": 5006,
+      "type": "uint16",
+      "access": "R",
+      "description": "The last 4 errors, E002 to E013."
+    },
+    {
+      "name": "P007 Parameter lock",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5007,
+      "type": "uint16",
+      "access": "RW",
+      "description": "28 locks or unlocks parameter changes."
+    },
+    {
+      "name": "P008 Factory reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5008,
+      "type": "uint16",
+      "access": "RW",
+      "description": "103 restores the factory settings."
+    },
+    {
+      "name": "P009 Software version",
+      "group": "Status",
+      "area": "holding",
+      "address": 5009,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "P010 Stop mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5010,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Ramp stop",
+        "1": "Coast stop",
+        "2": "Adaptive stop",
+        "3": "Open-loop stop in vector mode"
+      },
+      "description": "2 and 3 only when P601 = 4."
+    },
+    {
+      "name": "P011 Acceleration ramp",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5011,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.1 to 600.0 s, factory 10.0 s."
+    },
+    {
+      "name": "P012 Deceleration ramp",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5012,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.1 to 600.0 s, factory 10.0 s."
+    },
+    {
+      "name": "P013 Second acceleration ramp",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5013,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.1 to 600.0 s."
+    },
+    {
+      "name": "P014 Second deceleration ramp",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5014,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.1 to 600.0 s."
+    },
+    {
+      "name": "P021 Frequency backup",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5021,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disabled",
+        "1": "Use the last reference",
+        "2": "Go to the reference in P022"
+      }
+    },
+    {
+      "name": "P022 Initial frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5022,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW",
+      "description": "P023 to P024, factory 5.00 Hz."
+    },
+    {
+      "name": "P023 Minimum frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5023,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW",
+      "description": "0.00 Hz to P024, factory 5.00 Hz."
+    },
+    {
+      "name": "P024 Maximum frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5024,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW",
+      "description": "P023 to 500.0 Hz, factory 60.00 Hz."
+    },
+    {
+      "name": "P028 Display unit",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5028,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Frequency",
+        "1": "Ampere",
+        "2": "RPM"
+      }
+    },
+    {
+      "name": "P041 Torque compensation",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5041,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "description": "0 to 30 %, factory 5 %."
+    },
+    {
+      "name": "P043 Switching frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5043,
+      "type": "uint16",
+      "unit": "kHz",
+      "access": "RW",
+      "description": "5 to 15 kHz (10 kHz at most in vector mode)."
+    },
+    {
+      "name": "P051 Overload current",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5051,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW",
+      "description": "Off or up to the drive's maximum current."
+    },
+    {
+      "name": "P052 Maximum current control",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5052,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "P053 Auto-reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5053,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "Off to 255 s."
+    },
+    {
+      "name": "P054 Minimum DC bus voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5054,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "description": "100 to 200 V, factory 180 V."
+    },
+    {
+      "name": "P055 Braking voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5055,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "description": "349 to 410 V, factory 360 V."
+    },
+    {
+      "name": "P056 Input phase loss monitor",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5056,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      },
+      "description": "3 CV models only."
+    },
+    {
+      "name": "P100 Analog input gain",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5100,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.1 to 999.0, factory 100.0."
+    },
+    {
+      "name": "P101 Analog input type",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5101,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Voltage 0-10 V",
+        "1": "Current 0-20 mA",
+        "2": "Current 4-20 mA"
+      }
+    },
+    {
+      "name": "P102 DI4 or current analog output",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5102,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Voltage output 0-10 V",
+        "1": "Current output 0-20 mA",
+        "2": "Current output 4-20 mA"
+      }
+    },
+    {
+      "name": "P103 Analog output function",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5103,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Output frequency",
+        "2": "Output current"
+      }
+    },
+    {
+      "name": "P104 Relay output function",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5104,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Output frequency equals the setpoint",
+        "1": "Reference frequency above P105",
+        "2": "Output frequency above P105",
+        "3": "Output current above P106",
+        "4": "Drive running",
+        "5": "Decelerating",
+        "6": "No error",
+        "7": "PV below P907",
+        "8": "PV above P908"
+      }
+    },
+    {
+      "name": "P105 Relay frequency",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5105,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW",
+      "description": "P023 to P024."
+    },
+    {
+      "name": "P106 Relay current",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5106,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "P111 Analog input minimum",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5111,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "description": "0 % to P112."
+    },
+    {
+      "name": "P112 Analog input maximum",
+      "group": "Inputs and outputs",
+      "area": "holding",
+      "address": 5112,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "description": "P111 to 100.0 %."
+    },
+    {
+      "name": "P201 Multispeed 1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5201,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P202 Multispeed 2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5202,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P203 Multispeed 3",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5203,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P204 Multispeed 4",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5204,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P205 Multispeed 5",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5205,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P206 Multispeed 6",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5206,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P207 Multispeed 7",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5207,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P208 Multispeed 8",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5208,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P220 JOG speed",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5220,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P223 DI3 minimum frequency",
+      "group": "Frequency input",
+      "area": "holding",
+      "address": 5223,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P224 DI3 maximum frequency",
+      "group": "Frequency input",
+      "area": "holding",
+      "address": 5224,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P225 DI3 gain",
+      "group": "Frequency input",
+      "area": "holding",
+      "address": 5225,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.1 to 9.99."
+    },
+    {
+      "name": "P226 DI3 offset",
+      "group": "Frequency input",
+      "area": "holding",
+      "address": 5226,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "description": "-100 % to 100 %."
+    },
+    {
+      "name": "P227 DI3 filter time constant",
+      "group": "Frequency input",
+      "area": "holding",
+      "address": 5227,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.00 to 16.00 s."
+    },
+    {
+      "name": "P301 Frequency reference source",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5301,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Analog input",
+        "1": "HMI keys",
+        "2": "Electronic potentiometer",
+        "3": "Multispeed",
+        "4": "Modbus",
+        "5": "PID",
+        "6": "Frequency input"
+      },
+      "description": "Set to 4 to control the frequency over Modbus."
+    },
+    {
+      "name": "P302 Command source",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5302,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "HMI keys",
+        "1": "Digital inputs: DI1 on/off, DI2 as P304",
+        "2": "Digital inputs: DI1 forward, DI2 reverse",
+        "3": "Modbus",
+        "4": "Three-wire control"
+      },
+      "description": "Set to 3 to control the drive over Modbus."
+    },
+    {
+      "name": "P303 Rotation direction",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5303,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Normal",
+        "1": "Reverse",
+        "2": "By digital input"
+      }
+    },
+    {
+      "name": "P304 DI2 function",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5304,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Rotation direction",
+        "1": "Second ramp",
+        "2": "Forward on the first ramp, reverse on the second",
+        "3": "Multispeed",
+        "4": "General enable",
+        "5": "PID auto/manual",
+        "6": "JOG"
+      }
+    },
+    {
+      "name": "P305 Digital input logic",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5305,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Normally open inputs",
+        "1": "Normally closed inputs"
+      }
+    },
+    {
+      "name": "P401 DC braking current",
+      "group": "Braking",
+      "area": "holding",
+      "address": 5401,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "description": "0 to 100 % of the motor rated current."
+    },
+    {
+      "name": "P402 DC braking time at start",
+      "group": "Braking",
+      "area": "holding",
+      "address": 5402,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "Off to 15.0 s."
+    },
+    {
+      "name": "P403 DC braking time at stop",
+      "group": "Braking",
+      "area": "holding",
+      "address": 5403,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "Off to 15.0 s."
+    },
+    {
+      "name": "P404 DC braking frequency at stop",
+      "group": "Braking",
+      "area": "holding",
+      "address": 5404,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P501 Skip band",
+      "group": "Skip frequencies",
+      "area": "holding",
+      "address": 5501,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW",
+      "description": "0.00 to 25.00 Hz."
+    },
+    {
+      "name": "P502 Skip frequency 1",
+      "group": "Skip frequencies",
+      "area": "holding",
+      "address": 5502,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P503 Skip frequency 2",
+      "group": "Skip frequencies",
+      "area": "holding",
+      "address": 5503,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P504 Skip frequency 3",
+      "group": "Skip frequencies",
+      "area": "holding",
+      "address": 5504,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P601 Control type",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5601,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "V/f",
+        "1": "Quadratic V/f",
+        "2": "Single-phase with capacitor",
+        "3": "Single-phase without capacitor",
+        "4": "Vector (sensorless)"
+      }
+    },
+    {
+      "name": "P602 Motor rated frequency",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5602,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW",
+      "description": "10.00 to 500.0 Hz."
+    },
+    {
+      "name": "P603 Motor rated speed",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5603,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "RW",
+      "description": "0 to 9999 rpm."
+    },
+    {
+      "name": "P604 Motor rated current",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5604,
+      "type": "uint16",
+      "unit": "A",
+      "access": "RW"
+    },
+    {
+      "name": "P605 Motor rated voltage",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5605,
+      "type": "uint16",
+      "unit": "V",
+      "access": "RW",
+      "description": "0 to 240 V."
+    },
+    {
+      "name": "P606 Motor rated power",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5606,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "0.5 CV",
+        "1": "0.75 CV",
+        "2": "1 CV",
+        "3": "1.5 CV",
+        "4": "2 CV",
+        "5": "3 CV",
+        "6": "4 CV",
+        "7": "5 CV"
+      }
+    },
+    {
+      "name": "P607 Motor rated power factor",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5607,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.50 to 0.99."
+    },
+    {
+      "name": "P608 Motor rated efficiency",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5608,
+      "type": "uint16",
+      "unit": "%",
+      "access": "RW",
+      "description": "50.0 to 99.9 %."
+    },
+    {
+      "name": "P609 System moment of inertia",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5609,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 9999."
+    },
+    {
+      "name": "P610 Vector control error delay",
+      "group": "Motor",
+      "area": "holding",
+      "address": 5610,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.1 to 99.9 s."
+    },
+    {
+      "name": "P701 Modbus address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 5701,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 247, or iHrE for the remote HMI."
+    },
+    {
+      "name": "P702 Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 5702,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "9600",
+        "1": "19200",
+        "2": "38400",
+        "3": "115200"
+      }
+    },
+    {
+      "name": "P703 Parity",
+      "group": "Communication",
+      "area": "holding",
+      "address": 5703,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Even",
+        "2": "Odd"
+      },
+      "description": "No parity needs 2 stop bits."
+    },
+    {
+      "name": "P704 Watchdog",
+      "group": "Communication",
+      "area": "holding",
+      "address": 5704,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.0 to 100.0 s or off. With no valid message for this time the drive stops with E009."
+    },
+    {
+      "name": "P900 PID sensor full scale",
+      "group": "PID",
+      "area": "holding",
+      "address": 5900,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 9999."
+    },
+    {
+      "name": "P901 Process variable",
+      "group": "PID",
+      "area": "holding",
+      "address": 5901,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to P900."
+    },
+    {
+      "name": "P902 PID setpoint",
+      "group": "PID",
+      "area": "holding",
+      "address": 5902,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "P903 PID proportional gain",
+      "group": "PID",
+      "area": "holding",
+      "address": 5903,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 99.99."
+    },
+    {
+      "name": "P904 PID integral gain",
+      "group": "PID",
+      "area": "holding",
+      "address": 5904,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 99.99."
+    },
+    {
+      "name": "P905 PID derivative gain",
+      "group": "PID",
+      "area": "holding",
+      "address": 5905,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 99.99."
+    },
+    {
+      "name": "P906 Setpoint filter time constant",
+      "group": "PID",
+      "area": "holding",
+      "address": 5906,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 99.99 s."
+    },
+    {
+      "name": "P907 Process variable minimum",
+      "group": "PID",
+      "area": "holding",
+      "address": 5907,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "P908 Process variable maximum",
+      "group": "PID",
+      "area": "holding",
+      "address": 5908,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "P909 Process variable error delay",
+      "group": "PID",
+      "area": "holding",
+      "address": 5909,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 999.9 s."
+    },
+    {
+      "name": "P910 Sleep frequency",
+      "group": "PID",
+      "area": "holding",
+      "address": 5910,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "RW"
+    },
+    {
+      "name": "P911 Wake-up deviation",
+      "group": "PID",
+      "area": "holding",
+      "address": 5911,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "P912 Sleep delay",
+      "group": "PID",
+      "area": "holding",
+      "address": 5912,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.1 to 999.9 s."
+    },
+    {
+      "name": "P913 Wake-up delay",
+      "group": "PID",
+      "area": "holding",
+      "address": 5913,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0.1 to 999.9 s."
+    },
+    {
+      "name": "P914 PID action",
+      "group": "PID",
+      "area": "holding",
+      "address": 5914,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Direct",
+        "1": "Reverse"
+      }
+    },
+    {
+      "name": "Number of parameters",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4097,
+      "type": "uint16",
+      "access": "R",
+      "description": "Total number of drive parameters; useful to test the link."
+    },
+    {
+      "name": "Drive state",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4100,
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual names this register as the drive state in an example but does not list its values."
+    },
+    {
+      "name": "Run",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4101,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "Same as the ON and OFF keys."
+    },
+    {
+      "name": "Frequency step",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4103,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Down 0.1 Hz",
+        "1": "Up 0.1 Hz"
+      },
+      "description": "Only while the drive is on."
+    },
+    {
+      "name": "Fault reset",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4105,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 1 to reset an error."
+    },
+    {
+      "name": "Frequency reference",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4106,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 32767,
+      "description": "The manual says frequency × 10 but its example writes 4680 for 46.8 Hz; the map follows the text. 0 to 32767."
+    },
+    {
+      "name": "Direction",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4107,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Normal",
+        "1": "Reverse"
+      }
+    }
+  ]
+}
