@@ -41,6 +41,8 @@ export const REGISTER_QUERY_MIN = 3;
 let devices: Promise<DeviceEntry[]> | null = null;
 let registers: Promise<string[][]> | null = null;
 let folded: string[] | null = null;
+let compact: string[] | null = null;
+let names: string[][] | null = null;
 
 export function loadDevices(): Promise<DeviceEntry[]> {
   devices ??= fetch(href("/search/devices.json"))
@@ -86,25 +88,23 @@ export function search(entries: DeviceEntry[], query: string, regLines?: string[
   const words = tokens(query);
   if (!words.length) return entries.map((entry, index) => ({ entry, index, score: 0 }));
   folded ??= entries.map(deviceText);
+  compact ??= folded.map(squash);
+  names ??= entries.map((e) => [e.m, ...(e.ms ?? [])].map((n) => squash(fold(n))));
 
   const hits: Hit[] = [];
   entries.forEach((entry, index) => {
     const text = folded![index]!;
-    const model = fold(entry.m);
     const vendor = fold(entry.v);
     let score = 0;
     const rest: string[] = [];
     for (const w of words) {
-      if (!text.includes(w)) {
+      const sw = squash(w);
+      // "sdm-630", "SDM 630" and "sdm630" are the same model
+      if (!text.includes(w) && !(sw && compact![index]!.includes(sw))) {
         rest.push(w);
         continue;
       }
-      if (model === w) score += 12;
-      else if (model.startsWith(w)) score += 6;
-      else if (model.includes(w)) score += 4;
-      else if (vendor.startsWith(w)) score += 3;
-      else if (vendor.includes(w)) score += 2;
-      else score += 1;
+      score += nameScore(names![index]!, sw, vendor, w);
     }
     if (!rest.length) {
       hits.push({ entry, index, score: score + 100 });
@@ -119,6 +119,23 @@ export function search(entries: DeviceEntry[], query: string, regLines?: string[
     if (line) hits.push({ entry, index, score, line });
   });
   return hits.sort((a, b) => b.score - a.score);
+}
+
+/** Letters and digits only, so punctuation and spaces in model names do not matter. */
+const squash = (s: string) => s.replace(/[^a-z0-9]/g, "");
+
+/** How well one query word matches: the display name and every other model
+    name or alias (`models`) count alike, ahead of the manufacturer and the
+    description. */
+function nameScore(models: string[], sw: string, vendor: string, w: string): number {
+  if (sw) {
+    if (models.some((m) => m === sw)) return 12;
+    if (models.some((m) => m.startsWith(sw))) return 6;
+    if (models.some((m) => m.includes(sw))) return 4;
+  }
+  if (vendor.startsWith(w)) return 3;
+  if (vendor.includes(w)) return 2;
+  return 1;
 }
 
 const escapeHtml = (s: string) =>

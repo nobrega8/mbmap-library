@@ -3,6 +3,7 @@ import { href } from "../lib/base.ts";
 // revision, when the map gives one.
 import type { APIRoute } from "astro";
 import { registry } from "../lib/registry.ts";
+import { GUIDES } from "../lib/guides.ts";
 
 export const GET: APIRoute = ({ site }) => {
   const { devices, manufacturers, commitDate } = registry();
@@ -12,6 +13,8 @@ export const GET: APIRoute = ({ site }) => {
     url(href("/"), commitDate),
     url(href("/devices"), commitDate),
     url(href("/manufacturers"), commitDate),
+    url(href("/guides")),
+    ...GUIDES.map((g) => url(href(`/guides/${g.slug}`))),
     url(href("/spec")),
     url(href("/compatibility")),
     url(href("/contribute")),

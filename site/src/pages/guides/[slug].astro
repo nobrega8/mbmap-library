@@ -1,0 +1,86 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import { href } from "../../lib/base.ts";
+import { GUIDES } from "../../lib/guides.ts";
+import { guideSummary, renderGuide } from "../../lib/markdown.ts";
+import { BRANCH, REPO_URL } from "../../lib/registry.ts";
+
+export const getStaticPaths = (() => GUIDES.map((g) => ({ params: { slug: g.slug }, props: { slug: g.slug } }))) satisfies GetStaticPaths;
+
+const { slug } = Astro.props as { slug: string };
+const doc = await renderGuide(slug);
+const summary = guideSummary(slug);
+const others = GUIDES.filter((g) => g.slug !== slug);
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: doc?.title ?? slug,
+    description: summary,
+    url: pageUrl,
+    inLanguage: "en",
+    author: { "@type": "Person", name: "Afonso Nóbrega", url: "https://nobrega.me" },
+  },
+];
+---
+
+<Base title={doc?.title ?? "Guide"} description={summary.slice(0, 300)} nav="guides" jsonLd={jsonLd} ogType="article">
+  <ol class="crumbs">
+    <li><a href={href("/guides")}>Guides</a></li>
+    <li aria-current="page">{GUIDES.find((g) => g.slug === slug)?.short}</li>
+  </ol>
+  <div class="guide">
+    <article class="card pad prose">
+      <h1>{doc?.title}</h1>
+      <Fragment set:html={doc?.html ?? ""} />
+      <p class="faint edit">
+        <a href={`${REPO_URL}/blob/${BRANCH}/docs/guides/${slug}.md`}><Icon name="edit" size={13} /> Improve this guide on GitHub</a>
+      </p>
+    </article>
+    <nav class="card pad more" aria-label="Other guides">
+      <p class="key">More guides</p>
+      <ul>
+        {others.map((g) => <li><a href={href(`/guides/${g.slug}`)}>{g.short}</a></li>)}
+      </ul>
+      <p class="key find">Find a device</p>
+      <p><a href={href("/devices")}>Browse the register maps</a></p>
+    </nav>
+  </div>
+</Base>
+
+<style>
+  .guide {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 16px;
+    align-items: start;
+  }
+  h1 {
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    margin-top: 0;
+  }
+  .more ul {
+    margin: 8px 0 0;
+    padding-left: 16px;
+    font-size: 14px;
+  }
+  .more li + li {
+    margin-top: 6px;
+  }
+  .find {
+    margin-top: 18px;
+  }
+  .edit {
+    margin-top: 24px;
+    font-size: 13px;
+  }
+  @media (max-width: 860px) {
+    .guide {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

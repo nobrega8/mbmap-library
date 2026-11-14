@@ -22,6 +22,7 @@ import {
   typeLabel,
 } from "../../../lib/mbmap.ts";
 import { LINKS, SITE_NAME, deviceLinks } from "../../../lib/site.ts";
+import { EXPORTS, exportPath } from "../../../lib/exports.ts";
 
 export const getStaticPaths = (() =>
   registry().devices.map((d) => ({
@@ -36,6 +37,8 @@ const links = deviceLinks(d);
 const fileName = d.path.split("/").pop()!;
 const fileUrl = href(`/${d.path}`);
 const said = (k: string) => info.stated.includes(k);
+const stem = fileName.replace(/\.mbmap\.json$/, "");
+const exportsList = EXPORTS.map((f) => ({ ...f, url: href(`/${exportPath(d.path, f.ext)}`), file: `${stem}${f.ext}` }));
 const otherModels = others(d);
 const maker = registry().manufacturers.find((m) => m.devices.includes(d) || m.devices.some((x) => x.path === d.path));
 const related = (maker?.devices ?? []).filter((x) => x.path !== d.path).slice(0, 12);
@@ -51,7 +54,7 @@ const areaSummary = areas.map((a) => plural(d.areaCounts[a]!, AREA_NAME[a].toLow
 const description =
   `Explore the ${name} Modbus register map: ${plural(d.registerCount, "register")}` +
   (areaSummary ? ` (${areaSummary})` : "") +
-  `, with addresses, data types, scaling and communication settings. Download the MBMap JSON file.`;
+  `, with addresses, data types, scaling and communication settings. Download it as MBMap JSON, CSV or a Home Assistant configuration.`;
 
 const pageUrl = new URL(d.url, Astro.site).href;
 const jsonLd = [
@@ -81,6 +84,11 @@ const jsonLd = [
         contentUrl: new URL(fileUrl, Astro.site).href,
         contentSize: `${d.size} B`,
       },
+      ...exportsList.map((f) => ({
+        "@type": "DataDownload",
+        encodingFormat: f.mime.split(";")[0],
+        contentUrl: new URL(f.url, Astro.site).href,
+      })),
     ],
   },
   {
@@ -158,6 +166,11 @@ for (const r of info.registers) accessCounts[r.access]++;
         <a class="btn primary big" href={fileUrl} download={fileName}>
           <Icon name="download" /> Download .mbmap.json
         </a>
+        {exportsList.map((f) => (
+          <a class="btn big" href={f.url} download={f.file} title={f.ext === ".csv" ? "Every register with its map and wire address, type, scale and unit" : "A modbus: block for configuration.yaml with a sensor per readable register"}>
+            <Icon name="download" /> {f.label}
+          </a>
+        ))}
         <a class="btn big" href="#raw" data-tab-link="raw"><Icon name="raw" /> Raw JSON</a>
         <a class="btn big" href={links.source}><Icon name="github" /> View on GitHub</a>
         <a class="btn big" href={links.edit} title="Edit the file on GitHub and open a pull request"><Icon name="edit" /> Suggest a correction</a>
@@ -293,6 +306,13 @@ for (const r of info.registers) accessCounts[r.access]++;
                     {s.url ? <a href={s.url} rel="nofollow">{s.title}</a> : <span>{s.title}</span>}
                     {(s.version || s.date) && <span class="faint"> · {[s.version && `version ${s.version}`, s.date].filter(Boolean).join(", ")}</span>}
                     {s.note && <div class="faint">{s.note}</div>}
+                    {(s.accessed || s.sha256) && (
+                      <div class="faint src-meta">
+                        {s.accessed && <>accessed <time datetime={s.accessed}>{s.accessed}</time></>}
+                        {s.accessed && s.sha256 && " · "}
+                        {s.sha256 && <span title={`SHA-256 of the document that was used: ${s.sha256}`}>SHA-256 <span class="mono">{s.sha256.slice(0, 12)}…</span></span>}
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -553,6 +573,10 @@ for (const r of info.registers) accessCounts[r.access]++;
 
   .notes {
     color: var(--text-2);
+  }
+
+  .src-meta {
+    font-size: 12px;
   }
 
   .span p {

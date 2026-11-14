@@ -44,3 +44,27 @@ export async function renderLibraryMarkdown(name: string): Promise<{ html: strin
     );
   return { html, title, headings: metadata.headings as Heading[] };
 }
+
+/** A guide from docs/guides/, with links to other guides and site pages kept on the site. */
+export async function renderGuide(slug: string): Promise<{ html: string; title: string; headings: Heading[] } | null> {
+  const src = libraryFile(`docs/guides/${slug}.md`);
+  if (src == null) return null;
+  processor ??= createMarkdownProcessor({ syntaxHighlight: false, gfm: true, smartypants: false });
+  const title = /^# (.*)\n/.exec(src)?.[1]?.replace(/`/g, "") ?? slug;
+  const body = src.replace(/^# .*\n+/, "");
+  const { code, metadata } = await (await processor).render(body);
+  const html = code
+    .replace(/href="(?!https?:|#|mailto:)([^"]+)"/g, (_, path: string) =>
+      path.startsWith("/") ? `href="${href(path)}"` : `href="${href(`/guides/${path.replace(/\.md$/, "")}`)}"`,
+    )
+    .replace(/<table>/g, '<div class="table-wrap"><table class="table md">')
+    .replace(/<\/table>/g, "</table></div>");
+  return { html, title, headings: metadata.headings as Heading[] };
+}
+
+/** The first paragraph of a guide, for its description and the guide list. */
+export function guideSummary(slug: string): string {
+  const src = libraryFile(`docs/guides/${slug}.md`) ?? "";
+  const para = src.replace(/^# .*\n+/, "").split(/\n\n/)[0] ?? "";
+  return para.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/[*`]/g, "").replace(/\s+/g, " ").trim();
+}
