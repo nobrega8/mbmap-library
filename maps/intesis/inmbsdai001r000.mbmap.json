@@ -1,0 +1,303 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Intesis",
+  "model": "INMBSDAI001R000",
+  "models": [
+    "INMBSDAI001R000",
+    "DK-RC-MBS-1"
+  ],
+  "vendor_website": "intesis.com",
+  "description": "Modbus RTU gateway for Daikin VRV and Sky Air air conditioners: on/off, mode, fan speed, vanes, setpoint, temperatures, alarms, error codes and gateway settings",
+  "revision": 1,
+  "source": "HMS Networks / Intesis, INMBSDAI001R000 user manual",
+  "sources": [
+    {
+      "title": "INMBSDAI001R000 – Modbus RTU interface – User manual",
+      "url": "https://www.hms-networks.com/docs/default-source/products/intesis/manuals-and-guides---manuals/user-manual-inmbsdai001r000.pdf",
+      "note": "Modbus register table",
+      "accessed": "2026-11-14",
+      "sha256": "edac3b7d3e90787240f9bb9be18c89dd21f8a438bbe18c24585006ed6df282c4"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over EIA-485. Function 03 or 04 reads, 06 or 16 writes. The baud rate and slave address are set with the DIP switches (factory: 9600 baud, 8N1).",
+    "Addresses are the protocol addresses of the manual (the PLC addresses less 1).",
+    "Temperatures are in °C or °F and in degrees or tenths of a degree, as set with the DIP switches; their entries say so.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "AC unit On/Off",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "AC unit Mode",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Heat",
+        "2": "Dry",
+        "3": "Fan",
+        "4": "Cool"
+      }
+    },
+    {
+      "name": "AC unit Fan Speed",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Low",
+        "2": "Mid",
+        "3": "High"
+      }
+    },
+    {
+      "name": "AC unit Up/Down Vane Position",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Position 1 (Horizontal)",
+        "2": "Position 2 (Horizontal)",
+        "3": "Position 3 (Medium)",
+        "4": "Position 4 (Vertical)",
+        "5": "Position 5 (Vertical)",
+        "10": "Swing"
+      }
+    },
+    {
+      "name": "AC unit Temperature Setpoint",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "RW",
+      "description": "-32768 (initialization value) 16 .. 31°C 61 .. 88°F Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "AC unit Temperature reference",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "access": "R",
+      "description": "-32678 (initialization value) 10 .. 38°C 50 .. 100°F Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Window Contact",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Closed",
+        "1": "Open"
+      }
+    },
+    {
+      "name": "Gateway Disablement",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Gateway enabled",
+        "1": "Gateway disabled"
+      }
+    },
+    {
+      "name": "AC Remote Control Disablement",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Remote Control enabled",
+        "1": "Remote Control disabled"
+      }
+    },
+    {
+      "name": "AC unit Operation Time",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 .. 65535 (hours). Time the AC unit is “On\""
+    },
+    {
+      "name": "AC unit Alarm Status",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No alarm condition",
+        "1": "Alarm condition"
+      }
+    },
+    {
+      "name": "Error Code",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: No error present 65535 (-1 if it is read as signed value): Communication error with the AC unit For possible error codes and their explanation, see"
+    },
+    {
+      "name": "Indoor unit ambient temperature from external sensor (at Modbus side)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "access": "RW",
+      "description": "-32768: (Initialization value). No temperature is provided by an external sensor. Any other Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "AC Real temperature setpoint 1,2,3,7 When no external temperature is provided, this read- only register will have the same value as register",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "access": "R",
+      "description": "5 (PLC addressing). In all cases, it will show the current setpoint in the indoor unit 16 .. 31°C 60 .. 88°F Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "AC unit Left/Right Vane Position",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "10": "Swing"
+      }
+    },
+    {
+      "name": "Under Voltage counter",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 55,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 .. 300"
+    },
+    {
+      "name": "Block Periodic Sendings",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 97,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Non-blocked",
+        "1": "Blocked"
+      }
+    },
+    {
+      "name": "“Open Window” switch-off timeout",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 .. 30 min Factory setting: 30 min"
+    },
+    {
+      "name": "Modbus RTU Baud rate 2400bps 4800 bps 9600 bps (default) 19200 bps 38400 bps 57600 bps 76800 bps 115200 bps",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Device Modbus server address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "description": "1 .. 63"
+    },
+    {
+      "name": "Maximum number of fan speeds",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Switch value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Device ID",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "R",
+      "description": "Reads 0x0801 for this gateway.",
+      "enum": {
+        "2049": "INMBSDAI001R000"
+      }
+    },
+    {
+      "name": "Software version",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Error address Address for the indoor unit reporting error",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "R"
+    }
+  ]
+}
