@@ -106,11 +106,11 @@ A tool that has two copies of the same map (the same `vendor` and `model`) **SHO
 
 ### 3.2 Models and firmware
 
-A map applies to the models in `models`, or to `model` alone when `models` is missing. `model` is the name shown to people (`"EKMBPP1 / EKMBPP1A"`); `models` lists each name or code a device can report, so a tool can compare it with the connected device (§9):
+A map applies to the models in `models`, or to `model` alone when `models` is missing. `model` is the name shown to people: one device, or the family or series name when the map covers several (`"PM5100 and PM5300 series"`), not a list of devices. `models` lists each name or code a device can report, so a tool can compare it with the connected device (§9):
 
 ```json
-"model": "EKMBPP1 / EKMBPP1A",
-"models": ["EKMBPP1", "EKMBPP1A"]
+"model": "PM5100 and PM5300 series",
+"models": ["PM5110", "PM5111", "PM5310", "PM5320", "PM5330"]
 ```
 
 `firmware_min` and `firmware_max` say which firmware versions the map applies to. Both are optional: without them the map applies to every firmware, which is also the right choice when the version is unknown. `firmware` stays available for anything a range cannot say ("2.x, except 2.3 beta").
@@ -479,6 +479,7 @@ Readers **SHOULD** report every problem with one of the codes below and a [JSON 
 | `bad-parts` | error | `parts` is empty, is set on a register that is not a `string` with a valid `length`, or has a part without a `name` or `offset`, with a negative `offset`, an unknown or `bool` `type`, a `string` part without `length`, a part that goes beyond the block, or parts that overlap (§4.10) |
 | `no-rows` | warning | `registers` is empty |
 | `duplicate-name` | warning | A `name` is used more than once by registers whose firmware ranges overlap (§3.2) |
+| `model-list` | warning | `model` lists devices separated by " / "; give the family name and list the devices in `models` (§3.2) |
 | `overlap` | warning | A value starts inside another value's registers in the same area, which usually means a wrong address or type. Registers that start at the same address are alternative readings of the same data (for example a code read as a number and as text) and never count as overlap; neither do bits and bit fields of one register (`bool` + `bit`, `uint16` + `bit` + `bits`), nor registers whose firmware ranges do not overlap |
 | `firmware-outside-map` | warning | A register's firmware range has no version in common with the file's, so it never applies |
 | `bad-read` | error | `read_group` is an empty string |

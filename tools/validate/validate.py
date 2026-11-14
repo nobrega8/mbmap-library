@@ -539,6 +539,9 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
         at = child("", key)
         if key == "$schema":
             continue
+        if key == "model" and isinstance(value, str) and " / " in value:
+            ck.warn(at, "model-list", "model is the name shown to people: give a family or series name "
+                    "and list each device in models")
         if key == "mbmap":
             if value != 2 or isinstance(value, bool):
                 ck.error(at, "bad-meta-value", f"this validator supports mbmap 2, found {value!r}")
