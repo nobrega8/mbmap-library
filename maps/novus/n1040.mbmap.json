@@ -1,0 +1,1035 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "N1040",
+  "models": [
+    "N1040"
+  ],
+  "vendor_website": "novus.com.br",
+  "description": "Temperature controller with optional RS485 Modbus RTU: setpoint, process value, output power, status, PID and alarm settings, input and communication settings",
+  "revision": 1,
+  "firmware": "Communication protocol for software V2.2x",
+  "source": "Novus N1040 temperature controller, communication protocol V2.2x A (Portuguese)",
+  "sources": [
+    {
+      "title": "Controlador N1040 - Controlador de Temperatura - Protocolo de Comunicação",
+      "version": "V2.2x A",
+      "url": "https://www.novus.com.br/pt/produto/controladores/downloads2/getFile.asp?ID=321c65df18&Extensao=PDF",
+      "note": "linked in issue #437; register table, status words, coil table and I/O functions"
+    }
+  ],
+  "notes": [
+    "Modbus RTU needs the optional RS485 interface. Functions 03, 05 and 06; writes with address 0 are broadcast and reads in broadcast get no answer.",
+    "1200 to 115200 baud, 8 data bits; even or odd parity with 1 stop bit, or no parity with 2 stop bits.",
+    "Every register is a signed 16-bit value (two's complement). Temperatures, setpoints, limits and offsets are integers in the display unit, with the decimal places set in register 73 (dppo).",
+    "A write outside the allowed range is not refused: the controller stores the nearest limit and returns it.",
+    "The outputs can be written as coils only when the I/O function is Off.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "databits": 8,
+  "byte_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Active setpoint",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "int16",
+      "access": "RW",
+      "description": "Reads the active SP (main SP, ramp and soak or remote SP); a write sets the main SP. Range spll to spkl, decimal places set by dppo (register 73)."
+    },
+    {
+      "name": "Process value (PV)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "description": "Range spll to spkl; decimal places set by dppo (register 73)."
+    },
+    {
+      "name": "Output power (MV)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R",
+      "description": "Output power in automatic or manual mode, 0 to 100.0 %."
+    },
+    {
+      "name": "Displayed value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "int16",
+      "access": "R",
+      "description": "Value shown on the screen, -1999 to 9999; the range depends on the parameter shown."
+    },
+    {
+      "name": "Prompt index",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7,
+      "type": "int16",
+      "access": "R",
+      "description": "Position of the current prompt in the parameter flow."
+    },
+    {
+      "name": "Software version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 8,
+      "type": "int16",
+      "access": "R",
+      "role": "firmware",
+      "description": "V1.00 reads 100."
+    },
+    {
+      "name": "Device ID",
+      "group": "Identification",
+      "area": "holding",
+      "address": 9,
+      "type": "int16",
+      "access": "R",
+      "reference": 66,
+      "role": "model",
+      "description": "66 (0x42) = N1040."
+    },
+    {
+      "name": "Serial number high",
+      "group": "Identification",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "access": "R",
+      "description": "First 4 digits of the serial number, 0 to 9999."
+    },
+    {
+      "name": "Serial number low",
+      "group": "Identification",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "access": "R",
+      "description": "Last 4 digits of the serial number, 0 to 9999."
+    },
+    {
+      "name": "Status word 1",
+      "group": "Status",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits 0-3: alarms 1-4 active; bits 8-10: hardware type."
+    },
+    {
+      "name": "Status word 2",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the status bits."
+    },
+    {
+      "name": "Status word 3",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "description": "Input and conversion errors; see the status bits."
+    },
+    {
+      "name": "Alarm 1 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 2 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 3 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 4 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Automatic mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = manual, 1 = automatic."
+    },
+    {
+      "name": "Running",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = stop, 1 = run."
+    },
+    {
+      "name": "Control action reverse",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "The manual lists 0 = direct, 1 = reverse here, the opposite of register 18 (act)."
+    },
+    {
+      "name": "Auto-tuning",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 1 inhibited",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 2 inhibited",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 3 inhibited",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 4 inhibited",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Unit °F",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 9,
+      "access": "R",
+      "description": "0 = °C, 1 = °F."
+    },
+    {
+      "name": "Output 1 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Output 2 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Output 3 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Output 4 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "PV conversion too low",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Negative conversion after calibration",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "PV conversion too high",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Linearisation limit exceeded",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Pt100 cable resistance too high",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Auto-zero conversion out of limits",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Cold junction conversion out of limits",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Control action (act)",
+      "group": "Control",
+      "area": "holding",
+      "address": 18,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Reverse",
+        "1": "Direct"
+      }
+    },
+    {
+      "name": "Auto-tuning (atvn)",
+      "group": "Control",
+      "area": "holding",
+      "address": 19,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Integral rate (Ir)",
+      "group": "Control",
+      "area": "holding",
+      "address": 20,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "RW",
+      "description": "Repeats per minute, 0 to 30.00."
+    },
+    {
+      "name": "Derivative time (dt)",
+      "group": "Control",
+      "area": "holding",
+      "address": 21,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 250 s."
+    },
+    {
+      "name": "Proportional band (pb)",
+      "group": "Control",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "description": "0 to 500.0 %."
+    },
+    {
+      "name": "PWM cycle time (ct)",
+      "group": "Control",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "s",
+      "access": "RW",
+      "description": "0.5 to 100.0 s."
+    },
+    {
+      "name": "On/off hysteresis (kyst)",
+      "group": "Control",
+      "area": "holding",
+      "address": 25,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to spkl - spll."
+    },
+    {
+      "name": "Soft start time (sfst)",
+      "group": "Control",
+      "area": "holding",
+      "address": 26,
+      "type": "int16",
+      "unit": "s",
+      "access": "RW",
+      "description": "0 to 9999 s."
+    },
+    {
+      "name": "Output low limit (ovll)",
+      "group": "Control",
+      "area": "holding",
+      "address": 27,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "description": "0 to 100.0 %."
+    },
+    {
+      "name": "Output high limit (ovkl)",
+      "group": "Control",
+      "area": "holding",
+      "address": 28,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "description": "0 to 100.0 %."
+    },
+    {
+      "name": "Setpoint (sp)",
+      "group": "Control",
+      "area": "holding",
+      "address": 29,
+      "type": "int16",
+      "access": "RW",
+      "description": "spll to spkl."
+    },
+    {
+      "name": "I/O 1 function (Io1)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 30,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Digital output set by the serial interface (OFF)",
+        "1": "PWM control output (CTRL)",
+        "2": "Alarm 1 output (A1)",
+        "3": "Alarm 2 output (A2)",
+        "4": "Alarm 1 or alarm 2 (A1A2)",
+        "5": "Loop break detection time (Lbd)",
+        "10": "Analog output off",
+        "11": "Control 0-20 mA",
+        "12": "Control 4-20 mA",
+        "13": "PV retransmission 0-20 mA",
+        "14": "PV retransmission 4-20 mA",
+        "15": "SP retransmission 0-20 mA",
+        "16": "SP retransmission 4-20 mA"
+      },
+      "description": "Availability depends on the model."
+    },
+    {
+      "name": "I/O 2 function (Io2)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 31,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Digital output set by the serial interface (OFF)",
+        "1": "PWM control output (CTRL)",
+        "2": "Alarm 1 output (A1)",
+        "3": "Alarm 2 output (A2)",
+        "4": "Alarm 1 or alarm 2 (A1A2)",
+        "5": "Loop break detection time (Lbd)",
+        "10": "Analog output off",
+        "11": "Control 0-20 mA",
+        "12": "Control 4-20 mA",
+        "13": "PV retransmission 0-20 mA",
+        "14": "PV retransmission 4-20 mA",
+        "15": "SP retransmission 0-20 mA",
+        "16": "SP retransmission 4-20 mA"
+      },
+      "description": "Availability depends on the model."
+    },
+    {
+      "name": "I/O 3 function (Io3)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 32,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Digital output set by the serial interface (OFF)",
+        "1": "PWM control output (CTRL)",
+        "2": "Alarm 1 output (A1)",
+        "3": "Alarm 2 output (A2)",
+        "4": "Alarm 1 or alarm 2 (A1A2)",
+        "5": "Loop break detection time (Lbd)",
+        "10": "Analog output off",
+        "11": "Control 0-20 mA",
+        "12": "Control 4-20 mA",
+        "13": "PV retransmission 0-20 mA",
+        "14": "PV retransmission 4-20 mA",
+        "15": "SP retransmission 0-20 mA",
+        "16": "SP retransmission 4-20 mA"
+      },
+      "description": "Availability depends on the model."
+    },
+    {
+      "name": "I/O 4 function (Io4)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 33,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Digital output set by the serial interface (OFF)",
+        "1": "PWM control output (CTRL)",
+        "2": "Alarm 1 output (A1)",
+        "3": "Alarm 2 output (A2)",
+        "4": "Alarm 1 or alarm 2 (A1A2)",
+        "5": "Loop break detection time (Lbd)",
+        "10": "Analog output off",
+        "11": "Control 0-20 mA",
+        "12": "Control 4-20 mA",
+        "13": "PV retransmission 0-20 mA",
+        "14": "PV retransmission 4-20 mA",
+        "15": "SP retransmission 0-20 mA",
+        "16": "SP retransmission 4-20 mA"
+      },
+      "description": "Availability depends on the model."
+    },
+    {
+      "name": "Output on input error (IE_MV)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 34,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Loop break detection (LBDT)",
+      "group": "I/O",
+      "area": "holding",
+      "address": 35,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm 1 function (Fva1)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 39,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential",
+        "4": "Differential low",
+        "5": "Differential high",
+        "6": "Input error"
+      },
+      "description": "Availability depends on the model."
+    },
+    {
+      "name": "Alarm 2 function (Fva2)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 40,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential",
+        "4": "Differential low",
+        "5": "Differential high",
+        "6": "Input error"
+      },
+      "description": "Availability depends on the model."
+    },
+    {
+      "name": "Alarm 3 function (Fva3)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 41,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential",
+        "4": "Differential low",
+        "5": "Differential high",
+        "6": "Input error"
+      },
+      "description": "Availability depends on the model."
+    },
+    {
+      "name": "Alarm 4 function (Fva4)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 42,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Low",
+        "2": "High",
+        "3": "Differential",
+        "4": "Differential low",
+        "5": "Differential high",
+        "6": "Input error"
+      },
+      "description": "Availability depends on the model."
+    },
+    {
+      "name": "Alarm 1 setpoint (Sp.a1)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 43,
+      "type": "int16",
+      "access": "RW",
+      "description": "spll to spkl for a non-differential alarm; spll - spkl to spkl - spll for a differential alarm."
+    },
+    {
+      "name": "Alarm 2 setpoint (Sp.a2)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "int16",
+      "access": "RW",
+      "description": "spll to spkl for a non-differential alarm; spll - spkl to spkl - spll for a differential alarm."
+    },
+    {
+      "name": "Alarm 3 setpoint (Sp.a3)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "int16",
+      "access": "RW",
+      "description": "spll to spkl for a non-differential alarm; spll - spkl to spkl - spll for a differential alarm."
+    },
+    {
+      "name": "Alarm 4 setpoint (Sp.a4)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 46,
+      "type": "int16",
+      "access": "RW",
+      "description": "spll to spkl for a non-differential alarm; spll - spkl to spkl - spll for a differential alarm."
+    },
+    {
+      "name": "Alarm 1 setpoint shown (Sp1.E)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 47,
+      "type": "int16",
+      "access": "RW",
+      "description": "Shows the alarm setpoint in the operating cycle."
+    },
+    {
+      "name": "Alarm 2 setpoint shown (Sp2.E)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 48,
+      "type": "int16",
+      "access": "RW",
+      "description": "Shows the alarm setpoint in the operating cycle."
+    },
+    {
+      "name": "Alarm 3 setpoint shown (Sp3.E)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 49,
+      "type": "int16",
+      "access": "RW",
+      "description": "Shows the alarm setpoint in the operating cycle."
+    },
+    {
+      "name": "Alarm 4 setpoint shown (Sp4.E)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 50,
+      "type": "int16",
+      "access": "RW",
+      "description": "Shows the alarm setpoint in the operating cycle."
+    },
+    {
+      "name": "Alarm 1 hysteresis (Kya1)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 51,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to spkl - spll."
+    },
+    {
+      "name": "Alarm 2 hysteresis (Kya2)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 52,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to spkl - spll."
+    },
+    {
+      "name": "Alarm 3 hysteresis (Kya3)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 53,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to spkl - spll."
+    },
+    {
+      "name": "Alarm 4 hysteresis (Kya4)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 54,
+      "type": "int16",
+      "access": "RW",
+      "description": "0 to spkl - spll."
+    },
+    {
+      "name": "Alarm 1 initial blocking (Bla1)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Alarm 2 initial blocking (Bla2)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Alarm 3 initial blocking (Bla3)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 57,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Alarm 4 initial blocking (Bla4)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 58,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Flash display on alarm (flsh)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 67,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Input type (type)",
+      "group": "Input",
+      "area": "holding",
+      "address": 71,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Thermocouple J (-110 to 950 °C)",
+        "1": "Thermocouple K (-150 to 1370 °C)",
+        "2": "Thermocouple T (-160 to 400 °C)",
+        "3": "Pt100 (-200 to 850 °C)"
+      }
+    },
+    {
+      "name": "Temperature unit (vnit)",
+      "group": "Input",
+      "area": "holding",
+      "address": 72,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "°C",
+        "1": "°F"
+      }
+    },
+    {
+      "name": "Decimal point position (dppo)",
+      "group": "Input",
+      "area": "holding",
+      "address": 73,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "X.XXX",
+        "1": "XX.XX",
+        "2": "XXX.X",
+        "3": "XXXX"
+      }
+    },
+    {
+      "name": "Input filter (fltr)",
+      "group": "Input",
+      "area": "holding",
+      "address": 74,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Setpoint low limit (spll)",
+      "group": "Input",
+      "area": "holding",
+      "address": 75,
+      "type": "int16",
+      "access": "RW",
+      "description": "The minimum depends on the input type."
+    },
+    {
+      "name": "Setpoint high limit (spkl)",
+      "group": "Input",
+      "area": "holding",
+      "address": 76,
+      "type": "int16",
+      "access": "RW",
+      "description": "From spll; the maximum depends on the input type."
+    },
+    {
+      "name": "PV offset (offs)",
+      "group": "Input",
+      "area": "holding",
+      "address": 77,
+      "type": "int16",
+      "access": "RW",
+      "description": "spll to spkl."
+    },
+    {
+      "name": "Modbus address (addr)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 78,
+      "type": "int16",
+      "access": "RW",
+      "description": "1 to 247."
+    },
+    {
+      "name": "Baud rate (bavd)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 79,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "1200",
+        "1": "2400",
+        "2": "4800",
+        "3": "9600",
+        "4": "19200",
+        "5": "38400",
+        "6": "57600",
+        "7": "115200"
+      }
+    },
+    {
+      "name": "Parity (prty)",
+      "group": "Communication",
+      "area": "holding",
+      "address": 80,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Retransmission low limit (RTLL)",
+      "group": "Retransmission",
+      "area": "holding",
+      "address": 88,
+      "type": "int16",
+      "access": "RW",
+      "description": "The minimum depends on the input type."
+    },
+    {
+      "name": "Retransmission high limit (RtXL)",
+      "group": "Retransmission",
+      "area": "holding",
+      "address": 89,
+      "type": "int16",
+      "access": "RW",
+      "description": "From RTLL; the maximum depends on the input type."
+    },
+    {
+      "name": "Protection level (Prot)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 102,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Restore factory calibration (rstr)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 107,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Keep calibration",
+        "1": "Restore factory calibration"
+      }
+    },
+    {
+      "name": "Cold junction temperature (CJ)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 108,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Remote key press (Key)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 112,
+      "type": "int16",
+      "access": "W",
+      "description": "1 = P key, 2 = up, 4 = down, 8 = back, 9 = P and back."
+    },
+    {
+      "name": "Output 1 (I/O1)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 1 in the manual. Can be written only when I/O1 function is Off."
+    },
+    {
+      "name": "Output 2 (I/O2)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 2 in the manual. Can be written only when I/O2 function is Off."
+    },
+    {
+      "name": "Output 3 (I/O3)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 3 in the manual. Can be written only when I/O3 function is Off."
+    },
+    {
+      "name": "Output 4 (I/O4)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 4 in the manual. Can be written only when I/O4 function is Off."
+    }
+  ]
+}
