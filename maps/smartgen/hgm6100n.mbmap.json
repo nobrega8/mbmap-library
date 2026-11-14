@@ -1,0 +1,2998 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "SmartGen",
+  "model": "HGM6100N series",
+  "models": [
+    "HGM6100N",
+    "HGM6110N",
+    "HGM6120N",
+    "HGM6100CAN",
+    "HGM6110CAN",
+    "HGM6120CAN"
+  ],
+  "vendor_website": "smartgen.cn",
+  "description": "Genset controller (HGM6110 auto start, HGM6120 AMF): mains and generator values, engine sensors, ECU data, alarms, status and remote commands",
+  "revision": 1,
+  "source": "SmartGen, HGM6100N/HGM6100CAN Genset Controller Communication Protocol",
+  "sources": [
+    {
+      "title": "HGM6100N/HGM6100CAN Genset Controller Communication Protocol",
+      "url": "https://www.smartgen.cn/yun/data/download/HGM6100N_HGM6100CAN_Protocol_en.pdf",
+      "note": "function code 01H, 03H and 05H tables"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS485, slave only. Address 1 to 254 (default 1); 2400 to 115200 baud (default 9600), 8 data bits, no parity by default, 1 stop bit. Up to 120 registers per read; allow more than 200 ms for the answer.",
+    "Status bits are coils read with function 01; remote commands are coils at the same addresses written with function 05 (0xFF00), each sent once. Values are holding registers read with 03.",
+    "Addresses are the 'Modbus Address' column of the manual (the PLC address less 1).",
+    "ECU values (J1939) are only on the HGM6100CAN with an ECU engine; on the HGM6100N those registers are reserved.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Common Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "R",
+      "description": "0 represents there is no common alarm;"
+    },
+    {
+      "name": "Common Warning Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Common Shutdown Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Remote Mode",
+      "group": "Status",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Remote Lock",
+      "group": "Status",
+      "area": "coil",
+      "address": 4,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Mains On-load",
+      "group": "Status",
+      "area": "coil",
+      "address": 6,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen On-load",
+      "group": "Status",
+      "area": "coil",
+      "address": 7,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Emergency Stop",
+      "group": "Status",
+      "area": "coil",
+      "address": 8,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Overspeed Alarm Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 9,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Underspeed Alarm Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 10,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Speed Signal Loss Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 11,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Overfrequency Alarm Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 12,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Underfrequency Alarm Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 13,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Overvoltage Alarm Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 14,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Undervoltage Alarm Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 15,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen Overcurrent Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 16,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Crank Failure",
+      "group": "Status",
+      "area": "coil",
+      "address": 17,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "High Water Temp. Alarm Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 18,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Low Oil Pressure Alarm Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 19,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Frequency Loss Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 20,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Input Shutdown Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 21,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Low Fuel Level Shutdown Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 22,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Low Coolant Level Shutdown Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 23,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "High Water Temp. Warning Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 24,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Low Oil Pressure Warning Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 25,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen Overcurrent Warning Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 26,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Stop Failure Warning Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 27,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Low Fuel Level Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 28,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Charging Failure Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 29,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Battery Undervoltage Warning Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 30,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Battery Overvoltage Warning Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 31,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Input Warning Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 32,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Speed Signal Loss Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 33,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Low Coolant Level Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 34,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Temp. Sensor Open Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 35,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Oil Pressure Sensor Open Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 36,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Time Due Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 37,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Charger Fail to Charge Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 38,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Overpower Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 39,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Test Mode",
+      "group": "Status",
+      "area": "coil",
+      "address": 40,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Auto Mode",
+      "group": "Status",
+      "area": "coil",
+      "address": 41,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Manual Mode",
+      "group": "Status",
+      "area": "coil",
+      "address": 42,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Stop Mode",
+      "group": "Status",
+      "area": "coil",
+      "address": 43,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Temp. Sensor Open Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 44,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Oil Pressure Sensor Open Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 45,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Time Due Shutdown Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 46,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Overpower Shutdown Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 47,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Emergency Stop Input",
+      "group": "Status",
+      "area": "coil",
+      "address": 48,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Input 1",
+      "group": "Status",
+      "area": "coil",
+      "address": 49,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Input 2",
+      "group": "Status",
+      "area": "coil",
+      "address": 50,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Input 3",
+      "group": "Status",
+      "area": "coil",
+      "address": 51,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Input 4",
+      "group": "Status",
+      "area": "coil",
+      "address": 52,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Input 5",
+      "group": "Status",
+      "area": "coil",
+      "address": 53,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Crank Relay Output",
+      "group": "Status",
+      "area": "coil",
+      "address": 56,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Fuel Relay Output",
+      "group": "Status",
+      "area": "coil",
+      "address": 57,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Output 1",
+      "group": "Status",
+      "area": "coil",
+      "address": 58,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Output 2",
+      "group": "Status",
+      "area": "coil",
+      "address": 59,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Output 3",
+      "group": "Status",
+      "area": "coil",
+      "address": 60,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Aux. Output 4",
+      "group": "Status",
+      "area": "coil",
+      "address": 61,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Fuel 1 Output Control",
+      "group": "Status",
+      "area": "coil",
+      "address": 62,
+      "type": "bool",
+      "access": "R",
+      "description": "HGM6100CAN"
+    },
+    {
+      "name": "Liquid Leakage Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 63,
+      "type": "bool",
+      "access": "R",
+      "description": "HGM6100CAN"
+    },
+    {
+      "name": "Mains Fault",
+      "group": "Status",
+      "area": "coil",
+      "address": 64,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Mains Normal",
+      "group": "Status",
+      "area": "coil",
+      "address": 65,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Mains Overvoltage",
+      "group": "Status",
+      "area": "coil",
+      "address": 66,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Mains Undervoltage",
+      "group": "Status",
+      "area": "coil",
+      "address": 67,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Mains Loss Phase",
+      "group": "Status",
+      "area": "coil",
+      "address": 68,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Mains Blackout",
+      "group": "Status",
+      "area": "coil",
+      "address": 69,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen Normal",
+      "group": "Status",
+      "area": "coil",
+      "address": 72,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen Overvoltage",
+      "group": "Status",
+      "area": "coil",
+      "address": 73,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen Undervoltage",
+      "group": "Status",
+      "area": "coil",
+      "address": 74,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen Overfrequency",
+      "group": "Status",
+      "area": "coil",
+      "address": 75,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen Underfrequency",
+      "group": "Status",
+      "area": "coil",
+      "address": 76,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gen Overcurrent",
+      "group": "Status",
+      "area": "coil",
+      "address": 77,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Scheduled Not Run Time Indication",
+      "group": "Status",
+      "area": "coil",
+      "address": 78,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "ECU Warning",
+      "group": "Status",
+      "area": "coil",
+      "address": 79,
+      "type": "bool",
+      "access": "R",
+      "description": "HGM6100CAN"
+    },
+    {
+      "name": "ECU Shutdown Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 80,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "ECU Comm. Failure Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 81,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "High Temp. Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 82,
+      "type": "bool",
+      "access": "R",
+      "description": "It links to the analog temp. sensor."
+    },
+    {
+      "name": "Low Oil Pressure Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 83,
+      "type": "bool",
+      "access": "R",
+      "description": "It links to the analog oil pressure sensor."
+    },
+    {
+      "name": "Liquid Leakage Shutdown",
+      "group": "Status",
+      "area": "coil",
+      "address": 84,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Regeneration in process",
+      "group": "Status",
+      "area": "coil",
+      "address": 88,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Severe limit will be activated soon",
+      "group": "Status",
+      "area": "coil",
+      "address": 89,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Service Regeneration is required due to DPF overload",
+      "group": "Status",
+      "area": "coil",
+      "address": 90,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Parked regeneration is required due to DPF full load",
+      "group": "Status",
+      "area": "coil",
+      "address": 91,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "DPF is regenerating, DO NOT shut down",
+      "group": "Status",
+      "area": "coil",
+      "address": 92,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "DPF regeneration is inhibited",
+      "group": "Status",
+      "area": "coil",
+      "address": 93,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "DPF regeneration is required, DO NOT shut down",
+      "group": "Status",
+      "area": "coil",
+      "address": 94,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Engine Warning Fault",
+      "group": "Status",
+      "area": "coil",
+      "address": 95,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "On-road Regeneration",
+      "group": "Status",
+      "area": "coil",
+      "address": 96,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Parked regeneration is required",
+      "group": "Status",
+      "area": "coil",
+      "address": 97,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Regeneration at the service station is required",
+      "group": "Status",
+      "area": "coil",
+      "address": 98,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Parked regeneration is required (99)",
+      "group": "Status",
+      "area": "coil",
+      "address": 99,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "High Aftertreatment Exhaust Temp.",
+      "group": "Status",
+      "area": "coil",
+      "address": 100,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Do not close the switch with load during regeneration",
+      "group": "Status",
+      "area": "coil",
+      "address": 101,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Please regenerate when water temp. is above 50°C",
+      "group": "Status",
+      "area": "coil",
+      "address": 102,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Active regeneration is required",
+      "group": "Status",
+      "area": "coil",
+      "address": 103,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "HEST Indication",
+      "group": "Status",
+      "area": "coil",
+      "address": 104,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "DPF Inhibit Indication",
+      "group": "Status",
+      "area": "coil",
+      "address": 105,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "NCD Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 106,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "NCD limit will be activated soon",
+      "group": "Status",
+      "area": "coil",
+      "address": 107,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "NCD Primary Limit",
+      "group": "Status",
+      "area": "coil",
+      "address": 108,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "NCD Severe Limit",
+      "group": "Status",
+      "area": "coil",
+      "address": 109,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Service Regeneration is required",
+      "group": "Status",
+      "area": "coil",
+      "address": 110,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Parked regeneration in process",
+      "group": "Status",
+      "area": "coil",
+      "address": 111,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "MIL",
+      "group": "Status",
+      "area": "coil",
+      "address": 112,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "SVS",
+      "group": "Status",
+      "area": "coil",
+      "address": 113,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Cruise Control Indication",
+      "group": "Status",
+      "area": "coil",
+      "address": 114,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Water in Fuel",
+      "group": "Status",
+      "area": "coil",
+      "address": 115,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Brake",
+      "group": "Status",
+      "area": "coil",
+      "address": 116,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Low Urea Level",
+      "group": "Status",
+      "area": "coil",
+      "address": 117,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Driver Alarm",
+      "group": "Status",
+      "area": "coil",
+      "address": 118,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "DPF",
+      "group": "Status",
+      "area": "coil",
+      "address": 119,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Engine Shutdown Fault",
+      "group": "Status",
+      "area": "coil",
+      "address": 120,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Mains UA",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Mains UB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Mains UC",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Mains UAB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Mains UBC",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Mains UCA",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Mains Freq.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R",
+      "description": "Range 0 to 100.0."
+    },
+    {
+      "name": "Gen UA",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Gen UB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Gen UC",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Gen UAB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Gen UBC",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Gen UCA",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Gen Freq.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R",
+      "description": "Range 0 to 100.0."
+    },
+    {
+      "name": "A Phase Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "B Phase Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "C Phase Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Water Temp. Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Water Temp. Resist. Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "OP Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "OP Resist. Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "Level Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Level Resist. Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "Speed",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Battery Voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "D+ Voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 26,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 27,
+      "type": "int16",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 28,
+      "type": "int16",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 29,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Countdown h",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Countdown min",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "unit": "min",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Ignition Advance Angle",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "unit": "°",
+      "access": "R",
+      "description": "51: KINGBAND 73: KINGBAND-1 Only support HGM6100CAN ECU genset;."
+    },
+    {
+      "name": "Gas Valve Position",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 33,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Controller Running Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "R",
+      "description": "No. Genset Status."
+    },
+    {
+      "name": "Controller Running Status delay",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 35,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Auto Running Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "description": "Remote Start Status."
+    },
+    {
+      "name": "Auto Running Status delay",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "ATS Running Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "ATS Running Status delay",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Mains Status 0 Normal 1 Abnormal 2 No Delay",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 40,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Mains Status 0 Normal 1 Abnormal 2 No Delay delay",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 41,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Accum. Oil Engine Running Time (h) MSB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 42,
+      "type": "uint16",
+      "unit": "h",
+      "access": "R",
+      "description": "Range 0 to 9000. High part: value = MSB × 10000 + LSB (next register)."
+    },
+    {
+      "name": "Accum. Oil Engine Running Time (h) LSB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 43,
+      "type": "uint16",
+      "unit": "h",
+      "access": "R",
+      "description": "Range 0 to 9999."
+    },
+    {
+      "name": "Accum. Oil Engine Running Time (min)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 44,
+      "type": "uint16",
+      "unit": "min",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Accum. Oil Engine Running Time (s)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 45,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Accum. Start Times MSB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 46,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 9000. High part: value = MSB × 10000 + LSB (next register)."
+    },
+    {
+      "name": "Accum. Start Times LSB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 47,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 9999."
+    },
+    {
+      "name": "Accum. Energy MSB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Range 0 to 9000. High part: value = MSB × 10000 + LSB (next register)."
+    },
+    {
+      "name": "Accum. Energy LSB",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Range 0 to 9999."
+    },
+    {
+      "name": "SW",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "HW",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 51,
+      "type": "uint16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "A Phase Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 52,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "B Phase Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 53,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "C Phase Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 54,
+      "type": "int16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Load Output Percentage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 55,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Air-fuel Ratio",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Only support HGM6100CAN ECU genset; For HGM6100N, it is reserved."
+    },
+    {
+      "name": "Throttle Percentage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 57,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Coolant Level",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 58,
+      "type": "int16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Oil Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 59,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Coolant Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 60,
+      "type": "int16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Fuel Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 61,
+      "type": "int16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Fuel Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 62,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Air Inlet Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 63,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 64,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Turbo Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 65,
+      "type": "int16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Fuel Consump.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 66,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "L/h",
+      "access": "R"
+    },
+    {
+      "name": "Intake Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 67,
+      "type": "int16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Accum. Fuel Consump.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "unit": "L",
+      "access": "R"
+    },
+    {
+      "name": "Controller Model",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 71,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Controller Time: Year",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 72,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 99."
+    },
+    {
+      "name": "Controller Time: Month",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 12."
+    },
+    {
+      "name": "Controller Time: Day",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 74,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 31."
+    },
+    {
+      "name": "Controller Time: Week",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 75,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 6."
+    },
+    {
+      "name": "Controller Time: h",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 23."
+    },
+    {
+      "name": "Controller Time: min",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 77,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Controller Time: s",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 78,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Release Year",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 79,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 99."
+    },
+    {
+      "name": "Release Month",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 80,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 12."
+    },
+    {
+      "name": "Release Day",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 31."
+    },
+    {
+      "name": "Ignition Speed",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R",
+      "description": "Only support HGM6100CAN ECU genset; For HGM6100N, it is reserved."
+    },
+    {
+      "name": "Urea Level",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 83,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "ECU Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 84,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Ambient Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 85,
+      "type": "int16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "ECU Running Time",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 86,
+      "type": "int16",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "MTU FC",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 88,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "MTU Droop",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 89,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "MTU Demand Source",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 90,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "MTU SSD",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 91,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Gen UA Phase",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 92,
+      "type": "int16",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Gen UB Phase",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 93,
+      "type": "int16",
+      "unit": "°",
+      "access": "R",
+      "description": "Range 0 to 360."
+    },
+    {
+      "name": "Gen UC Phase",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 94,
+      "type": "int16",
+      "unit": "°",
+      "access": "R",
+      "description": "Range 0 to 360."
+    },
+    {
+      "name": "Mains UA Phase",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 95,
+      "type": "int16",
+      "unit": "°",
+      "access": "R",
+      "description": "Range 0 to 360."
+    },
+    {
+      "name": "Mains UB Phase",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 96,
+      "type": "int16",
+      "unit": "°",
+      "access": "R",
+      "description": "Range 0 to 360."
+    },
+    {
+      "name": "Mains UC Phase",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 97,
+      "type": "int16",
+      "unit": "°",
+      "access": "R",
+      "description": "Range 0 to 360."
+    },
+    {
+      "name": "DM1 alarm 1 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 98,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit Only support HGM6100CAN ECU genset."
+    },
+    {
+      "name": "DM1 alarm 1 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 1 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 2 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 2 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 2 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 3 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 3 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 3 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 4 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 4 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 4 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 5 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 5 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 5 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 6 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 113,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 6 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 114,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 6 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 7 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 116,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 7 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 117,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 7 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 8 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 119,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 8 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 120,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 8 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 121,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 9 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 122,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 9 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 123,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 9 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 124,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 10 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 125,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM1 alarm 10 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 126,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM1 alarm 10 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 127,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 1 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 128,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 1 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 129,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 1 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 130,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 2 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 131,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 2 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 132,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 2 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 3 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 3 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 135,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 3 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 136,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 4 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 137,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 4 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 138,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 4 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 139,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 5 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 140,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 5 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 141,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 5 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 142,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 6 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 143,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 6 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 144,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 6 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 145,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 7 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 146,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 7 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 147,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 7 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 148,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 8 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 149,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 8 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 8 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 151,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 9 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 152,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 9 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 153,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 9 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 154,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 10 SPN low",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 155,
+      "type": "uint16",
+      "access": "R",
+      "description": "SPN Low 16-bit."
+    },
+    {
+      "name": "DM2 alarm 10 SPN high",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 156,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DM2 alarm 10 OC and FMI",
+      "group": "ECU alarms",
+      "area": "holding",
+      "address": 157,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "ECU Shutdown No.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 158,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "ECU Warning No.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 159,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Instant Fuel Consumption",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 160,
+      "type": "uint16",
+      "scale": 0.1,
+      "access": "R",
+      "description": "Km/L."
+    },
+    {
+      "name": "Gas Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 161,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kPa",
+      "access": "R",
+      "description": "Genset 46: EAPP-EXON."
+    },
+    {
+      "name": "Exhaust Oxygen Content",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Turbo Inlet Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 163,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Fuel Valve Position",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Urea Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 165,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Urea Temp. 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 166,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Urea",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 167,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Urea Consumption",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 168,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "L/h",
+      "access": "R"
+    },
+    {
+      "name": "Gas Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 169,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "SCR Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 170,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Throttle Valve Position 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 171,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "DPF Soot Content",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 172,
+      "type": "int16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "DPF Ash Content",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 173,
+      "type": "int16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "SCR Outlet Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 174,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "DPF Carbon Deposit",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 175,
+      "type": "uint16",
+      "access": "R",
+      "description": "DPF Carbon Deposit."
+    },
+    {
+      "name": "Torque",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 176,
+      "type": "int16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "DPF Regen. Reminder",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 177,
+      "type": "uint16",
+      "access": "R",
+      "description": "DPF Regen. Reminder."
+    },
+    {
+      "name": "DPF Regen. Inhibit",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 178,
+      "type": "uint16",
+      "access": "R",
+      "description": "Regen. Inhibit."
+    },
+    {
+      "name": "DPF Regen. Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 179,
+      "type": "uint16",
+      "access": "R",
+      "description": "Regen. Status Indication."
+    },
+    {
+      "name": "DPF Status Indication",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 180,
+      "type": "uint16",
+      "access": "R",
+      "description": "DPF Status Indication."
+    },
+    {
+      "name": "Driver Alarm (181)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 181,
+      "type": "uint16",
+      "access": "R",
+      "description": "Driver Alarm."
+    },
+    {
+      "name": "Fuel Valve Position 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 182,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Crankcase Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 183,
+      "type": "int16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Intercooler Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 184,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 185,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 186,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 187,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 4",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 188,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 5",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 189,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 6",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 190,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 7",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 191,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 8",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 192,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 9",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 193,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 10",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 194,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 11",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 195,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 12",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 196,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 13",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 197,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 14",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 198,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 15",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 199,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust Outlet Temp. 16",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 200,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Gas Pressure 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "SCR Indication",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "R",
+      "description": "SCR Indication."
+    },
+    {
+      "name": "PC Version High 16-bit",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PC Version Low 16-bit",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Phase A Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase B Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 208,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase C Current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 210,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active Power (212)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 212,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power (214)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 214,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power (216)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 216,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Neutral Gear Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 218,
+      "type": "uint16",
+      "access": "R",
+      "description": "Neutral Gear Status Only support HGM6100CAN ECU genset."
+    },
+    {
+      "name": "Low DEF Level Alarm Indicator",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 219,
+      "type": "uint16",
+      "access": "R",
+      "description": "Low DEF Level Indication."
+    },
+    {
+      "name": "Phase A Current (2500)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2500,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase B Current (2502)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2502,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Phase C Current (2504)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2504,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active Power (2506)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2506,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive Power (2508)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2508,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Apparent Power (2510)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2510,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Remote Oil Engine in Start Status",
+      "group": "Commands",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once."
+    },
+    {
+      "name": "Remote Oil Engine in Stop Status",
+      "group": "Commands",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once."
+    },
+    {
+      "name": "Remote Oil Engine in Test Status",
+      "group": "Commands",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once."
+    },
+    {
+      "name": "Remote Oil Engine in Auto Status",
+      "group": "Commands",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once."
+    },
+    {
+      "name": "Remote Oil Engine in Manual Status",
+      "group": "Commands",
+      "area": "coil",
+      "address": 4,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once."
+    },
+    {
+      "name": "Remote Gen Close/Open",
+      "group": "Commands",
+      "area": "coil",
+      "address": 5,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once. HGM6120"
+    },
+    {
+      "name": "Remote Mains Close/Open",
+      "group": "Commands",
+      "area": "coil",
+      "address": 6,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once."
+    },
+    {
+      "name": "Remote Gen Open",
+      "group": "Commands",
+      "area": "coil",
+      "address": 5,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once. HGM6110"
+    },
+    {
+      "name": "Remote Gen Close",
+      "group": "Commands",
+      "area": "coil",
+      "address": 6,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 0xFF00 (ON) to send the command; it acts once."
+    }
+  ]
+}
