@@ -1,0 +1,998 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Metaltex",
+  "model": "IF20",
+  "models": [
+    "IF20",
+    "IF-20"
+  ],
+  "vendor_website": "metaltex.com.br",
+  "description": "Frequency inverter: running values, monitor parameters, run and stop commands, frequency command, status, faults, basic and communication settings",
+  "revision": 1,
+  "source": "Metaltex IF20 operation manual (Portuguese), parameter tables and appendix B (communication protocol)",
+  "sources": [
+    {
+      "title": "Manual de Operação – IF20",
+      "url": "https://arquivo.metaltex.com.br/produtos/pdf/IF20_Manual_Portugues-rev16.pdf",
+      "note": "linked in issue #443; parameter tables (group D0, P0, PD) and appendix B"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS485. Function 03 reads and 06 writes. Factory serial settings: 9600 baud (PD.00 = 5), 8N1 (PD.01 = 3), address 1 (PD.02).",
+    "Parameter addresses: high byte 0xF0 to 0xFF for groups P0 to PF, 0xA0 to 0xAF for groups C, 0x70 to 0x7F for groups D (read only); low byte is the parameter number. P3.12 is 0xF30C. Writing to 0x0nnn (P groups) or 0x4nnn (C groups) changes the value in RAM only, without wearing the EEPROM.",
+    "To run the inverter over Modbus set P0.02 = 2 and P0.04 = 9; then write the command to 0x2000 and the frequency to 0x1000.",
+    "Only part of the parameter list is in the map: the monitor group D0, the main P0 settings and the communication group PD. Other parameters follow the address rule above.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Frequency command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x1000",
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "W",
+      "description": "Percentage of the maximum frequency (P0.12): -10000 to 10000 is -100.00 % to 100.00 %."
+    },
+    {
+      "name": "Running frequency",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1001",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "DC bus voltage",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1002",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Output voltage",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1003",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Output current",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1004",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Output power",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1005",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Output torque",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1006",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Running speed",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1007",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "S input status",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1008",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "M01 output status",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1009",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "FIV voltage",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x100A",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "FIC voltage",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x100B",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Count input",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x100D",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Length input",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x100E",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Load speed",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x100F",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "PID setpoint",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1010",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "PID feedback",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1011",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "PLC step",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1012",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Pulse input frequency (0.01 kHz)",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1013",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Remaining run time",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1015",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "FIV voltage before correction",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1016",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "FIC voltage before correction",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1017",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Linear speed",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1019",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Current power-on time",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x101A",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Current run time",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x101B",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Pulse input frequency (1 Hz)",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x101C",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Communication setpoint",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x101D",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Main frequency X",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x101F",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Auxiliary frequency Y",
+      "group": "Running values",
+      "area": "holding",
+      "address": "0x1020",
+      "type": "uint16",
+      "access": "R",
+      "description": "The manual does not give the scaling; the D0 monitor parameters (0x7000 on) hold the same values with their units."
+    },
+    {
+      "name": "Command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "1": "Run forward",
+        "2": "Run reverse",
+        "3": "Jog forward",
+        "4": "Jog reverse",
+        "5": "Coast to stop",
+        "6": "Decelerate to stop",
+        "7": "Fault reset"
+      },
+      "description": "The manual's Portuguese labels for 3 to 6 are literal translations; the values are the usual ones for this command word."
+    },
+    {
+      "name": "Relay output RA-RB-RC",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2001",
+      "type": "bool",
+      "bit": 2,
+      "access": "W"
+    },
+    {
+      "name": "Output M01",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2001",
+      "type": "bool",
+      "bit": 4,
+      "access": "W"
+    },
+    {
+      "name": "FOV analog output",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2005",
+      "type": "uint16",
+      "access": "W",
+      "description": "0 to 0x7FFF is 0 to 100 %."
+    },
+    {
+      "name": "Pulse output",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2004",
+      "type": "uint16",
+      "access": "W",
+      "description": "0 to 0x7FFF is 0 to 100 %."
+    },
+    {
+      "name": "Run status",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x3000",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Running forward",
+        "2": "Running reverse",
+        "3": "Stopped"
+      }
+    },
+    {
+      "name": "Inverter fault",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x8000",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No fault",
+        "2": "Overcurrent during acceleration",
+        "3": "Overcurrent during deceleration",
+        "4": "Overcurrent at constant speed",
+        "5": "Overvoltage during acceleration",
+        "6": "Overvoltage during deceleration",
+        "7": "Overvoltage at constant speed",
+        "8": "Braking resistor overload",
+        "9": "Undervoltage",
+        "10": "Inverter overload",
+        "11": "Motor overload",
+        "12": "Input phase loss",
+        "13": "Output phase loss",
+        "14": "Overheating",
+        "15": "External fault",
+        "16": "Communication fault",
+        "17": "Contactor fault",
+        "18": "Current detection fault",
+        "19": "Motor auto-tuning fault",
+        "21": "Parameter read/write fault",
+        "22": "Inverter hardware fault",
+        "23": "Motor short circuit",
+        "24": "User fault 1",
+        "25": "User fault 2",
+        "26": "Run time reached",
+        "29": "Power-on time reached",
+        "30": "Load lost",
+        "31": "PID feedback lost",
+        "40": "Current limit fault",
+        "41": "Motor switch fault",
+        "42": "Speed deviation too large",
+        "43": "Motor overspeed",
+        "45": "Motor overheating",
+        "90": "Encoder configuration error",
+        "91": "Encoder not connected",
+        "92": "Initial position fault",
+        "94": "Speed feedback error"
+      }
+    },
+    {
+      "name": "Communication fault",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x8001",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No fault",
+        "1": "Wrong password",
+        "2": "Wrong command code",
+        "3": "CRC error",
+        "4": "Invalid address",
+        "5": "Invalid parameter",
+        "6": "Invalid parameter change",
+        "7": "System locked",
+        "8": "EEPROM operation locked"
+      }
+    },
+    {
+      "name": "D0.00 Running frequency",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7000",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "D0.01 Set frequency",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7001",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "D0.02 DC bus voltage",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7002",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "D0.03 Output voltage",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7003",
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "The manual names it DC bus voltage in 1 V; the run block (0x1003) and the usual D0.03 are the output voltage."
+    },
+    {
+      "name": "D0.04 Output current",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7004",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "D0.05 Output power",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7005",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "D0.06 Output torque",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7006",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "D0.07 S input status",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7007",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.08 M01 output status",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7008",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.09 FIV voltage",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7009",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "D0.10 FIC voltage",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x700A",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "D0.12 Count value",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x700C",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.13 Length",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x700D",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.14 Load speed",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x700E",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.15 PID setpoint",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x700F",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.16 PID feedback",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7010",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.17 PLC stage",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7011",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.18 Pulse input frequency",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7012",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kHz",
+      "access": "R"
+    },
+    {
+      "name": "D0.20 Remaining run time",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7014",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "min",
+      "access": "R"
+    },
+    {
+      "name": "D0.21 FIV voltage before correction",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7015",
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "D0.22 FIC voltage before correction",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7016",
+      "type": "uint16",
+      "scale": 0.001,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "D0.24 Linear speed",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7018",
+      "type": "uint16",
+      "unit": "m/min",
+      "access": "R"
+    },
+    {
+      "name": "D0.25 Current power-on time",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7019",
+      "type": "uint16",
+      "unit": "min",
+      "access": "R"
+    },
+    {
+      "name": "D0.26 Current run time",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x701A",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "min",
+      "access": "R"
+    },
+    {
+      "name": "D0.27 Pulse input frequency (1 Hz)",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x701B",
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "D0.28 Communication setpoint",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x701C",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "D0.31 Auxiliary frequency Y",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x701F",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "D0.32 Memory address value",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7020",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "D0.34 Motor temperature",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7022",
+      "type": "uint16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "D0.35 Target torque",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7023",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "D0.37 Power factor angle",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7025",
+      "type": "uint16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "D0.39 V/F separation target voltage",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7027",
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "D0.40 V/F separation output voltage",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x7028",
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "D0.45 Current fault code",
+      "group": "Monitor",
+      "area": "holding",
+      "address": "0x702D",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "P0.01 Control mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF001",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "V/F",
+        "1": "Sensorless vector (SFVC)"
+      }
+    },
+    {
+      "name": "P0.02 Command source",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF002",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Operation panel",
+        "1": "Terminals",
+        "2": "Communication"
+      },
+      "description": "Set to 2 to run the inverter over Modbus."
+    },
+    {
+      "name": "P0.04 Main frequency source X",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF004",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Keypad, not kept at power loss",
+        "1": "Keypad, kept at power loss",
+        "2": "Analog voltage input FIV",
+        "3": "Analog current input FIC",
+        "4": "Potentiometer (keypad version 2)",
+        "5": "Pulse input S3",
+        "6": "Multispeed",
+        "7": "PLC function",
+        "8": "PID",
+        "9": "Communication (RS485)"
+      },
+      "description": "Set to 9 to set the frequency over Modbus."
+    },
+    {
+      "name": "P0.08 Acceleration time 1",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF008",
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 65000; the unit is set in P0.19."
+    },
+    {
+      "name": "P0.09 Deceleration time 1",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF009",
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 65000; the unit is set in P0.19."
+    },
+    {
+      "name": "P0.10 Preset frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF00A",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "description": "With P0.22 = 2 (0.01 Hz, factory)."
+    },
+    {
+      "name": "P0.11 Rotation direction",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF00B",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Forward",
+        "1": "Reverse"
+      }
+    },
+    {
+      "name": "P0.12 Maximum frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF00C",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "description": "50.00 to 320.00 Hz, with P0.22 = 2 (0.01 Hz, factory)."
+    },
+    {
+      "name": "P0.14 Upper limit frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF00E",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "description": "With P0.22 = 2 (0.01 Hz, factory)."
+    },
+    {
+      "name": "P0.16 Lower limit frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF010",
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "RW",
+      "description": "With P0.22 = 2 (0.01 Hz, factory)."
+    },
+    {
+      "name": "P0.17 Carrier frequency",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF011",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "kHz",
+      "access": "RW",
+      "description": "1 to 16.0 kHz."
+    },
+    {
+      "name": "P0.19 Acceleration and deceleration time unit",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF013",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1 s",
+        "1": "0.1 s",
+        "2": "0.01 s"
+      }
+    },
+    {
+      "name": "P0.22 Frequency unit",
+      "group": "Settings",
+      "area": "holding",
+      "address": "0xF016",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "0.1 Hz",
+        "2": "0.01 Hz"
+      }
+    },
+    {
+      "name": "PD.00 Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": "0xFD00",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "300",
+        "1": "600",
+        "2": "1200",
+        "3": "2400",
+        "4": "4800",
+        "5": "9600",
+        "6": "19200",
+        "7": "38400",
+        "8": "57600",
+        "9": "115200"
+      },
+      "description": "First digit only. The parameter table gives no address for group PD; this is the address from the manual's rule (0xF0 + group, parameter number)."
+    },
+    {
+      "name": "PD.01 Data format",
+      "group": "Communication",
+      "area": "holding",
+      "address": "0xFD01",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "8N2",
+        "1": "8E1",
+        "2": "8O1",
+        "3": "8N1"
+      },
+      "description": "The parameter table gives no address for group PD; this is the address from the manual's rule (0xF0 + group, parameter number)."
+    },
+    {
+      "name": "PD.02 Local address",
+      "group": "Communication",
+      "area": "holding",
+      "address": "0xFD02",
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 249; 0 is broadcast. The parameter table gives no address for group PD; this is the address from the manual's rule (0xF0 + group, parameter number)."
+    },
+    {
+      "name": "PD.03 Response delay",
+      "group": "Communication",
+      "area": "holding",
+      "address": "0xFD03",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "ms",
+      "access": "RW",
+      "description": "0 to 20.0 ms. The parameter table gives no address for group PD; this is the address from the manual's rule (0xF0 + group, parameter number)."
+    },
+    {
+      "name": "PD.04 Response timeout",
+      "group": "Communication",
+      "area": "holding",
+      "address": "0xFD04",
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "s",
+      "access": "RW",
+      "description": "0.0 (off) or 0.1 to 60.0 s; past it the inverter trips with CE. The parameter table gives no address for group PD; this is the address from the manual's rule (0xF0 + group, parameter number)."
+    },
+    {
+      "name": "PD.05 Modbus protocol",
+      "group": "Communication",
+      "area": "holding",
+      "address": "0xFD05",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Non-standard Modbus",
+        "1": "Standard Modbus"
+      },
+      "description": "The parameter table gives no address for group PD; this is the address from the manual's rule (0xF0 + group, parameter number)."
+    },
+    {
+      "name": "PD.06 Current reading resolution",
+      "group": "Communication",
+      "area": "holding",
+      "address": "0xFD06",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "0.01 A",
+        "1": "0.1 A"
+      },
+      "description": "Resolution of the output current read over communication. The parameter table gives no address for group PD; this is the address from the manual's rule (0xF0 + group, parameter number)."
+    }
+  ]
+}
