@@ -1,0 +1,634 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "MENNEKES",
+  "model": "AMTRON 4You 300, Compact 2.0s and Start 2.0s",
+  "models": [
+    "AMTRON 4You 300",
+    "AMTRON 4You 310",
+    "AMTRON 4You 311",
+    "AMTRON Compact 2.0s",
+    "AMTRON Start 2.0s"
+  ],
+  "vendor_website": "mennekes.de",
+  "description": "AC wallboxes (EV chargers) with Modbus RTU for an energy manager: charging state, CP state, currents, voltages, powers, session energy, phase switching, heartbeat and charging release",
+  "revision": 1,
+  "source": "MENNEKES, Modbus RTU Specification AMTRON 4You 300, Compact 2.0s, Start 2.0s, v2.5",
+  "sources": [
+    {
+      "title": "Modbus RTU Specification AMTRON 4You 300 / Compact 2.0s / Start 2.0s",
+      "version": "v2.5",
+      "url": "https://www.mennekes.de/fileadmin/MEN-Deutschland/emobility/01_documents/04_installer/Modbus_RTU_Specification_AMTRON_4You300_Compact_2.0s_Start_2.0s-v2.5.pdf",
+      "note": "register table and the energy manager sequence",
+      "accessed": "2026-11-14",
+      "sha256": "edb56ac46f6a6dbe57b327d3e7f6ad7420c171481131df55d003db49286bbf81"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS485. Default bus parameters: 57600 baud, 8 data bits, no parity, 2 stop bits. Read with function 03 or 04; write with 06 (one register) or 16. Big endian, high word first.",
+    "An energy manager must write the heartbeat 0x55AA to 0x0D00 at least every 10 s, release charging at 0x0D05 and write a valid current (6 A to 16/32 A) to 0x0302. Values 0.01 to 5.99 A pause charging; 0 A means no limit. Change the current no more often than every 5 s.",
+    "Each entry says from which version of the Modbus register layout (register 0x0000) it exists.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "baudrate": 57600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Modbus Version",
+      "group": "Info",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "description": "Internal Modbus Register Layout Version (v 01.00 = 0x0100, v 01.03 = 0x0103). Since Modbus layout 01.00."
+    },
+    {
+      "name": "Firmware Version",
+      "group": "Info",
+      "area": "holding",
+      "address": 1,
+      "type": "string",
+      "length": 8,
+      "access": "R",
+      "description": "Since Modbus layout 01.00.",
+      "role": "firmware"
+    },
+    {
+      "name": "Serial Number",
+      "group": "Info",
+      "area": "holding",
+      "address": 19,
+      "type": "string",
+      "length": 8,
+      "access": "R",
+      "description": "Since Modbus layout 01.02.",
+      "role": "serial"
+    },
+    {
+      "name": "MENNEKES Article Number",
+      "group": "Info",
+      "area": "holding",
+      "address": 27,
+      "type": "string",
+      "length": 8,
+      "access": "R",
+      "description": "Article number as on the type plate, e.g. 1313201205 for AMTRON 4You 310 11. Since Modbus layout 01.03."
+    },
+    {
+      "name": "EVSE State",
+      "group": "Status",
+      "area": "holding",
+      "address": 256,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "not initialized",
+        "1": "Idle (no EV connected)",
+        "2": "EV connected (no charging current is signalled to EV)",
+        "3": "Preconditions valid, but not charging yet",
+        "4": "Ready to charge (charging current is signalled to EV)",
+        "5": "Charging",
+        "6": "Error",
+        "7": "Service Mode"
+      },
+      "description": "Status of the charging station. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Authorization Status (RFID & Energy Manager)",
+      "group": "Status",
+      "area": "holding",
+      "address": 257,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "not used (IDLE)",
+        "1": "authorized (charging released)",
+        "2": "not authorized (charging not released)"
+      },
+      "description": "Since Modbus layout 01.00."
+    },
+    {
+      "name": "Downgrade",
+      "group": "Status",
+      "area": "holding",
+      "address": 258,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "not relevant (no EV connected)",
+        "1": "charging current not downgraded",
+        "2": "charging current downgraded"
+      },
+      "description": "Status of the external downgrade signal. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Phase Rotation",
+      "group": "Status",
+      "area": "holding",
+      "address": 259,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "L1 - L2 - L3 (no rotation)",
+        "1": "L2 - L3 - L1",
+        "2": "L3 - L1 - L2"
+      },
+      "description": "Order of the connected phases (relevant for load management). Since Modbus layout 01.00."
+    },
+    {
+      "name": "CP State",
+      "group": "Status",
+      "area": "holding",
+      "address": 264,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Init",
+        "10": "A1 (no EV)",
+        "11": "B1 (EV connected, EVSE has not started charging yet or charging is paused by EVSE)",
+        "12": "C1 (EV ready to charge)",
+        "13": "D1",
+        "14": "E (Error)",
+        "15": "F (Error)",
+        "26": "A2 (EV disconnected, signaled current >=6A offered to EV)",
+        "27": "B2 (EVSE ready to charge, signaled current >=6A offered to EV)",
+        "28": "C2 (charging, signaled current >=6A offered to EV)",
+        "29": "D2"
+      },
+      "description": "State of the CP communication between EVSE and EV. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Signaled Current",
+      "group": "Status",
+      "area": "holding",
+      "address": 276,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Signaled Current to the EV on the CP-line. Since Modbus layout 01.03."
+    },
+    {
+      "name": "Downgrade Current",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 768,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Charging current limitation while downgrade is active. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Charging Current Energy Manager",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 770,
+      "type": "float32",
+      "unit": "A",
+      "access": "RW",
+      "description": "Charging current limitiation by Energy Manager: 0 = no limitation, EVSE signals maximal current (16/32A) 0.01...5.99 = invalid, EVSE signals 0A 6...x = valid, EVSE limits at its own upper limit (6…16/32A) Remark: 0x0D05 can be used additionally to interrupt the charging process. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Maximal Current House (DIP)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 772,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Maximal installation current, configured from DIP-Switch, with attention to the house installation, configured by DIP-Switches 6-8 at bank S2: 0 - 63A; 1 - 50A; 2 - 40A; 3 - 35A; 4 - 32A; 5 - 25A; 6 - 20A; 7 - 16A. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Maximal EVSE Current",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 774,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Maximal current of the EVSE as configured during the installation: 0 - 32A in 22kW EVSE, 16A in 11kW EVSE 1 - 25A in 22kW EVSE, 16A in 11kW EVSE 2 - 20A in 22kW EVSE, 16A in 11kW EVSE 3 - 16A 4 -13A 5 -10A 6 - 6A. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Phase Switching Mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 778,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Solar only 1 phase",
+        "1": "Solar only 3 phases",
+        "2": "Solar dynamic 1 or 3 phases"
+      },
+      "description": "Phase usage possibilities while using the internal solar algorithm. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Phase Options HW",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 780,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "HW only 1 phase",
+        "1": "HW only 3 phases",
+        "2": "HW 1 or 3 phases (phase switch possible)"
+      },
+      "description": "Phase options regarding the hardware. Since Modbus layout 01.01."
+    },
+    {
+      "name": "Cable Lock Setting",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 781,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "not enabled or unavailable",
+        "1": "enabled"
+      },
+      "description": "Permanent cable lock. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Energy Manager Fallback Current",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 782,
+      "type": "uint16",
+      "access": "R",
+      "description": "Fallback behaviour when the heartbeat of the Energy Manager is not available during a charging session: 0 - Fallback handling disabled, EVSE will continue charging with the last received values from the Energy Manager 1 - Fallback handling enabled, EVSE will pause charging on heartbeat timeout 6...32 - Fallback Current 6...32A. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Grid Imbalance",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 783,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "disabled",
+        "1": "enabled"
+      },
+      "description": "Since Modbus layout 01.02."
+    },
+    {
+      "name": "Grid Imbalance Threshold",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 784,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Since Modbus layout 01.02."
+    },
+    {
+      "name": "Grid Phases Connected",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 785,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of connected phases to the grid: 0: L1 is connected 2: L1, L2, L3 are connected. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Authorization",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 786,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "disabled",
+        "1": "enabled"
+      },
+      "description": "Since Modbus layout 01.02."
+    },
+    {
+      "name": "Solar Supported Charging (Sunshine+) Current",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 787,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R",
+      "description": "Minimal charging current in Solar supported charging (Sunshine+) mode. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Phase Switching Pause",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 788,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R",
+      "description": "Time between a phase switch from 1 to 3 phase and vice versa (in seconds). Since Modbus layout 01.02."
+    },
+    {
+      "name": "Current L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1280,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "RMS output current of phase L1. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Current L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1282,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "RMS output current of phase L2. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Current L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1284,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "RMS output current of phase L3. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Voltage L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1286,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "RMS output voltage of phase L1. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Voltage L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1288,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "RMS output voltage of phase L2. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Voltage L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1290,
+      "type": "float32",
+      "unit": "V",
+      "access": "R",
+      "description": "RMS output voltage of phase L3. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Power L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1292,
+      "type": "float32",
+      "unit": "W",
+      "access": "R",
+      "description": "Actual power on phase L1. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Power L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1294,
+      "type": "float32",
+      "unit": "W",
+      "access": "R",
+      "description": "Actual power on phase L2. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Power L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1296,
+      "type": "float32",
+      "unit": "W",
+      "access": "R",
+      "description": "Actual power on phase L3. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Power Overall",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1298,
+      "type": "float32",
+      "unit": "W",
+      "access": "R",
+      "description": "Actual overall power on all phases. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2304,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R",
+      "description": "Temperature (°C) inside the EVSE. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Max Current Session",
+      "group": "Session",
+      "area": "holding",
+      "address": 2816,
+      "type": "float32",
+      "unit": "A",
+      "access": "R",
+      "description": "Max charging current, evaluated out of all sources that could restrict the maximal allowed current and are static during a charging session (e.g. Installation Current Limitation, Charging Cable …). Since Modbus layout 01.00."
+    },
+    {
+      "name": "Charged Energy Session",
+      "group": "Session",
+      "area": "holding",
+      "address": 2818,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Energy transferred within the current charging session. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Duration Session",
+      "group": "Session",
+      "area": "holding",
+      "address": 2820,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R",
+      "description": "Duration of the current charging session. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Detected EV Phases",
+      "group": "Session",
+      "area": "holding",
+      "address": 2822,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "not init",
+        "1": "1 phase detected",
+        "2": "2 phases detected",
+        "3": "3 phases detected"
+      },
+      "description": "Maximum number of the detected phases of the EV during a charging session. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Heartbeat Energy Manager",
+      "group": "Energy manager",
+      "area": "holding",
+      "address": 3328,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 0x55AA at least every 10 s to keep the Energy Manager link alive; otherwise the charger applies the fallback current. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Cable Lock Status",
+      "group": "Energy manager",
+      "area": "holding",
+      "address": 3330,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "cable locking unknown",
+        "1": "cable unlocked",
+        "2": "cable locked",
+        "3": "EVSE with fixed cable"
+      },
+      "description": "Locking status of the cable. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Solar Charging Mode",
+      "group": "Energy manager",
+      "area": "holding",
+      "address": 3331,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Solar charging Mode not active",
+        "1": "Fast charging (Standard) Mode",
+        "2": "Solar charging (Sunshine) Mode",
+        "3": "Solar supported charging (Sunshine+) Mode"
+      },
+      "description": "Internal Solar Modes can be indicated with the help of the Solar LEDs. Active charge mode. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Requested Phases",
+      "group": "Energy manager",
+      "area": "holding",
+      "address": 3332,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "regular charging on all available phases",
+        "1": "force charging on 1 phase only"
+      },
+      "description": "Requested phases when using dynamic phase usage. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Charging Release Energy Manager",
+      "group": "Energy manager",
+      "area": "holding",
+      "address": 3333,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "charging is not allowed (relais are opened)",
+        "1": "charging is allowed (relais are closed)"
+      },
+      "description": "Since Modbus layout 01.00."
+    },
+    {
+      "name": "Lock EVSE",
+      "group": "Energy manager",
+      "area": "holding",
+      "address": 3334,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "EVSE is not locked",
+        "1": "EVSE is locked"
+      },
+      "description": "Lock charging station (prevent charging). Since Modbus layout 01.00."
+    },
+    {
+      "name": "System Restart",
+      "group": "Energy manager",
+      "area": "holding",
+      "address": 3353,
+      "type": "uint16",
+      "access": "W",
+      "description": "Trigger a system restart by sending 0xBB once. Only use this function if the system is in IDLE state. Since Modbus layout 01.03."
+    },
+    {
+      "name": "Active Error Code",
+      "group": "Status",
+      "area": "holding",
+      "address": 3584,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "no error active",
+        "200": "Energy Manager not available (no heartbeat)",
+        "2323": "Connected Phases mismatch (if voltage detection active)"
+      },
+      "description": "Error code in case of an active error. Since Modbus layout 01.00."
+    },
+    {
+      "name": "Master Lost Fallback State",
+      "group": "Status",
+      "area": "holding",
+      "address": 3585,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "not active",
+        "1": "active (Energy Manager currently unavailable)"
+      },
+      "description": "Energy Manager fallback state. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Switched Phases",
+      "group": "Status",
+      "area": "holding",
+      "address": 3586,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "regular charging on all available phases",
+        "1": "only 1 phase charging"
+      },
+      "description": "Information what phase is used or will be used if the EVSE will close the charging relay. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Charged Energy Total",
+      "group": "Totals",
+      "area": "holding",
+      "address": 4096,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Cumulated charged energy in kWh on the AC-Port of the EVSE of all time. Not useable for billing. Since Modbus layout 01.02."
+    },
+    {
+      "name": "Charging Sessions Total",
+      "group": "Totals",
+      "area": "holding",
+      "address": 4098,
+      "type": "uint32",
+      "access": "R",
+      "description": "Total number of the charging sessions. Since Modbus layout 01.02."
+    }
+  ]
+}

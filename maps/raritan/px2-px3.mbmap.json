@@ -1,0 +1,2955 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Raritan",
+  "model": "PX2 and PX3 intelligent PDUs",
+  "models": [
+    "PX2",
+    "PX3",
+    "PXC",
+    "PXE",
+    "PX3TS"
+  ],
+  "vendor_website": "raritan.com",
+  "description": "Intelligent rack PDUs over Modbus TCP: PDU layout, peripheral sensors, inlet and pole readings, overcurrent protectors and outlet readings and switching",
+  "revision": 1,
+  "source": "Raritan, PX2/PX3 Modbus Interface, firmware 3.6.1",
+  "sources": [
+    {
+      "title": "Raritan PX2/PX3 Modbus Interface",
+      "version": "firmware 3.6.1",
+      "url": "https://cdn.raritan.com/download/px3/version-3.6.1/PDU_Modbus_3.6.1_46982.pdf",
+      "accessed": "2026-11-14",
+      "sha256": "cae5c84eb610ccda90779c05bd40ca493085fed88abc237430a8b82ae0287e34"
+    }
+  ],
+  "notes": [
+    "Modbus TCP server, enabled in the web UI (Device Settings, Network Services). Functions 01, 05, 15 for coils and 03, 06, 16, 22 for holding registers; addresses are the hexadecimal entity addresses of the manual (wire addresses).",
+    "Multi-register values are big-endian (high word first): floats, 32-bit and 64-bit counters.",
+    "The register set repeats per component. This map lists inlet 1 with poles 1-3, overcurrent protectors 1-6, outlets 1-24 and peripheral sensors 1-8. Others follow the manual's formulas: inlet i (0-15) at 0x3000 + i × 0x100, OCP i (0-63) at 0x4000 + i × 0x100, outlet i (0-127) at 0x8000 + i × 0x100, peripheral sensor i (0-31) at 0x0800 + i × 0x10, with the same offsets; OCP trip coils at 0x0000 + i and outlet coils at 0x0100 + i.",
+    "The transfer switch block (0x2000, PX3TS only) is not in this map.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "tcp",
+  "port": 502,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Register set version",
+      "group": "PDU",
+      "area": "holding",
+      "address": "0x0000",
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte major, low byte minor."
+    },
+    {
+      "name": "Number of inlets",
+      "group": "PDU",
+      "area": "holding",
+      "address": "0x0001",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Number of overcurrent protectors",
+      "group": "PDU",
+      "area": "holding",
+      "address": "0x0002",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Number of outlets",
+      "group": "PDU",
+      "area": "holding",
+      "address": "0x0003",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Number of transfer switches",
+      "group": "PDU",
+      "area": "holding",
+      "address": "0x0004",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Peripheral sensor 1 type",
+      "group": "Peripheral sensor 1",
+      "area": "holding",
+      "address": "0x0800",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unassigned",
+        "1": "Temperature (°C)",
+        "2": "Relative humidity (%)",
+        "3": "Air flow (m/s)",
+        "4": "Air pressure (Pa)",
+        "5": "Contact closure",
+        "6": "Vibration (G)",
+        "7": "Water leak",
+        "8": "Smoke detector",
+        "9": "Ambient light (lux)",
+        "10": "Dry contact (actuator)",
+        "11": "Magnetic contact",
+        "12": "Passive IR motion detector",
+        "13": "Tamper detector",
+        "14": "Powered dry contact (actuator)",
+        "15": "Absolute humidity (g/m³)",
+        "16": "Acceleration (G)",
+        "17": "Door state",
+        "18": "Door lock state",
+        "19": "Door handle lock switch"
+      }
+    },
+    {
+      "name": "Peripheral sensor 1 state",
+      "group": "Peripheral sensor 1",
+      "area": "holding",
+      "address": "0x0801",
+      "type": "uint16",
+      "access": "R",
+      "description": "For discrete sensors."
+    },
+    {
+      "name": "Peripheral sensor 1 reading",
+      "group": "Peripheral sensor 1",
+      "area": "holding",
+      "address": "0x0802",
+      "type": "float32",
+      "access": "R",
+      "description": "For numerical sensors; the unit follows the sensor type."
+    },
+    {
+      "name": "Peripheral sensor 1 actuator control",
+      "group": "Peripheral sensor 1",
+      "area": "holding",
+      "address": "0x0804",
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Peripheral sensor 2 type",
+      "group": "Peripheral sensor 2",
+      "area": "holding",
+      "address": "0x0810",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unassigned",
+        "1": "Temperature (°C)",
+        "2": "Relative humidity (%)",
+        "3": "Air flow (m/s)",
+        "4": "Air pressure (Pa)",
+        "5": "Contact closure",
+        "6": "Vibration (G)",
+        "7": "Water leak",
+        "8": "Smoke detector",
+        "9": "Ambient light (lux)",
+        "10": "Dry contact (actuator)",
+        "11": "Magnetic contact",
+        "12": "Passive IR motion detector",
+        "13": "Tamper detector",
+        "14": "Powered dry contact (actuator)",
+        "15": "Absolute humidity (g/m³)",
+        "16": "Acceleration (G)",
+        "17": "Door state",
+        "18": "Door lock state",
+        "19": "Door handle lock switch"
+      }
+    },
+    {
+      "name": "Peripheral sensor 2 state",
+      "group": "Peripheral sensor 2",
+      "area": "holding",
+      "address": "0x0811",
+      "type": "uint16",
+      "access": "R",
+      "description": "For discrete sensors."
+    },
+    {
+      "name": "Peripheral sensor 2 reading",
+      "group": "Peripheral sensor 2",
+      "area": "holding",
+      "address": "0x0812",
+      "type": "float32",
+      "access": "R",
+      "description": "For numerical sensors; the unit follows the sensor type."
+    },
+    {
+      "name": "Peripheral sensor 2 actuator control",
+      "group": "Peripheral sensor 2",
+      "area": "holding",
+      "address": "0x0814",
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Peripheral sensor 3 type",
+      "group": "Peripheral sensor 3",
+      "area": "holding",
+      "address": "0x0820",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unassigned",
+        "1": "Temperature (°C)",
+        "2": "Relative humidity (%)",
+        "3": "Air flow (m/s)",
+        "4": "Air pressure (Pa)",
+        "5": "Contact closure",
+        "6": "Vibration (G)",
+        "7": "Water leak",
+        "8": "Smoke detector",
+        "9": "Ambient light (lux)",
+        "10": "Dry contact (actuator)",
+        "11": "Magnetic contact",
+        "12": "Passive IR motion detector",
+        "13": "Tamper detector",
+        "14": "Powered dry contact (actuator)",
+        "15": "Absolute humidity (g/m³)",
+        "16": "Acceleration (G)",
+        "17": "Door state",
+        "18": "Door lock state",
+        "19": "Door handle lock switch"
+      }
+    },
+    {
+      "name": "Peripheral sensor 3 state",
+      "group": "Peripheral sensor 3",
+      "area": "holding",
+      "address": "0x0821",
+      "type": "uint16",
+      "access": "R",
+      "description": "For discrete sensors."
+    },
+    {
+      "name": "Peripheral sensor 3 reading",
+      "group": "Peripheral sensor 3",
+      "area": "holding",
+      "address": "0x0822",
+      "type": "float32",
+      "access": "R",
+      "description": "For numerical sensors; the unit follows the sensor type."
+    },
+    {
+      "name": "Peripheral sensor 3 actuator control",
+      "group": "Peripheral sensor 3",
+      "area": "holding",
+      "address": "0x0824",
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Peripheral sensor 4 type",
+      "group": "Peripheral sensor 4",
+      "area": "holding",
+      "address": "0x0830",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unassigned",
+        "1": "Temperature (°C)",
+        "2": "Relative humidity (%)",
+        "3": "Air flow (m/s)",
+        "4": "Air pressure (Pa)",
+        "5": "Contact closure",
+        "6": "Vibration (G)",
+        "7": "Water leak",
+        "8": "Smoke detector",
+        "9": "Ambient light (lux)",
+        "10": "Dry contact (actuator)",
+        "11": "Magnetic contact",
+        "12": "Passive IR motion detector",
+        "13": "Tamper detector",
+        "14": "Powered dry contact (actuator)",
+        "15": "Absolute humidity (g/m³)",
+        "16": "Acceleration (G)",
+        "17": "Door state",
+        "18": "Door lock state",
+        "19": "Door handle lock switch"
+      }
+    },
+    {
+      "name": "Peripheral sensor 4 state",
+      "group": "Peripheral sensor 4",
+      "area": "holding",
+      "address": "0x0831",
+      "type": "uint16",
+      "access": "R",
+      "description": "For discrete sensors."
+    },
+    {
+      "name": "Peripheral sensor 4 reading",
+      "group": "Peripheral sensor 4",
+      "area": "holding",
+      "address": "0x0832",
+      "type": "float32",
+      "access": "R",
+      "description": "For numerical sensors; the unit follows the sensor type."
+    },
+    {
+      "name": "Peripheral sensor 4 actuator control",
+      "group": "Peripheral sensor 4",
+      "area": "holding",
+      "address": "0x0834",
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Peripheral sensor 5 type",
+      "group": "Peripheral sensor 5",
+      "area": "holding",
+      "address": "0x0840",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unassigned",
+        "1": "Temperature (°C)",
+        "2": "Relative humidity (%)",
+        "3": "Air flow (m/s)",
+        "4": "Air pressure (Pa)",
+        "5": "Contact closure",
+        "6": "Vibration (G)",
+        "7": "Water leak",
+        "8": "Smoke detector",
+        "9": "Ambient light (lux)",
+        "10": "Dry contact (actuator)",
+        "11": "Magnetic contact",
+        "12": "Passive IR motion detector",
+        "13": "Tamper detector",
+        "14": "Powered dry contact (actuator)",
+        "15": "Absolute humidity (g/m³)",
+        "16": "Acceleration (G)",
+        "17": "Door state",
+        "18": "Door lock state",
+        "19": "Door handle lock switch"
+      }
+    },
+    {
+      "name": "Peripheral sensor 5 state",
+      "group": "Peripheral sensor 5",
+      "area": "holding",
+      "address": "0x0841",
+      "type": "uint16",
+      "access": "R",
+      "description": "For discrete sensors."
+    },
+    {
+      "name": "Peripheral sensor 5 reading",
+      "group": "Peripheral sensor 5",
+      "area": "holding",
+      "address": "0x0842",
+      "type": "float32",
+      "access": "R",
+      "description": "For numerical sensors; the unit follows the sensor type."
+    },
+    {
+      "name": "Peripheral sensor 5 actuator control",
+      "group": "Peripheral sensor 5",
+      "area": "holding",
+      "address": "0x0844",
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Peripheral sensor 6 type",
+      "group": "Peripheral sensor 6",
+      "area": "holding",
+      "address": "0x0850",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unassigned",
+        "1": "Temperature (°C)",
+        "2": "Relative humidity (%)",
+        "3": "Air flow (m/s)",
+        "4": "Air pressure (Pa)",
+        "5": "Contact closure",
+        "6": "Vibration (G)",
+        "7": "Water leak",
+        "8": "Smoke detector",
+        "9": "Ambient light (lux)",
+        "10": "Dry contact (actuator)",
+        "11": "Magnetic contact",
+        "12": "Passive IR motion detector",
+        "13": "Tamper detector",
+        "14": "Powered dry contact (actuator)",
+        "15": "Absolute humidity (g/m³)",
+        "16": "Acceleration (G)",
+        "17": "Door state",
+        "18": "Door lock state",
+        "19": "Door handle lock switch"
+      }
+    },
+    {
+      "name": "Peripheral sensor 6 state",
+      "group": "Peripheral sensor 6",
+      "area": "holding",
+      "address": "0x0851",
+      "type": "uint16",
+      "access": "R",
+      "description": "For discrete sensors."
+    },
+    {
+      "name": "Peripheral sensor 6 reading",
+      "group": "Peripheral sensor 6",
+      "area": "holding",
+      "address": "0x0852",
+      "type": "float32",
+      "access": "R",
+      "description": "For numerical sensors; the unit follows the sensor type."
+    },
+    {
+      "name": "Peripheral sensor 6 actuator control",
+      "group": "Peripheral sensor 6",
+      "area": "holding",
+      "address": "0x0854",
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Peripheral sensor 7 type",
+      "group": "Peripheral sensor 7",
+      "area": "holding",
+      "address": "0x0860",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unassigned",
+        "1": "Temperature (°C)",
+        "2": "Relative humidity (%)",
+        "3": "Air flow (m/s)",
+        "4": "Air pressure (Pa)",
+        "5": "Contact closure",
+        "6": "Vibration (G)",
+        "7": "Water leak",
+        "8": "Smoke detector",
+        "9": "Ambient light (lux)",
+        "10": "Dry contact (actuator)",
+        "11": "Magnetic contact",
+        "12": "Passive IR motion detector",
+        "13": "Tamper detector",
+        "14": "Powered dry contact (actuator)",
+        "15": "Absolute humidity (g/m³)",
+        "16": "Acceleration (G)",
+        "17": "Door state",
+        "18": "Door lock state",
+        "19": "Door handle lock switch"
+      }
+    },
+    {
+      "name": "Peripheral sensor 7 state",
+      "group": "Peripheral sensor 7",
+      "area": "holding",
+      "address": "0x0861",
+      "type": "uint16",
+      "access": "R",
+      "description": "For discrete sensors."
+    },
+    {
+      "name": "Peripheral sensor 7 reading",
+      "group": "Peripheral sensor 7",
+      "area": "holding",
+      "address": "0x0862",
+      "type": "float32",
+      "access": "R",
+      "description": "For numerical sensors; the unit follows the sensor type."
+    },
+    {
+      "name": "Peripheral sensor 7 actuator control",
+      "group": "Peripheral sensor 7",
+      "area": "holding",
+      "address": "0x0864",
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Peripheral sensor 8 type",
+      "group": "Peripheral sensor 8",
+      "area": "holding",
+      "address": "0x0870",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unassigned",
+        "1": "Temperature (°C)",
+        "2": "Relative humidity (%)",
+        "3": "Air flow (m/s)",
+        "4": "Air pressure (Pa)",
+        "5": "Contact closure",
+        "6": "Vibration (G)",
+        "7": "Water leak",
+        "8": "Smoke detector",
+        "9": "Ambient light (lux)",
+        "10": "Dry contact (actuator)",
+        "11": "Magnetic contact",
+        "12": "Passive IR motion detector",
+        "13": "Tamper detector",
+        "14": "Powered dry contact (actuator)",
+        "15": "Absolute humidity (g/m³)",
+        "16": "Acceleration (G)",
+        "17": "Door state",
+        "18": "Door lock state",
+        "19": "Door handle lock switch"
+      }
+    },
+    {
+      "name": "Peripheral sensor 8 state",
+      "group": "Peripheral sensor 8",
+      "area": "holding",
+      "address": "0x0871",
+      "type": "uint16",
+      "access": "R",
+      "description": "For discrete sensors."
+    },
+    {
+      "name": "Peripheral sensor 8 reading",
+      "group": "Peripheral sensor 8",
+      "area": "holding",
+      "address": "0x0872",
+      "type": "float32",
+      "access": "R",
+      "description": "For numerical sensors; the unit follows the sensor type."
+    },
+    {
+      "name": "Peripheral sensor 8 actuator control",
+      "group": "Peripheral sensor 8",
+      "area": "holding",
+      "address": "0x0874",
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Inlet 1 capabilities",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3000",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask of the sensors the inlet supports: bit 0 voltage, 1 current, 2 peak current, 4 unbalance, 5 active power, 6 apparent power, 7 power factor, 8 active energy, 9 apparent energy, 10 phase angle, 11 frequency, 12 reactive power, 13 reactive energy, 14 power quality, 15 surge protector."
+    },
+    {
+      "name": "Inlet 1 number of poles",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3002",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 minimum voltage rating",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3003",
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 maximum voltage rating",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3004",
+      "type": "uint16",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 current rating",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3005",
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 rms voltage",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3008",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 rms current",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x300A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 unbalanced current",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3010",
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 active power",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3012",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 apparent power",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3014",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 power factor",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3016",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 active energy",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3018",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 apparent energy",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x301C",
+      "type": "uint64",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 phase angle",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3020",
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 line frequency",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3022",
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 reactive power",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3024",
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 reactive energy",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3026",
+      "type": "uint64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 power quality",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x302A",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Normal",
+        "2": "Warning",
+        "3": "Critical"
+      }
+    },
+    {
+      "name": "Inlet 1 surge protector status",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3030",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "OK",
+        "1": "Alarm"
+      }
+    },
+    {
+      "name": "Inlet 1 residual current status",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3031",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Normal",
+        "2": "Warning",
+        "3": "Critical",
+        "4": "Self-test",
+        "5": "Failure"
+      }
+    },
+    {
+      "name": "Inlet 1 residual current",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3032",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 residual DC current",
+      "group": "Inlet 1",
+      "area": "holding",
+      "address": "0x3034",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 rms voltage",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3048",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 rms current",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x304A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 active power",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3052",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 apparent power",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3054",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 power factor",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3056",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 active energy",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3058",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 apparent energy",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x305C",
+      "type": "uint64",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 phase angle",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3060",
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 line frequency",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3062",
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 reactive power",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3064",
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 1 reactive energy",
+      "group": "Inlet 1 pole 1",
+      "area": "holding",
+      "address": "0x3066",
+      "type": "uint64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 rms voltage",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3078",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 rms current",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x307A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 active power",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3082",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 apparent power",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3084",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 power factor",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3086",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 active energy",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3088",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 apparent energy",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x308C",
+      "type": "uint64",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 phase angle",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3090",
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 line frequency",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3092",
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 reactive power",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3094",
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 2 reactive energy",
+      "group": "Inlet 1 pole 2",
+      "area": "holding",
+      "address": "0x3096",
+      "type": "uint64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 rms voltage",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30A8",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 rms current",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30AA",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 active power",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30B2",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 apparent power",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30B4",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 power factor",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30B6",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 active energy",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30B8",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 apparent energy",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30BC",
+      "type": "uint64",
+      "unit": "VAh",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 phase angle",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30C0",
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 line frequency",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30C2",
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 reactive power",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30C4",
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Inlet 1 pole 3 reactive energy",
+      "group": "Inlet 1 pole 3",
+      "area": "holding",
+      "address": "0x30C6",
+      "type": "uint64",
+      "unit": "varh",
+      "access": "R"
+    },
+    {
+      "name": "OCP 1 current rating",
+      "group": "Overcurrent protector 1",
+      "area": "holding",
+      "address": "0x4005",
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 1 RMS current",
+      "group": "Overcurrent protector 1",
+      "area": "holding",
+      "address": "0x400A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 1 peak current",
+      "group": "Overcurrent protector 1",
+      "area": "holding",
+      "address": "0x400C",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 1 closed",
+      "group": "Overcurrent protector 1",
+      "area": "coil",
+      "address": "0x0000",
+      "type": "bool",
+      "access": "R",
+      "description": "1 closed (good), 0 open (tripped)."
+    },
+    {
+      "name": "OCP 2 current rating",
+      "group": "Overcurrent protector 2",
+      "area": "holding",
+      "address": "0x4105",
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 2 RMS current",
+      "group": "Overcurrent protector 2",
+      "area": "holding",
+      "address": "0x410A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 2 peak current",
+      "group": "Overcurrent protector 2",
+      "area": "holding",
+      "address": "0x410C",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 2 closed",
+      "group": "Overcurrent protector 2",
+      "area": "coil",
+      "address": "0x0001",
+      "type": "bool",
+      "access": "R",
+      "description": "1 closed (good), 0 open (tripped)."
+    },
+    {
+      "name": "OCP 3 current rating",
+      "group": "Overcurrent protector 3",
+      "area": "holding",
+      "address": "0x4205",
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 3 RMS current",
+      "group": "Overcurrent protector 3",
+      "area": "holding",
+      "address": "0x420A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 3 peak current",
+      "group": "Overcurrent protector 3",
+      "area": "holding",
+      "address": "0x420C",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 3 closed",
+      "group": "Overcurrent protector 3",
+      "area": "coil",
+      "address": "0x0002",
+      "type": "bool",
+      "access": "R",
+      "description": "1 closed (good), 0 open (tripped)."
+    },
+    {
+      "name": "OCP 4 current rating",
+      "group": "Overcurrent protector 4",
+      "area": "holding",
+      "address": "0x4305",
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 4 RMS current",
+      "group": "Overcurrent protector 4",
+      "area": "holding",
+      "address": "0x430A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 4 peak current",
+      "group": "Overcurrent protector 4",
+      "area": "holding",
+      "address": "0x430C",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 4 closed",
+      "group": "Overcurrent protector 4",
+      "area": "coil",
+      "address": "0x0003",
+      "type": "bool",
+      "access": "R",
+      "description": "1 closed (good), 0 open (tripped)."
+    },
+    {
+      "name": "OCP 5 current rating",
+      "group": "Overcurrent protector 5",
+      "area": "holding",
+      "address": "0x4405",
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 5 RMS current",
+      "group": "Overcurrent protector 5",
+      "area": "holding",
+      "address": "0x440A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 5 peak current",
+      "group": "Overcurrent protector 5",
+      "area": "holding",
+      "address": "0x440C",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 5 closed",
+      "group": "Overcurrent protector 5",
+      "area": "coil",
+      "address": "0x0004",
+      "type": "bool",
+      "access": "R",
+      "description": "1 closed (good), 0 open (tripped)."
+    },
+    {
+      "name": "OCP 6 current rating",
+      "group": "Overcurrent protector 6",
+      "area": "holding",
+      "address": "0x4505",
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 6 RMS current",
+      "group": "Overcurrent protector 6",
+      "area": "holding",
+      "address": "0x450A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 6 peak current",
+      "group": "Overcurrent protector 6",
+      "area": "holding",
+      "address": "0x450C",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "OCP 6 closed",
+      "group": "Overcurrent protector 6",
+      "area": "coil",
+      "address": "0x0005",
+      "type": "bool",
+      "access": "R",
+      "description": "1 closed (good), 0 open (tripped)."
+    },
+    {
+      "name": "Outlet 1 capabilities",
+      "group": "Outlet 1",
+      "area": "holding",
+      "address": "0x8000",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 1 rms voltage",
+      "group": "Outlet 1",
+      "area": "holding",
+      "address": "0x8008",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 1 rms current",
+      "group": "Outlet 1",
+      "area": "holding",
+      "address": "0x800A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 1 active power",
+      "group": "Outlet 1",
+      "area": "holding",
+      "address": "0x8012",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 1 apparent power",
+      "group": "Outlet 1",
+      "area": "holding",
+      "address": "0x8014",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 1 power factor",
+      "group": "Outlet 1",
+      "area": "holding",
+      "address": "0x8016",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 1 active energy",
+      "group": "Outlet 1",
+      "area": "holding",
+      "address": "0x8018",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 1 on",
+      "group": "Outlet 1",
+      "area": "coil",
+      "address": "0x0100",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 2 capabilities",
+      "group": "Outlet 2",
+      "area": "holding",
+      "address": "0x8100",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 2 rms voltage",
+      "group": "Outlet 2",
+      "area": "holding",
+      "address": "0x8108",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 2 rms current",
+      "group": "Outlet 2",
+      "area": "holding",
+      "address": "0x810A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 2 active power",
+      "group": "Outlet 2",
+      "area": "holding",
+      "address": "0x8112",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 2 apparent power",
+      "group": "Outlet 2",
+      "area": "holding",
+      "address": "0x8114",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 2 power factor",
+      "group": "Outlet 2",
+      "area": "holding",
+      "address": "0x8116",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 2 active energy",
+      "group": "Outlet 2",
+      "area": "holding",
+      "address": "0x8118",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 2 on",
+      "group": "Outlet 2",
+      "area": "coil",
+      "address": "0x0101",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 3 capabilities",
+      "group": "Outlet 3",
+      "area": "holding",
+      "address": "0x8200",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 3 rms voltage",
+      "group": "Outlet 3",
+      "area": "holding",
+      "address": "0x8208",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 3 rms current",
+      "group": "Outlet 3",
+      "area": "holding",
+      "address": "0x820A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 3 active power",
+      "group": "Outlet 3",
+      "area": "holding",
+      "address": "0x8212",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 3 apparent power",
+      "group": "Outlet 3",
+      "area": "holding",
+      "address": "0x8214",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 3 power factor",
+      "group": "Outlet 3",
+      "area": "holding",
+      "address": "0x8216",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 3 active energy",
+      "group": "Outlet 3",
+      "area": "holding",
+      "address": "0x8218",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 3 on",
+      "group": "Outlet 3",
+      "area": "coil",
+      "address": "0x0102",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 4 capabilities",
+      "group": "Outlet 4",
+      "area": "holding",
+      "address": "0x8300",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 4 rms voltage",
+      "group": "Outlet 4",
+      "area": "holding",
+      "address": "0x8308",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 4 rms current",
+      "group": "Outlet 4",
+      "area": "holding",
+      "address": "0x830A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 4 active power",
+      "group": "Outlet 4",
+      "area": "holding",
+      "address": "0x8312",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 4 apparent power",
+      "group": "Outlet 4",
+      "area": "holding",
+      "address": "0x8314",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 4 power factor",
+      "group": "Outlet 4",
+      "area": "holding",
+      "address": "0x8316",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 4 active energy",
+      "group": "Outlet 4",
+      "area": "holding",
+      "address": "0x8318",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 4 on",
+      "group": "Outlet 4",
+      "area": "coil",
+      "address": "0x0103",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 5 capabilities",
+      "group": "Outlet 5",
+      "area": "holding",
+      "address": "0x8400",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 5 rms voltage",
+      "group": "Outlet 5",
+      "area": "holding",
+      "address": "0x8408",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 5 rms current",
+      "group": "Outlet 5",
+      "area": "holding",
+      "address": "0x840A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 5 active power",
+      "group": "Outlet 5",
+      "area": "holding",
+      "address": "0x8412",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 5 apparent power",
+      "group": "Outlet 5",
+      "area": "holding",
+      "address": "0x8414",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 5 power factor",
+      "group": "Outlet 5",
+      "area": "holding",
+      "address": "0x8416",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 5 active energy",
+      "group": "Outlet 5",
+      "area": "holding",
+      "address": "0x8418",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 5 on",
+      "group": "Outlet 5",
+      "area": "coil",
+      "address": "0x0104",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 6 capabilities",
+      "group": "Outlet 6",
+      "area": "holding",
+      "address": "0x8500",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 6 rms voltage",
+      "group": "Outlet 6",
+      "area": "holding",
+      "address": "0x8508",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 6 rms current",
+      "group": "Outlet 6",
+      "area": "holding",
+      "address": "0x850A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 6 active power",
+      "group": "Outlet 6",
+      "area": "holding",
+      "address": "0x8512",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 6 apparent power",
+      "group": "Outlet 6",
+      "area": "holding",
+      "address": "0x8514",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 6 power factor",
+      "group": "Outlet 6",
+      "area": "holding",
+      "address": "0x8516",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 6 active energy",
+      "group": "Outlet 6",
+      "area": "holding",
+      "address": "0x8518",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 6 on",
+      "group": "Outlet 6",
+      "area": "coil",
+      "address": "0x0105",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 7 capabilities",
+      "group": "Outlet 7",
+      "area": "holding",
+      "address": "0x8600",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 7 rms voltage",
+      "group": "Outlet 7",
+      "area": "holding",
+      "address": "0x8608",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 7 rms current",
+      "group": "Outlet 7",
+      "area": "holding",
+      "address": "0x860A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 7 active power",
+      "group": "Outlet 7",
+      "area": "holding",
+      "address": "0x8612",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 7 apparent power",
+      "group": "Outlet 7",
+      "area": "holding",
+      "address": "0x8614",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 7 power factor",
+      "group": "Outlet 7",
+      "area": "holding",
+      "address": "0x8616",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 7 active energy",
+      "group": "Outlet 7",
+      "area": "holding",
+      "address": "0x8618",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 7 on",
+      "group": "Outlet 7",
+      "area": "coil",
+      "address": "0x0106",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 8 capabilities",
+      "group": "Outlet 8",
+      "area": "holding",
+      "address": "0x8700",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 8 rms voltage",
+      "group": "Outlet 8",
+      "area": "holding",
+      "address": "0x8708",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 8 rms current",
+      "group": "Outlet 8",
+      "area": "holding",
+      "address": "0x870A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 8 active power",
+      "group": "Outlet 8",
+      "area": "holding",
+      "address": "0x8712",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 8 apparent power",
+      "group": "Outlet 8",
+      "area": "holding",
+      "address": "0x8714",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 8 power factor",
+      "group": "Outlet 8",
+      "area": "holding",
+      "address": "0x8716",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 8 active energy",
+      "group": "Outlet 8",
+      "area": "holding",
+      "address": "0x8718",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 8 on",
+      "group": "Outlet 8",
+      "area": "coil",
+      "address": "0x0107",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 9 capabilities",
+      "group": "Outlet 9",
+      "area": "holding",
+      "address": "0x8800",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 9 rms voltage",
+      "group": "Outlet 9",
+      "area": "holding",
+      "address": "0x8808",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 9 rms current",
+      "group": "Outlet 9",
+      "area": "holding",
+      "address": "0x880A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 9 active power",
+      "group": "Outlet 9",
+      "area": "holding",
+      "address": "0x8812",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 9 apparent power",
+      "group": "Outlet 9",
+      "area": "holding",
+      "address": "0x8814",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 9 power factor",
+      "group": "Outlet 9",
+      "area": "holding",
+      "address": "0x8816",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 9 active energy",
+      "group": "Outlet 9",
+      "area": "holding",
+      "address": "0x8818",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 9 on",
+      "group": "Outlet 9",
+      "area": "coil",
+      "address": "0x0108",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 10 capabilities",
+      "group": "Outlet 10",
+      "area": "holding",
+      "address": "0x8900",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 10 rms voltage",
+      "group": "Outlet 10",
+      "area": "holding",
+      "address": "0x8908",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 10 rms current",
+      "group": "Outlet 10",
+      "area": "holding",
+      "address": "0x890A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 10 active power",
+      "group": "Outlet 10",
+      "area": "holding",
+      "address": "0x8912",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 10 apparent power",
+      "group": "Outlet 10",
+      "area": "holding",
+      "address": "0x8914",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 10 power factor",
+      "group": "Outlet 10",
+      "area": "holding",
+      "address": "0x8916",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 10 active energy",
+      "group": "Outlet 10",
+      "area": "holding",
+      "address": "0x8918",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 10 on",
+      "group": "Outlet 10",
+      "area": "coil",
+      "address": "0x0109",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 11 capabilities",
+      "group": "Outlet 11",
+      "area": "holding",
+      "address": "0x8A00",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 11 rms voltage",
+      "group": "Outlet 11",
+      "area": "holding",
+      "address": "0x8A08",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 11 rms current",
+      "group": "Outlet 11",
+      "area": "holding",
+      "address": "0x8A0A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 11 active power",
+      "group": "Outlet 11",
+      "area": "holding",
+      "address": "0x8A12",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 11 apparent power",
+      "group": "Outlet 11",
+      "area": "holding",
+      "address": "0x8A14",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 11 power factor",
+      "group": "Outlet 11",
+      "area": "holding",
+      "address": "0x8A16",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 11 active energy",
+      "group": "Outlet 11",
+      "area": "holding",
+      "address": "0x8A18",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 11 on",
+      "group": "Outlet 11",
+      "area": "coil",
+      "address": "0x010A",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 12 capabilities",
+      "group": "Outlet 12",
+      "area": "holding",
+      "address": "0x8B00",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 12 rms voltage",
+      "group": "Outlet 12",
+      "area": "holding",
+      "address": "0x8B08",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 12 rms current",
+      "group": "Outlet 12",
+      "area": "holding",
+      "address": "0x8B0A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 12 active power",
+      "group": "Outlet 12",
+      "area": "holding",
+      "address": "0x8B12",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 12 apparent power",
+      "group": "Outlet 12",
+      "area": "holding",
+      "address": "0x8B14",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 12 power factor",
+      "group": "Outlet 12",
+      "area": "holding",
+      "address": "0x8B16",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 12 active energy",
+      "group": "Outlet 12",
+      "area": "holding",
+      "address": "0x8B18",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 12 on",
+      "group": "Outlet 12",
+      "area": "coil",
+      "address": "0x010B",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 13 capabilities",
+      "group": "Outlet 13",
+      "area": "holding",
+      "address": "0x8C00",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 13 rms voltage",
+      "group": "Outlet 13",
+      "area": "holding",
+      "address": "0x8C08",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 13 rms current",
+      "group": "Outlet 13",
+      "area": "holding",
+      "address": "0x8C0A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 13 active power",
+      "group": "Outlet 13",
+      "area": "holding",
+      "address": "0x8C12",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 13 apparent power",
+      "group": "Outlet 13",
+      "area": "holding",
+      "address": "0x8C14",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 13 power factor",
+      "group": "Outlet 13",
+      "area": "holding",
+      "address": "0x8C16",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 13 active energy",
+      "group": "Outlet 13",
+      "area": "holding",
+      "address": "0x8C18",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 13 on",
+      "group": "Outlet 13",
+      "area": "coil",
+      "address": "0x010C",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 14 capabilities",
+      "group": "Outlet 14",
+      "area": "holding",
+      "address": "0x8D00",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 14 rms voltage",
+      "group": "Outlet 14",
+      "area": "holding",
+      "address": "0x8D08",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 14 rms current",
+      "group": "Outlet 14",
+      "area": "holding",
+      "address": "0x8D0A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 14 active power",
+      "group": "Outlet 14",
+      "area": "holding",
+      "address": "0x8D12",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 14 apparent power",
+      "group": "Outlet 14",
+      "area": "holding",
+      "address": "0x8D14",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 14 power factor",
+      "group": "Outlet 14",
+      "area": "holding",
+      "address": "0x8D16",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 14 active energy",
+      "group": "Outlet 14",
+      "area": "holding",
+      "address": "0x8D18",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 14 on",
+      "group": "Outlet 14",
+      "area": "coil",
+      "address": "0x010D",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 15 capabilities",
+      "group": "Outlet 15",
+      "area": "holding",
+      "address": "0x8E00",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 15 rms voltage",
+      "group": "Outlet 15",
+      "area": "holding",
+      "address": "0x8E08",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 15 rms current",
+      "group": "Outlet 15",
+      "area": "holding",
+      "address": "0x8E0A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 15 active power",
+      "group": "Outlet 15",
+      "area": "holding",
+      "address": "0x8E12",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 15 apparent power",
+      "group": "Outlet 15",
+      "area": "holding",
+      "address": "0x8E14",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 15 power factor",
+      "group": "Outlet 15",
+      "area": "holding",
+      "address": "0x8E16",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 15 active energy",
+      "group": "Outlet 15",
+      "area": "holding",
+      "address": "0x8E18",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 15 on",
+      "group": "Outlet 15",
+      "area": "coil",
+      "address": "0x010E",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 16 capabilities",
+      "group": "Outlet 16",
+      "area": "holding",
+      "address": "0x8F00",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 16 rms voltage",
+      "group": "Outlet 16",
+      "area": "holding",
+      "address": "0x8F08",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 16 rms current",
+      "group": "Outlet 16",
+      "area": "holding",
+      "address": "0x8F0A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 16 active power",
+      "group": "Outlet 16",
+      "area": "holding",
+      "address": "0x8F12",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 16 apparent power",
+      "group": "Outlet 16",
+      "area": "holding",
+      "address": "0x8F14",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 16 power factor",
+      "group": "Outlet 16",
+      "area": "holding",
+      "address": "0x8F16",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 16 active energy",
+      "group": "Outlet 16",
+      "area": "holding",
+      "address": "0x8F18",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 16 on",
+      "group": "Outlet 16",
+      "area": "coil",
+      "address": "0x010F",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 17 capabilities",
+      "group": "Outlet 17",
+      "area": "holding",
+      "address": "0x9000",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 17 rms voltage",
+      "group": "Outlet 17",
+      "area": "holding",
+      "address": "0x9008",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 17 rms current",
+      "group": "Outlet 17",
+      "area": "holding",
+      "address": "0x900A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 17 active power",
+      "group": "Outlet 17",
+      "area": "holding",
+      "address": "0x9012",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 17 apparent power",
+      "group": "Outlet 17",
+      "area": "holding",
+      "address": "0x9014",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 17 power factor",
+      "group": "Outlet 17",
+      "area": "holding",
+      "address": "0x9016",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 17 active energy",
+      "group": "Outlet 17",
+      "area": "holding",
+      "address": "0x9018",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 17 on",
+      "group": "Outlet 17",
+      "area": "coil",
+      "address": "0x0110",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 18 capabilities",
+      "group": "Outlet 18",
+      "area": "holding",
+      "address": "0x9100",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 18 rms voltage",
+      "group": "Outlet 18",
+      "area": "holding",
+      "address": "0x9108",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 18 rms current",
+      "group": "Outlet 18",
+      "area": "holding",
+      "address": "0x910A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 18 active power",
+      "group": "Outlet 18",
+      "area": "holding",
+      "address": "0x9112",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 18 apparent power",
+      "group": "Outlet 18",
+      "area": "holding",
+      "address": "0x9114",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 18 power factor",
+      "group": "Outlet 18",
+      "area": "holding",
+      "address": "0x9116",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 18 active energy",
+      "group": "Outlet 18",
+      "area": "holding",
+      "address": "0x9118",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 18 on",
+      "group": "Outlet 18",
+      "area": "coil",
+      "address": "0x0111",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 19 capabilities",
+      "group": "Outlet 19",
+      "area": "holding",
+      "address": "0x9200",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 19 rms voltage",
+      "group": "Outlet 19",
+      "area": "holding",
+      "address": "0x9208",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 19 rms current",
+      "group": "Outlet 19",
+      "area": "holding",
+      "address": "0x920A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 19 active power",
+      "group": "Outlet 19",
+      "area": "holding",
+      "address": "0x9212",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 19 apparent power",
+      "group": "Outlet 19",
+      "area": "holding",
+      "address": "0x9214",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 19 power factor",
+      "group": "Outlet 19",
+      "area": "holding",
+      "address": "0x9216",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 19 active energy",
+      "group": "Outlet 19",
+      "area": "holding",
+      "address": "0x9218",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 19 on",
+      "group": "Outlet 19",
+      "area": "coil",
+      "address": "0x0112",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 20 capabilities",
+      "group": "Outlet 20",
+      "area": "holding",
+      "address": "0x9300",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 20 rms voltage",
+      "group": "Outlet 20",
+      "area": "holding",
+      "address": "0x9308",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 20 rms current",
+      "group": "Outlet 20",
+      "area": "holding",
+      "address": "0x930A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 20 active power",
+      "group": "Outlet 20",
+      "area": "holding",
+      "address": "0x9312",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 20 apparent power",
+      "group": "Outlet 20",
+      "area": "holding",
+      "address": "0x9314",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 20 power factor",
+      "group": "Outlet 20",
+      "area": "holding",
+      "address": "0x9316",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 20 active energy",
+      "group": "Outlet 20",
+      "area": "holding",
+      "address": "0x9318",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 20 on",
+      "group": "Outlet 20",
+      "area": "coil",
+      "address": "0x0113",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 21 capabilities",
+      "group": "Outlet 21",
+      "area": "holding",
+      "address": "0x9400",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 21 rms voltage",
+      "group": "Outlet 21",
+      "area": "holding",
+      "address": "0x9408",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 21 rms current",
+      "group": "Outlet 21",
+      "area": "holding",
+      "address": "0x940A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 21 active power",
+      "group": "Outlet 21",
+      "area": "holding",
+      "address": "0x9412",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 21 apparent power",
+      "group": "Outlet 21",
+      "area": "holding",
+      "address": "0x9414",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 21 power factor",
+      "group": "Outlet 21",
+      "area": "holding",
+      "address": "0x9416",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 21 active energy",
+      "group": "Outlet 21",
+      "area": "holding",
+      "address": "0x9418",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 21 on",
+      "group": "Outlet 21",
+      "area": "coil",
+      "address": "0x0114",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 22 capabilities",
+      "group": "Outlet 22",
+      "area": "holding",
+      "address": "0x9500",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 22 rms voltage",
+      "group": "Outlet 22",
+      "area": "holding",
+      "address": "0x9508",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 22 rms current",
+      "group": "Outlet 22",
+      "area": "holding",
+      "address": "0x950A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 22 active power",
+      "group": "Outlet 22",
+      "area": "holding",
+      "address": "0x9512",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 22 apparent power",
+      "group": "Outlet 22",
+      "area": "holding",
+      "address": "0x9514",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 22 power factor",
+      "group": "Outlet 22",
+      "area": "holding",
+      "address": "0x9516",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 22 active energy",
+      "group": "Outlet 22",
+      "area": "holding",
+      "address": "0x9518",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 22 on",
+      "group": "Outlet 22",
+      "area": "coil",
+      "address": "0x0115",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 23 capabilities",
+      "group": "Outlet 23",
+      "area": "holding",
+      "address": "0x9600",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 23 rms voltage",
+      "group": "Outlet 23",
+      "area": "holding",
+      "address": "0x9608",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 23 rms current",
+      "group": "Outlet 23",
+      "area": "holding",
+      "address": "0x960A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 23 active power",
+      "group": "Outlet 23",
+      "area": "holding",
+      "address": "0x9612",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 23 apparent power",
+      "group": "Outlet 23",
+      "area": "holding",
+      "address": "0x9614",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 23 power factor",
+      "group": "Outlet 23",
+      "area": "holding",
+      "address": "0x9616",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 23 active energy",
+      "group": "Outlet 23",
+      "area": "holding",
+      "address": "0x9618",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 23 on",
+      "group": "Outlet 23",
+      "area": "coil",
+      "address": "0x0116",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    },
+    {
+      "name": "Outlet 24 capabilities",
+      "group": "Outlet 24",
+      "area": "holding",
+      "address": "0x9700",
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit mask; bit 15 set means the outlet is switchable."
+    },
+    {
+      "name": "Outlet 24 rms voltage",
+      "group": "Outlet 24",
+      "area": "holding",
+      "address": "0x9708",
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 24 rms current",
+      "group": "Outlet 24",
+      "area": "holding",
+      "address": "0x970A",
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 24 active power",
+      "group": "Outlet 24",
+      "area": "holding",
+      "address": "0x9712",
+      "type": "float32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 24 apparent power",
+      "group": "Outlet 24",
+      "area": "holding",
+      "address": "0x9714",
+      "type": "float32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 24 power factor",
+      "group": "Outlet 24",
+      "area": "holding",
+      "address": "0x9716",
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 24 active energy",
+      "group": "Outlet 24",
+      "area": "holding",
+      "address": "0x9718",
+      "type": "uint64",
+      "unit": "Wh",
+      "access": "R"
+    },
+    {
+      "name": "Outlet 24 on",
+      "group": "Outlet 24",
+      "area": "coil",
+      "address": "0x0117",
+      "type": "bool",
+      "access": "RW",
+      "description": "Switched outlets only: 1 on, 0 off."
+    }
+  ]
+}
