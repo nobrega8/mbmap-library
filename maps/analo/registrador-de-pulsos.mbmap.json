@@ -1,0 +1,775 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Analo",
+  "model": "Registrador de Pulsos",
+  "models": [
+    "Registrador de Pulsos"
+  ],
+  "vendor_website": "analo.com.br",
+  "description": "Pulse and SSU logger with four channels and Modbus RTU",
+  "revision": 1,
+  "source": "Analo Sistemas de Energia, \"Registrador de Pulsos – Tabela de registradores Modbus\", revision 2002.09.01",
+  "sources": [
+    {
+      "title": "Registrador de Pulsos – Tabela de registradores Modbus",
+      "version": "2002.09.01",
+      "url": "https://www.analo.com.br/docs/produtos/Registrador%20de%20Pulsos%20-%20Tabela%20de%20registradores%20Modbus.pdf",
+      "note": "register table, register formats and mass memory description"
+    }
+  ],
+  "notes": [
+    "Analo Registrador de Pulsos. The registers of the manufacturer's Modbus table, translated to English.",
+    "Addresses are the 'Endereço' column of the table (the 'Registrador' column is one higher). Values are 16-bit; several registers pack two bytes, described as high byte / low byte. Values split in LSB and MSB registers are read here as 32-bit, low word first.",
+    "The Analo signature registers spell \"ANALO\" and the hardware model has a fixed value: both are given as references to recognise the device.",
+    "The table gives no units or scaling for the counters and SSU values: they are the raw values of the meter's serial user output and of the pulse inputs.",
+    "The mass memory (from 128 to 65407; 16320 records of 4 registers, newest first) is not in this map; its record formats are described in the table.",
+    "Not tested on a device."
+  ],
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Hardware model",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "role": "model",
+      "reference": 0,
+      "description": "Reads 0x0000."
+    },
+    {
+      "name": "Firmware version",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Serial number",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware date",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year x 16 + month; low byte: day."
+    },
+    {
+      "name": "Modbus address",
+      "group": "General settings",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: 00h; low byte: address."
+    },
+    {
+      "name": "Serial baud rate",
+      "group": "General settings",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: RS232 port; low byte: RS485 port."
+    },
+    {
+      "name": "RTC synchronisation with the meter clock",
+      "group": "General settings",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: interval; low byte: channel."
+    },
+    {
+      "name": "Erase mass memory",
+      "group": "Special functions",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 0 to run."
+    },
+    {
+      "name": "User register 0",
+      "group": "User registers",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "User register 1",
+      "group": "User registers",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "User register 2",
+      "group": "User registers",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "User register 3",
+      "group": "User registers",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "User register 4",
+      "group": "User registers",
+      "area": "holding",
+      "address": 33,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "User register 5",
+      "group": "User registers",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "User register 6",
+      "group": "User registers",
+      "area": "holding",
+      "address": 35,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "User register 7",
+      "group": "User registers",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "System date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 61,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "System date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 62,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "System date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 63,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "Channel 1 – current demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "Channel 1 – current demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 65,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "Channel 1 – current demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "Channel 1 – current demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "Channel 1 – current demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 68,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "Channel 1 – current demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 69,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Channel 1 – current demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "Channel 1 – current demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 71,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "Channel 1 – last demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 72,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "Channel 1 – last demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "Channel 1 – last demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 74,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "Channel 1 – last demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 75,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "Channel 1 – last demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "Channel 1 – last demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 77,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Channel 1 – last demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 78,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "Channel 1 – last demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 79,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "Channel 2 – current demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 80,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "Channel 2 – current demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "Channel 2 – current demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "Channel 2 – current demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 83,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "Channel 2 – current demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 84,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "Channel 2 – current demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 85,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Channel 2 – current demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 86,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "Channel 2 – current demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 87,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "Channel 2 – last demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 88,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "Channel 2 – last demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 89,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "Channel 2 – last demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 90,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "Channel 2 – last demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 91,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "Channel 2 – last demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 92,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "Channel 2 – last demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 93,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Channel 2 – last demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 94,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "Channel 2 – last demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 95,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "Channel 3 – current demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 96,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "Channel 3 – current demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 97,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "Channel 3 – current demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 98,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "Channel 3 – current demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "Channel 3 – current demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "Channel 3 – current demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Channel 3 – current demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "Channel 3 – current demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "Channel 3 – last demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "Channel 3 – last demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "Channel 3 – last demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "Channel 3 – last demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "Channel 3 – last demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "Channel 3 – last demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Channel 3 – last demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "Channel 3 – last demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "Channel 4 – current demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "Channel 4 – current demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 113,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "Channel 4 – current demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 114,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "Channel 4 – current demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "Channel 4 – current demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 116,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "Channel 4 – current demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 117,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Channel 4 – current demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "Channel 4 – current demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 119,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "Channel 4 – last demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 120,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "Channel 4 – last demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 121,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "Channel 4 – last demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 122,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "Channel 4 – last demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 123,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "Channel 4 – last demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 124,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "Channel 4 – last demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 125,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Channel 4 – last demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 126,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "Channel 4 – last demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 127,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    }
+  ]
+}

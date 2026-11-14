@@ -1,0 +1,506 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Analo",
+  "model": "Gerenciador de Energia",
+  "models": [
+    "Gerenciador de Energia"
+  ],
+  "vendor_website": "analo.com.br",
+  "description": "Energy manager (demand controller) that reads the utility meter's serial user output (SSU) and drives four control outputs, with Modbus RTU",
+  "revision": 1,
+  "source": "Analo Sistemas de Energia, \"Gerenciador de Energia – Tabela de registradores Modbus\", revision 2012.04.02",
+  "sources": [
+    {
+      "title": "Gerenciador de Energia – Tabela de registradores Modbus",
+      "version": "2012.04.02",
+      "url": "https://www.analo.com.br/docs/produtos/Gerenciador%20de%20Energia%20-%20Tabela%20de%20registradores%20Modbus.pdf",
+      "note": "register table, register formats and mass memory description"
+    }
+  ],
+  "notes": [
+    "Analo Gerenciador de Energia. The registers of the manufacturer's Modbus table, translated to English.",
+    "Addresses are the 'Endereço' column of the table (the 'Registrador' column is one higher). Values are 16-bit; several registers pack two bytes, described as high byte / low byte. Values split in LSB and MSB registers are read here as 32-bit, low word first.",
+    "The Analo signature registers spell \"ANALO\" and the hardware model has a fixed value: both are given as references to recognise the device.",
+    "The table gives no units or scaling for the counters and SSU values: they are the raw values of the meter's serial user output and of the pulse inputs.",
+    "The 128 user registers (128-255) and the four output setting blocks (256-1279, 256 registers each) are not in this map, nor the mass memory (from 1408; records of 4 registers, newest first, described in the table).",
+    "Not tested on a device."
+  ],
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Analo signature, letter 1",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "reference": 65,
+      "description": "Reads 0x0041 (\"A\")."
+    },
+    {
+      "name": "Analo signature, letter 2",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "reference": 78,
+      "description": "Reads 0x004E (\"N\")."
+    },
+    {
+      "name": "Analo signature, letter 3",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "R",
+      "reference": 65,
+      "description": "Reads 0x0041 (\"A\")."
+    },
+    {
+      "name": "Analo signature, letter 4",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "reference": 76,
+      "description": "Reads 0x004C (\"L\")."
+    },
+    {
+      "name": "Analo signature, letter 5",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "reference": 79,
+      "description": "Reads 0x004F (\"O\")."
+    },
+    {
+      "name": "Hardware model",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "role": "model",
+      "reference": 3,
+      "description": "Reads 0x0003."
+    },
+    {
+      "name": "Hardware version",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware",
+      "description": "High byte: 00h; low byte: 01h."
+    },
+    {
+      "name": "Firmware date",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year x 16 + month; low byte: day."
+    },
+    {
+      "name": "Serial number",
+      "group": "Unit information",
+      "area": "holding",
+      "address": 9,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 9 (low word) and 10 (high word)."
+    },
+    {
+      "name": "Mass memory pointer",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Watchdog trip counter",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System check result",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: 00h."
+    },
+    {
+      "name": "Check system integrity",
+      "group": "Special functions",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 0 to run."
+    },
+    {
+      "name": "Load factory settings",
+      "group": "Special functions",
+      "area": "holding",
+      "address": 33,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 0 to run."
+    },
+    {
+      "name": "Erase mass memory",
+      "group": "Special functions",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 0 to run."
+    },
+    {
+      "name": "Modbus address",
+      "group": "General settings",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: RS232 port; low byte: RS485 port."
+    },
+    {
+      "name": "Serial baud rate",
+      "group": "General settings",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: RS232 port; low byte: RS485 port."
+    },
+    {
+      "name": "RTC synchronisation with the meter clock",
+      "group": "General settings",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: 00h, 01h; low byte: 00h, 01h."
+    },
+    {
+      "name": "Output switching log enable",
+      "group": "General settings",
+      "area": "holding",
+      "address": 51,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: 00h; low byte: 00h, ..., 0Fh."
+    },
+    {
+      "name": "Serial number copy",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1280,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Registers 1280 (low word) and 1281 (high word)."
+    },
+    {
+      "name": "Mass memory pointer copy",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1282,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1283,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "System date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1284,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "System date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1285,
+      "type": "uint16",
+      "access": "RW",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "SSU – current demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1286,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "SSU – current demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1287,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "SSU – current demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1288,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "SSU – current demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1289,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "SSU – current demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1290,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "SSU – current demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1291,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "SSU – current demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1292,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "SSU – current demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1293,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "SSU – last demand interval – octets 2/1",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1294,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 2; low byte: octet 1."
+    },
+    {
+      "name": "SSU – last demand interval – octets 4/3",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1295,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 4; low byte: octet 3."
+    },
+    {
+      "name": "SSU – last demand interval – octets 6/5",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1296,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 6; low byte: octet 5."
+    },
+    {
+      "name": "SSU – last demand interval – octets 8/7",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1297,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: octet 8; low byte: octet 7."
+    },
+    {
+      "name": "SSU – last demand interval – octets (5)",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1298,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: 00h; low byte: octet 9."
+    },
+    {
+      "name": "SSU – last demand interval – date – year/month",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1299,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: year; low byte: month."
+    },
+    {
+      "name": "SSU – last demand interval – date – day/hours",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1300,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: day; low byte: hours."
+    },
+    {
+      "name": "SSU – last demand interval – date – minutes/seconds",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1301,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: minutes; low byte: seconds."
+    },
+    {
+      "name": "Output 0 – status – service/mode",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1302,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: service; low byte: mode."
+    },
+    {
+      "name": "Output 0 – status – logical state/physical state",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1303,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: logical state; low byte: physical state."
+    },
+    {
+      "name": "Output 1 – status – service/mode",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1304,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: service; low byte: mode."
+    },
+    {
+      "name": "Output 1 – status – logical state/physical state",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1305,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: logical state; low byte: physical state."
+    },
+    {
+      "name": "Output 2 – status – service/mode",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1306,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: service; low byte: mode."
+    },
+    {
+      "name": "Output 2 – status – logical state/physical state",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1307,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: logical state; low byte: physical state."
+    },
+    {
+      "name": "Output 3 – status – service/mode",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1308,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: service; low byte: mode."
+    },
+    {
+      "name": "Output 3 – status – logical state/physical state",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1309,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: logical state; low byte: physical state."
+    },
+    {
+      "name": "SSU – current demand interval – seconds remaining",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1310,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "SSU – current demand interval – active energy",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1311,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "SSU – current demand interval – reactive energy",
+      "group": "Instantaneous registers",
+      "area": "holding",
+      "address": 1312,
+      "type": "uint16",
+      "access": "R"
+    }
+  ]
+}
