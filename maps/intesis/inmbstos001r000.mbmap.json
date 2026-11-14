@@ -1,0 +1,674 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Intesis",
+  "model": "INMBSTOS001R000",
+  "models": [
+    "INMBSTOS001R000",
+    "TO-RC-MBS-1"
+  ],
+  "vendor_website": "intesis.com",
+  "description": "Modbus RTU gateway for Toshiba air conditioners: on/off, mode, fan speed, vanes, setpoint, temperatures, alarms, error codes and gateway settings",
+  "revision": 1,
+  "source": "HMS Networks / Intesis, INMBSTOS001R000 user manual",
+  "sources": [
+    {
+      "title": "INMBSTOS001R000 – Modbus RTU interface – User manual",
+      "url": "https://www.hms-networks.com/docs/default-source/products/intesis/manuals-and-guides---manuals/user-manual-inmbstos001r000.pdf",
+      "note": "Modbus register table",
+      "accessed": "2026-11-14",
+      "sha256": "ce3d4d4f73e3be17c041ac810b98ca8d5a13d49582061f0b47f9768fcd578c91"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over EIA-485. Function 03 or 04 reads, 06 or 16 writes. The baud rate and slave address are set with the DIP switches (factory: 9600 baud, 8N1).",
+    "Addresses are the protocol addresses of the manual (the PLC addresses less 1).",
+    "Temperatures are in °C or °F and in degrees or tenths of a degree, as set with the DIP switches; their entries say so.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "AC unit On/Off",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "AC unit Mode",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Heat",
+        "2": "Dry",
+        "3": "Fan",
+        "4": "Cool"
+      }
+    },
+    {
+      "name": "AC unit Fan Speed",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Low",
+        "2": "Mid",
+        "3": "High"
+      }
+    },
+    {
+      "name": "AC unit Vane Position",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "POS1 (Horizontal)",
+        "2": "POS2 (Horizontal)",
+        "3": "POS3 (Medium)",
+        "4": "POS4 (Vertical)",
+        "5": "POS5 (Vertical)",
+        "6": "POS6",
+        "7": "POS7",
+        "10": "Swing"
+      }
+    },
+    {
+      "name": "AC unit Temperature Setpoint",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "RW",
+      "description": "-32768 (Initialization value) 16..32ºC (ºC/x10ºC) 61..90ºF Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "AC unit Temperature reference",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "access": "RW",
+      "description": "-32768: Initial value. Value invalid, which comes from the IU’s sensor. If the value that is shown in register 22 (23 PLC) is valid, the address is going to take this value. Ranges are specific from Manufacturer (ºC/x10ºC/ºF) Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Window Contact",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Closed",
+        "1": "Open"
+      }
+    },
+    {
+      "name": "Gateway Disablement",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Gateway enabled",
+        "1": "Gateway disabled"
+      }
+    },
+    {
+      "name": "AC Remote Control Disablement",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Remote Control enabled",
+        "1": "Remote Control disabled"
+      }
+    },
+    {
+      "name": "AC unit Operation Time",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0..65535 (hours). Counts the time the AC unit is in “On” state."
+    },
+    {
+      "name": "AC unit Alarm Status",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No alarm condition",
+        "1": "Alarm condition"
+      }
+    },
+    {
+      "name": "Error Code",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: No Error active 65535 (-1): Error in the communication of Gateway with the AC indoor unit. Any other error present, see the table at the end of this document."
+    },
+    {
+      "name": "Indoor unit´s ambient temperature from external sensor (at Modbus side)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "access": "RW",
+      "description": "-32768: Initialization value. No temperature is being provided from an input sensor. There’s no input sensor. Any other: (ºC/x10ºC/ºF) Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "AC Real temperature setpoint",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "access": "R",
+      "description": "There’s no Virtual Temperature. The value equals to the value of register 5 (6 PLC). The value which is introduced by the user is the one that the machine uses (the external sensor is able to write directly over the machine to do this operation). Ran Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Block Periodic Sendings",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 97,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Non-blocked",
+        "1": "Blocked"
+      }
+    },
+    {
+      "name": "“Open Window” switch-off timeout",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0..30 (minutes) Factory setting: 30 (minutes)"
+    },
+    {
+      "name": "Modbus RTU baud-rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "description": "2400bps 4800bps 9600bps (Default) 19200bps 38400bps 57600bps 76800bps 115200bps"
+    },
+    {
+      "name": "Modbus Slave Address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "description": "1..63"
+    },
+    {
+      "name": "Max number of fan speeds",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Device ID",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "R",
+      "description": "Reads 0x1F00 for this gateway.",
+      "enum": {
+        "7936": "INMBSTOS001R000"
+      }
+    },
+    {
+      "name": "Software version",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Outdoor Unit duty",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4200,
+      "type": "uint16",
+      "access": "R",
+      "description": "15"
+    },
+    {
+      "name": "High-pressure sensor detention pressure (Pd)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4210,
+      "type": "uint16",
+      "access": "R",
+      "description": "X100 Mpa"
+    },
+    {
+      "name": "Low-pressure sensor detention pressure (Ps)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4211,
+      "type": "uint16",
+      "access": "R",
+      "description": "X100 Mpa"
+    },
+    {
+      "name": "Compressor 1 discharge temperature (Td)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4212,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Compressor 2 discharge temperature (Td)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4213,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Compressor 3 discharge temperature (Td)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4214,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Suction temperature (TS)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4215,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Outdoor fan coil temperature 1 (TE)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4216,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Outdoor fan coil temperature 2 (TE)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4217,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Temperature at liquid side (TL)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4218,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Outside ambient temperature (TO)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4219,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "PMV + 2 opening",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4220,
+      "type": "uint16",
+      "access": "R",
+      "description": "x1 Pulse"
+    },
+    {
+      "name": "PMV opening",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4221,
+      "type": "uint16",
+      "access": "R",
+      "description": "x1 Pulse"
+    },
+    {
+      "name": "Compressor 1 current (I)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4222,
+      "type": "uint16",
+      "access": "R",
+      "description": "x10 A"
+    },
+    {
+      "name": "Compressor 2 current (I)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4223,
+      "type": "uint16",
+      "access": "R",
+      "description": "x10 A"
+    },
+    {
+      "name": "Compressor 3 current (I)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4224,
+      "type": "uint16",
+      "access": "R",
+      "description": "x10 A"
+    },
+    {
+      "name": "Outdoor fan current (Ifan)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4225,
+      "type": "uint16",
+      "access": "R",
+      "description": "x10 A"
+    },
+    {
+      "name": "Compressor 1 revolutions",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4226,
+      "type": "uint16",
+      "access": "R",
+      "description": "x10 RPS"
+    },
+    {
+      "name": "Compressor 2 revolutions",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4227,
+      "type": "uint16",
+      "access": "R",
+      "description": "x10 RPS"
+    },
+    {
+      "name": "Compressor 3 revolutions",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4228,
+      "type": "uint16",
+      "access": "R",
+      "description": "x10 RPS"
+    },
+    {
+      "name": "Outdoor fan mode",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4229,
+      "type": "uint16",
+      "access": "R",
+      "description": "x1 mode"
+    },
+    {
+      "name": "Compressor IPDU 1 heat sink temperature",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4230,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Compressor IPDU 2 heat sink temperature",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4231,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Compressor IPDU 3 heat sink temperature",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4232,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Outdoor fan IPDU heat sink temperature",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4233,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Heating/cooling recovery controlled ∗",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4234,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Normal",
+        "1": "Recovery controlled"
+      }
+    },
+    {
+      "name": "Pressure release ∗",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4235,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Normal",
+        "1": "Recovery controlled"
+      }
+    },
+    {
+      "name": "Discharge temperature release ∗",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4236,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "Normal",
+        "1": "Recovery controlled"
+      },
+      "description": "Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Follower unit release (U/U/U outdoor units) ∗",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4237,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Normal",
+        "1": "Recovery controlled"
+      }
+    },
+    {
+      "name": "Outdoor unit horsepower",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4238,
+      "type": "uint16",
+      "access": "R",
+      "description": "x1 HP"
+    },
+    {
+      "name": "Outdoor Unit duty (4400)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4400,
+      "type": "uint16",
+      "access": "R",
+      "description": "0..15"
+    },
+    {
+      "name": "TE temperature (evaporator)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4410,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "TO temperature outdoor",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4411,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Compressor discharge temperature",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4412,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Suction temperature TS",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4413,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Temperature thyristor THS",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4414,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Compressor current",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4415,
+      "type": "uint16",
+      "access": "R",
+      "description": "A"
+    },
+    {
+      "name": "Temperature at liquid side TL",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4416,
+      "type": "int16",
+      "access": "R",
+      "description": "x1 ºC Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Compressor revolutions",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4417,
+      "type": "uint16",
+      "access": "R",
+      "description": "RPS"
+    },
+    {
+      "name": "Revolutions lowest Fan",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4418,
+      "type": "uint16",
+      "access": "R",
+      "description": "RPS"
+    },
+    {
+      "name": "Revolutions upper Fan",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4419,
+      "type": "uint16",
+      "access": "R",
+      "description": "RPS"
+    },
+    {
+      "name": "Indoor Unit Type",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4450,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not defined (extra signals disabled)",
+        "1": "RAV",
+        "2": "VRF (SMMSi)",
+        "3": "VRF (SHRM/SMMS)"
+      }
+    },
+    {
+      "name": "Refresh Time Adjust",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4451,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1..4"
+    }
+  ]
+}

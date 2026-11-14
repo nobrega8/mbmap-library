@@ -1,0 +1,353 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Intesis",
+  "model": "INMBSHIT001R000",
+  "models": [
+    "INMBSHIT001R000",
+    "HI-RC-MBS-1"
+  ],
+  "vendor_website": "intesis.com",
+  "description": "Modbus RTU gateway for Hitachi commercial air conditioners: on/off, mode, fan speed, vanes, setpoint, temperatures, alarms, error codes and gateway settings",
+  "revision": 1,
+  "source": "HMS Networks / Intesis, INMBSHIT001R000 user manual",
+  "sources": [
+    {
+      "title": "INMBSHIT001R000 – Modbus RTU interface – User manual",
+      "url": "https://www.hms-networks.com/docs/default-source/products/intesis/manuals-and-guides---manuals/user-manual-inmbshit001r000.pdf",
+      "note": "Modbus register table",
+      "accessed": "2026-11-14",
+      "sha256": "eb2d18a153b0f757789ff83212ad476fe433258a2efd7f1bd8f62d42a93ea900"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over EIA-485. Function 03 or 04 reads, 06 or 16 writes. The baud rate and slave address are set with the DIP switches (factory: 9600 baud, 8N1).",
+    "Addresses are the protocol addresses of the manual (the PLC addresses less 1).",
+    "Temperatures are in °C or °F and in degrees or tenths of a degree, as set with the DIP switches; their entries say so.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "AC unit On/Off",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "AC unit Mode",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Heat",
+        "2": "Dry",
+        "3": "Fan",
+        "4": "Cool"
+      }
+    },
+    {
+      "name": "AC unit Fan Speed",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Low",
+        "2": "Mid",
+        "3": "High",
+        "4": "Super-high"
+      }
+    },
+    {
+      "name": "AC unit Vane Position",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "POS1 (Horizontal)",
+        "2": "POS2 (Horizontal)",
+        "3": "POS3 (Med)",
+        "4": "POS4 (Vert)",
+        "5": "POS5 (Vert)",
+        "6": "POS6",
+        "7": "POS7",
+        "10": "Swing"
+      }
+    },
+    {
+      "name": "AC unit Temperature Setpoint",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "RW",
+      "description": "-32768 (Initialization value) 16..32ºC (ºC/x10ºC) 61..94ºF Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "AC unit Temperature reference",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "access": "R",
+      "description": "-32768 (Initialization value) Ranges are specific from Manufacturer(ºC/x10ºC/ºF) Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Window Contact",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Closed",
+        "1": "Open"
+      }
+    },
+    {
+      "name": "Gateway Disablement",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Gateway enabled",
+        "1": "Gateway disabled"
+      }
+    },
+    {
+      "name": "AC Remote Control Disablement",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Remote Control enabled",
+        "1": "Remote Control disabled"
+      }
+    },
+    {
+      "name": "AC unit Operation Time",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0..65535 (hours). Counts the time the AC unit is in “On” state."
+    },
+    {
+      "name": "AC unit Alarm Status",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No alarm condition",
+        "1": "Alarm condition"
+      }
+    },
+    {
+      "name": "Error Code",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "description": "0: No Error 65535 (-1): Error in the communication of Gateway or the Remote Controller with the AC unit. Any other error present, see the table at the end of this document."
+    },
+    {
+      "name": "Indoor unit´s ambient temperature from external sensor (at Modbus side)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "access": "RW",
+      "description": "-32768: (Initialization value). No temperature is being provided from an input sensor. There’s no input sensor. Any other: (ºC/x10ºC/ºF) Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "AC Real temperature setpoint",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "access": "R",
+      "description": "-32768 (Initialization value) 16..31ºC (ºC/x10ºC) 60..90ºF Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Current AC max setpoint",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 24,
+      "type": "int16",
+      "access": "R",
+      "description": "-32768: (Initialization value) Ranges are specific from Manufacturer (ºC/x10ºC/ºF) Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Current AC min setpoint",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 25,
+      "type": "int16",
+      "access": "R",
+      "description": "-32768 (Initialization value) Ranges are specific from Manufacturer (ºC/x10ºC/ºF) Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Status (feedback)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not active",
+        "1": "Active (A window is open)"
+      }
+    },
+    {
+      "name": "Left/Right Vane pulse",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "W",
+      "description": "1: Pulse"
+    },
+    {
+      "name": "Return Path temperature",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 66,
+      "type": "int16",
+      "access": "R",
+      "description": "-32768 (Initialization value) Any: (ºC/x10ºC/ºF) Degrees or tenths of a degree, °C or °F, as set with the DIP switches; -32768 means not initialised."
+    },
+    {
+      "name": "Master/Slave (gateway)",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 98,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Slave",
+        "1": "Master"
+      }
+    },
+    {
+      "name": "“Open Window” switch-off timeout",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0..30 (minutes) Factory setting: 30 (minutes)"
+    },
+    {
+      "name": "Modbus RTU baud-rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "description": "2400bps 4800bps 9600bps (Default) 19200bps 38400bps 57600bps 76800bps 115200bps"
+    },
+    {
+      "name": "Modbus Slave Address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "description": "1..63"
+    },
+    {
+      "name": "Max number of fan speeds",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Error reset",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 45,
+      "type": "uint16",
+      "access": "W",
+      "description": "1: Reset"
+    },
+    {
+      "name": "Switch value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Device ID",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "R",
+      "description": "Reads 0x1400 for this gateway.",
+      "enum": {
+        "5120": "INMBSHIT001R000"
+      }
+    },
+    {
+      "name": "Software version",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Error address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "R",
+      "description": "Provides the indoor unit number which is providing error"
+    },
+    {
+      "name": "Reset",
+      "group": "Control and status",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "W",
+      "description": "1: Reset"
+    }
+  ]
+}
