@@ -1,0 +1,2571 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "DigiRail OEE",
+  "models": [
+    "DigiRail OEE"
+  ],
+  "vendor_website": "novus.com.br",
+  "description": "Ethernet/Wi-Fi OEE data logger with six digital and two analog inputs: counters, input levels, analog values, network and MQTT status, circular memory and configuration",
+  "revision": 1,
+  "firmware": "V1.1x and later",
+  "source": "Novus DigiRail OEE, Modbus-TCP protocol manual (Portuguese)",
+  "sources": [
+    {
+      "title": "DigiRail OEE – Protocolo Modbus-TCP",
+      "url": "https://www.novus.com.br/downloads/Arquivos/digirail_oee_protocolo_modbus-tcp_pt.pdf",
+      "note": "linked in issue #436; status, configuration and circular-memory register tables"
+    }
+  ],
+  "notes": [
+    "Modbus TCP, up to 3 clients at once. The device answers on its configured Modbus address; requests for other addresses are forwarded to the RS485 port (TCP/RTU gateway).",
+    "Functions 0x03 (up to 125 registers), 0x06 and 0x10. Every register is a holding register; the addresses are the ones in the manual's Endereço column.",
+    "32-bit values are two registers, high word first. The analog values in mA or V and in the user range are 32-bit floats.",
+    "Text settings hold two characters per register.",
+    "Circular memory: read registers 187 to 189 to find the stored records, write the position wanted (from 1) to register 190, then read registers 191 to 211. A position with no record reads 0xFFFF.",
+    "Reserved rows of the manual are left out.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Product code",
+      "group": "Status",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "description": "Always 510 for the DigiRail OEE."
+    },
+    {
+      "name": "Serial number",
+      "group": "Status",
+      "area": "holding",
+      "address": 2,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 2 (high word) and 3 (low word)."
+    },
+    {
+      "name": "Firmware version",
+      "group": "Status",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R",
+      "description": "Firmware version × 100."
+    },
+    {
+      "name": "MAC address bytes 0–1",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the MAC address per register, in order."
+    },
+    {
+      "name": "MAC address bytes 2–3",
+      "group": "Status",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the MAC address per register, in order."
+    },
+    {
+      "name": "MAC address bytes 4–5",
+      "group": "Status",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the MAC address per register, in order."
+    },
+    {
+      "name": "USB status",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disconnected",
+        "1": "Connected"
+      }
+    },
+    {
+      "name": "Number of active analog channel",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 6."
+    },
+    {
+      "name": "Number of active digital channel",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 6."
+    },
+    {
+      "name": "Reset counters",
+      "group": "Status",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Power status",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Powered by USB",
+        "1": "Powered by external supply"
+      }
+    },
+    {
+      "name": "Status of records",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Last config year",
+      "group": "Status",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 2016 to 2080."
+    },
+    {
+      "name": "Last config month",
+      "group": "Status",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 12."
+    },
+    {
+      "name": "Last config day",
+      "group": "Status",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 31."
+    },
+    {
+      "name": "Last config hour",
+      "group": "Status",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 23."
+    },
+    {
+      "name": "Last config minute",
+      "group": "Status",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Last config second",
+      "group": "Status",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Current year",
+      "group": "Status",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 2016 to 2080."
+    },
+    {
+      "name": "Current month",
+      "group": "Status",
+      "area": "holding",
+      "address": 27,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 12."
+    },
+    {
+      "name": "Current day",
+      "group": "Status",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 31."
+    },
+    {
+      "name": "Current hour",
+      "group": "Status",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 23."
+    },
+    {
+      "name": "Current minute",
+      "group": "Status",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Current second",
+      "group": "Status",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Reset counter digital channel 1",
+      "group": "Status",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Reset counter digital channel 2",
+      "group": "Status",
+      "area": "holding",
+      "address": 35,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Reset counter digital channel 3",
+      "group": "Status",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Reset counter digital channel 4",
+      "group": "Status",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Reset counter digital channel 5",
+      "group": "Status",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Reset counter digital channel 6",
+      "group": "Status",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital output 1 value",
+      "group": "Status",
+      "area": "holding",
+      "address": 41,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Digital output 2 value",
+      "group": "Status",
+      "area": "holding",
+      "address": 42,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Digital channel 1 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 45,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not configured",
+        "1": "Configuration OK",
+        "2": "Configuration error"
+      }
+    },
+    {
+      "name": "Digital channel 1 value",
+      "group": "Status",
+      "area": "holding",
+      "address": 46,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 46 (high word) and 47 (low word)."
+    },
+    {
+      "name": "Digital channel 1 timestamp last",
+      "group": "Status",
+      "area": "holding",
+      "address": 48,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 48 (high word) and 49 (low word)."
+    },
+    {
+      "name": "Digital channel 2 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 56,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not configured",
+        "1": "Configuration OK",
+        "2": "Configuration error"
+      }
+    },
+    {
+      "name": "Digital channel 2 value",
+      "group": "Status",
+      "area": "holding",
+      "address": 57,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 57 (high word) and 58 (low word)."
+    },
+    {
+      "name": "Digital channel 2 timestamp last",
+      "group": "Status",
+      "area": "holding",
+      "address": 59,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 59 (high word) and 60 (low word)."
+    },
+    {
+      "name": "Digital channel 3 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not configured",
+        "1": "Configuration OK",
+        "2": "Configuration error"
+      }
+    },
+    {
+      "name": "Digital channel 3 value",
+      "group": "Status",
+      "area": "holding",
+      "address": 68,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 68 (high word) and 69 (low word)."
+    },
+    {
+      "name": "Digital channel 3 timestamp last",
+      "group": "Status",
+      "area": "holding",
+      "address": 70,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 70 (high word) and 71 (low word)."
+    },
+    {
+      "name": "Digital channel 4 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 78,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not configured",
+        "1": "Configuration OK",
+        "2": "Configuration error"
+      }
+    },
+    {
+      "name": "Digital channel 4 value",
+      "group": "Status",
+      "area": "holding",
+      "address": 79,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 79 (high word) and 80 (low word)."
+    },
+    {
+      "name": "Digital channel 4 timestamp last",
+      "group": "Status",
+      "area": "holding",
+      "address": 81,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 81 (high word) and 82 (low word)."
+    },
+    {
+      "name": "Digital channel 5 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 89,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not configured",
+        "1": "Configuration OK",
+        "2": "Configuration error"
+      }
+    },
+    {
+      "name": "Digital channel 5 value",
+      "group": "Status",
+      "area": "holding",
+      "address": 90,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 90 (high word) and 91 (low word)."
+    },
+    {
+      "name": "Digital channel 5 timestamp last",
+      "group": "Status",
+      "area": "holding",
+      "address": 92,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 92 (high word) and 93 (low word)."
+    },
+    {
+      "name": "Digital channel 6 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not configured",
+        "1": "Configuration OK",
+        "2": "Configuration error"
+      }
+    },
+    {
+      "name": "Digital channel 6 value",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 101 (high word) and 102 (low word)."
+    },
+    {
+      "name": "Digital channel 6 timestamp last",
+      "group": "Status",
+      "area": "holding",
+      "address": 103,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 103 (high word) and 104 (low word)."
+    },
+    {
+      "name": "Analog channel 1 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not configured",
+        "1": "Configuration OK",
+        "2": "Configuration error"
+      }
+    },
+    {
+      "name": "Analog channel 1 value (mA or V)",
+      "group": "Status",
+      "area": "holding",
+      "address": 111,
+      "type": "float32",
+      "access": "R",
+      "description": "Registers 111 (high word) and 112 (low word)."
+    },
+    {
+      "name": "Analog channel 1 value in user range",
+      "group": "Status",
+      "area": "holding",
+      "address": 113,
+      "type": "float32",
+      "access": "R",
+      "description": "Registers 113 (high word) and 114 (low word)."
+    },
+    {
+      "name": "Analog channel 2 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 120,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not configured",
+        "1": "Configuration OK",
+        "2": "Configuration error"
+      }
+    },
+    {
+      "name": "Analog channel 2 value (mA or V)",
+      "group": "Status",
+      "area": "holding",
+      "address": 122,
+      "type": "float32",
+      "access": "R",
+      "description": "Registers 122 (high word) and 123 (low word)."
+    },
+    {
+      "name": "Analog channel 2 value in user range",
+      "group": "Status",
+      "area": "holding",
+      "address": 124,
+      "type": "float32",
+      "access": "R",
+      "description": "Registers 124 (high word) and 125 (low word)."
+    },
+    {
+      "name": "MQTT last update year",
+      "group": "Status",
+      "area": "holding",
+      "address": 130,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 1."
+    },
+    {
+      "name": "MQTT last update month",
+      "group": "Status",
+      "area": "holding",
+      "address": 131,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 12."
+    },
+    {
+      "name": "MQTT last update day",
+      "group": "Status",
+      "area": "holding",
+      "address": 132,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1 to 31."
+    },
+    {
+      "name": "MQTT last update hour",
+      "group": "Status",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 23."
+    },
+    {
+      "name": "MQTT last update minute",
+      "group": "Status",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "MQTT last update second",
+      "group": "Status",
+      "area": "holding",
+      "address": 135,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "MQTT status broker",
+      "group": "Status",
+      "area": "holding",
+      "address": 136,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Broker disconnected",
+        "1": "Broker connected",
+        "2": "DNS problem",
+        "3": "Broker error",
+        "4": "Connecting to broker"
+      }
+    },
+    {
+      "name": "Wi-Fi RSSI",
+      "group": "Status",
+      "area": "holding",
+      "address": 139,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "LAN gateway com status",
+      "group": "Status",
+      "area": "holding",
+      "address": 141,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Gateway disconnected",
+        "1": "Gateway connected",
+        "2": "Wi-Fi provisioning error",
+        "3": "Getting IP via DHCP",
+        "4": "Error getting IP via DHCP"
+      }
+    },
+    {
+      "name": "LAN IP address bytes 0–1",
+      "group": "Status",
+      "area": "holding",
+      "address": 142,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IP address bytes 2–3",
+      "group": "Status",
+      "area": "holding",
+      "address": 143,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN mask address bytes 0–1",
+      "group": "Status",
+      "area": "holding",
+      "address": 144,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN mask address bytes 2–3",
+      "group": "Status",
+      "area": "holding",
+      "address": 145,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN gateway address bytes 0–1",
+      "group": "Status",
+      "area": "holding",
+      "address": 146,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN gateway address bytes 2–3",
+      "group": "Status",
+      "area": "holding",
+      "address": 147,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN DNS address bytes 0–1",
+      "group": "Status",
+      "area": "holding",
+      "address": 148,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN DNS address bytes 2–3",
+      "group": "Status",
+      "area": "holding",
+      "address": 149,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 address bytes 0–1",
+      "group": "Status",
+      "area": "holding",
+      "address": 151,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 address bytes 2–3",
+      "group": "Status",
+      "area": "holding",
+      "address": 152,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 address bytes 4–5",
+      "group": "Status",
+      "area": "holding",
+      "address": 153,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 address bytes 6–7",
+      "group": "Status",
+      "area": "holding",
+      "address": 154,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 address bytes 8–9",
+      "group": "Status",
+      "area": "holding",
+      "address": 155,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 address bytes 10–11",
+      "group": "Status",
+      "area": "holding",
+      "address": 156,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 address bytes 12–13",
+      "group": "Status",
+      "area": "holding",
+      "address": 157,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 address bytes 14–15",
+      "group": "Status",
+      "area": "holding",
+      "address": 158,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 global address bytes 0–1",
+      "group": "Status",
+      "area": "holding",
+      "address": 159,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 global address bytes 2–3",
+      "group": "Status",
+      "area": "holding",
+      "address": 160,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 global address bytes 4–5",
+      "group": "Status",
+      "area": "holding",
+      "address": 161,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 global address bytes 6–7",
+      "group": "Status",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 global address bytes 8–9",
+      "group": "Status",
+      "area": "holding",
+      "address": 163,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "LAN IPv6 global address bytes 10–11",
+      "group": "Status",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order."
+    },
+    {
+      "name": "LAN IPv6 global address bytes 12–13",
+      "group": "Status",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order."
+    },
+    {
+      "name": "LAN IPv6 global address bytes 14–15",
+      "group": "Status",
+      "area": "holding",
+      "address": 166,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes of the address per register, in order."
+    },
+    {
+      "name": "Digital channel 1 level",
+      "group": "Status",
+      "area": "holding",
+      "address": 167,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 2 level",
+      "group": "Status",
+      "area": "holding",
+      "address": 168,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 3 level",
+      "group": "Status",
+      "area": "holding",
+      "address": 169,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 4 level",
+      "group": "Status",
+      "area": "holding",
+      "address": 170,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 5 level",
+      "group": "Status",
+      "area": "holding",
+      "address": 171,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 6 level",
+      "group": "Status",
+      "area": "holding",
+      "address": 172,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 1 set value",
+      "group": "Status",
+      "area": "holding",
+      "address": 174,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 174 (high word) and 175 (low word)."
+    },
+    {
+      "name": "Digital channel 2 set value",
+      "group": "Status",
+      "area": "holding",
+      "address": 176,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 176 (high word) and 177 (low word)."
+    },
+    {
+      "name": "Digital channel 3 set value",
+      "group": "Status",
+      "area": "holding",
+      "address": 178,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 178 (high word) and 179 (low word)."
+    },
+    {
+      "name": "Digital channel 4 set value",
+      "group": "Status",
+      "area": "holding",
+      "address": 180,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 180 (high word) and 181 (low word)."
+    },
+    {
+      "name": "Digital channel 5 set value",
+      "group": "Status",
+      "area": "holding",
+      "address": 182,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 182 (high word) and 183 (low word)."
+    },
+    {
+      "name": "Digital channel 6 set value",
+      "group": "Status",
+      "area": "holding",
+      "address": 184,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 184 (high word) and 185 (low word)."
+    },
+    {
+      "name": "Collected record max quantity",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 187,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 1824 to 7096."
+    },
+    {
+      "name": "Collected last record",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 188,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 7096."
+    },
+    {
+      "name": "Collected first record",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 189,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 7096."
+    },
+    {
+      "name": "Collected requested record",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 190,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 7096."
+    },
+    {
+      "name": "Collected timestamp Unix",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 191,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 191 (high word) and 192 (low word)."
+    },
+    {
+      "name": "Collected timestamp ms",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 193,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Collected digital channel event index",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 194,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No event (periodic record)",
+        "1": "Event on channel 1",
+        "2": "Event on channel 2",
+        "3": "Event on channel 3",
+        "4": "Event on channel 4",
+        "5": "Event on channel 5",
+        "6": "Event on channel 6"
+      }
+    },
+    {
+      "name": "Collected digital channel event type",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 195,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No event (periodic record)",
+        "1": "Falling edge event on the digital channel",
+        "2": "Rising edge event on the digital channel"
+      }
+    },
+    {
+      "name": "Collected digital channel 1 value",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 196,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 196 (high word) and 197 (low word)."
+    },
+    {
+      "name": "Collected digital channel 2 value",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 198,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 198 (high word) and 199 (low word)."
+    },
+    {
+      "name": "Collected digital channel 3 value",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 200,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 200 (high word) and 201 (low word)."
+    },
+    {
+      "name": "Collected digital channel 4 value",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 202,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 202 (high word) and 203 (low word)."
+    },
+    {
+      "name": "Collected digital channel 5 value",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 204,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 204 (high word) and 205 (low word)."
+    },
+    {
+      "name": "Collected digital channel 6 value",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 206,
+      "type": "uint32",
+      "access": "R",
+      "description": "Registers 206 (high word) and 207 (low word)."
+    },
+    {
+      "name": "Collected analog channel 1 value in user range",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 208,
+      "type": "float32",
+      "access": "R",
+      "description": "Registers 208 (high word) and 209 (low word)."
+    },
+    {
+      "name": "Collected analog channel 2 value in user range",
+      "group": "Circular memory",
+      "area": "holding",
+      "address": 210,
+      "type": "float32",
+      "access": "R",
+      "description": "Registers 210 (high word) and 211 (low word)."
+    },
+    {
+      "name": "Setting restore default",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Setting publish interval (s)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1001,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1 to 65535."
+    },
+    {
+      "name": "Apply configuration",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1002,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Location",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1003,
+      "type": "string",
+      "length": 20,
+      "access": "RW",
+      "description": "40 characters, two per register (registers 1003 to 1022)."
+    },
+    {
+      "name": "Setting enable alternative publish interval",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1023,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Setting alternative publish interval (s)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1024,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 60 to 65535."
+    },
+    {
+      "name": "Setting force reset counters",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1025,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Setting title",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1027,
+      "type": "string",
+      "length": 10,
+      "access": "RW",
+      "description": "20 characters, two per register (registers 1027 to 1036)."
+    },
+    {
+      "name": "Setting GMT",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1038,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Time zone offset (GMT). The manual gives the range 0x0000 to 0xFFFF and does not state the encoding."
+    },
+    {
+      "name": "Setting year",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1039,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 2016 to 2080."
+    },
+    {
+      "name": "Setting month",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1040,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1 to 12."
+    },
+    {
+      "name": "Setting day",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1041,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1 to 31."
+    },
+    {
+      "name": "Setting hour",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1042,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 23."
+    },
+    {
+      "name": "Setting minute",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1043,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Setting second",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1044,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Digital channel add counter at event",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1046,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel reset type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1047,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Daily",
+        "1": "Weekly",
+        "2": "Monthly"
+      }
+    },
+    {
+      "name": "Digital channel reset day",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1048,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1 to 31."
+    },
+    {
+      "name": "Digital channel reset hour",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1049,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 23."
+    },
+    {
+      "name": "Digital channel reset minute",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1050,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Digital channel reset second",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1051,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Digital channel reset week day",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1052,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1 to 7."
+    },
+    {
+      "name": "Digital channel 1 enabled",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1053,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 1 counting mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1054,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "Counter",
+        "2": "Event"
+      }
+    },
+    {
+      "name": "Digital channel 1 sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1055,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "PNP",
+        "2": "NPN",
+        "3": "Dry contact"
+      }
+    },
+    {
+      "name": "Digital channel 1 counting edge",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1056,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Rising edge",
+        "2": "Falling edge",
+        "3": "Both edges"
+      }
+    },
+    {
+      "name": "Digital channel 1 debounce time ms",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1057,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 60000."
+    },
+    {
+      "name": "Digital channel 1 reset mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1060,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 2."
+    },
+    {
+      "name": "Digital channel 1 debounce enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1061,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 1 change value enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1062,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 2 enabled",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1067,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 2 counting mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1068,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "Counter",
+        "2": "Event"
+      }
+    },
+    {
+      "name": "Digital channel 2 sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1069,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "PNP",
+        "2": "NPN",
+        "3": "Dry contact"
+      }
+    },
+    {
+      "name": "Digital channel 2 counting edge",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1070,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Rising edge",
+        "2": "Falling edge",
+        "3": "Both edges"
+      }
+    },
+    {
+      "name": "Digital channel 2 debounce time ms",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1071,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 60000."
+    },
+    {
+      "name": "Digital channel 2 reset mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1074,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 3."
+    },
+    {
+      "name": "Digital channel 2 debounce enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1075,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 2 change value enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1076,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 3 enabled",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1081,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 3 counting mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1082,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "Counter",
+        "2": "Event"
+      }
+    },
+    {
+      "name": "Digital channel 3 sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1083,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "PNP",
+        "2": "NPN",
+        "3": "Dry contact"
+      }
+    },
+    {
+      "name": "Digital channel 3 counting edge",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1084,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Rising edge",
+        "2": "Falling edge",
+        "3": "Both edges"
+      }
+    },
+    {
+      "name": "Digital channel 3 debounce time ms",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1085,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 60000."
+    },
+    {
+      "name": "Digital channel 3 reset mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1088,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 2."
+    },
+    {
+      "name": "Digital channel 3 debounce enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1089,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 3 change value enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1090,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 4 enabled",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1095,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 4 counting mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1096,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "Counter",
+        "2": "Event"
+      }
+    },
+    {
+      "name": "Digital channel 4 sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1097,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "PNP",
+        "2": "NPN",
+        "3": "Dry contact"
+      }
+    },
+    {
+      "name": "Digital channel 4 counting edge",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1098,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Rising edge",
+        "2": "Falling edge",
+        "3": "Both edges"
+      }
+    },
+    {
+      "name": "Digital channel 4 debounce time ms",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1099,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 60000."
+    },
+    {
+      "name": "Digital channel 4 reset mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1102,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 2."
+    },
+    {
+      "name": "Digital channel 4 debounce enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1103,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 4 change value enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1104,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 5 enabled",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1109,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 5 counting mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1110,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "Counter",
+        "2": "Event"
+      }
+    },
+    {
+      "name": "Digital channel 5 sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1111,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "PNP",
+        "2": "NPN"
+      }
+    },
+    {
+      "name": "Digital channel 5 counting edge",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1112,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Rising edge",
+        "2": "Falling edge",
+        "3": "Both edges"
+      }
+    },
+    {
+      "name": "Digital channel 5 debounce time ms",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1113,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 60000."
+    },
+    {
+      "name": "Digital channel 5 reset mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1116,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 2."
+    },
+    {
+      "name": "Digital channel 5 debounce enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1117,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 5 change value enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1118,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 6 enabled",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1123,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 6 counting mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1124,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "Counter",
+        "2": "Event"
+      }
+    },
+    {
+      "name": "Digital channel 6 sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1125,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "PNP",
+        "2": "NPN",
+        "3": "Dry contact"
+      }
+    },
+    {
+      "name": "Digital channel 6 counting edge",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1126,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Rising edge",
+        "2": "Falling edge",
+        "3": "Both edges"
+      }
+    },
+    {
+      "name": "Digital channel 6 debounce time ms",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1127,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 60000."
+    },
+    {
+      "name": "Digital channel 6 reset mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1130,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 2."
+    },
+    {
+      "name": "Digital channel 6 debounce enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1131,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Digital channel 6 change value enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1132,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Analog channel 1 enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1138,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Analog channel 1 sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1140,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "0-5 V",
+        "2": "0-10 V",
+        "3": "0-20 mA",
+        "4": "4-20 mA"
+      },
+      "description": "The manual lists two values as 0; the second is taken to be 1."
+    },
+    {
+      "name": "Analog channel 1 range min",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1142,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 1142 (high word) and 1143 (low word). The manual does not state the number format."
+    },
+    {
+      "name": "Analog channel 1 range max",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1144,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 1144 (high word) and 1145 (low word). The manual does not state the number format."
+    },
+    {
+      "name": "Analog channel 1 decimal point",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1146,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No decimals",
+        "1": "One decimal",
+        "2": "Two decimals"
+      }
+    },
+    {
+      "name": "Analog channel 1 error value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1147,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 1147 (high word) and 1148 (low word). The manual does not state the number format."
+    },
+    {
+      "name": "Analog channel 2 enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1158,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Analog channel 2 sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1160,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Not configured",
+        "1": "0-5 V",
+        "2": "0-10 V",
+        "3": "0-20 mA",
+        "4": "4-20 mA"
+      },
+      "description": "The manual lists two values as 0; the second is taken to be 1."
+    },
+    {
+      "name": "Analog channel 2 range min",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1162,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 1162 (high word) and 1163 (low word). The manual does not state the number format."
+    },
+    {
+      "name": "Analog channel 2 range max",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1164,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 1164 (high word) and 1165 (low word). The manual does not state the number format."
+    },
+    {
+      "name": "Analog channel 2 decimal point",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1166,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No decimals",
+        "1": "One decimal",
+        "2": "Two decimals"
+      }
+    },
+    {
+      "name": "Analog channel 2 error value",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1167,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Registers 1167 (high word) and 1168 (low word). The manual does not state the number format."
+    },
+    {
+      "name": "Modbus TCP enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1172,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "Modbus TCP port",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1173,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Modbus TCP address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1174,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1 to 255."
+    },
+    {
+      "name": "RS485 baud rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1175,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1200",
+        "1": "2400",
+        "2": "4800",
+        "3": "9600",
+        "4": "19200",
+        "5": "38400",
+        "6": "57600",
+        "7": "115200"
+      }
+    },
+    {
+      "name": "RS485 stop bits",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1176,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1 Stop Bit",
+        "1": "2 Stop Bits"
+      }
+    },
+    {
+      "name": "RS485 parity",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1177,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No parity",
+        "1": "Odd parity",
+        "2": "Even parity"
+      }
+    },
+    {
+      "name": "RS485 timeout",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1178,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IP address mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1180,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Static",
+        "1": "DHCP"
+      }
+    },
+    {
+      "name": "Ethernet IPv4 address bytes 0–1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1182,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv4 address bytes 2–3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1183,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv4 mask address bytes 0–1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1184,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order."
+    },
+    {
+      "name": "Ethernet IPv4 mask address bytes 2–3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1185,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv4 gateway address bytes 0–1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1186,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv4 gateway address bytes 2–3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1187,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv4 DNS address bytes 0–1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1188,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv4 DNS address bytes 2–3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1189,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 prefix",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1190,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 128."
+    },
+    {
+      "name": "Ethernet IPv6 address bytes 0–1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1191,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 address bytes 2–3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1192,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 address bytes 4–5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1193,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 address bytes 6–7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1194,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 address bytes 8–9",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1195,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 address bytes 10–11",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1196,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 address bytes 12–13",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1197,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 address bytes 14–15",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1198,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 DNS address bytes 0–1",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1199,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 DNS address bytes 2–3",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1200,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 DNS address bytes 4–5",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1201,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 DNS address bytes 6–7",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1202,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 DNS address bytes 8–9",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1203,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order. Range 0 to 65535."
+    },
+    {
+      "name": "Ethernet IPv6 DNS address bytes 10–11",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1204,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order."
+    },
+    {
+      "name": "Ethernet IPv6 DNS address bytes 12–13",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1205,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order."
+    },
+    {
+      "name": "Ethernet IPv6 DNS address bytes 14–15",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1206,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes of the address per register, in order."
+    },
+    {
+      "name": "Wi-Fi router title",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1207,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "32 characters, two per register (registers 1207 to 1222)."
+    },
+    {
+      "name": "Wi-Fi router password",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1224,
+      "type": "string",
+      "length": 21,
+      "access": "RW",
+      "description": "42 characters, two per register (registers 1224 to 1244)."
+    },
+    {
+      "name": "MQTT enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1246,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "MQTT QoS",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1247,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "MQTT port",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1248,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "MQTT router title",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1249,
+      "type": "string",
+      "length": 16,
+      "access": "RW",
+      "description": "32 characters, two per register (registers 1249 to 1264)."
+    },
+    {
+      "name": "MQTT broker password",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1266,
+      "type": "string",
+      "length": 21,
+      "access": "RW",
+      "description": "42 characters, two per register (registers 1266 to 1286)."
+    },
+    {
+      "name": "MQTT broker MQTT IP URL",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1288,
+      "type": "string",
+      "length": 30,
+      "access": "RW",
+      "description": "60 characters, two per register (registers 1288 to 1317)."
+    },
+    {
+      "name": "MQTT security",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1319,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "TLS V1.2 – Server signed",
+        "2": "TLS V1.2 – CA only",
+        "3": "TLS V1.2 – Self signed"
+      }
+    },
+    {
+      "name": "MQTT device ID",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1320,
+      "type": "string",
+      "length": 10,
+      "access": "RW",
+      "description": "20 characters, two per register (registers 1320 to 1329)."
+    },
+    {
+      "name": "MQTT primary key",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1331,
+      "type": "string",
+      "length": 30,
+      "access": "RW",
+      "description": "60 characters, two per register (registers 1331 to 1360)."
+    },
+    {
+      "name": "MQTT project ID",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1362,
+      "type": "string",
+      "length": 10,
+      "access": "RW",
+      "description": "20 characters, two per register (registers 1362 to 1371)."
+    },
+    {
+      "name": "MQTT Google region",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1373,
+      "type": "string",
+      "length": 10,
+      "access": "RW",
+      "description": "20 characters, two per register (registers 1373 to 1382)."
+    },
+    {
+      "name": "MQTT topic retain",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1383,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "MQTT topic data publish",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1384,
+      "type": "string",
+      "length": 30,
+      "access": "RW",
+      "description": "60 characters, two per register (registers 1384 to 1413)."
+    },
+    {
+      "name": "MQTT topic ack publish",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1415,
+      "type": "string",
+      "length": 30,
+      "access": "RW",
+      "description": "60 characters, two per register (registers 1415 to 1444)."
+    },
+    {
+      "name": "MQTT topic config subscribe",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1446,
+      "type": "string",
+      "length": 30,
+      "access": "RW",
+      "description": "60 characters, two per register (registers 1446 to 1475)."
+    },
+    {
+      "name": "MQTT topic command subscribe",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1477,
+      "type": "string",
+      "length": 30,
+      "access": "RW",
+      "description": "60 characters, two per register (registers 1477 to 1506)."
+    },
+    {
+      "name": "MQTT topic command ack publish",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1508,
+      "type": "string",
+      "length": 30,
+      "access": "RW",
+      "description": "60 characters, two per register (registers 1508 to 1537)."
+    },
+    {
+      "name": "MQTT register ID",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1539,
+      "type": "string",
+      "length": 10,
+      "access": "RW",
+      "description": "20 characters, two per register (registers 1539 to 1548)."
+    },
+    {
+      "name": "MQTT cloud sel",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1550,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Generic cloud",
+        "1": "Google Cloud",
+        "2": "Amazon AWS",
+        "3": "Microsoft Azure",
+        "4": "NOVUS Cloud",
+        "5": "LiveMES"
+      }
+    },
+    {
+      "name": "MQTT token exp",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1551,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "SNTP server enable",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1553,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 1."
+    },
+    {
+      "name": "SNTP server min diff",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1554,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1 to 65535."
+    },
+    {
+      "name": "SNTP server IP URL",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1555,
+      "type": "string",
+      "length": 30,
+      "access": "RW",
+      "description": "60 characters, two per register (registers 1555 to 1584)."
+    }
+  ]
+}
