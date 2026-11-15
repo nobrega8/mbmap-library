@@ -3,72 +3,1353 @@
   "mbmap": 2,
   "vendor": "Eaton",
   "model": "IQ100 series",
-  "models": ["IQ130", "IQ140", "IQ150"],
+  "models": [
+    "IQ130",
+    "IQ140",
+    "IQ150"
+  ],
   "vendor_website": "eaton.com",
-  "revision": 3,
-  "revised": "2026-11-14",
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table eaton/iq100-series-iq130-iq140-iq150; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/eaton-iq100-series-iq130-iq140-iq150.htm. Not verified against the manufacturer's documentation",
+  "revision": 6,
+  "revised": "2026-11-15",
+  "source": "Eaton, IQ 100 Series (130/140/150) Meter User & Installation Manual IM02601003E, Rev D, appendix B",
   "notes": [
-    "Eaton IQ100 Series IQ130 / IQ140 / IQ150.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Holding registers only (functions 03, 06 and 16). The manual gives each register in hex and in decimal (hex + 1); the hex number is the wire address and is used here, address base 0.",
+    "Floating-point values, 32-bit integers and ASCII text span registers with the lower-addressed register as the high half.",
+    "The programmable-settings registers are only valid in the meter's settings update mode; writes to a register outside its mode return an illegal data address exception. The commands need the password (5555 when passwords are disabled).",
+    "Reserved registers are left out; the 6-cycle readings block is at 900 and the 60-cycle block at 1000.",
+    "Written from the manufacturer's manual; not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Meter type", "area": "holding", "address": 16, "type": "uint16", "access": "R", "description": "unit: bit-mapped"},
-    {"name": "Firmware version", "area": "holding", "address": 17, "type": "string", "length": 2, "access": "R"},
-    {"name": "Map version", "area": "holding", "address": 19, "type": "uint16", "access": "R", "description": "unit: 0 to 65535"},
-    {"name": "Meter configuration", "area": "holding", "address": 20, "type": "uint16", "access": "R", "description": "unit: bit-mapped"},
-    {"name": "Asic version", "area": "holding", "address": 21, "type": "uint16", "access": "R", "description": "unit: 0-65535"},
-    {"name": "Watts, 3 ph total (899)", "area": "holding", "address": 899, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Vars, 3 ph total (901)", "area": "holding", "address": 901, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Vas, 3 ph total (903)", "area": "holding", "address": 903, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Voits A N", "area": "holding", "address": 999, "type": "float32", "unit": "voIts", "access": "R"},
-    {"name": "Voits B N", "area": "holding", "address": 1001, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voits C N", "area": "holding", "address": 1003, "type": "float32", "unit": "voIts", "access": "R"},
-    {"name": "Voits A B", "area": "holding", "address": 1005, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voits B C", "area": "holding", "address": 1007, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voits C A", "area": "holding", "address": 1009, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Amps A", "area": "holding", "address": 1011, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Amps B", "area": "holding", "address": 1013, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Amps C", "area": "holding", "address": 1015, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Watts, 3 ph total (1017)", "area": "holding", "address": 1017, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Vars, 3 ph total (1019)", "area": "holding", "address": 1019, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Vas, 3 ph total (1021)", "area": "holding", "address": 1021, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 1025, "type": "float32", "unit": "Hz", "access": "R"},
-    {"name": "Neutral current", "area": "holding", "address": 1027, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "W hours, received", "area": "holding", "address": 1099, "type": "int32", "unit": "Wh", "access": "R"},
-    {"name": "W hours, delivered", "area": "holding", "address": 1101, "type": "int32", "unit": "Wh", "access": "R"},
-    {"name": "W hours, net", "area": "holding", "address": 1103, "type": "int32", "unit": "Wh", "access": "R"},
-    {"name": "W hours, total", "area": "holding", "address": 1105, "type": "int32", "unit": "Wh", "access": "R"},
-    {"name": "Var hours, positive", "area": "holding", "address": 1107, "type": "int32", "unit": "varh", "access": "R"},
-    {"name": "Var hours, negative", "area": "holding", "address": 1109, "type": "int32", "unit": "varh", "access": "R"},
-    {"name": "Var hours, net", "area": "holding", "address": 1111, "type": "int32", "unit": "varh", "access": "R"},
-    {"name": "Var hours, total", "area": "holding", "address": 1113, "type": "int32", "unit": "varh", "access": "R"},
-    {"name": "Va hours, total", "area": "holding", "address": 1115, "type": "int32", "access": "R", "description": "unit: 0 to 99999999"},
-    {"name": "Amps a, average", "area": "holding", "address": 1999, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Amps b, average", "area": "holding", "address": 2001, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Amps c, average", "area": "holding", "address": 2003, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Positive watts, 3 ph, average", "area": "holding", "address": 2005, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Positive vars, 3 ph, average", "area": "holding", "address": 2007, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Negative watts, 3 ph, average", "area": "holding", "address": 2009, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Negative vars, 3 ph, average", "area": "holding", "address": 2011, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Vas, 3 ph, average", "area": "holding", "address": 2013, "type": "float32", "access": "R", "description": "unit: -9999 M to +9999 M"},
-    {"name": "Positive pf, 3 ph, average", "area": "holding", "address": 2015, "type": "float32", "access": "R", "description": "unit: -1.00 to +1.00"},
-    {"name": "Negative pf, 3 pf, average", "area": "holding", "address": 2017, "type": "float32", "access": "R", "description": "unit: -1.00 to +1.00"},
-    {"name": "Volts B n, minimum", "area": "holding", "address": 3001, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Negative power factor, 3 ph, maximum avg demand", "area": "holding", "address": 3129, "type": "float32", "access": "R", "description": "unit: -1.00 to +1.00"},
-    {"name": "Phase A current", "area": "holding", "address": 4099, "type": "int16", "access": "R", "description": "unit: -1800 to +1800"},
-    {"name": "Phase B current", "area": "holding", "address": 4100, "type": "int16", "access": "R", "description": "unit: -1800 to +1800"},
-    {"name": "Phase C current", "area": "holding", "address": 4101, "type": "int16", "access": "R", "description": "unit: -1800 to +1800"},
-    {"name": "Angle, volts A B", "area": "holding", "address": 4102, "type": "int16", "access": "R", "description": "unit: -1800 to +1800"},
-    {"name": "Angle, volts B C", "area": "holding", "address": 4103, "type": "int16", "access": "R", "description": "unit: -1800 to +1800"},
-    {"name": "Angle, volts C A", "area": "holding", "address": 4104, "type": "int16", "access": "R", "description": "unit: -1800 to +1800"},
-    {"name": "Meter status", "area": "holding", "address": 4999, "type": "uint16", "access": "R", "description": "unit: bit-mapped"}
-  ]
+    {
+      "name": "Meter Serial Number",
+      "group": "Identification",
+      "area": "holding",
+      "address": 8,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "Range: 16 char"
+    },
+    {
+      "name": "Meter Type",
+      "group": "Identification",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: bit-mapped"
+    },
+    {
+      "name": "Firmware Version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 17,
+      "type": "string",
+      "access": "R",
+      "length": 2,
+      "description": "Range: 4 char"
+    },
+    {
+      "name": "Map Version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 0 to 65535"
+    },
+    {
+      "name": "Meter Configuration",
+      "group": "Identification",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: bit-mapped. ffffff = calibration frequency (50 or 60)"
+    },
+    {
+      "name": "ASIC Version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 0-65535"
+    },
+    {
+      "name": "Meter Name",
+      "group": "Identification",
+      "area": "holding",
+      "address": 39,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "Range: 16 char. 2 Meter Data Section"
+    },
+    {
+      "name": "Watts, 3-Ph total (primary readings (6 cycles))",
+      "group": "Primary readings (6 cycles)",
+      "area": "holding",
+      "address": 899,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "VARs, 3-Ph total (primary readings (6 cycles))",
+      "group": "Primary readings (6 cycles)",
+      "area": "holding",
+      "address": 901,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "VAs, 3-Ph total (primary readings (6 cycles))",
+      "group": "Primary readings (6 cycles)",
+      "area": "holding",
+      "address": 903,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "Volts A-N (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 999,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts B-N (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1001,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts C-N (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1003,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts A-B (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1005,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts B-C (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1007,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts C-A (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1009,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps A (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1011,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps B (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1013,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps C (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1015,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Watts, 3-Ph total (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1017,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "VARs, 3-Ph total (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1019,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "VAs, 3-Ph total (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1021,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "Power Factor, 3-Ph total (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1023,
+      "type": "float32",
+      "access": "R",
+      "description": "Range: -1.00 to +1.00"
+    },
+    {
+      "name": "Frequency (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1025,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Range: 0 to 65.00"
+    },
+    {
+      "name": "Neutral Current (primary readings)",
+      "group": "Primary readings",
+      "area": "holding",
+      "address": 1027,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M. 6"
+    },
+    {
+      "name": "W-hours, Received",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1099,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: 0 to 99999999 or. 0 to -99999999 opposite signs. Unit: Wh per energy format. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "W-hours, Delivered",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1101,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: 0 to 99999999 or. * Wh received is positive for \"view as load\", 0 to -99999999 delivered is positive for \"view as generator\". Unit: Wh per energy format. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "W-hours, Net",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1103,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: -99999999 to 99999999 Wh per energy format. Unit: 2. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "W-hours, Total",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1105,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. Unit: Wh per energy format. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "VAR-hours, Positive (energy)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1107,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. * decimal point implied, per energy format. Unit: VARh per energy format. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "VAR-hours, Negative (energy)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1109,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: 0 to -99999999. Unit: VARh per energy format * resolution of digit before decimal point =. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "VAR-hours, Net",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1111,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: -99999999 to 99999999 VARh per energy format units, kilo, or mega, per energy format. Unit: 2. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "VAR-hours, Total",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1113,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. Unit: VARh per energy format. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "VA-hours, Total",
+      "group": "Energy",
+      "area": "holding",
+      "address": 1115,
+      "type": "int32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. Unit: VAh per energy format * see note 10. Scale and digits follow the power & energy format setting"
+    },
+    {
+      "name": "Amps A, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 1999,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps B, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2001,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps C, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2003,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Positive Watts, 3-Ph, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2005,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "Positive VARs, 3-Ph, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2007,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "Negative Watts, 3-Ph, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2009,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "Negative VARs, 3-Ph, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2011,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "VAs, 3-Ph, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2013,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "Positive PF, 3-Ph, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2015,
+      "type": "float32",
+      "access": "R",
+      "description": "Range: -1.00 to +1.00"
+    },
+    {
+      "name": "Negative PF, 3-PF, Average",
+      "group": "Demand",
+      "area": "holding",
+      "address": 2017,
+      "type": "float32",
+      "access": "R",
+      "description": "Range: -1.00 to +1.00"
+    },
+    {
+      "name": "Volts A-N, Minimum",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 2999,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts B-N, Minimum",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3001,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts C-N, Minimum",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3003,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts A-B, Minimum",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3005,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts B-C, Minimum",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3007,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts C-A, Minimum",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3009,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps A, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3011,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps B, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3013,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps C, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3015,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Positive Watts, 3-Ph, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3017,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: 0 to +9999 M"
+    },
+    {
+      "name": "Positive VARs, 3-Ph, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3019,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: 0 to +9999 M. 6"
+    },
+    {
+      "name": "Negative Watts, 3-Ph, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3021,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: 0 to +9999 M"
+    },
+    {
+      "name": "Negative VARs, 3-Ph, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3023,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: 0 to +9999 M"
+    },
+    {
+      "name": "VAs, 3-Ph, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3025,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "Positive Power Factor, 3-Ph, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3027,
+      "type": "float32",
+      "access": "R",
+      "description": "Range: -1.00 to +1.00"
+    },
+    {
+      "name": "Negative Power Factor, 3-Ph, Minimum Avg Demand",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3029,
+      "type": "float32",
+      "access": "R",
+      "description": "Range: -1.00 to +1.00"
+    },
+    {
+      "name": "Frequency, Minimum",
+      "group": "Minimum",
+      "area": "holding",
+      "address": 3031,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Range: 0 to 65.00"
+    },
+    {
+      "name": "Volts A-N, Maximum",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3099,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts B-N, Maximum",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3101,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts C-N, Maximum",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3103,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts A-B, Maximum",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3105,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts B-C, Maximum",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3107,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Volts C-A, Maximum",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3109,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps A, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3111,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps B, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3113,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Amps C, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3115,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 9999 M"
+    },
+    {
+      "name": "Positive Watts, 3-Ph, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3117,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: 0 to +9999 M"
+    },
+    {
+      "name": "Positive VARs, 3-Ph, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3119,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: 0 to +9999 M"
+    },
+    {
+      "name": "Negative Watts, 3-Ph, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3121,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: 0 to +9999 M"
+    },
+    {
+      "name": "Negative VARs, 3-Ph, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3123,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: 0 to +9999 M"
+    },
+    {
+      "name": "VAs, 3-Ph, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3125,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Range: -9999 M to +9999 M"
+    },
+    {
+      "name": "Positive Power Factor, 3-Ph, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3127,
+      "type": "float32",
+      "access": "R",
+      "description": "Range: -1.00 to +1.00"
+    },
+    {
+      "name": "Negative Power Factor, 3-Ph, Maximum Avg Demand",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3129,
+      "type": "float32",
+      "access": "R",
+      "description": "Range: -1.00 to +1.00. none. Unit: 2"
+    },
+    {
+      "name": "Frequency, Maximum",
+      "group": "Maximum",
+      "area": "holding",
+      "address": 3131,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Range: 0 to 65.00"
+    },
+    {
+      "name": "Phase A Current",
+      "group": "Phase angles",
+      "area": "holding",
+      "address": 4099,
+      "type": "int16",
+      "access": "R",
+      "description": "Range: -1800 to +1800. Unit: 0.1 degree"
+    },
+    {
+      "name": "Phase B Current",
+      "group": "Phase angles",
+      "area": "holding",
+      "address": 4100,
+      "type": "int16",
+      "access": "R",
+      "description": "Range: -1800 to +1800. Unit: 0.1 degree"
+    },
+    {
+      "name": "Phase C Current",
+      "group": "Phase angles",
+      "area": "holding",
+      "address": 4101,
+      "type": "int16",
+      "access": "R",
+      "description": "Range: -1800 to +1800. Unit: 0.1 degree"
+    },
+    {
+      "name": "Angle, Volts A-B",
+      "group": "Phase angles",
+      "area": "holding",
+      "address": 4102,
+      "type": "int16",
+      "access": "R",
+      "description": "Range: -1800 to +1800. Unit: 0.1 degree"
+    },
+    {
+      "name": "Angle, Volts B-C",
+      "group": "Phase angles",
+      "area": "holding",
+      "address": 4103,
+      "type": "int16",
+      "access": "R",
+      "description": "Range: -1800 to +1800. Unit: 0.1 degree"
+    },
+    {
+      "name": "Angle, Volts C-A",
+      "group": "Phase angles",
+      "area": "holding",
+      "address": 4104,
+      "type": "int16",
+      "access": "R",
+      "description": "Range: -1800 to +1800. Unit: 0.1 degree"
+    },
+    {
+      "name": "Meter Status",
+      "group": "Status",
+      "area": "holding",
+      "address": 4999,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: bit-mapped. (e=energy, x=max, n=min, p=programmable settings, c=calibration, h=header), ssssssss = state (1=Run, 2=Limp, 10=Prog Set Update via buttons, 12=Prog Set Update via COM2). Unit: --exnpch ssssssss"
+    },
+    {
+      "name": "Time Since Reset",
+      "group": "Status",
+      "area": "holding",
+      "address": 5001,
+      "type": "uint32",
+      "access": "R",
+      "description": "Range: 0 to 4294967294. Commands Section 4. Unit: 4 msec"
+    },
+    {
+      "name": "Reset Max/Min Blocks",
+      "group": "Commands",
+      "area": "holding",
+      "address": 19999,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: password5. Unit: 1"
+    },
+    {
+      "name": "Reset Energy Accumulators (commands)",
+      "group": "Commands",
+      "area": "holding",
+      "address": 20000,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: password5. 6. Unit: 1"
+    },
+    {
+      "name": "Initiate Programmable Settings Update",
+      "group": "Commands",
+      "area": "holding",
+      "address": 21999,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: password5. Unit: meter enters PS update mode"
+    },
+    {
+      "name": "Terminate Programmable Settings Update",
+      "group": "Commands",
+      "area": "holding",
+      "address": 22000,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: any value. meter leaves PS update mode via reset 3 meter calculates checksum on RAM copy. Unit: 1"
+    },
+    {
+      "name": "Calculate Programmable Settings Checksum",
+      "group": "Commands",
+      "area": "holding",
+      "address": 22001,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: 1. of PS block"
+    },
+    {
+      "name": "Programmable Settings Checksum",
+      "group": "Commands",
+      "area": "holding",
+      "address": 22002,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: read/write checksum register; PS block. saved in EEPROM on write8. Unit: 1"
+    },
+    {
+      "name": "Write New Password",
+      "group": "Commands",
+      "area": "holding",
+      "address": 22003,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: 0000 to 9999. write-only register; always reads zero. Unit: 1"
+    },
+    {
+      "name": "Initiate Meter Firmware Reprogramming",
+      "group": "Commands",
+      "area": "holding",
+      "address": 22999,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: password5. Unit: 1"
+    },
+    {
+      "name": "Force Meter Restart",
+      "group": "Commands",
+      "area": "holding",
+      "address": 24999,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: password5. causes a watchdog reset, always reads 0. Unit: 1"
+    },
+    {
+      "name": "Perform a Secure Operation",
+      "group": "Commands",
+      "area": "holding",
+      "address": 25999,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: encrypted command to read password or. change meter type Programmable Settings Section (see Note 15). Unit: 12"
+    },
+    {
+      "name": "CT multiplier & denominator",
+      "group": "Settings",
+      "area": "holding",
+      "address": 29999,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: bit-mapped. low byte is multiplier (1, 10, or 100). Unit: dddddddd mmmmmmmm"
+    },
+    {
+      "name": "CT numerator (settings)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: 1 to 9999"
+    },
+    {
+      "name": "PT numerator (settings)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30001,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: 1 to 9999"
+    },
+    {
+      "name": "PT denominator (settings)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30002,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: 1 to 9999"
+    },
+    {
+      "name": "PT multiplier & hookup",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30003,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: bit-mapped. 10, 100, 1000), hhhh is hookup enumeration (0 = 3 element wye[9S], 1 = delta 2 CTs[5S], 3 = 2.5 element wye[6S]) 6. Unit: mmmmmmmm MMMMhhhh"
+    },
+    {
+      "name": "Averaging Method",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30004,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: bit-mapped. b = 0-block or 1-rolling sss = # subintervals (1,2,3,4). Unit: --iiiiii b----sss"
+    },
+    {
+      "name": "Power & Energy Format",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30005,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: bit-mapped. 8-auto) nn = number of energy digits (5-8 --> 0-3) eee = energy scale (0-unit, 3-kilo, 6-mega) ddd = energy digits after decimal point (0-6) See note 10.. Unit: pppp--nn -eee-ddd"
+    },
+    {
+      "name": "Operating Mode Screen Enables",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30006,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: bit-mapped. off(0), rows top to bottom are bits low order to high order. Unit: 00000000 eeeeeeee"
+    },
+    {
+      "name": "User Settings Flags",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30014,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: bit-mapped. current (1=on, 0=off) nn = number of phases for voltage & current screens (3=ABC, 2=AB, 1=A, 0=ABC) s = scroll (1=on, 0=off) r = password for reset in use (1=on, 0=off) p = password for configuration in use (1=on, 0=off) w = pwr dir (0-view as load, 1-view as generator) f = flip power factor sign (1"
+    },
+    {
+      "name": "Full Scale Current (for load % bargraph)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30015,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: 0 to 9999. this value replaces CT numerator in the full scale current calculation."
+    },
+    {
+      "name": "Meter Designation",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30016,
+      "type": "string",
+      "access": "RW",
+      "length": 8,
+      "description": "Range: 16 char"
+    },
+    {
+      "name": "COM1 setup",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30024,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit-mapped: dddd = reply delay (x 50 ms), ppp = protocol (1 Modbus RTU, 2 Modbus ASCII, 3 DNP), bbb = baud rate (same coding as COM2 setup)"
+    },
+    {
+      "name": "COM2 setup",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30025,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: bit-mapped. bbb = baud rate (1-9600, 2-19200, 4- 38400, 6-57600)"
+    },
+    {
+      "name": "COM2 address",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30026,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range: 1 to 247"
+    },
+    {
+      "name": "System Sanity Indicator",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40000,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 0 or 1"
+    },
+    {
+      "name": "Volts A-N (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40001,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 2047 to 4095"
+    },
+    {
+      "name": "Volts B-N (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40002,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 2047 to 4095. volts = 150 * (register - 2047) / 2047"
+    },
+    {
+      "name": "Volts C-N (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40003,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 2047 to 4095"
+    },
+    {
+      "name": "Amps A (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40004,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 4095"
+    },
+    {
+      "name": "Amps B (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40005,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 4095. amps = 10 * (register - 2047) / 2047"
+    },
+    {
+      "name": "Amps C (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40006,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 4095"
+    },
+    {
+      "name": "Watts, 3-Ph total (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40007,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "Range: 0 to 4095"
+    },
+    {
+      "name": "VARs, 3-Ph total (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40008,
+      "type": "uint16",
+      "access": "R",
+      "unit": "var",
+      "description": "Range: 0 to 4095"
+    },
+    {
+      "name": "VAs, 3-Ph total (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40009,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "description": "Range: 2047 to 4095"
+    },
+    {
+      "name": "Power Factor, 3-Ph total (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40010,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 1047 to 3047. pf = (register - 2047) / 1000"
+    },
+    {
+      "name": "Frequency (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40011,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Range: 0 to 2730. freq = 45 + ((register / 4095) * 30)"
+    },
+    {
+      "name": "Volts A-B (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40012,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 2047 to 4095"
+    },
+    {
+      "name": "Volts B-C (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40013,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 2047 to 4095. volts = 300 * (register - 2047) / 2047"
+    },
+    {
+      "name": "Volts C-A (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40014,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "description": "Range: 2047 to 4095"
+    },
+    {
+      "name": "CT numerator (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40015,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 1 to 9999. 6"
+    },
+    {
+      "name": "CT multiplier",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40016,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 1, 10, 100"
+    },
+    {
+      "name": "CT denominator",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40017,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 1 or 5"
+    },
+    {
+      "name": "PT numerator (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40018,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 1 to 9999"
+    },
+    {
+      "name": "PT multiplier",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40019,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 1, 10, 100"
+    },
+    {
+      "name": "PT denominator (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40020,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range: 1 to 9999"
+    },
+    {
+      "name": "W-hours, Positive",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40021,
+      "type": "uint32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. Unit: Wh per energy format"
+    },
+    {
+      "name": "W-hours, Negative",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40023,
+      "type": "uint32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. * decimal point implied, per energy format. Unit: Wh per energy format"
+    },
+    {
+      "name": "VAR-hours, Positive (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40025,
+      "type": "uint32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. Unit: VARh per energy format * resolution of digit before decimal point ="
+    },
+    {
+      "name": "VAR-hours, Negative (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40027,
+      "type": "uint32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. Unit: VARh per energy format units, kilo, or mega, per energy format"
+    },
+    {
+      "name": "VA-hours",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40029,
+      "type": "uint32",
+      "access": "R",
+      "description": "Range: 0 to 99999999. Unit: VAh per energy format * see note 10"
+    },
+    {
+      "name": "Neutral Current (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40031,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "description": "Range: 0 to 4095"
+    },
+    {
+      "name": "Reset Energy Accumulators (12-bit rtu readings)",
+      "group": "12-bit RTU readings",
+      "area": "holding",
+      "address": 40099,
+      "type": "uint16",
+      "access": "W",
+      "description": "Range: password5. 6. Unit: write-only register; always reads as 0"
+    }
+  ],
+  "description": "Eaton IQ 130, 140 and 150 digital power meters: fixed data, primary readings, energy, demand, minimum and maximum, phase angles, status, commands, programmable settings and the 12-bit RTU block",
+  "sources": [
+    {
+      "title": "IQ 100 Series (130/140/150) Meter User & Installation Manual",
+      "version": "IM02601003E Rev D",
+      "url": "https://manualshive.com/en/manual/eaton/iq-100-series/3829319",
+      "note": "Appendix B, Modbus map (MM-1 to MM-9); copy supplied by the maintainer",
+      "accessed": "2026-11-15",
+      "sha256": "e990a6bb95bd48713266a13e9c83342f1a6645464a21bd69cc0a3ec3f1253bd2"
+    }
+  ],
+  "protocol": "rtu"
 }
