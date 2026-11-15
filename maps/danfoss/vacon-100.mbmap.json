@@ -1,0 +1,951 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Danfoss",
+  "model": "VACON 100 family",
+  "models": [
+    "VACON 100",
+    "VACON 100 INDUSTRIAL",
+    "VACON 100 FLOW",
+    "VACON 100 HVAC",
+    "VACON 100 X"
+  ],
+  "vendor_website": "danfoss.com",
+  "description": "AC drives with built-in Modbus RTU and Modbus TCP: control and status words, speed reference and actual speed, process data out (frequency, speed, current, torque, power, voltages, fault), counters, energy, fault history and timeout",
+  "revision": 1,
+  "source": "Danfoss, VACON 100 family Modbus RTU and Modbus TCP user manual (BC361182856709en-000401)",
+  "sources": [
+    {
+      "title": "VACON 100 Modbus RTU & Modbus TCP – User manual",
+      "version": "BC361182856709en-000401",
+      "url": "https://assets.danfoss.com/documents/270144/BC361182856709en-000401.pdf",
+      "note": "chapter 6.3 (data mapping) and appendices 1-2",
+      "accessed": "2026-11-15",
+      "sha256": "b2d54f0cd4e32242ae82504511f1f98c6d202bc7ce6df066b1def0da625b40e7"
+    }
+  ],
+  "notes": [
+    "Modbus RTU and Modbus TCP. Functions 01-06, 15, 16 and 23. Addresses are those of the manual, counted from 1: the manual's frame example writes register 2001 at address 2000 (address_base 1).",
+    "Holding and input registers hold the same values (input register 1 is holding 40001, and so on).",
+    "32-bit process data and counters are high word first (2051/2052 for the control word, 40011/40012 for the day counter).",
+    "Process data out 1-8 hold the default IDs listed here; the application can map other values to them. Application parameters are read by their ID: 16-bit at address = ID (1-2000, 2200-10000), 32-bit at 20000 + ID; the ID map (10501-10530 with data at 10601 on) packs chosen IDs together.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Control: run/stop",
+      "group": "Coils",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW",
+      "description": "Control word bit 0."
+    },
+    {
+      "name": "Control: direction",
+      "group": "Coils",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "RW",
+      "description": "Control word bit 1."
+    },
+    {
+      "name": "Control: fault reset",
+      "group": "Coils",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "RW",
+      "description": "Control word bit 2."
+    },
+    {
+      "name": "Reset operation day trip counter",
+      "group": "Coils",
+      "area": "coil",
+      "address": 17,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Reset energy trip counter",
+      "group": "Coils",
+      "area": "coil",
+      "address": 18,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Status: ready",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 1,
+      "type": "bool",
+      "access": "R",
+      "description": "Status word bit 0."
+    },
+    {
+      "name": "Status: run",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 2,
+      "type": "bool",
+      "access": "R",
+      "description": "Status word bit 1."
+    },
+    {
+      "name": "Status: direction",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 3,
+      "type": "bool",
+      "access": "R",
+      "description": "Status word bit 2."
+    },
+    {
+      "name": "Status: fault",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 4,
+      "type": "bool",
+      "access": "R",
+      "description": "Status word bit 3."
+    },
+    {
+      "name": "Status: alarm",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 5,
+      "type": "bool",
+      "access": "R",
+      "description": "Status word bit 4."
+    },
+    {
+      "name": "Status: at reference",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "description": "Status word bit 5."
+    },
+    {
+      "name": "Status: zero speed",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 7,
+      "type": "bool",
+      "access": "R",
+      "description": "Status word bit 6."
+    },
+    {
+      "name": "Status: flux ready",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 8,
+      "type": "bool",
+      "access": "R",
+      "description": "Status word bit 7."
+    },
+    {
+      "name": "Control word: start/stop",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW",
+      "description": "0 stop, 1 run request."
+    },
+    {
+      "name": "Control word: direction",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW",
+      "description": "0 forward, 1 reverse."
+    },
+    {
+      "name": "Control word: fault reset",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW",
+      "description": "Rising edge resets active faults, alarms and infos."
+    },
+    {
+      "name": "Control word: stop mode 1",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW",
+      "description": "1 overrides the stop mode to coasting."
+    },
+    {
+      "name": "Control word: stop mode 2",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW",
+      "description": "1 overrides the stop mode to ramping."
+    },
+    {
+      "name": "Control word: quick ramp time",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW",
+      "description": "1 switches to the shorter deceleration ramp."
+    },
+    {
+      "name": "Control word: freeze setpoint",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 6,
+      "access": "RW",
+      "description": "1 holds the reference values."
+    },
+    {
+      "name": "Control word: setpoint to zero",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 7,
+      "access": "RW",
+      "description": "1 changes the fieldbus reference to 0."
+    },
+    {
+      "name": "Control word: request fieldbus control",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 8,
+      "access": "RW",
+      "description": "1 overrides the control place to fieldbus."
+    },
+    {
+      "name": "Control word: request fieldbus reference",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 9,
+      "access": "RW",
+      "description": "1 overrides the reference source to fieldbus."
+    },
+    {
+      "name": "Control word: jogging 1",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 10,
+      "access": "RW",
+      "description": "1 requests jogging with reference 1."
+    },
+    {
+      "name": "Control word: jogging 2",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 11,
+      "access": "RW",
+      "description": "1 requests jogging with reference 2."
+    },
+    {
+      "name": "Control word: quick stop",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2001,
+      "type": "bool",
+      "bit": 12,
+      "access": "RW",
+      "description": "1 executes a quick stop."
+    },
+    {
+      "name": "FB general control word",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2002,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Application-specific bits."
+    },
+    {
+      "name": "FB speed reference",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2003,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "RW",
+      "description": "0 to 10000 = 0 to 100.00 %."
+    },
+    {
+      "name": "FB process data in 1",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2004,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Use depends on the application."
+    },
+    {
+      "name": "FB process data in 2",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2005,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Use depends on the application."
+    },
+    {
+      "name": "FB process data in 3",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2006,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Use depends on the application."
+    },
+    {
+      "name": "FB process data in 4",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2007,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Use depends on the application."
+    },
+    {
+      "name": "FB process data in 5",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2008,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Use depends on the application."
+    },
+    {
+      "name": "FB process data in 6",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2009,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Use depends on the application."
+    },
+    {
+      "name": "FB process data in 7",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2010,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Use depends on the application."
+    },
+    {
+      "name": "FB process data in 8",
+      "group": "Process data in",
+      "area": "holding",
+      "address": 2011,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Use depends on the application."
+    },
+    {
+      "name": "Status word: ready",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2101,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Status word: run",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2101,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Status word: direction",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2101,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Status word: fault",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2101,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Status word: alarm",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2101,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Status word: at reference",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2101,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Status word: zero speed",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2101,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Status word: flux ready",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2101,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "FB general status word",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2102,
+      "type": "uint16",
+      "access": "R",
+      "description": "Application-specific bits."
+    },
+    {
+      "name": "FB actual speed",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2103,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R",
+      "description": "0 to 10000 = 0 to 100.00 %."
+    },
+    {
+      "name": "Output frequency",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2104,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R",
+      "description": "Process data out 1; default content (application ID mapping can change it)."
+    },
+    {
+      "name": "Motor speed",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2105,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R",
+      "description": "Process data out 2; default content (application ID mapping can change it)."
+    },
+    {
+      "name": "Motor current",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2106,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Process data out 3; default content (application ID mapping can change it). On VACON 100 family drives the current scale depends on the drive size; 0.1 A on VACON 100 HVAC."
+    },
+    {
+      "name": "Motor torque",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2107,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R",
+      "description": "Process data out 4; default content (application ID mapping can change it)."
+    },
+    {
+      "name": "Motor power",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2108,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R",
+      "description": "Process data out 5; default content (application ID mapping can change it)."
+    },
+    {
+      "name": "Motor voltage",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2109,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R",
+      "description": "Process data out 6; default content (application ID mapping can change it)."
+    },
+    {
+      "name": "DC link voltage",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2110,
+      "type": "uint16",
+      "unit": "V",
+      "access": "R",
+      "description": "Process data out 7; default content (application ID mapping can change it)."
+    },
+    {
+      "name": "Active fault code",
+      "group": "Process data out",
+      "area": "holding",
+      "address": 2111,
+      "type": "uint16",
+      "access": "R",
+      "description": "Process data out 8; default content (application ID mapping can change it)."
+    },
+    {
+      "name": "Operation day counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40011,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R",
+      "description": "Seconds. Also as years, days, hours, minutes and seconds at 40001-40005."
+    },
+    {
+      "name": "Operation day counter years",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40001,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Operation day counter days",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40002,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Operation day counter hours",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40003,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Operation day counter minutes",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40004,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Operation day counter seconds",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40005,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Resettable operation day counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40111,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Reset operation day trip counter (write 1)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40101,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Reads the years of the resettable counter; write 1 to reset it (40102-40105 hold days, hours, minutes and seconds)."
+    },
+    {
+      "name": "Energy counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40211,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Energy counter value",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40201,
+      "type": "uint16",
+      "access": "R",
+      "description": "With the decimals in 40202 and the unit in 40203."
+    },
+    {
+      "name": "Energy counter format",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40202,
+      "type": "uint16",
+      "access": "R",
+      "description": "Last digit is the number of decimals of 40201."
+    },
+    {
+      "name": "Energy counter unit",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40203,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "kWh",
+        "2": "MWh",
+        "3": "GWh",
+        "4": "TWh"
+      }
+    },
+    {
+      "name": "Resettable energy counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40311,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reset energy trip counter (write 1)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 40301,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Reads the resettable energy value; write 1 to reset it."
+    },
+    {
+      "name": "Communication timeout",
+      "group": "Communication",
+      "area": "holding",
+      "address": 40501,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "description": "Connection timeout of this connection; 0 disables it."
+    },
+    {
+      "name": "Fault history 1",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40401,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 2",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40402,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 3",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40403,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 4",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40404,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 5",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40405,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 6",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40406,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 7",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40407,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 8",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40408,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 9",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40409,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault history 10",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40410,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte fault code, low byte sub code. Entries go up to 30 (40430)."
+    },
+    {
+      "name": "Fault code 1",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40511,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 1",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40512,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 2",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40513,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 2",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40514,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 3",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40515,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 3",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40516,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 4",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40517,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 4",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40518,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 5",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40519,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 5",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40520,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 6",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40521,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 6",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40522,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 7",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40523,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 7",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40524,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 8",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40525,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 8",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40526,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 9",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40527,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 9",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40528,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code 10",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40529,
+      "type": "uint16",
+      "access": "R",
+      "description": "16-bit fault code; up to 29 entries (40567)."
+    },
+    {
+      "name": "Fault sub code 10",
+      "group": "Fault history",
+      "area": "holding",
+      "address": 40530,
+      "type": "uint16",
+      "access": "R"
+    }
+  ]
+}
