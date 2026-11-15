@@ -2,24 +2,27 @@
 // time for the first page of rows and by the browser for the rest.
 
 import type { Register } from "./normalize.ts";
-import {
-  ACCESS_NAME,
-  AREA_FUNCTIONS,
-  AREA_NAME,
-  AREA_TAG,
-  ROLE_INFO,
-  hex,
-  modicon,
-  registerCount,
-  typeLabel,
-} from "./mbmap.ts";
+import { AREA_FUNCTIONS, AREA_TAG, hex, modicon, registerCount, typeLabel } from "./mbmap.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { translate } from "../i18n/index.ts";
+import { accessName, areaName, roleLabel, roleLong } from "../i18n/labels.ts";
 import { icon } from "./icons.ts";
 import { escapeHtml, highlight } from "../scripts/search-core.ts";
 
 /** Rows per page of a register table */
 export const REGISTER_PAGE = 100;
 
-export const REGISTER_COLUMNS = ["Area", "Address", "Name", "Type", "Access", "Unit", "Scale", "Description"];
+/** The columns of the table: the class suffix and the key of the heading. */
+export const REGISTER_COLUMNS = [
+  ["area", "reg.colArea"],
+  ["address", "reg.colAddress"],
+  ["name", "reg.colName"],
+  ["type", "reg.colType"],
+  ["access", "reg.colAccess"],
+  ["unit", "reg.colUnit"],
+  ["scale", "reg.colScale"],
+  ["description", "reg.colDescription"],
+] as const;
 
 function scaleText(r: Register): string {
   const parts: string[] = [];
@@ -30,27 +33,27 @@ function scaleText(r: Register): string {
 }
 
 /** Tooltip of a role tag. */
-export function roleTitle(role: string): string {
-  const info = ROLE_INFO[role];
-  return info ? `Identifies the device: ${info.long}` : "Identifies the device";
+export function roleTitle(role: string, locale: Locale = DEFAULT_LOCALE): string {
+  return translate(locale, "role.identifiesLong", { long: roleLong(locale, role) });
 }
 
-export function registerRow(r: Register, query = ""): string {
+export function registerRow(r: Register, query = "", locale: Locale = DEFAULT_LOCALE): string {
+  const T = (k: Parameters<typeof translate>[1], v?: Parameters<typeof translate>[2]) => translate(locale, k, v);
   const mark = (s: string) => (query ? highlight(s, query) : escapeHtml(s));
   const group = r.group ? ` <span class="grp">${mark(r.group)}</span>` : "";
   const desc = r.description ?? "";
   const tags = [
-    r.enumTable ? `<span class="tag" title="Has a translation table">enum</span>` : "",
-    r.parts ? `<span class="tag" title="Holds several named values, written as one block">parts</span>` : "",
-    r.role ? `<span class="tag role" title="${escapeHtml(roleTitle(r.role))}">${escapeHtml(ROLE_INFO[r.role]?.label ?? r.role)}</span>` : "",
-    r.firmwareMin || r.firmwareMax ? `<span class="tag" title="Only some firmware versions">fw</span>` : "",
+    r.enumTable ? `<span class="tag" title="${T("reg.tagEnum")}">enum</span>` : "",
+    r.parts ? `<span class="tag" title="${T("reg.tagParts")}">parts</span>` : "",
+    r.role ? `<span class="tag role" title="${escapeHtml(roleTitle(r.role, locale))}">${escapeHtml(roleLabel(locale, r.role))}</span>` : "",
+    r.firmwareMin || r.firmwareMax ? `<span class="tag" title="${T("reg.tagFw")}">fw</span>` : "",
   ].join("");
   return `<tr data-i="${r.i}">
-<td class="c-area"><span class="area" title="${AREA_NAME[r.area]}">${AREA_TAG[r.area]}</span></td>
-<td class="c-addr"><span class="addr mono">${mark(String(r.address))}</span><button type="button" class="copy" data-copy="${r.address}" title="Copy address ${r.address}" aria-label="Copy address ${r.address}">${icon("copy", 13)}</button></td>
+<td class="c-area"><span class="area" title="${areaName(locale, r.area)}">${AREA_TAG[r.area]}</span></td>
+<td class="c-addr"><span class="addr mono">${mark(String(r.address))}</span><button type="button" class="copy" data-copy="${r.address}" title="${T("reg.copyAddress", { n: r.address })}" aria-label="${T("reg.copyAddress", { n: r.address })}">${icon("copy", 13)}</button></td>
 <td class="c-name"><button type="button" class="reg-name" aria-expanded="false" aria-controls="reg-d-${r.i}"><span class="nm">${mark(r.name)}</span>${group}${tags}</button></td>
 <td class="c-type mono">${escapeHtml(typeLabel(r))}</td>
-<td class="c-access mono" title="${ACCESS_NAME[r.access]}">${r.access}</td>
+<td class="c-access mono" title="${accessName(locale, r.access)}">${r.access}</td>
 <td class="c-unit">${r.unit ? escapeHtml(r.unit) : ""}</td>
 <td class="c-scale mono">${escapeHtml(scaleText(r))}</td>
 <td class="c-desc"${desc ? ` title="${escapeHtml(desc)}"` : ""}>${mark(desc)}</td>
@@ -58,54 +61,55 @@ export function registerRow(r: Register, query = ""): string {
 }
 
 /** Everything the map says about one register, shown under its row. */
-export function registerDetail(r: Register, addressBase: number, columns: number): string {
+export function registerDetail(r: Register, addressBase: number, columns: number, locale: Locale = DEFAULT_LOCALE): string {
+  const T = (k: Parameters<typeof translate>[1], v?: Parameters<typeof translate>[2]) => translate(locale, k, v);
   const rows: [string, string][] = [];
   const add = (k: string, v: string | undefined | null) => {
     if (v != null && v !== "") rows.push([k, v]);
   };
   const width = registerCount(r.type, r.length);
-  add("Area", `${AREA_NAME[r.area]} <span class="faint">(${AREA_FUNCTIONS[r.area]})</span>`);
+  add(T("reg.dArea"), `${areaName(locale, r.area)} <span class="faint">(${AREA_FUNCTIONS[r.area]})</span>`);
   add(
-    "Address",
-    `<span class="mono">${r.address}</span> <span class="faint">as written, ${addressBase}-based</span>`,
+    T("reg.dAddress"),
+    `<span class="mono">${r.address}</span> <span class="faint">${T("reg.asWritten", { base: addressBase })}</span>`,
   );
   if (r.wire >= 0 && r.wire <= 65535) {
     const m = modicon(r.area, r.wire);
     add(
-      "On the wire",
+      T("reg.dWire"),
       `<span class="mono">${r.wire} · ${hex(r.wire)}</span>${m ? ` <span class="faint">Modicon</span> <span class="mono">${m}</span>` : ""}`,
     );
   }
-  add("Type", `<span class="mono">${escapeHtml(typeLabel(r))}</span>${width ? ` <span class="faint">${width} register${width > 1 ? "s" : ""}</span>` : ""}`);
-  if (width && width > 1) add("Byte / word order", `${r.byteOrder} / ${r.wordOrder}`);
-  add("Access", ACCESS_NAME[r.access]);
-  add("Unit", r.unit && escapeHtml(r.unit));
+  add(T("reg.dType"), `<span class="mono">${escapeHtml(typeLabel(r))}</span>${width ? ` <span class="faint">${T(width > 1 ? "reg.registersWide.many" : "reg.registersWide.one", { n: width })}</span>` : ""}`);
+  if (width && width > 1) add(T("reg.dOrder"), `${r.byteOrder} / ${r.wordOrder}`);
+  add(T("reg.dAccess"), accessName(locale, r.access));
+  add(T("reg.dUnit"), r.unit && escapeHtml(r.unit));
   if (r.scale != null || r.offset != null || r.scaleFactor) {
     const sf = r.scaleFactor ? ` × 10^<span class="mono">${escapeHtml(r.scaleFactor)}</span>` : "";
-    add("Value", `raw${sf} × ${r.scale ?? 1}${r.offset != null ? ` + ${r.offset}` : ""}`);
+    add(T("reg.dValue"), `raw${sf} × ${r.scale ?? 1}${r.offset != null ? ` + ${r.offset}` : ""}`);
   }
   if (r.writeMin != null || r.writeMax != null)
-    add("Write limits", `${r.writeMin ?? "—"} to ${r.writeMax ?? "—"}${r.unit ? ` ${escapeHtml(r.unit)}` : ""}`);
+    add(T("reg.dWriteLimits"), `${r.writeMin ?? "—"} ${T("reg.to")} ${r.writeMax ?? "—"}${r.unit ? ` ${escapeHtml(r.unit)}` : ""}`);
   if (r.firmwareMin || r.firmwareMax)
-    add("Firmware", `${r.firmwareMin ? `from ${escapeHtml(r.firmwareMin)}` : ""}${r.firmwareMin && r.firmwareMax ? " " : ""}${r.firmwareMax ? `up to ${escapeHtml(r.firmwareMax)}` : ""}`);
+    add(T("reg.dFirmware"), `${r.firmwareMin ? T("reg.from", { v: escapeHtml(r.firmwareMin) }) : ""}${r.firmwareMin && r.firmwareMax ? " " : ""}${r.firmwareMax ? T("reg.upTo", { v: escapeHtml(r.firmwareMax) }) : ""}`);
   add(
-    "Role",
+    T("reg.dRole"),
     r.role &&
-      `<span class="mono">${escapeHtml(r.role)}</span> <span class="faint">${escapeHtml(ROLE_INFO[r.role]?.long ?? "Identifies the device.")}</span>`,
+      `<span class="mono">${escapeHtml(r.role)}</span> <span class="faint">${escapeHtml(roleLong(locale, r.role))}</span>`,
   );
-  add("Reference value", r.reference && `<span class="mono">${escapeHtml(r.reference)}</span>`);
-  add("Group", r.group && escapeHtml(r.group));
-  add("Description", r.description && escapeHtml(r.description));
-  add("Comment", r.comment && escapeHtml(r.comment));
+  add(T("reg.dReference"), r.reference && `<span class="mono">${escapeHtml(r.reference)}</span>`);
+  add(T("reg.dGroup"), r.group && escapeHtml(r.group));
+  add(T("reg.dDescription"), r.description && escapeHtml(r.description));
+  add(T("reg.dComment"), r.comment && escapeHtml(r.comment));
 
   const facts = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
   const table = r.enumTable
-    ? `<div class="enum"><div class="key">Values${r.enumName ? ` · <span class="mono">${escapeHtml(r.enumName)}</span>` : ""}</div><table class="table"><tbody>${r.enumTable
+    ? `<div class="enum"><div class="key">${T("reg.values")}${r.enumName ? ` · <span class="mono">${escapeHtml(r.enumName)}</span>` : ""}</div><table class="table"><tbody>${r.enumTable
         .map(([k, v]) => `<tr><td class="mono">${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`)
         .join("")}</tbody></table></div>`
     : "";
   const parts = r.parts
-    ? `<div class="enum"><div class="key">Parts of the block <span class="faint">· the device takes the block whole, written in one request</span></div><table class="table"><thead><tr><th>Part</th><th>Registers</th><th>Type</th><th>Description</th></tr></thead><tbody>${r.parts
+    ? `<div class="enum"><div class="key">${T("reg.partsTitle")} <span class="faint">· ${T("reg.partsNote")}</span></div><table class="table"><thead><tr><th>${T("reg.partName")}</th><th>${T("reg.partRegisters")}</th><th>${T("reg.partType")}</th><th>${T("reg.partDescription")}</th></tr></thead><tbody>${r.parts
         .map((p) => {
           const first = r.address + p.offset;
           const range = p.count > 1 ? `${first}–${first + p.count - 1}` : String(first);

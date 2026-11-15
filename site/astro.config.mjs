@@ -18,4 +18,10 @@ export default defineConfig({
   trailingSlash: "always",
   build: { format: "directory" },
   compressHTML: true,
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "pt"],
+    // English at the root, other languages under /pt/
+    routing: { prefixDefaultLocale: false },
+  },
 });

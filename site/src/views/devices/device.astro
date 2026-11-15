@@ -1,0 +1,634 @@
+---
+import { href, localizeUrl, pageHref } from "../../lib/base.ts";
+import { DEFAULT_LOCALE, LOCALE_TAG, type Locale } from "../../i18n/locales.ts";
+import { count, translate, useT } from "../../i18n/index.ts";
+import { accessName, areaName, parityName, protocolName, roleLabel as roleLabelOf, roleLong, statusLabel, statusLong } from "../../i18n/labels.ts";
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import StatusBadge from "../../components/StatusBadge.astro";
+import VendorTile from "../../components/VendorTile.astro";
+import { type Device, otherModels as others, rawUrl, registry } from "../../lib/registry.ts";
+import { REGISTER_COLUMNS, REGISTER_PAGE, registerRow, roleTitle } from "../../lib/register-row.ts";
+import { AREAS, AREA_TAG, IDENTIFY_FUNCTION, OBJECT_NAME, ROLE_INFO, orderTag, typeLabel } from "../../lib/mbmap.ts";
+import { LINKS, SITE_NAME, deviceLinks } from "../../lib/site.ts";
+import { EXPORTS, exportPath } from "../../lib/exports.ts";
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+const num = (n: number) => n.toLocaleString(LOCALE_TAG[locale]);
+const { device: d } = Astro.props as { device: Device };
+const info = d.info;
+const name = `${info.vendor} ${info.model}`;
+const links = deviceLinks(d);
+const fileName = d.path.split("/").pop()!;
+const fileUrl = href(`/${d.path}`);
+const said = (k: string) => info.stated.includes(k);
+const stem = fileName.replace(/\.mbmap\.json$/, "");
+const exportsList = EXPORTS.map((f) => ({ ...f, url: href(`/${exportPath(d.path, f.ext)}`), blurb: t(f.ext === ".csv" ? "d.csvDesc" : "d.haDesc"), file: `${stem}${f.ext}` }));
+const otherModels = others(d);
+const maker = registry().manufacturers.find((m) => m.devices.includes(d) || m.devices.some((x) => x.path === d.path));
+const related = (maker?.devices ?? []).filter((x) => x.path !== d.path).slice(0, 12);
+const relatedMore = (maker?.devices.length ?? 1) - 1 - related.length;
+const areas = AREAS.filter((a) => d.areaCounts[a]);
+const hasTcp = info.protocol.includes("tcp");
+const hasRtu = info.protocol.includes("rtu");
+const firstRows = info.registers.slice(0, REGISTER_PAGE).map((r) => registerRow(r, "", locale)).join("");
+const pages = Math.ceil(info.registers.length / REGISTER_PAGE);
+const kb = (n: number) => (n < 1024 * 1024 ? `${Math.round(n / 1024)} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`);
+
+const areaCount = (a: (typeof AREAS)[number], n: number) => count(locale, n, `areaN.${a}`);
+const areaSummary = areas.map((a) => areaCount(a, d.areaCounts[a]!)).join(", ");
+const description = t("d.description", { name, registers: count(locale, d.registerCount, "register"), areas: areaSummary ? ` (${areaSummary})` : "" });
+
+const pageUrl = new URL(localizeUrl(d.url, locale), Astro.site).href;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: t("d.datasetName", { name }),
+    description: info.description ? `${info.description}. ${description}` : description,
+    url: pageUrl,
+    identifier: d.path,
+    keywords: ["Modbus", "register map", info.vendor, ...info.models, "mbmap"],
+    license: "https://creativecommons.org/publicdomain/zero/1.0/",
+    isAccessibleForFree: true,
+    ...(info.revision ? { version: String(info.revision) } : {}),
+    ...(info.revised ? { dateModified: info.revised } : {}),
+    ...(d.added ? { datePublished: d.added } : {}),
+    inLanguage: LOCALE_TAG[locale],
+    creator: { "@type": "Person", name: "Afonso Nóbrega", url: "https://nobrega.me" },
+    publisher: { "@type": "Organization", name: `${SITE_NAME} Registry`, url: Astro.site?.href },
+    variableMeasured: info.registers.slice(0, 30).map((r) => ({ "@type": "PropertyValue", name: r.name, ...(r.unit ? { unitText: r.unit } : {}) })),
+    about: { "@type": "Product", name, brand: { "@type": "Brand", name: info.vendor } },
+    includedInDataCatalog: { "@type": "DataCatalog", name: `${SITE_NAME} Registry`, url: Astro.site?.href },
+    distribution: [
+      {
+        "@type": "DataDownload",
+        encodingFormat: "application/json",
+        contentUrl: new URL(fileUrl, Astro.site).href,
+        contentSize: `${d.size} B`,
+      },
+      ...exportsList.map((f) => ({
+        "@type": "DataDownload",
+        encodingFormat: f.mime.split(";")[0],
+        contentUrl: new URL(f.url, Astro.site).href,
+      })),
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t("nav.devices"), item: new URL(pageHref("/devices", locale), Astro.site).href },
+      { "@type": "ListItem", position: 2, name: info.vendor, item: new URL(pageHref(`/manufacturers/${d.vendorSlug}`, locale), Astro.site).href },
+      { "@type": "ListItem", position: 3, name: info.model, item: pageUrl },
+    ],
+  },
+];
+
+// Identity: registers with a role (SPEC.md section 4.7) and the identify block (section 4.8)
+const identityRegisters = info.registers.filter((r) => r.role);
+const identify = info.identify;
+const identityRoles = [
+  ...new Set([...identityRegisters.map((r) => r.role!), ...(identify?.fields.flatMap((f) => (f.role ? [f.role] : [])) ?? [])]),
+].sort((a, b) => Object.keys(ROLE_INFO).indexOf(a) - Object.keys(ROLE_INFO).indexOf(b));
+const hasIdentity = identityRegisters.length > 0 || !!identify;
+const roleLabel = (role: string) => roleLabelOf(locale, role);
+const where = (f: NonNullable<typeof identify>["fields"][number]) =>
+  f.object != null
+    ? `${t("d.object", { n: f.object })}${OBJECT_NAME[f.object] ? ` (${OBJECT_NAME[f.object]})` : ""}`
+    : f.offset != null
+      ? `${t("d.byte", { n: f.offset })}, ${f.type ?? "?"}${f.length != null ? ` × ${f.length}` : ""}`
+      : "";
+const labels = (tbl: [string, string][]) =>
+  tbl.slice(0, 3).map(([k, v]) => `${k} = ${v}`).join(", ") + (tbl.length > 3 ? `, ${translate(locale, "d.moreN", { n: tbl.length - 3 })}` : "");
+
+const statusNote = d.status ? statusLong(locale, d.status) : t("d.unreadStatus");
+const groups = [...d.groups].sort((a, b) => a.localeCompare(b, LOCALE_TAG[locale], { numeric: true }));
+const accessCounts = { R: 0, W: 0, RW: 0 };
+for (const r of info.registers) accessCounts[r.access]++;
+---
+
+<Base title={t("d.title", { name })} description={description} nav="devices" jsonLd={jsonLd} ogType="article">
+  <ol class="crumbs">
+    <li><a href={pageHref("/devices", locale)}>{t("nav.devices")}</a></li>
+    <li><a href={pageHref(`/manufacturers/${d.vendorSlug}`, locale)}>{info.vendor}</a></li>
+    <li aria-current="page">{info.model}</li>
+  </ol>
+
+  <article class="stack">
+    <header class="card pad dev-head">
+      <div class="dev-title">
+        <VendorTile name={info.vendor} slug={d.vendorSlug} large />
+        <div class="dev-name">
+          <h1>
+            <a class="vendor-link" href={pageHref(`/manufacturers/${d.vendorSlug}`, locale)}>{info.vendor}</a>
+            {info.model}
+            <span class="h1-sub">{t("d.h1sub")}</span>
+          </h1>
+          {otherModels.length > 0 && <p class="faint covers">{t("d.alsoCovers", { list: otherModels.join(", ") })}</p>}
+        </div>
+      </div>
+      {info.description && <p class="dev-desc">{info.description}</p>}
+      <ul class="chips" aria-label={t("d.summary")}>
+        <li><StatusBadge status={d.status} /></li>
+        <li><span class="mono">{num(d.registerCount)}</span> {t("d.registersChip")}</li>
+        {said("protocol") && <li>{protocolName(locale, info.protocol)}</li>}
+        {info.revision && <li>{t("d.revision")} <span class="mono">{info.revision}</span>{info.revised && <span class="faint"> · {info.revised}</span>}</li>}
+        {hasIdentity && <li title={t("d.identityTitle")}>{t("d.identityChip", { list: identityRoles.map(roleLabel).join(", ").toLowerCase() })}</li>}
+      </ul>
+      <div class={`note ${d.status ?? "unofficial"}`}>
+        <Icon name={d.status === "verified" ? "verified" : "warning"} size={15} />
+        <p>
+          <strong>{d.status ? statusLabel(locale, d.status) : t("status.none")}:</strong>
+          {statusNote}
+          {d.status !== "verified" && ` ${t("d.checkBefore")}`}
+          {d.status !== "verified" && <> {t("d.testedIt")} <a href={links.testReport}>{t("d.reportTest")}</a>.</>}
+        </p>
+      </div>
+      <div class="actions">
+        <div class="split">
+          <a class="btn primary big" href={fileUrl} download={fileName}>
+            <Icon name="download" /> {t("d.download")}
+          </a>
+          <details class="split-more">
+            <summary class="btn primary big" aria-label={t("d.otherFormats")}><Icon name="down" size={16} /></summary>
+            <ul class="split-menu">
+              {exportsList.map((f) => (
+                <li>
+                  <a href={f.url} download={f.file}>
+                    <strong>{f.label}</strong>
+                    <small>{f.blurb}</small>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
+        <a class="btn big" href="#raw" data-tab-link="raw"><Icon name="raw" /> {t("d.rawJson")}</a>
+        <a class="btn big" href={links.source}><Icon name="github" /> {t("d.viewGithub")}</a>
+        <a class="btn big" href={links.edit} title={t("d.suggestTitle")}><Icon name="edit" /> {t("d.suggest")}</a>
+        <a class="btn big" href={links.problem}><Icon name="issue" /> {t("d.report")}</a>
+      </div>
+    </header>
+
+    <div class="dev-grid">
+      <section class="card pad" aria-labelledby="conn-title">
+        <h2 id="conn-title" class="key">{t("d.communication")}</h2>
+        <dl class="facts">
+          <dt>{t("d.protocol")}</dt>
+          <dd>{protocolName(locale, info.protocol)}{!said("protocol") && <span class="def">{t("d.default")}</span>}</dd>
+          <dt>{t("d.unitId")}</dt>
+          <dd class="mono">{info.unitId}{!said("unit_id") && <span class="def">{t("d.default")}</span>}</dd>
+          {hasTcp && <><dt>{t("d.tcpPort")}</dt><dd class="mono">{info.port}{!said("port") && <span class="def">{t("d.default")}</span>}</dd></>}
+          {
+            hasRtu && (
+              <>
+                <dt>{t("d.serial")}</dt>
+                <dd>
+                  <span class="mono">{info.baudrate} {info.databits}{info.parity}{info.stopbits}</span>
+                  <span class="faint"> · {t("d.serialLong", { baud: info.baudrate, data: info.databits, parity: parityName(locale, info.parity).toLowerCase(), stop: info.stopbits, stopWord: t(info.stopbits > 1 ? "d.stopBit.many" : "d.stopBit.one") })}</span>
+                  {!["baudrate", "parity", "databits", "stopbits"].some(said) && <span class="def">{t("d.defaults")}</span>}
+                </dd>
+              </>
+            )
+          }
+          <dt>{t("d.byteWord")}</dt>
+          <dd>
+            <span class="mono">{orderTag(info.byteOrder, info.wordOrder)}</span>
+            <span class="faint"> · {t("d.orderLong", { bytes: info.byteOrder, words: t(info.wordOrder === "big" ? "d.wordsHigh" : "d.wordsLow") })}</span>
+            {!said("byte_order") && !said("word_order") && <span class="def">{t("d.default")}</span>}
+          </dd>
+          <dt>{t("d.addresses")}</dt>
+          <dd>{t("d.baseN", { n: info.addressBase })}{info.addressBase === 1 && <span class="faint"> · {t("d.wireAddress")}</span>}{!said("address_base") && <span class="def">{t("d.default")}</span>}</dd>
+          {said("max_read_registers") && <><dt>{t("d.maxRead")}</dt><dd><Fragment set:html={t("d.maxReadValue", { n: `<span class="mono">${info.maxReadRegisters}</span>` })} /></dd></>}
+          {said("max_read_bits") && <><dt>{t("d.maxReadBits")}</dt><dd><Fragment set:html={t("d.maxReadBitsValue", { n: `<span class="mono">${info.maxReadBits}</span>` })} /></dd></>}
+        </dl>
+        <p class="faint small">{t("d.connDefaults")}</p>
+      </section>
+
+      <section class="card pad" aria-labelledby="map-title">
+        <h2 id="map-title" class="key">{t("d.map")}</h2>
+        <dl class="facts">
+          <dt>{t("d.registers")}</dt>
+          <dd>
+            {areas.map((a, i) => <>{i > 0 && ", "}<span class="mono">{d.areaCounts[a]}</span> {translate(locale, d.areaCounts[a]! === 1 ? `areaN.${a}.one` : `areaN.${a}.many`)}</>)}
+            {info.skipped > 0 && <span class="faint"> · {t("d.notShown", { n: info.skipped })}</span>}
+          </dd>
+          {groups.length > 0 && <><dt>{t("d.groups")}</dt><dd>{groups.length}</dd></>}
+          {info.enumCount > 0 && <><dt>{t("d.enumTables")}</dt><dd>{info.enumCount}</dd></>}
+          {info.revision && <><dt>{t("d.revision")}</dt><dd><span class="mono">{info.revision}</span>{info.revised && <span class="faint"> · {info.revised}</span>}</dd></>}
+          {(info.firmware || info.firmwareMin || info.firmwareMax) && (
+            <><dt>{t("d.firmware")}</dt><dd>
+              {info.firmwareMin && `${translate(locale, "reg.from", { v: info.firmwareMin })} `}{info.firmwareMax && `${translate(locale, "reg.upTo", { v: info.firmwareMax })} `}
+              {info.firmware && <span class={info.firmwareMin || info.firmwareMax ? "faint" : ""}>{info.firmware}</span>}
+            </dd></>
+          )}
+          {d.added && <><dt>{t("d.added")}</dt><dd><time datetime={d.added}>{d.added.slice(0, 10)}</time> <span class="faint">(<time datetime={d.added} data-relative>{d.added.slice(0, 10)}</time>)</span></dd></>}
+          <dt>{t("d.file")}</dt>
+          <dd><a href={links.source} class="mono">{d.path}</a> <span class="faint">· {kb(d.size)}</span> · <a href={links.history}>{t("d.history")}</a></dd>
+          <dt>SHA-256</dt>
+          <dd class="mono sha" title={d.sha256}>{d.sha256}</dd>
+          {info.vendorWebsite && <><dt>{t("d.manufacturer")}</dt><dd><a href={/^https?:/.test(info.vendorWebsite) ? info.vendorWebsite : `https://${info.vendorWebsite}`} rel="nofollow">{info.vendorWebsite.replace(/^https?:\/\//, "")}</a></dd></>}
+        </dl>
+      </section>
+
+      {
+        hasIdentity && (
+          <section class="card pad span" aria-labelledby="id-title" id="identity">
+            <h2 id="id-title" class="key">{t("d.identity")}</h2>
+            <p class="faint small">
+              {t("d.identityIntro", { and48: identify ? t("d.identityIntroAnd") : "" })}
+              {identityRegisters.length > 0 && ` ${t("d.identityRoleNote")}`}
+            </p>
+            {identityRegisters.length > 0 && (
+              <div class="table-wrap id-wrap">
+                <table class="table id-table">
+                  <caption class="id-cap">{t("d.idRegisters")}</caption>
+                  <thead>
+                    <tr><th scope="col">{t("d.idRole")}</th><th scope="col">{t("d.idRegister")}</th><th scope="col">{t("d.idAddress")}</th><th scope="col">{t("d.idType")}</th><th scope="col">{t("d.idValues")}</th></tr>
+                  </thead>
+                  <tbody>
+                    {identityRegisters.map((r) => (
+                      <tr>
+                        <td><span class="tag role" title={roleTitle(r.role!, locale)}>{roleLabel(r.role!)}</span></td>
+                        <td>{r.name}</td>
+                        <td class="mono">{r.area} {r.address}</td>
+                        <td class="mono">{typeLabel(r)}</td>
+                        <td class="faint">{r.enumTable ? labels(r.enumTable) : ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {identify && (
+              <div class="table-wrap id-wrap">
+                <table class="table id-table">
+                  <caption class="id-cap">
+                    {t("d.idFrom")} <span class="mono">{IDENTIFY_FUNCTION[identify.func].code}</span> {IDENTIFY_FUNCTION[identify.func].name}
+                    <span class="faint"> · {t("d.idAnswered")}</span>
+                  </caption>
+                  <thead>
+                    <tr><th scope="col">{t("d.idRole")}</th><th scope="col">{t("d.idField")}</th><th scope="col">{t("d.idWhere")}</th><th scope="col">{t("d.idValues")}</th></tr>
+                  </thead>
+                  <tbody>
+                    {identify.fields.map((f) => (
+                      <tr>
+                        <td>{f.role ? <span class="tag role" title={roleTitle(f.role, locale)}>{roleLabel(f.role)}</span> : <span class="faint">—</span>}</td>
+                        <td>{f.name}</td>
+                        <td class="mono">{where(f)}</td>
+                        <td class="faint">{f.enumTable ? labels(f.enumTable) : ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )
+      }
+
+      {
+        (info.sources.length > 0 || info.source || info.notes.length > 0) && (
+          <section class="card pad span" aria-labelledby="src-title">
+            <h2 id="src-title" class="key">{t("d.sourcesNotes")}</h2>
+            {info.sources.length > 0 && (
+              <ul class="sources">
+                {info.sources.map((s) => (
+                  <li>
+                    {s.url ? <a href={s.url} rel="nofollow">{s.title}</a> : <span>{s.title}</span>}
+                    {(s.version || s.date) && <span class="faint"> · {[s.version && t("d.version", { v: s.version }), s.date].filter(Boolean).join(", ")}</span>}
+                    {s.note && <div class="faint">{s.note}</div>}
+                    {(s.accessed || s.sha256) && (
+                      <div class="faint src-meta">
+                        {s.accessed && <>{t("d.accessed")} <time datetime={s.accessed}>{s.accessed}</time></>}
+                        {s.accessed && s.sha256 && " · "}
+                        {s.sha256 && <span title={t("d.sha256Title", { sha: s.sha256 })}>SHA-256 <span class="mono">{s.sha256.slice(0, 12)}…</span></span>}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {info.source && <p class="muted"><span class="faint">{t("d.source")}</span> {info.source}</p>}
+            {info.notes.length > 0 && <ul class="notes">{info.notes.map((n) => <li>{n}</li>)}</ul>}
+          </section>
+        )
+      }
+    </div>
+
+    <section class="card pad tabs-card" aria-label={t("d.registersAndRaw")}>
+      <div class="segmented" role="tablist" aria-label={t("d.view")}>
+        <button type="button" role="tab" id="tab-registers" aria-selected="true" aria-controls="registers" class="on">
+          {t("d.registers")} <span class="faint">({num(d.registerCount)})</span>
+        </button>
+        <button type="button" role="tab" id="tab-raw" aria-selected="false" aria-controls="raw" tabindex="-1">{t("d.rawJson")}</button>
+      </div>
+
+      <div id="registers" role="tabpanel" aria-labelledby="tab-registers">
+        <form class="toolbar reg-tools" onsubmit="return false" role="search">
+          <label class="search-field grow">
+            <span class="sr-only">{t("d.searchRegisters")}</span>
+            <Icon name="search" />
+            <input class="input" type="search" id="reg-q" data-page-search placeholder={t("d.searchRegistersPlaceholder")} autocomplete="off" spellcheck="false" />
+            <kbd>/</kbd>
+          </label>
+          {areas.length > 1 && (
+            <label><span class="sr-only">{t("d.area")}</span>
+              <select class="input" id="reg-area">
+                <option value="">{t("d.allAreas")}</option>
+                {areas.map((a) => <option value={a}>{AREA_TAG[a]} · {areaName(locale, a)} ({d.areaCounts[a]})</option>)}
+              </select>
+            </label>
+          )}
+          <label><span class="sr-only">{t("d.access")}</span>
+            <select class="input" id="reg-access">
+              <option value="">{t("d.anyAccess")}</option>
+              {accessCounts.R > 0 && <option value="R">{t("d.readOnlyN", { n: accessCounts.R })}</option>}
+              {accessCounts.RW + accessCounts.W > 0 && <option value="w">{t("d.writableN", { n: accessCounts.RW + accessCounts.W })}</option>}
+            </select>
+          </label>
+          {groups.length > 1 && (
+            <label><span class="sr-only">{t("d.group")}</span>
+              <select class="input" id="reg-group">
+                <option value="">{t("d.allGroups")}</option>
+                {groups.map((g) => <option value={g}>{g}</option>)}
+              </select>
+            </label>
+          )}
+          <label><span class="sr-only">{t("d.order")}</span>
+            <select class="input" id="reg-sort">
+              <option value="">{t("d.orderMap")}</option>
+              <option value="address">{t("d.orderAddress")}</option>
+              <option value="name">{t("d.orderName")}</option>
+            </select>
+          </label>
+          <span class="count" id="reg-count" aria-live="polite">{count(locale, d.registerCount, "register")}</span>
+        </form>
+
+        <div class="table-wrap reg-wrap">
+          <table class="table regs" id="reg-table" data-map={fileUrl} data-base={info.addressBase}>
+            <thead>
+              <tr>{REGISTER_COLUMNS.map(([cls, key]) => <th scope="col" class={`c-${cls}`}>{t(key)}</th>)}</tr>
+            </thead>
+            <tbody id="reg-body" set:html={firstRows} />
+          </table>
+        </div>
+        <div class="empty" id="reg-empty" hidden>
+          <strong>{t("d.noRegisters")}</strong>
+          {t("d.noRegistersHint")}
+        </div>
+        <nav class="pager" id="reg-pager" aria-label={t("d.registerPages")} hidden={pages < 2}>
+          <span id="reg-page">{t("page.of", { page: 1, pages })}</span>
+          <span class="btns">
+            <button class="btn" type="button" id="reg-prev" disabled><Icon name="back" size={14} /> {t("pager.prev")}</button>
+            <button class="btn" type="button" id="reg-next">{t("pager.next")} <Icon name="next" size={14} /></button>
+          </span>
+        </nav>
+        <noscript><p class="faint">{t("d.noscript", { n: REGISTER_PAGE })} <a href={fileUrl}>{t("d.mapFile")}</a>.</p></noscript>
+      </div>
+
+      <div id="raw" role="tabpanel" aria-labelledby="tab-raw" hidden>
+        <div class="toolbar">
+          <span class="faint mono">{fileName} · {kb(d.size)}</span>
+          <span class="actions" style="margin-left:auto">
+            <button class="btn" type="button" id="raw-copy"><Icon name="copy" /> {t("d.copy")}</button>
+            <a class="btn" href={fileUrl} download={fileName}><Icon name="download" /> {t("d.download2")}</a>
+            <a class="btn" href={rawUrl(d.path)}><Icon name="external" /> {t("d.rawOnGithub")}</a>
+          </span>
+        </div>
+        <pre class="json" id="raw-pre" tabindex="0" aria-label={t("d.contentsOf", { file: fileName })}><code id="raw-code"><span class="bone" style="width:40%"></span><span class="bone" style="width:72%"></span><span class="bone" style="width:64%"></span><span class="bone" style="width:80%"></span><span class="bone" style="width:56%"></span></code></pre>
+      </div>
+    </section>
+
+    {
+      related.length > 0 && (
+        <section class="card pad" aria-labelledby="rel-title">
+          <h2 id="rel-title" class="key">{t("d.moreMaps", { vendor: info.vendor })}</h2>
+          <ul class="related">
+            {related.map((x) => (
+              <li><a href={localizeUrl(x.url, locale)}>{x.info.model}</a></li>
+            ))}
+            {relatedMore > 0 && (
+              <li><a href={pageHref(`/manufacturers/${d.vendorSlug}`, locale)}>{t("d.moreN", { n: relatedMore })}</a></li>
+            )}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="card pad help" aria-labelledby="help-title">
+      <h2 id="help-title" class="key">{t("d.helpTitle")}</h2>
+      <ul class="help-list">
+        <li><a href={links.testReport}><Icon name="verified" /> {t("d.helpTested")}</a><span class="faint">{t("d.helpTestedHint")}</span></li>
+        <li><a href={links.edit}><Icon name="edit" /> {t("d.suggest")}</a><span class="faint">{t("d.helpEditHint")}</span></li>
+        <li><a href={links.problem}><Icon name="issue" /> {t("d.report")}</a><span class="faint">{t("d.helpProblemHint")}</span></li>
+        <li><a href={LINKS.spec}><Icon name="library" /> {t("d.helpFormat")}</a><span class="faint">{t("d.helpFormatHint")}</span></li>
+      </ul>
+    </section>
+  </article>
+</Base>
+
+<script>
+  import "../../scripts/device.ts";
+</script>
+
+<style>
+  .related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: var(--subtle);
+    font-size: 13px;
+    text-decoration: none;
+  }
+
+  .related a:hover {
+    background: var(--accent-soft);
+  }
+
+  .dev-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .dev-name {
+    min-width: 0;
+  }
+
+  h1 {
+    font-size: 26px;
+    letter-spacing: -0.02em;
+  }
+
+  .vendor-link {
+    color: var(--text-2);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .vendor-link:hover {
+    color: var(--text);
+  }
+
+  .h1-sub {
+    display: block;
+    margin-top: 2px;
+    color: var(--text-3);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  .covers {
+    margin: 4px 0 0;
+    font-size: 13px;
+  }
+
+  .dev-desc {
+    margin: 14px 0 0;
+    max-width: 80ch;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 14px 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chips li {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 7px;
+    background: var(--field);
+    font-size: 13px;
+  }
+
+  .dev-head .note {
+    margin-bottom: 16px;
+  }
+
+  .dev-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .dev-grid .span {
+    grid-column: 1 / -1;
+  }
+
+  .dev-grid h2 {
+    margin-bottom: 6px;
+  }
+
+  .small {
+    margin: 10px 0 0;
+    font-size: 12px;
+  }
+
+  .sha {
+    font-size: 11.5px;
+    color: var(--text-2);
+  }
+
+  .sources,
+  .notes {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    font-size: 13px;
+  }
+
+  .sources li + li,
+  .notes li + li {
+    margin-top: 4px;
+  }
+
+  .notes {
+    color: var(--text-2);
+  }
+
+  .src-meta {
+    font-size: 12px;
+  }
+
+  .span p {
+    margin: 8px 0 0;
+    font-size: 13px;
+  }
+
+  .tabs-card > .segmented {
+    margin-bottom: 14px;
+  }
+
+  .reg-tools {
+    margin-bottom: 8px;
+  }
+
+  .help-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px 20px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+  }
+
+  .help-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .help-list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .help-list a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 860px) {
+    .dev-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 720px) {
+    h1 {
+      font-size: 21px;
+    }
+    .dev-title :global(.vtile) {
+      display: none;
+    }
+    .dev-head .actions .btn {
+      flex: 1 1 auto;
+    }
+  }
+</style>

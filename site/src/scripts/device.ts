@@ -5,7 +5,9 @@
 
 import { parseMap, type MapInfo, type Register } from "../lib/normalize.ts";
 import { REGISTER_COLUMNS, REGISTER_PAGE, registerDetail, registerRow } from "../lib/register-row.ts";
-import { fold, parseInteger, plural } from "../lib/mbmap.ts";
+import { fold, parseInteger } from "../lib/mbmap.ts";
+import { count as countOf } from "../i18n/index.ts";
+import { locale, t as trans } from "./i18n.ts";
 import { highlightJson } from "../lib/json-highlight.ts";
 import { staggerRows } from "./motion.ts";
 import { copy, toast } from "./shell.ts";
@@ -108,20 +110,20 @@ function render(animate = true) {
   body.innerHTML = regs
     .slice((page - 1) * REGISTER_PAGE, page * REGISTER_PAGE)
     .map((r) => {
-      const row = registerRow(r, mark);
+      const row = registerRow(r, mark, locale);
       return open.has(r.i)
         ? row.replace('aria-expanded="false"', 'aria-expanded="true"').replace("<tr ", '<tr class="open" ') +
-            registerDetail(r, addressBase, REGISTER_COLUMNS.length)
+            registerDetail(r, addressBase, REGISTER_COLUMNS.length, locale)
         : row;
     })
     .join("");
   if (animate) staggerRows(body);
   const total = map.registers.length;
-  count.textContent = regs.length === total ? plural(total, "register") : `${plural(regs.length, "register")} of ${total.toLocaleString("en-US")}`;
+  count.textContent = regs.length === total ? countOf(locale, total, "register") : trans("count.of", { n: countOf(locale, regs.length, "register"), total: total.toLocaleString(locale === "pt" ? "pt-PT" : "en-US") });
   table.hidden = !regs.length;
   empty.hidden = regs.length > 0;
   pager.hidden = pages < 2;
-  pageLabel.textContent = `Page ${page} of ${pages}`;
+  pageLabel.textContent = trans("page.of", { page, pages });
   prev.disabled = page <= 1;
   next.disabled = page >= pages;
 }
@@ -152,7 +154,7 @@ body.addEventListener("click", (e) => {
   const target = e.target as HTMLElement;
   const copyBtn = target.closest<HTMLButtonElement>("button.copy");
   if (copyBtn) {
-    copy(copyBtn.dataset.copy!, `Copied address ${copyBtn.dataset.copy}`);
+    copy(copyBtn.dataset.copy!, trans("dev.copiedAddress", { n: copyBtn.dataset.copy! }));
     return;
   }
   const nameBtn = target.closest<HTMLButtonElement>("button.reg-name");
@@ -170,7 +172,7 @@ body.addEventListener("click", (e) => {
     open.add(i);
     tr.classList.add("open");
     nameBtn.setAttribute("aria-expanded", "true");
-    tr.insertAdjacentHTML("afterend", registerDetail(r, addressBase, REGISTER_COLUMNS.length));
+    tr.insertAdjacentHTML("afterend", registerDetail(r, addressBase, REGISTER_COLUMNS.length, locale));
   }
 });
 
@@ -184,7 +186,7 @@ fetchText()
     render(Boolean(q.value));
   })
   .catch(() => {
-    count.textContent = "The full register list could not be loaded: showing the first page only.";
+    count.textContent = trans("dev.registersFail");
   });
 
 // ── raw JSON ──
@@ -202,14 +204,14 @@ function showRaw() {
     })
     .catch(() => {
       rawShown = false;
-      code.textContent = "The file could not be loaded. Use Download or Raw on GitHub instead.";
+      code.textContent = trans("dev.rawFail");
     });
 }
 
 $("raw-copy")!.addEventListener("click", () =>
   fetchText().then(
-    (t) => copy(t, "Copied the map file"),
-    () => toast("The file could not be loaded"),
+    (t) => copy(t, trans("dev.copiedMap")),
+    () => toast(trans("dev.fileFail")),
   ),
 );
 

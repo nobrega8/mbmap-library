@@ -4,7 +4,8 @@
 // can be shared and the back button works.
 
 import { CATALOGUE_PAGE, deviceRow } from "../lib/device-row.ts";
-import { plural } from "../lib/mbmap.ts";
+import { count as countOf } from "../i18n/index.ts";
+import { locale, t as tr } from "./i18n.ts";
 import { staggerRows } from "./motion.ts";
 import { type DeviceEntry, type Hit, REGISTER_QUERY_MIN, loadDevices, loadRegisters, search } from "./search-core.ts";
 
@@ -80,19 +81,19 @@ function render(animate = true) {
   const pages = Math.max(1, Math.ceil(hits.length / CATALOGUE_PAGE));
   page = Math.min(page, pages);
   const shown = hits.slice((page - 1) * CATALOGUE_PAGE, page * CATALOGUE_PAGE);
-  body.innerHTML = shown.map((h) => deviceRow(h.entry, { query, line: h.line })).join("");
+  body.innerHTML = shown.map((h) => deviceRow(h.entry, { query, line: h.line, locale })).join("");
   if (animate) staggerRows(body);
 
   const filtered = query || vendor.value || status;
   count.textContent = filtered
-    ? `${plural(hits.length, "map")} of ${entries.length.toLocaleString("en-US")}`
-    : plural(entries.length, "map");
-  if (query.length >= REGISTER_QUERY_MIN && !regs) count.textContent += " · searching register names…";
+    ? tr("count.of", { n: countOf(locale, hits.length, "map"), total: entries.length.toLocaleString(locale === "pt" ? "pt-PT" : "en-US") })
+    : countOf(locale, entries.length, "map");
+  if (query.length >= REGISTER_QUERY_MIN && !regs) count.textContent += ` · ${tr("search.searchingRegisters").toLowerCase()}`;
 
   table.hidden = !hits.length;
   empty.hidden = hits.length > 0;
   pager.hidden = pages < 2;
-  pageLabel.textContent = `Page ${page} of ${pages}`;
+  pageLabel.textContent = tr("page.of", { page, pages });
   prev.disabled = page <= 1;
   next.disabled = page >= pages;
   writeUrl();
@@ -107,7 +108,7 @@ async function update(resetPage = true, animate = true) {
     try {
       regs = await loadRegisters();
     } catch {
-      count.textContent += " (register names could not be loaded)";
+      count.textContent += ` (${tr("search.registersFail").toLowerCase()})`;
       return;
     }
     if (mine === seq) render();
@@ -174,5 +175,5 @@ loadDevices()
     update(false, location.search !== "");
   })
   .catch(() => {
-    count.textContent = "The catalogue could not be loaded: search is unavailable. The first maps are listed below.";
+    count.textContent = tr("catalogue.loadFail");
   });

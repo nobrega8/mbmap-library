@@ -1,6 +1,9 @@
 ---
 // The x_status of a map: Modbench's icon and colour, with its label.
-import { type Status, STATUS_INFO } from "../lib/mbmap.ts";
+import type { Status } from "../lib/mbmap.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { translate } from "../i18n/index.ts";
+import { statusLabel, statusShort } from "../i18n/labels.ts";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -10,7 +13,8 @@ interface Props {
 }
 
 const { status, label = true, size = 15 } = Astro.props;
-const info = status ? STATUS_INFO[status] : null;
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const info = status ? { short: statusShort(locale, status), label: statusLabel(locale, status) } : null;
 ---
 
 {
@@ -20,6 +24,6 @@ const info = status ? STATUS_INFO[status] : null;
       {label ? <span>{info.label}</span> : <span class="sr-only">{info.label}</span>}
     </span>
   ) : (
-    <span class="status faint" title="This map does not say how far it can be trusted">No status</span>
+    <span class="status faint" title={translate(locale, "status.noneTitle")}>{translate(locale, "status.none")}</span>
   )
 }

@@ -1,0 +1,167 @@
+---
+import { localizeUrl, pageHref } from "../lib/base.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { count, useT } from "../i18n/index.ts";
+import { statusLabel, statusShort } from "../i18n/labels.ts";
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import VendorTile from "../components/VendorTile.astro";
+import { registry } from "../lib/registry.ts";
+import { STATUSES, fold } from "../lib/mbmap.ts";
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+const { manufacturers, devices } = registry();
+const description = t("makers.description", { makers: count(locale, manufacturers.length, "manufacturer"), first: manufacturers[0]?.name ?? "", last: manufacturers.at(-1)?.name ?? "", maps: count(locale, devices.length, "deviceMap") });
+---
+
+<Base title={t("makers.title")} description={description} nav="manufacturers">
+  <header class="page-head">
+    <h1>{t("makers.title")}</h1>
+    <p class="lead">{t("makers.lead", { makers: count(locale, manufacturers.length, "manufacturer"), maps: count(locale, devices.length, "deviceMap") })}</p>
+  </header>
+
+  <section class="card pad">
+    <form class="toolbar" onsubmit="return false" role="search">
+      <label class="search-field grow">
+        <span class="sr-only">{t("makers.search")}</span>
+        <Icon name="search" />
+        <input class="input" type="search" id="m-q" data-page-search placeholder={t("makers.search")} autocomplete="off" spellcheck="false" />
+        <kbd>/</kbd>
+      </label>
+      <label>
+        <span class="sr-only">{t("catalogue.sort")}</span>
+        <select class="input" id="m-sort">
+          <option value="name">{t("makers.sortName")}</option>
+          <option value="devices">{t("makers.sortDevices")}</option>
+          <option value="verified">{t("makers.sortVerified")}</option>
+          <option value="registers">{t("makers.sortRegisters")}</option>
+        </select>
+      </label>
+      <span class="count" id="m-count" aria-live="polite">{count(locale, manufacturers.length, "manufacturer")}</span>
+    </form>
+
+    <div class="table-wrap">
+      <table class="table makers" id="m-table">
+        <thead>
+          <tr>
+            <th scope="col">{t("list.manufacturer")}</th>
+            <th scope="col" class="r">{t("makers.colDevices")}</th>
+            {STATUSES.map((s) => <th scope="col" class="r c-st" title={statusShort(locale, s)}>{statusLabel(locale, s)}</th>)}
+            <th scope="col" class="r c-regs">{t("list.registers")}</th>
+            <th scope="col" class="c-bar"><span class="sr-only">{t("makers.statusDistribution")}</span></th>
+          </tr>
+        </thead>
+        <tbody id="m-body">
+          {
+            manufacturers.map((m, i) => {
+              const total = m.devices.length;
+              return (
+                <tr
+                  class="linked"
+                  data-i={i}
+                  data-name={fold(`${m.name} ${m.slug}`)}
+                  data-devices={total}
+                  data-verified={m.statusCounts.verified}
+                  data-registers={m.registerCount}
+                >
+                  <td>
+                    <span class="vendor-cell">
+                      <VendorTile name={m.name} slug={m.slug} />
+                      <a class="row-link" href={localizeUrl(m.url, locale)}>{m.name}</a>
+                    </span>
+                  </td>
+                  <td class="num">{total}</td>
+                  {STATUSES.map((s) => <td class={`num c-st${m.statusCounts[s] ? "" : " zero"}`}>{m.statusCounts[s]}</td>)}
+                  <td class="num c-regs">{m.registerCount.toLocaleString(locale === "pt" ? "pt-PT" : "en-US")}</td>
+                  <td class="c-bar">
+                    <div class="status-bar" aria-hidden="true">
+                      {STATUSES.filter((s) => m.statusCounts[s]).map((s) => <span class={s} style={`flex:${m.statusCounts[s]}`} />)}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="empty" id="m-empty" hidden>
+      <strong>{t("makers.noMatch")}</strong>
+      {t("makers.missing")} <a href={pageHref("/contribute", locale)}>{t("makers.requestOrAdd")}</a>.
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { fold } from "../lib/mbmap.ts";
+  import { count as countOf } from "../i18n/index.ts";
+  import { locale } from "../scripts/i18n.ts";
+  import { t } from "../scripts/i18n.ts";
+
+  const q = document.getElementById("m-q") as HTMLInputElement;
+  const sort = document.getElementById("m-sort") as HTMLSelectElement;
+  const body = document.getElementById("m-body")!;
+  const count = document.getElementById("m-count")!;
+  const empty = document.getElementById("m-empty")!;
+  const table = document.getElementById("m-table")!;
+  const rows = [...body.querySelectorAll<HTMLTableRowElement>("tr")];
+
+  function update() {
+    const words = fold(q.value).split(/\s+/).filter(Boolean);
+    const key = sort.value;
+    const sorted = [...rows].sort((a, b) =>
+      key === "name"
+        ? Number(a.dataset.i) - Number(b.dataset.i)
+        : Number(b.dataset[key]) - Number(a.dataset[key]) || Number(a.dataset.i) - Number(b.dataset.i),
+    );
+    let shown = 0;
+    for (const tr of sorted) {
+      const on = words.every((w) => tr.dataset.name!.includes(w));
+      tr.hidden = !on;
+      if (on) shown++;
+      body.appendChild(tr);
+    }
+    count.textContent = shown === rows.length ? countOf(locale, rows.length, "manufacturer") : t("count.of", { n: shown, total: countOf(locale, rows.length, "manufacturer") });
+    empty.hidden = shown > 0;
+    table.hidden = shown === 0;
+    const p = new URLSearchParams();
+    if (q.value.trim()) p.set("q", q.value.trim());
+    if (key !== "name") p.set("sort", key);
+    history.replaceState(null, "", p.size ? `?${p}` : location.pathname);
+  }
+
+  const p = new URLSearchParams(location.search);
+  q.value = p.get("q") ?? "";
+  sort.value = p.get("sort") ?? "name";
+  if (sort.selectedIndex < 0) sort.value = "name";
+  q.addEventListener("input", update);
+  sort.addEventListener("change", update);
+  if (q.value || sort.value !== "name") update();
+</script>
+
+<style>
+  .page-head {
+    margin: 4px 0 16px;
+  }
+
+  .toolbar {
+    margin-bottom: 8px;
+  }
+
+  .makers .c-bar {
+    width: 140px;
+  }
+
+  .makers td.zero {
+    color: var(--border-strong);
+  }
+
+  @media (max-width: 760px) {
+    .makers .c-st,
+    .makers .c-bar,
+    .makers .c-regs {
+      display: none;
+    }
+  }
+</style>

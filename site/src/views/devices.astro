@@ -1,0 +1,144 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import StatusBar from "../components/StatusBar.astro";
+import { deviceEntry, registry } from "../lib/registry.ts";
+import { CATALOGUE_PAGE, deviceHead, deviceRow } from "../lib/device-row.ts";
+import { vendorIcons } from "../lib/vendor-icons.ts";
+import { STATUSES } from "../lib/mbmap.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { count, useT } from "../i18n/index.ts";
+
+import { statusLabel, statusShort } from "../i18n/labels.ts";
+import { LINKS } from "../lib/site.ts";
+import { pageHref } from "../lib/base.ts";
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+const { devices, manufacturers, statusCounts, registerCount } = registry();
+const icons = await vendorIcons();
+const hasDates = devices.some((d) => d.added);
+const firstPage = devices.slice(0, CATALOGUE_PAGE).map((d) => deviceRow(deviceEntry(d, icons), { locale })).join("");
+const pages = Math.ceil(devices.length / CATALOGUE_PAGE);
+const description = t("devices.description", { maps: count(locale, devices.length, "mapModbus"), makers: count(locale, manufacturers.length, "manufacturer"), regs: count(locale, registerCount, "register") });
+---
+
+<Base title={t("devices.title")} description={description} nav="devices">
+  <header class="page-head">
+    <div>
+      <h1>{t("devices.h1")}</h1>
+      <p class="lead">
+        {t("devices.lead", { maps: count(locale, devices.length, "map"), makers: count(locale, manufacturers.length, "manufacturer"), regs: count(locale, registerCount, "register") })}
+      </p>
+    </div>
+    <div class="head-status"><StatusBar counts={statusCounts} /></div>
+  </header>
+
+  <section class="card pad catalogue" id="catalogue" aria-labelledby="cat-title">
+    <h2 id="cat-title" class="sr-only">{t("catalogue.title")}</h2>
+    <form class="toolbar" id="cat-form" role="search" action={pageHref("/devices", locale)} method="get" onsubmit="return false">
+      <label class="search-field grow">
+        <span class="sr-only">{t("catalogue.searchDevices")}</span>
+        <Icon name="search" size={16} />
+        <input
+          class="input big"
+          type="search"
+          name="q"
+          id="cat-q"
+          data-page-search
+          placeholder={t("catalogue.searchPlaceholder")}
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <kbd>/</kbd>
+      </label>
+      <label>
+        <span class="sr-only">{t("catalogue.manufacturer")}</span>
+        <select class="input" name="vendor" id="cat-vendor">
+          <option value="">{t("catalogue.allManufacturers")}</option>
+          {manufacturers.map((m) => <option value={m.slug}>{m.name} ({m.devices.length})</option>)}
+        </select>
+      </label>
+      <div class="segmented" role="group" aria-label={t("catalogue.status")} id="cat-status" data-pill>
+        <button type="button" class="on" data-status="" aria-pressed="true">{t("catalogue.all")}</button>
+        {
+          STATUSES.map((s) => (
+            <button type="button" data-status={s} aria-pressed="false" title={statusShort(locale, s)}>
+              {statusLabel(locale, s)}
+            </button>
+          ))
+        }
+      </div>
+      <label>
+        <span class="sr-only">{t("catalogue.sort")}</span>
+        <select class="input" name="sort" id="cat-sort">
+          <option value="">{t("catalogue.sortBest")}</option>
+          <option value="name">{t("catalogue.sortName")}</option>
+          {hasDates && <option value="added">{t("catalogue.sortAdded")}</option>}
+          <option value="registers">{t("catalogue.sortRegisters")}</option>
+        </select>
+      </label>
+    </form>
+
+    <div class="cat-meta">
+      <span id="cat-count" class="faint" aria-live="polite">{count(locale, devices.length, "map")}</span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="table devices" id="cat-table">
+        <thead set:html={deviceHead(true, locale)} />
+        <tbody id="cat-body" set:html={firstPage} />
+      </table>
+    </div>
+    <div class="empty" id="cat-empty" hidden>
+      <strong>{t("catalogue.noMatch")}</strong>
+      <span>{t("catalogue.noMatchHint")}</span>
+      <div class="actions" style="justify-content:center;margin-top:14px">
+        <button class="btn" type="button" id="cat-clear">{t("catalogue.clear")}</button>
+        <a class="btn" href={LINKS.mapRequest}>{t("catalogue.requestThis")}</a>
+        <a class="btn primary" href={pageHref("/contribute#add", locale)}>{t("catalogue.addMap")}</a>
+      </div>
+    </div>
+    <nav class="pager" id="cat-pager" aria-label={t("pager.label")} hidden={pages < 2}>
+      <span id="cat-page">{t("page.of", { page: 1, pages })}</span>
+      <span class="btns">
+        <button class="btn" type="button" id="cat-prev" disabled><Icon name="back" size={14} /> {t("pager.prev")}</button>
+        <button class="btn" type="button" id="cat-next">{t("pager.next")} <Icon name="next" size={14} /></button>
+      </span>
+    </nav>
+    <noscript>
+      <p class="faint">
+        {t("catalogue.noscript", { n: CATALOGUE_PAGE })}
+        <a href={pageHref("/manufacturers", locale)}>{t("catalogue.makerPages")}</a>.
+      </p>
+    </noscript>
+  </section>
+</Base>
+
+<script>
+  import "../scripts/catalogue.ts";
+</script>
+
+<style>
+  .page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px 32px;
+    margin: 4px 0 16px;
+  }
+
+  .head-status {
+    flex: 0 1 380px;
+  }
+
+  .head-status :global(.legend) {
+    margin-top: 8px;
+  }
+
+  .cat-meta {
+    margin: 12px 2px 2px;
+    font-size: 13px;
+  }
+</style>

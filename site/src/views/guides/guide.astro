@@ -1,0 +1,91 @@
+---
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import { pageHref } from "../../lib/base.ts";
+import { DEFAULT_LOCALE, LOCALE_TAG, type Locale } from "../../i18n/locales.ts";
+import { useT } from "../../i18n/index.ts";
+import { GUIDES, guideShort } from "../../lib/guides.ts";
+import { guideSummary, renderGuide } from "../../lib/markdown.ts";
+import { BRANCH, REPO_URL } from "../../lib/registry.ts";
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+const { slug } = Astro.props as { slug: string };
+const doc = await renderGuide(slug, locale);
+const summary = guideSummary(slug, locale);
+const others = GUIDES.filter((g) => g.slug !== slug);
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: doc?.title ?? slug,
+    description: summary,
+    url: pageUrl,
+    inLanguage: doc?.translated ? LOCALE_TAG[locale] : "en",
+    author: { "@type": "Person", name: "Afonso Nóbrega", url: "https://nobrega.me" },
+  },
+];
+---
+
+<Base title={doc?.title ?? t("guide.fallbackTitle")} description={summary.slice(0, 300)} nav="guides" jsonLd={jsonLd} ogType="article" untranslated={!doc?.translated}>
+  <ol class="crumbs">
+    <li><a href={pageHref("/guides", locale)}>{t("nav.guides")}</a></li>
+    <li aria-current="page">{guideShort(slug, locale)}</li>
+  </ol>
+  <div class="guide">
+    <article class="card pad prose">
+      <h1>{doc?.title}</h1>
+      <Fragment set:html={doc?.html ?? ""} />
+      <p class="faint edit">
+        <a href={`${REPO_URL}/blob/${BRANCH}/docs/guides/${doc?.translated && locale !== DEFAULT_LOCALE ? `${locale}/` : ""}${slug}.md`}><Icon name="edit" size={13} /> {t("guide.improve")}</a>
+      </p>
+    </article>
+    <nav class="card pad more" aria-label={t("guide.otherLabel")}>
+      <p class="key">{t("guide.more")}</p>
+      <ul>
+        {others.map((g) => <li><a href={pageHref(`/guides/${g.slug}`, locale)}>{guideShort(g.slug, locale)}</a></li>)}
+      </ul>
+      <p class="key find">{t("guide.findDevice")}</p>
+      <p><a href={pageHref("/devices", locale)}>{t("guide.browse")}</a></p>
+    </nav>
+  </div>
+</Base>
+
+<script>
+  import "../../scripts/guide-widgets.ts";
+</script>
+
+<style>
+  .guide {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 16px;
+    align-items: start;
+  }
+  h1 {
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    margin-top: 0;
+  }
+  .more ul {
+    margin: 8px 0 0;
+    padding-left: 16px;
+    font-size: 14px;
+  }
+  .more li + li {
+    margin-top: 6px;
+  }
+  .find {
+    margin-top: 18px;
+  }
+  .edit {
+    margin-top: 24px;
+    font-size: 13px;
+  }
+  @media (max-width: 860px) {
+    .guide {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

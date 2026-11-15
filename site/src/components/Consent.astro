@@ -1,20 +1,25 @@
 ---
-import { href } from "../lib/base.ts";
+import { pageHref } from "../lib/base.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { useT } from "../i18n/index.ts";
 import { GTM_ID } from "../lib/analytics.ts";
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
 ---
 
 {
   GTM_ID && (
     <>
       <div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" aria-describedby="consent-text" hidden>
-        <p id="consent-title"><strong>Cookies</strong></p>
+        <p id="consent-title"><strong>{t("consent.title")}</strong></p>
         <p id="consent-text">
-          We use Google Analytics cookies (through Google Tag Manager) to count visits and see which maps are used. Nothing is loaded unless you accept.
-          See the <a href={href("/privacy")}>privacy policy</a> and the <a href={href("/terms")}>terms</a>.
+          {t("consent.text")}
+          {t("consent.see")} <a href={pageHref("/privacy", locale)}>{t("consent.privacyPolicy")}</a> {t("consent.and")} <a href={pageHref("/terms", locale)}>{t("consent.terms")}</a>.
         </p>
         <div class="consent-actions">
-          <button class="btn" type="button" data-consent="denied">Reject</button>
-          <button class="btn primary" type="button" data-consent="granted">Accept</button>
+          <button class="btn" type="button" data-consent="denied">{t("consent.reject")}</button>
+          <button class="btn primary" type="button" data-consent="granted">{t("consent.accept")}</button>
         </div>
       </div>
       <script define:vars={{ GTM_ID }} is:inline>

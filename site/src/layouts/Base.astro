@@ -8,7 +8,9 @@ import { LINKS, MODBENCH_URL, SITE_NAME } from "../lib/site.ts";
 import { registry } from "../lib/registry.ts";
 import logo from "../assets/mbmap-logo.svg?raw";
 import interUrl from "../assets/fonts/Inter-Variable.woff2?url";
-import { href } from "../lib/base.ts";
+import { href, pageHref, stripLocale } from "../lib/base.ts";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_NAME, LOCALE_TAG, OG_LOCALE, type Locale } from "../i18n/locales.ts";
+import { useT } from "../i18n/index.ts";
 
 interface Props {
   /** The page title; " | MBMap" is added unless `fullTitle` is set */
@@ -20,9 +22,19 @@ interface Props {
   ogType?: string;
   /** Keeps the page out of search results */
   noindex?: boolean;
+  /** The page has no translation: it is shown in English, with a note */
+  untranslated?: boolean;
 }
 
-const { title, fullTitle = false, description, nav, jsonLd = [], ogType = "website", noindex = false } = Astro.props;
+const { title, fullTitle = false, description, nav, jsonLd = [], ogType = "website", noindex = false, untranslated = false } = Astro.props;
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+// The same page in every language, for the switcher and the hreflang links
+const englishPath = stripLocale(Astro.url.pathname, locale);
+const inLocale = (l: Locale) => new URL(l === DEFAULT_LOCALE ? englishPath : englishPath.replace(href("/"), href(`/${l}/`)), Astro.site).href;
+const alternates = (untranslated ? [DEFAULT_LOCALE] : LOCALES).map((l) => [l, inLocale(l)] as const);
+// An English page shown under another language is not a page of its own
+const hidden = noindex || (untranslated && locale !== DEFAULT_LOCALE);
 const pageTitle = fullTitle ? title : `${title} | ${SITE_NAME}`;
 const canonical = new URL(Astro.url.pathname.replace(/\/index$|\.html$/, "") || "/", Astro.site).href;
 const ogImage = new URL(href("/social-banner.png"), Astro.site).href;
@@ -30,24 +42,27 @@ const { commit, commitDate } = registry();
 const logoSvg = logo.replace(/<\?xml[^>]*>/, "").replace(/ fill="#171717"/, "").replace(/<title>.*?<\/title>/, "");
 
 const tabs = [
-  ["devices", "/devices", "Devices"],
-  ["manufacturers", "/manufacturers", "Manufacturers"],
-  ["guides", "/guides", "Guides"],
-  ["spec", "/spec", "Specification"],
-  ["compatibility", "/compatibility", "Compatibility"],
-  ["contribute", "/contribute", "Contribute"],
-  ["about", "/about", "About"],
+  ["devices", "/devices", t("nav.devices")],
+  ["manufacturers", "/manufacturers", t("nav.manufacturers")],
+  ["guides", "/guides", t("nav.guides")],
+  ["spec", "/spec", t("nav.spec")],
+  ["compatibility", "/compatibility", t("nav.compatibility")],
+  ["contribute", "/contribute", t("nav.contribute")],
+  ["about", "/about", t("nav.about")],
 ] as const;
+const others = LOCALES.filter((l) => l !== locale);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={LOCALE_TAG[locale]} data-locale={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {alternates.map(([l, url]) => <link rel="alternate" hreflang={LOCALE_TAG[l as Locale]} href={url} />)}
+    <link rel="alternate" hreflang="x-default" href={alternates[0]![1]} />
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
     <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href={href("/sitemap.xml")} />
@@ -58,16 +73,17 @@ const tabs = [
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="en" />
+    <meta property="og:locale" content={OG_LOCALE[locale]} />
+    {others.map((l) => <meta property="og:locale:alternate" content={OG_LOCALE[l]} />)}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="640" />
-    <meta property="og:image:alt" content="MBMap, the open registry for Modbus device maps" />
+    <meta property="og:image:alt" content={t("site.ogAlt")} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="robots" content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
+    <meta name="robots" content={hidden ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
     <meta name="author" content="Afonso Nóbrega" />
     {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
     <!-- Theme before first paint, as Modbench's Settings: system, light or dark -->
@@ -79,31 +95,38 @@ const tabs = [
     </script>
   </head>
   <body>
-    <a class="skip" href="#main">Skip to content</a>
+    <a class="skip" href="#main">{t("site.skip")}</a>
     <header class="bar" id="bar">
       <div class="bar-in">
-        <a class="brand" href={href("/")} aria-label={`${SITE_NAME} registry home`}>
+        <a class="brand" href={pageHref("/", locale)} aria-label={t("site.homeLabel", { name: SITE_NAME })}>
           <Fragment set:html={logoSvg} />
-          <span>{SITE_NAME} <small>Registry</small></span>
+          <span>{SITE_NAME} <small>{t("site.registry")}</small></span>
         </a>
-        <nav class="tabs" id="tabs" aria-label="Main">
+        <nav class="tabs" id="tabs" aria-label={t("nav.main")}>
           {tabs.map(([key, path, label]) => (
-            <a href={href(path)} aria-current={nav === key ? "page" : undefined}>{label}</a>
+            <a href={pageHref(path, locale)} aria-current={nav === key ? "page" : undefined}>{label}</a>
           ))}
         </nav>
         <div class="bar-tools">
-          <button class="btn search-open" type="button" data-cmd-open aria-label="Search maps" aria-keyshortcuts="Control+K Meta+K">
+          <button class="btn search-open" type="button" data-cmd-open aria-label={t("search.open")} aria-keyshortcuts="Control+K Meta+K">
             <Icon name="search" />
-            <span>Search maps</span>
+            <span>{t("search.open")}</span>
             <kbd data-mod>Ctrl K</kbd>
           </button>
-          <button class="btn icon ghost" type="button" id="theme" title="Theme: system" aria-label="Theme: system">
+          <button class="btn icon ghost" type="button" id="theme" title={t("theme.label", { theme: t("theme.system") })} aria-label={t("theme.label", { theme: t("theme.system") })}>
             <Icon name="system" />
           </button>
-          <a class="btn icon ghost" href={LINKS.repo} title="mbmap-library on GitHub" aria-label="mbmap-library on GitHub">
+          {
+            others.map((l) => (
+              <a class="btn ghost lang" href={inLocale(l)} hreflang={LOCALE_TAG[l]} lang={LOCALE_TAG[l]} title={LOCALE_NAME[l]} aria-label={`${t("lang.switch")}: ${LOCALE_NAME[l]}`} data-lang={l}>
+                {l.toUpperCase()}
+              </a>
+            ))
+          }
+          <a class="btn icon ghost" href={LINKS.repo} title={t("github.title")} aria-label={t("github.title")}>
             <Icon name="github" />
           </a>
-          <button class="btn icon ghost menu-btn" type="button" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="tabs">
+          <button class="btn icon ghost menu-btn" type="button" id="menu" aria-label={t("menu")} aria-expanded="false" aria-controls="tabs">
             <Icon name="menu" />
           </button>
         </div>
@@ -111,40 +134,41 @@ const tabs = [
     </header>
 
     <main id="main">
+      {untranslated && locale !== DEFAULT_LOCALE && <p class="card pad untranslated" role="note">{t("lang.untranslated")}</p>}
       <slot />
     </main>
 
     <footer class="foot">
       <div class="foot-in">
         <p>
-          © {new Date().getFullYear()} <a href="https://nobrega.me">Afonso Nóbrega</a>. Maps, spec and tools are
-          public domain (<a href={LINKS.license}>CC0 1.0</a>).
+          © {new Date().getFullYear()} <a href="https://nobrega.me">Afonso Nóbrega</a>. {t("foot.rights")}
+          (<a href={LINKS.license}>CC0 1.0</a>).
           {commit && (
             <>
-              Built from <a href={`${LINKS.repo}/commit/${commit}`} class="mono">{commit.slice(0, 7)}</a>{commitDate && `, ${commitDate}`}.
+              {t("foot.built")} <a href={`${LINKS.repo}/commit/${commit}`} class="mono">{commit.slice(0, 7)}</a>{commitDate && `, ${commitDate}`}.
             </>
           )}
         </p>
-        <nav aria-label="Footer">
+        <nav aria-label={t("foot.footer")}>
           <a href={LINKS.repo}>GitHub</a>
-          <a href={LINKS.spec}>Specification</a>
-          <a href={LINKS.schema}>JSON Schema</a>
-          <a href={href("/contribute")}>Contribute</a>
+          <a href={LINKS.spec}>{t("foot.spec")}</a>
+          <a href={LINKS.schema}>{t("foot.schema")}</a>
+          <a href={pageHref("/contribute", locale)}>{t("foot.contribute")}</a>
           <a href={MODBENCH_URL}>Modbench</a>
-          <a href={href("/terms")}>Terms</a>
-          <a href={href("/privacy")}>Privacy</a>
-          {GTM_ID && <button class="linkbtn" type="button" data-consent-open>Cookie settings</button>}
+          <a href={pageHref("/terms", locale)}>{t("foot.terms")}</a>
+          <a href={pageHref("/privacy", locale)}>{t("foot.privacy")}</a>
+          {GTM_ID && <button class="linkbtn" type="button" data-consent-open>{t("foot.cookies")}</button>}
         </nav>
       </div>
     </footer>
 
-    <dialog class="cmd" id="cmd" aria-label="Search maps">
+    <dialog class="cmd" id="cmd" aria-label={t("search.open")}>
       <div class="cmd-search">
         <Icon name="search" size={17} />
         <input
           id="cmd-input"
           type="search"
-          placeholder="Search manufacturer, model or register"
+          placeholder={t("search.placeholder")}
           autocomplete="off"
           spellcheck="false"
           role="combobox"
@@ -154,10 +178,10 @@ const tabs = [
         />
         <kbd>Esc</kbd>
       </div>
-      <ul class="cmd-list" id="cmd-list" role="listbox" aria-label="Results"></ul>
+      <ul class="cmd-list" id="cmd-list" role="listbox" aria-label={t("search.results")}></ul>
       <div class="cmd-foot" aria-hidden="true">
-        <span><kbd>↑</kbd> <kbd>↓</kbd> to choose</span>
-        <span><kbd>Enter</kbd> to open</span>
+        <span><kbd>↑</kbd> <kbd>↓</kbd> {t("search.choose")}</span>
+        <span><kbd>Enter</kbd> {t("search.openHint")}</span>
       </div>
     </dialog>
     <Consent />
