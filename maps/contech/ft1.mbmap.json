@@ -1,0 +1,705 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Contech",
+  "model": "FT1",
+  "models": [
+    "FT1"
+  ],
+  "vendor_website": "contechind.com.br",
+  "description": "Thermal mass flow meter for gases: flow, total, temperature, status, gas selection and mixture, units and calibration check",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "Contech FT1 Manual de Instruções",
+  "sources": [
+    {
+      "title": "FT1 Manual de Instruções",
+      "url": "https://www.contechind.com.br/Manual-Massico-Termal-Mod-CTH-FT1.pdf",
+      "note": "Section 5, Modbus register table",
+      "accessed": "2026-11-15",
+      "sha256": "997975e12a5c79cb18532b08567d65e2500d213d43be481b32943dd4d0fab83d"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS-485, address 1 to 247, 1200 to 115200 bps, parity none, odd or even; power the meter off and on after changing them. The meter can also use BACnet MS/TP (not described here).",
+    "Register numbers are those of the manual (40001 is the first holding register), counted from 1 (address_base 1). Function 04 reads the status at 40016 and 40017 too.",
+    "32-bit values take two registers, the least significant word first (the manual's LSW, then MSW).",
+    "Registers marked with * in the manual need firmware 8.3 or later. The gas selection codes (table 5.4) and the BACnet objects are not in this map.",
+    "Two mixture registers are both called 'Butano' in the manual (40074 and 40078); they are listed as first and second.",
+    "Written from the manufacturer's manual (Portuguese); not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Flow (32-bit integer)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Unit chosen by the user; integer value"
+    },
+    {
+      "name": "Total (32-bit integer)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 3,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Unit chosen by the user"
+    },
+    {
+      "name": "Temperature (32-bit integer)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Temperature in the selected unit x 10",
+      "scale": 0.1
+    },
+    {
+      "name": "Elapsed time (32-bit integer)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Elapsed time x 10",
+      "scale": 0.1
+    },
+    {
+      "name": "Flow x 10 (16-bit)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit chosen by the user; flow scaled by 10 to fit 16 bits",
+      "scale": 0.1
+    },
+    {
+      "name": "Flow x 100 (16-bit)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit chosen by the user; flow scaled by 100 to fit 16 bits",
+      "scale": 0.01
+    },
+    {
+      "name": "Total x 100 (16-bit)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "access": "R",
+      "description": "Unit chosen by the user; total scaled by 100 to fit 16 bits",
+      "scale": 0.01
+    },
+    {
+      "name": "Status",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit field"
+    },
+    {
+      "name": "Status: initialisation (zero when the sequence ends)",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Status: flow high limit reached",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Status: flow low limit reached",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Status: temperature high limit reached",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Status: temperature low limit reached",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Status: sensor reading out of range",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Status: gas mixture error (must total 100%)",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Status: wrong settings",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Status: simulation mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Status: pulse/alarm output out of range",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Status: 4-20 mA output out of range",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Status: cRC error",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 14
+    },
+    {
+      "name": "Status: totaliser error",
+      "group": "Status",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Status 2",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit field"
+    },
+    {
+      "name": "Status 2: hardware pulse",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Status 2: busy",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Status 2: hART hardware",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Status 2: cAL-V in progress",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Status 2: cAL-V failed",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Status 2: cAL-V aborted",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Status 2: cAL-V warning",
+      "group": "Status",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Control",
+      "group": "Commands",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write-only",
+      "enum": {
+        "2": "Reset total",
+        "173": "Run CAL-V",
+        "174": "Abort CAL-V"
+      }
+    },
+    {
+      "name": "Flow",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Unit chosen by the user"
+    },
+    {
+      "name": "Total",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Unit chosen by the user"
+    },
+    {
+      "name": "Reference pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Unit chosen by the user (mmHg = 0, PSIA = 1, BARA = 2); firmware 8.3 or later"
+    },
+    {
+      "name": "Temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 26,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Unit chosen by the user"
+    },
+    {
+      "name": "Elapsed time",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 28,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little",
+      "unit": "h"
+    },
+    {
+      "name": "Calibration validation result",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 30,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little"
+    },
+    {
+      "name": "Flow unit",
+      "group": "Units",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "access": "R",
+      "description": "Firmware 8.3 or later",
+      "enum": {
+        "0": "SCFM",
+        "1": "SCFH",
+        "2": "NM3/h",
+        "3": "NM3/min",
+        "4": "kg/h",
+        "5": "kg/min",
+        "6": "kg/s",
+        "7": "lb/h",
+        "8": "lb/min",
+        "9": "lb/s",
+        "10": "NLPH",
+        "11": "NLPM",
+        "15": "MMSCFD",
+        "16": "lb/d",
+        "17": "SLPM",
+        "18": "NLPS",
+        "19": "MSCFD",
+        "20": "SM3/h",
+        "21": "MT/h",
+        "22": "NM3/d",
+        "23": "MMSCFM",
+        "24": "SCFD",
+        "25": "MCFD",
+        "26": "SM3/min",
+        "27": "SM3/d"
+      }
+    },
+    {
+      "name": "Temperature unit",
+      "group": "Units",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "access": "R",
+      "description": "Firmware 8.3 or later",
+      "enum": {
+        "0": "°F",
+        "1": "°C"
+      }
+    },
+    {
+      "name": "Pressure unit",
+      "group": "Units",
+      "area": "holding",
+      "address": 40,
+      "type": "uint16",
+      "access": "R",
+      "description": "Firmware 8.3 or later",
+      "enum": {
+        "0": "mmHg",
+        "1": "PSIA",
+        "2": "BARA"
+      }
+    },
+    {
+      "name": "Gas selection",
+      "group": "Gas",
+      "area": "holding",
+      "address": 56,
+      "type": "uint16",
+      "access": "R",
+      "description": "Gas code from table 5.4 of the manual; 250 = mixed gas. Writing 40056 returns an error"
+    },
+    {
+      "name": "Gas selection (reserved)",
+      "group": "Gas",
+      "area": "holding",
+      "address": 57,
+      "type": "uint16",
+      "access": "R",
+      "description": "Reads as zero"
+    },
+    {
+      "name": "Methane percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 58,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Carbon dioxide percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 60,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Nitrogen percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 62,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Air percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 64,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Argon percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 66,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Propane percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 68,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Helium percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 70,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Oxygen percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 72,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Butane (first) percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 74,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Hydrogen percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 76,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Butane (second) percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 78,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Ethane percentage",
+      "group": "Gas",
+      "area": "holding",
+      "address": 80,
+      "type": "float32",
+      "access": "RW",
+      "word_order": "little",
+      "description": "Mixed gas only (selection code 250); the mix must total 100 %",
+      "unit": "%"
+    },
+    {
+      "name": "Density",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 197,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little",
+      "description": "At STP; firmware 8.3 or later",
+      "unit": "kg/m³"
+    },
+    {
+      "name": "Meter serial number",
+      "group": "Identification",
+      "area": "holding",
+      "address": 199,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Firmware 8.3 or later",
+      "role": "serial"
+    },
+    {
+      "name": "ADC status",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "access": "R",
+      "description": "Firmware 8.3 or later"
+    },
+    {
+      "name": "Electronics temperature",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 202,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Firmware 8.3 or later",
+      "unit": "°C"
+    },
+    {
+      "name": "Last CAL-V year",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "R",
+      "description": "Valid only when FT1 View software is used; firmware 8.3 or later"
+    },
+    {
+      "name": "Last CAL-V month",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "R",
+      "description": "Valid only when FT1 View software is used; firmware 8.3 or later"
+    },
+    {
+      "name": "Last CAL-V day",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "access": "R",
+      "description": "Valid only when FT1 View software is used; firmware 8.3 or later"
+    },
+    {
+      "name": "Last CAL-V hour",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 207,
+      "type": "uint16",
+      "access": "R",
+      "description": "Valid only when FT1 View software is used; firmware 8.3 or later"
+    },
+    {
+      "name": "Last CAL-V minute",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 208,
+      "type": "uint16",
+      "access": "R",
+      "description": "Valid only when FT1 View software is used; firmware 8.3 or later"
+    },
+    {
+      "name": "Last CAL-V second",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 209,
+      "type": "uint16",
+      "access": "R",
+      "description": "Valid only when FT1 View software is used; firmware 8.3 or later"
+    },
+    {
+      "name": "Last CAL-V value",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 210,
+      "type": "float32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Firmware 8.3 or later"
+    }
+  ]
+}
