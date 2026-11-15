@@ -1,0 +1,150 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "SIPEL",
+  "model": "ISIS Alfa Digital",
+  "models": [
+    "ISIS"
+  ],
+  "vendor_website": "sipel.com.ar",
+  "description": "Weight indicator (ISIS) with Modbus: gross, tare and net weight, status flags and the remote key",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "SIPEL Indicador ISIS, Manual de Uso e Instalación, Rev. 3.0",
+  "sources": [
+    {
+      "title": "Manual de Uso e Instalación, Indicador ISIS",
+      "version": "Rev. 3.0",
+      "url": "https://github.com/user-attachments/files/34885741/Manual_Isis_Alfa.pdf",
+      "note": "Section 3.4, Modbus; attached by the requester to issue #523",
+      "accessed": "2026-11-15",
+      "sha256": "22d1cc02cabf42ee836011cc7a45dbd84ecaaec6a6e3b09b333d0c37728b8b94"
+    }
+  ],
+  "notes": [
+    "Modbus RTU or ASCII, functions 03 (read) and 06 (write one register), on RS-232 (one indicator) or RS-485/RS-422 (several). Set in the PORT 1 menu: ID = slave number 0 to 99, R1 = 3 (PLC), B1 = 0 to 3 for 1200, 2400, 4800 or 9600 baud (factory 3), H1 = 0, F1 = 0 for RTU 8N1 or 1 for ASCII 7 bits, 2 stop bits.",
+    "Weights are 32-bit integers in two registers, without decimal point; the word order is not stated, high word first is assumed.",
+    "Writing the key register is switched off at the factory: set JC = 1 in the ESTAB menu.",
+    "Written from the manufacturer's manual (Spanish); not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Gross weight",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 0,
+      "type": "int32",
+      "access": "R",
+      "description": "No decimal point; two's complement"
+    },
+    {
+      "name": "Tare",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 2,
+      "type": "int32",
+      "access": "R",
+      "description": "No decimal point; two's complement"
+    },
+    {
+      "name": "Net weight",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 4,
+      "type": "int32",
+      "access": "R",
+      "description": "No decimal point; two's complement"
+    },
+    {
+      "name": "Flags",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit field, the sum of the flag values: 1 display negative, 2 centre of zero, 4 motion, 8 net mode, 16 gross negative, 128 zero capture inhibited"
+    },
+    {
+      "name": "Key",
+      "group": "Commands",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "W",
+      "description": "Writing this register emulates a key; it must be enabled with JC=1 in the ESTAB menu (not covered by the Argentine approval of the indicator)"
+    },
+    {
+      "name": "Flags: display negative",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Flags: centre of zero",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Flags: motion",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Flags: net mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Flags: gross negative",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Flags: zero capture inhibited",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Legonet use",
+      "group": "Other",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Used by Legonet"
+    }
+  ]
+}
