@@ -212,3 +212,13 @@ $("raw-copy")!.addEventListener("click", () =>
     () => toast("The file could not be loaded"),
   ),
 );
+
+// Close the download menu on a click elsewhere, on Escape or after a choice.
+{
+  const more = document.querySelector<HTMLDetailsElement>(".split-more");
+  if (more) {
+    document.addEventListener("click", (e) => { if (!more.contains(e.target as Node)) more.open = false; });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") more.open = false; });
+    more.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setTimeout(() => (more.open = false), 50)));
+  }
+}
