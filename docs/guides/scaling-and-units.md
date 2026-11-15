@@ -19,6 +19,8 @@ Watch the unit as well as the factor: an energy counter in Wh and one in kWh × 
 
 Some devices change the scale with a setting: the number of decimals shown on the display, the CT ratio or the voltage range. The manual then gives a table ("if register 40018 is 2, divide by 100"). Read that setting first.
 
+<mb-scaling></mb-scaling>
+
 ## Scale factor registers (SunSpec and others)
 
 SunSpec inverters and meters send each value with a separate *scale factor* register, a signed power of ten. The value is `register × 10^scale_factor`: a power of 4523 with a scale factor of −1 is 452.3 W. The scale factor can change while the device runs, so read it with the value, in the same request.

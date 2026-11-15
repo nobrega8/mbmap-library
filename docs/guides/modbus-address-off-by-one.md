@@ -14,6 +14,8 @@ A Modbus frame always carries an address from 0 to 65535. The `4` (holding), `3`
 
 Six-digit references such as `400001` or `300013` work the same way: drop the first digit and subtract one (`300013` → input register `12`).
 
+<mb-address></mb-address>
+
 ## How to tell which one your manual uses
 
 - **Hex addresses** (`0x0BB7`, `1004h`) are almost always the wire address.

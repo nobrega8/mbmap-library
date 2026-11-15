@@ -13,6 +13,8 @@ When a Modbus device understands a request but cannot carry it out, it answers w
 | 0A | Gateway path unavailable | A gateway could not reach the device behind it | Check the serial side of the gateway and its routing |
 | 0B | Gateway target failed to respond | The gateway forwarded the request but the device did not answer | Check the unit ID, baud rate and wiring behind the gateway |
 
+<mb-exceptions></mb-exceptions>
+
 ## No answer at all is not an exception
 
 A device that receives a frame with a bad CRC, a wrong unit ID or a parity error stays silent: you get a timeout, not an exception. See [timeouts](modbus-timeout-no-response).

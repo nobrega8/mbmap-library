@@ -10,6 +10,8 @@ Reading a register is harmless. Writing one changes the device, sometimes in way
 - **Commands act at once.** Run/stop, breaker open/close, reset of energy counters and factory reset happen on the write, with no confirmation.
 - **Half-written values.** Writing the two registers of a 32-bit value in separate requests can leave a mixed value for a moment, or be refused.
 
+<mb-flow name="write"></mb-flow>
+
 ## Before writing
 
 1. Check the map against the manufacturer's document, and prefer maps marked *verified* or *official*.

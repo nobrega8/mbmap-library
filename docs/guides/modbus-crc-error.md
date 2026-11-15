@@ -12,6 +12,8 @@ A CRC error means a frame arrived but its checksum did not match: bytes were cha
 - **Frames merging.** If the master sends the next request before the bus is quiet for 3.5 character times, devices see one long, broken frame. Increase the delay between requests.
 - **Two masters**, or a device answering on the same address as another.
 
+<mb-crc></mb-crc>
+
 ## Steps
 
 1. Lower the baud rate and see whether the errors stop.

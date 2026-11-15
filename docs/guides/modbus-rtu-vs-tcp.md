@@ -15,6 +15,8 @@ Three names that are often mixed up.
 
 **Modbus ASCII** sends the same requests as readable hex text; it is rare today.
 
+<mb-adu></mb-adu>
+
 ## Same registers
 
 The register map is the same whatever the transport: a device that offers both answers with the same addresses, types and scales. What changes is how you reach it: serial settings and unit ID on RTU, IP address and port on TCP.

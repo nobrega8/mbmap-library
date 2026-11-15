@@ -12,6 +12,8 @@ The request succeeds but the value makes no sense. Before suspecting the device,
 - **Model differences.** A register listed in a family manual may exist only on some models: the others return 0.
 - **Scale too coarse.** A small current with a scale of 1 A reads 0.
 
+<mb-scaling></mb-scaling>
+
 ## How MBMap maps record it
 
 A map can list `sentinels`, the values that mean "not available" for each type, so a tool shows them as missing rather than as a reading. Register descriptions note which models or wiring a value needs.
