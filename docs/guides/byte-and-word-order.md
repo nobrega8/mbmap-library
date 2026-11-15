@@ -17,6 +17,8 @@ The four orders are usually named after the bytes of the value, `A` being the mo
 
 `ABCD` and `CDAB` cover almost every device. `CDAB` is common on Schneider, Carlo Gavazzi and many Chinese meters; `ABCD` on Siemens, Janitza and most SunSpec devices.
 
+<mb-byte-order></mb-byte-order>
+
 ## How to find the right one
 
 1. **Read the manual's data format section.** Look for "word order", "LSW first", "MSW first", "high word first" or "big endian".

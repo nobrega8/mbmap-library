@@ -14,6 +14,8 @@ Every Modbus request carries a one-byte unit ID, also called slave ID, slave add
 - Behind a TCP-to-RTU gateway the unit ID selects the serial device: it must match that device's RS-485 address. The gateway itself often answers on 0, 255 or a configured ID.
 - Some devices with several internal parts (an inverter with a meter and a battery) answer different unit IDs for each part.
 
+<mb-gateway></mb-gateway>
+
 ## Finding an unknown address
 
 - Read it from the device's display or label.

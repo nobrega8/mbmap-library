@@ -2,6 +2,8 @@
 
 A timeout means nothing came back that your tool could accept. Work through the list from the bottom of the stack up.
 
+<mb-flow name="timeout"></mb-flow>
+
 ## Modbus RTU (RS-485)
 
 1. **Wiring.** A and B (or D+ and D−, or + and −) are not named the same way by every manufacturer. If nothing answers, swap the two wires: it does no harm.
