@@ -1,0 +1,1124 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Belimo",
+  "model": "Energy Valve",
+  "models": [
+    "EV..R2+(K)BAC",
+    "EV..R2+MID",
+    "EV..R3+BAC"
+  ],
+  "vendor_website": "belimo.com",
+  "description": "Energy Valve DN 15-50 (version 4): setpoint, flow, power, temperatures, glycol, energy and volume totals, delta-T manager, health state and configuration",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "Belimo, Energy Valve Modbus Register, V4.1 (15.01.2022)",
+  "sources": [
+    {
+      "title": "Energy Valve Modbus Register",
+      "version": "V4.1 (15.01.2022)",
+      "url": "https://www.belimo.com/mam/general-documents/system_integration/Modbus/belimo_Modbus-Register_Energy-Valve_V4_1_en-gb.pdf",
+      "note": "Modbus register description",
+      "accessed": "2026-11-15",
+      "sha256": "2a849c489a51ef1d76cc5b55779965bbf86ebeff16e89dc76da031be1c9fea49"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS-485: 1-8-N-2 by default (also N-1, E-1, O-1), 9600 to 115200 bd (factory 38400), address 1 to 247 (factory 1). Modbus TCP over Ethernet, port 502 by default.",
+    "Registers in \"selected unit\" follow the unit selection registers (147 to 150).",
+    "Totals are 32-bit unsigned values; scaling is as given in the manual (0.01 m³ for the m³ total, 1 for the others).",
+    "All registers are holding registers (functions 3 and 6; 4, 2 and 16 also accepted). The manual numbers registers from 1 (No.) and from 0 (Address); the Address column is used here (address base 0).",
+    "32-bit values take two consecutive registers, least significant word first.",
+    "A register not supported by the device or its settings reads 65535.",
+    "Written from the manufacturer's register description; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "unit_id": 1,
+  "baudrate": 38400,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Factory 0"
+    },
+    {
+      "name": "Override control",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Open valve",
+        "2": "Close valve",
+        "3": "Minimum flow",
+        "5": "Maximum flow",
+        "6": "Nominal flow",
+        "10": "Motor stop"
+      }
+    },
+    {
+      "name": "Command",
+      "group": "Control",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "2": "Sync"
+      }
+    },
+    {
+      "name": "Actuator type",
+      "group": "Identification",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Device not connected",
+        "1": "Air / water",
+        "2": "VAV / EPIV",
+        "3": "Fire",
+        "4": "Energy Valve / flow meter",
+        "5": "6-way EPIV"
+      }
+    },
+    {
+      "name": "Relative position",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Absolute position",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°"
+    },
+    {
+      "name": "Relative volumetric flow",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Relative to Vnom"
+    },
+    {
+      "name": "Absolute volumetric flow",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "l/s"
+    },
+    {
+      "name": "Absolute volumetric flow (gpm)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "gpm"
+    },
+    {
+      "name": "Absolute volumetric flow (selected unit)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 9,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001,
+      "description": "Unit set in Unit selection flow (147)"
+    },
+    {
+      "name": "Setpoint analog",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Sensor 1 value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "R",
+      "description": "mV (active), ohm (passive; NTC10K scaled by 10) or 0/1 (switch)"
+    },
+    {
+      "name": "Sensor 1 as analog value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°C"
+    },
+    {
+      "name": "Sensor 1 as analog value (°F)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 14,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°F"
+    },
+    {
+      "name": "Setpoint absolute flow",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "l/s"
+    },
+    {
+      "name": "Setpoint absolute flow (gpm)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "gpm"
+    },
+    {
+      "name": "Setpoint absolute flow (selected unit)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 17,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001
+    },
+    {
+      "name": "Temperature 1 (external)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 19,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°C"
+    },
+    {
+      "name": "Temperature 1 (external) (°F)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 20,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°F"
+    },
+    {
+      "name": "Temperature 2 (integrated)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 21,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°C"
+    },
+    {
+      "name": "Temperature 2 (integrated) (°F)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°F"
+    },
+    {
+      "name": "Delta temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K"
+    },
+    {
+      "name": "Delta temperature (°F)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°F"
+    },
+    {
+      "name": "Glycol concentration",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Relative power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Absolute power cooling",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 27,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "kW"
+    },
+    {
+      "name": "Absolute power cooling (kBTU/h)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 29,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "kBTU/h"
+    },
+    {
+      "name": "Absolute power cooling (selected unit)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 31,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.1,
+      "description": "Unit set in Unit selection power (148)"
+    },
+    {
+      "name": "Absolute power heating",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 33,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "kW"
+    },
+    {
+      "name": "Absolute power heating (kBTU/h)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 35,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "kBTU/h"
+    },
+    {
+      "name": "Absolute power heating (selected unit)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 37,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.1
+    },
+    {
+      "name": "Setpoint delta T",
+      "group": "Control",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "1 to 55 K"
+    },
+    {
+      "name": "Setpoint delta T (°F)",
+      "group": "Control",
+      "area": "holding",
+      "address": 40,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "°F"
+    },
+    {
+      "name": "Setpoint absolute flow, delta T",
+      "group": "Control",
+      "area": "holding",
+      "address": 41,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "l/s"
+    },
+    {
+      "name": "Setpoint absolute flow, delta T (gpm)",
+      "group": "Control",
+      "area": "holding",
+      "address": 43,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "little",
+      "scale": 0.01,
+      "unit": "gpm"
+    },
+    {
+      "name": "Setpoint absolute flow, delta T (selected unit)",
+      "group": "Control",
+      "area": "holding",
+      "address": 45,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "little",
+      "scale": 0.001
+    },
+    {
+      "name": "Total volume (m³)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 59,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.01,
+      "unit": "m³"
+    },
+    {
+      "name": "Total volume (gal)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 61,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "unit": "gal"
+    },
+    {
+      "name": "Total volume (selected unit)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 63,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Unit set in Unit selection volume (149)"
+    },
+    {
+      "name": "Cooling energy (kWh)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 65,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "unit": "kWh"
+    },
+    {
+      "name": "Cooling energy (kBTU)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 67,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "unit": "kBTU"
+    },
+    {
+      "name": "Cooling energy (selected unit)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 69,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Unit set in Unit selection energy (150)"
+    },
+    {
+      "name": "Heating energy (kWh)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 71,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "unit": "kWh"
+    },
+    {
+      "name": "Heating energy (kBTU)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 73,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "unit": "kBTU"
+    },
+    {
+      "name": "Heating energy (selected unit)",
+      "group": "Energy",
+      "area": "holding",
+      "address": 75,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little"
+    },
+    {
+      "name": "Bus termination",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      }
+    },
+    {
+      "name": "Series number, 1st part",
+      "group": "Identification",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "R",
+      "description": "Example 00839-31324-064-008: 1st part 00839"
+    },
+    {
+      "name": "Series number, 2nd part",
+      "group": "Identification",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Series number, 4th part",
+      "group": "Identification",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "R",
+      "description": "400 = version 4.00",
+      "role": "firmware"
+    },
+    {
+      "name": "Malfunction and service information",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit field: see the individual bits"
+    },
+    {
+      "name": "Health: no communication to actuator",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Health: gear disengaged",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Health: actuator cannot move",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Health: reverse flow",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Health: flow setpoint not reached",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Health: flow with closed valve",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Health: actual flow exceeds nominal flow",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Health: flow measurement error",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Health: external temperature error",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Health: integrated temperature error",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Health: communication to sensor interrupted",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Health: freeze warning",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "Health: glycol detected",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 12
+    },
+    {
+      "name": "Health: power setpoint not reached",
+      "group": "Health state",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 13
+    },
+    {
+      "name": "Vmin",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "0 to Vmax, factory 0"
+    },
+    {
+      "name": "Vmax",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "25-100 %, factory 100; not below Vmin"
+    },
+    {
+      "name": "Bus fail setpoint",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Setpoint used when the bus watchdog expires; factory 0"
+    },
+    {
+      "name": "Communication watchdog",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 to 3600; 0 = off. With a non-zero bus fail setpoint the default is 120 s"
+    },
+    {
+      "name": "Nominal volumetric flow (Vnom)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "l/s"
+    },
+    {
+      "name": "Nominal volumetric flow (Vnom) (gpm)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "gpm"
+    },
+    {
+      "name": "Nominal volumetric flow (Vnom) (selected unit)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 112,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001
+    },
+    {
+      "name": "Control mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 116,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Position control",
+        "1": "Flow control",
+        "2": "Power control"
+      },
+      "description": "Factory flow control"
+    },
+    {
+      "name": "Setpoint source",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Analog",
+        "1": "Bus"
+      },
+      "description": "Factory bus"
+    },
+    {
+      "name": "Sensor 1 type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 120,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Active",
+        "3": "Passive",
+        "4": "Switch"
+      },
+      "description": "Selectable only when Setpoint source is Bus"
+    },
+    {
+      "name": "Sensor 1 passive sensor type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 121,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Resistance measurement",
+        "1": "PT1000",
+        "2": "Ni1000",
+        "7": "NTC10k2",
+        "8": "NTC10k3"
+      }
+    },
+    {
+      "name": "Sensor 1 as analog value (passive)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 122,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Manual: -10 to 120 °C; the manual lists this at address 124, the register overview at 122"
+    },
+    {
+      "name": "Sensor 1 as analog value (passive) (°F)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 123,
+      "type": "int16",
+      "access": "R",
+      "unit": "°F",
+      "description": "Manual: 14 to 248 °F; the manual lists this at address 125, the register overview at 123"
+    },
+    {
+      "name": "Vmin (l/s)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 129,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "l/s"
+    },
+    {
+      "name": "Vmin (gpm)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 130,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "gpm"
+    },
+    {
+      "name": "Vmin (selected unit)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 131,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "little",
+      "scale": 0.001
+    },
+    {
+      "name": "Vmax (l/s)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "l/s",
+      "description": "25 % of Vnom to Vnom"
+    },
+    {
+      "name": "Vmax (gpm)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "gpm"
+    },
+    {
+      "name": "Vmax (selected unit)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 135,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "little",
+      "scale": 0.001
+    },
+    {
+      "name": "Unit selection flow",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 147,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "m³/s",
+        "1": "m³/h",
+        "2": "l/s",
+        "3": "l/min",
+        "4": "l/h",
+        "5": "gpm",
+        "6": "cfm"
+      },
+      "description": "Factory 4 (l/h)"
+    },
+    {
+      "name": "Unit selection power",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 148,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "W",
+        "1": "kW",
+        "2": "MW",
+        "3": "BTU/h",
+        "4": "kBTU/h",
+        "5": "ton"
+      },
+      "description": "Factory 1 (kW)"
+    },
+    {
+      "name": "Unit selection volume",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 149,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "m³",
+        "1": "Litre",
+        "2": "Gallon",
+        "3": "cf"
+      },
+      "description": "Factory 0"
+    },
+    {
+      "name": "Unit selection energy",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "J",
+        "1": "kJ",
+        "2": "MJ",
+        "3": "GJ",
+        "4": "Wh",
+        "5": "kWh",
+        "6": "MWh",
+        "7": "BTU",
+        "8": "kBTU",
+        "9": "ton"
+      },
+      "description": "Factory 5 (kWh)"
+    },
+    {
+      "name": "Nominal power",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 159,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "kW"
+    },
+    {
+      "name": "Nominal power (kBTU/h)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 161,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "kBTU/h"
+    },
+    {
+      "name": "Nominal power (selected unit)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 163,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.1
+    },
+    {
+      "name": "Max power",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "0.5 to 100 %"
+    },
+    {
+      "name": "Absolute Pmax",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 166,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "kW",
+      "description": "0.5 % of Pnom to Pnom"
+    },
+    {
+      "name": "Absolute Pmax (kBTU/h)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 168,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "little",
+      "scale": 0.001,
+      "unit": "kBTU/h"
+    },
+    {
+      "name": "Absolute Pmax (selected unit)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 170,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "little",
+      "scale": 0.1
+    },
+    {
+      "name": "Delta T limitation",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 179,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disabled",
+        "1": "dT-Manager",
+        "2": "dT-Manager scaling"
+      }
+    },
+    {
+      "name": "Delta T manager status",
+      "group": "Status",
+      "area": "holding",
+      "address": 180,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not selected",
+        "1": "Standby",
+        "2": "Active",
+        "3": "Scaling standby",
+        "4": "Scaling active"
+      }
+    },
+    {
+      "name": "Sensor serial number, first part",
+      "group": "Identification",
+      "area": "holding",
+      "address": 200,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Production order number"
+    },
+    {
+      "name": "Sensor serial number, second part",
+      "group": "Identification",
+      "area": "holding",
+      "address": 202,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Production sequence number"
+    },
+    {
+      "name": "Select meter register",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Certified meter register",
+        "1": "Lifetime meter register"
+      },
+      "description": "0 only on MID-certified models (EV..R2+MID); the total volume and energy registers (59 to 76) follow this choice. The lifetime register is glycol-compensated"
+    }
+  ],
+  "port": 502
+}
