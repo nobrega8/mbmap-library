@@ -1,0 +1,236 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "ARIAN",
+  "model": "FL40",
+  "models": [
+    "FL40"
+  ],
+  "vendor_website": "arian.cl",
+  "description": "Flow computer for differential-pressure flow meters: mass and volumetric flow, totals, density, temperature and pressures over RS-485",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "ARIAN FL40 user manual, rev. 12/2015",
+  "sources": [
+    {
+      "title": "User Manual FL40",
+      "version": "rev. 12/2015",
+      "url": "https://www.arian.cl/downloads/man-fl40-e.pdf",
+      "note": "Modbus RTU available variables",
+      "accessed": "2026-11-15",
+      "sha256": "e5a14d2a86d5834163393c724d1d23308c73fdaba1da1369dce4850252cd4486"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS-485 (optional hardware), functions 03, 06 and 16; speed 300 to 19200 bps, slave number 1 to 247, 8 data bits, no parity and one stop bit. Enabled and set in the instrument's configuration menu; 9600 and address 1 are assumed here.",
+    "The manual lists the variables as H4xxxxx with a hexadecimal offset (for example H400160 is 0x0160) and does not say how many registers each takes: the offsets are used as printed, and values marked Real4 or Integer4 are taken as two registers. If values look wrong, check the offsets against the ArianOPC server file fl40b.ars from arian.cl.",
+    "Word and byte order are not stated; big-endian is assumed.",
+    "Five more read/write Integer2 variables (H400020 to H400060) are listed without a description and are left out.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Mass flow rate (user units)",
+      "group": "Flow",
+      "area": "holding",
+      "address": 0,
+      "type": "float32",
+      "access": "R",
+      "description": "In the engineering units set on the instrument"
+    },
+    {
+      "name": "Main set point",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 16,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Analog output",
+      "group": "Process",
+      "area": "holding",
+      "address": 208,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "0 to 100 %"
+    },
+    {
+      "name": "Temperature input",
+      "group": "Process",
+      "area": "holding",
+      "address": 256,
+      "type": "int32",
+      "access": "R",
+      "unit": "°C"
+    },
+    {
+      "name": "P1 analog input",
+      "group": "Process",
+      "area": "holding",
+      "address": 272,
+      "type": "int32",
+      "access": "R",
+      "unit": "%",
+      "description": "0-100 % of the sensor range"
+    },
+    {
+      "name": "dP analog input",
+      "group": "Process",
+      "area": "holding",
+      "address": 280,
+      "type": "int32",
+      "access": "R",
+      "unit": "%",
+      "description": "0-100 % of the sensor range"
+    },
+    {
+      "name": "Maximum registered flow rate",
+      "group": "Flow",
+      "area": "holding",
+      "address": 288,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum registered flow rate",
+      "group": "Flow",
+      "area": "holding",
+      "address": 296,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mass totaliser",
+      "group": "Totals",
+      "area": "holding",
+      "address": 336,
+      "type": "int32",
+      "access": "R"
+    },
+    {
+      "name": "Mass totaliser (pre-scale)",
+      "group": "Totals",
+      "area": "holding",
+      "address": 344,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Mass flow rate",
+      "group": "Flow",
+      "area": "holding",
+      "address": 352,
+      "type": "float32",
+      "access": "R",
+      "unit": "kg/s"
+    },
+    {
+      "name": "Input temperature",
+      "group": "Process",
+      "area": "holding",
+      "address": 360,
+      "type": "float32",
+      "access": "R",
+      "unit": "K"
+    },
+    {
+      "name": "Pressure P1 (absolute)",
+      "group": "Process",
+      "area": "holding",
+      "address": 368,
+      "type": "float32",
+      "access": "R",
+      "unit": "Pa"
+    },
+    {
+      "name": "Differential pressure dP",
+      "group": "Process",
+      "area": "holding",
+      "address": 376,
+      "type": "float32",
+      "access": "R",
+      "unit": "Pa"
+    },
+    {
+      "name": "Volumetric flow rate",
+      "group": "Flow",
+      "area": "holding",
+      "address": 400,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³/s"
+    },
+    {
+      "name": "Discharge coefficient x expansion factor",
+      "group": "Process",
+      "area": "holding",
+      "address": 408,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Fluid density",
+      "group": "Process",
+      "area": "holding",
+      "address": 416,
+      "type": "float32",
+      "access": "R",
+      "unit": "kg/m³",
+      "description": "Instantaneous"
+    },
+    {
+      "name": "Volumetric flow rate (user units)",
+      "group": "Flow",
+      "area": "holding",
+      "address": 432,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Volume totaliser",
+      "group": "Totals",
+      "area": "holding",
+      "address": 440,
+      "type": "int32",
+      "access": "R"
+    },
+    {
+      "name": "Volume totaliser (pre-scale)",
+      "group": "Totals",
+      "area": "holding",
+      "address": 448,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Custom table output",
+      "group": "Process",
+      "area": "holding",
+      "address": 456,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Identification",
+      "group": "Identification",
+      "area": "holding",
+      "address": 4096,
+      "type": "string",
+      "access": "R",
+      "description": "8 characters",
+      "length": 4
+    }
+  ]
+}
