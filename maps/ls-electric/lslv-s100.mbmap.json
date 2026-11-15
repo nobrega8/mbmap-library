@@ -1,0 +1,2390 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "LS Electric",
+  "model": "LSLV-S100",
+  "models": [
+    "LSLV-S100"
+  ],
+  "vendor_website": "ls-electric.com",
+  "description": "S100 series AC drive on the built-in RS-485 (Modbus RTU): the compatible common area, the S100 expansion monitoring, control and memory areas, and the operation group",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "LS Electric LSLV-S100 user manual, English V4.3",
+  "sources": [
+    {
+      "title": "S100 Manual English V4.3",
+      "version": "V4.3",
+      "url": "https://sol.ls-electric.com/us/en/product/document/8652",
+      "note": "Chapter 7, communication, and section 8.1",
+      "accessed": "2026-11-15",
+      "sha256": "e8eb072bcce649c50c55feb2978f231367904d639c10c1f8996948c8b5da6990"
+    }
+  ],
+  "notes": [
+    "Built-in RS-485, Modbus RTU (set CM.02 = 0); station ID 1 to 250 (CM.01, factory 1), 1200 to 115200 bps (CM.03, factory 9600), frame D8/PN/S1 by default (CM.04). Functions 03, 04, 06 and 16.",
+    "Addresses are the communication addresses of the manual. Its Modbus-RTU example sends the starting address as the communication address minus one (writing 0x1103 and 0x1104 uses starting address 0x1102), yet the common area starts at 0x0000, which cannot be shifted. If every value looks one register off on the device, subtract one from the addresses.",
+    "Values set by communication take effect but are not saved: use the Save parameters register (0x03E0) before powering down. The frequency set in the common or control area (0x0005, 0x0380) is never saved.",
+    "Only the communication areas (common, expansion, memory control) and the operation group are included. The parameter groups of the drive (dr, bA, Ad, Cn, In, OU, CM, AP, Pr and others, from 0x1100 on) are listed in chapter 8 of the manual and are not in this map.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Inverter model",
+      "group": "Common area",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "description": "S100: 0006h",
+      "role": "model"
+    },
+    {
+      "name": "Inverter capacity",
+      "group": "Common area",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "0.75 kW",
+        "1": "1.5 kW",
+        "2": "2.2 kW",
+        "3": "3.7 kW",
+        "4": "5.5 kW",
+        "5": "7.5 kW",
+        "6": "11 kW",
+        "7": "15 kW",
+        "8": "18.5 kW",
+        "9": "22 kW",
+        "10": "30 kW",
+        "11": "37 kW",
+        "12": "45 kW",
+        "13": "55 kW",
+        "14": "75 kW",
+        "256": "0.4 kW",
+        "257": "1.1 kW",
+        "258": "3.0 kW",
+        "259": "4.0 kW"
+      }
+    },
+    {
+      "name": "Inverter input voltage",
+      "group": "Common area",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "220 V product",
+        "1": "440 V product"
+      }
+    },
+    {
+      "name": "Version",
+      "group": "Common area",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "description": "0100h = version 1.00",
+      "role": "firmware"
+    },
+    {
+      "name": "Command frequency",
+      "group": "Common area",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Operation command (option)",
+      "group": "Common area",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit field: B0 stop, B1 forward, B2 reverse, B3 trip reset (write) or trip status (read), B4 emergency stop; B6-B9 and B10-B15 report the command and frequency sources"
+    },
+    {
+      "name": "Operation command: stop",
+      "group": "Common area",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "RW",
+      "bit": 0
+    },
+    {
+      "name": "Operation command: forward",
+      "group": "Common area",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "RW",
+      "bit": 1
+    },
+    {
+      "name": "Operation command: reverse",
+      "group": "Common area",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "RW",
+      "bit": 2
+    },
+    {
+      "name": "Operation command: trip reset (write) / trip status (read)",
+      "group": "Common area",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "RW",
+      "bit": 3
+    },
+    {
+      "name": "Operation command: emergency stop",
+      "group": "Common area",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "RW",
+      "bit": 4
+    },
+    {
+      "name": "Acceleration time",
+      "group": "Common area",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s"
+    },
+    {
+      "name": "Deceleration time",
+      "group": "Common area",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s"
+    },
+    {
+      "name": "Output current",
+      "group": "Common area",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Output frequency",
+      "group": "Common area",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Output voltage",
+      "group": "Common area",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "DC link voltage",
+      "group": "Common area",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Output power",
+      "group": "Common area",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "Operation status",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit field: see the individual bits"
+    },
+    {
+      "name": "Operation status: stopped",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Operation status: operating forward",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Operation status: operating reverse",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Operation status: fault trip",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Operation status: accelerating",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Operation status: decelerating",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Operation status: speed reached",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Operation status: DC braking",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Operation status: drive stopping",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Operation status: jog mode",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Operation status: brake release signal",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Operation status: forward operation command",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "Operation status: reverse operation command",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 12
+    },
+    {
+      "name": "Operation status: operation command from communication",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 13
+    },
+    {
+      "name": "Operation status: frequency command from communication",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 14
+    },
+    {
+      "name": "Operation status: keypad local (1) / remote (0)",
+      "group": "Common area",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Fault trip information",
+      "group": "Common area",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "description": "B0 latch type trip, B3 level type trip, B10 hardware diagnosis"
+    },
+    {
+      "name": "Fault trip: latch type trip",
+      "group": "Common area",
+      "area": "holding",
+      "address": 15,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Fault trip: level type trip",
+      "group": "Common area",
+      "area": "holding",
+      "address": 15,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Fault trip: hardware diagnosis",
+      "group": "Common area",
+      "area": "holding",
+      "address": 15,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Input terminal information",
+      "group": "Common area",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "description": "B0 to B6 = P1 to P7"
+    },
+    {
+      "name": "Input terminal P1",
+      "group": "Common area",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Input terminal P2",
+      "group": "Common area",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Input terminal P3",
+      "group": "Common area",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Input terminal P4",
+      "group": "Common area",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Input terminal P5",
+      "group": "Common area",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Input terminal P6",
+      "group": "Common area",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Input terminal P7",
+      "group": "Common area",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Output terminal information",
+      "group": "Common area",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "description": "B0 relay 1, B1 Q1"
+    },
+    {
+      "name": "Output terminal: relay 1",
+      "group": "Common area",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Output terminal: Q1",
+      "group": "Common area",
+      "area": "holding",
+      "address": 17,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "V1 input",
+      "group": "Common area",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "V2 input",
+      "group": "Common area",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "I2 input",
+      "group": "Common area",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Motor rotation speed",
+      "group": "Common area",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "Hz / rpm selection",
+      "group": "Common area",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Hz",
+        "1": "rpm"
+      }
+    },
+    {
+      "name": "Number of poles of the selected motor",
+      "group": "Common area",
+      "area": "holding",
+      "address": 27,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Inverter model (expansion)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 768,
+      "type": "uint16",
+      "access": "R",
+      "description": "S100: 0006h"
+    },
+    {
+      "name": "Inverter capacity (expansion)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 769,
+      "type": "uint16",
+      "access": "R",
+      "description": "Code: 1900h 0.4 kW, 3200h 0.75 kW, 4011h 1.1 kW, 4015h 1.5 kW, 4022h 2.2 kW, 4030h 3.0 kW, 4037h 3.7 kW, 4040h 4.0 kW, 4055h 5.5 kW, 4075h 7.5 kW, 40B0h 11 kW, 40F0h 15 kW, 4125h 18.5 kW, 4160h 22 kW, 41E0h 30 kW, 4250h 37 kW, 42D0h 45 kW, 4370h 55 kW, 44B0h 75 kW"
+    },
+    {
+      "name": "Input voltage, phases and cooling",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 770,
+      "type": "uint16",
+      "access": "R",
+      "description": "Code: 0120h/0121h 100 V single phase self/forced cooling, 0220h/0221h 200 V single phase, 0230h/0231h 200 V 3-phase, 0420h/0421h 400 V single phase, 0430h/0431h 400 V 3-phase"
+    },
+    {
+      "name": "Inverter software version",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 771,
+      "type": "uint16",
+      "access": "R",
+      "description": "0100h = version 1.00"
+    },
+    {
+      "name": "Inverter operation state",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 773,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits B12-B15: 0 ready, 4 warning, 8 fault; B4-B7: 1 speed searching, 2 accelerating, 3 constant speed, 4 decelerating, 5 decelerating to stop, 6 hardware OCS, 7 software OCS, 8 dwell; B0-B3: 0 stopped, 1 forward, 2 reverse, 3 DC operating"
+    },
+    {
+      "name": "Drive state: direction",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 773,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Stopped",
+        "1": "Operating forward",
+        "2": "Operating reverse",
+        "3": "DC operating (0 speed control)"
+      },
+      "bit": 0,
+      "bits": 4
+    },
+    {
+      "name": "Drive state: operating",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 773,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Speed searching",
+        "2": "Accelerating",
+        "3": "Operating at constant rate",
+        "4": "Decelerating",
+        "5": "Decelerating to stop",
+        "6": "Hardware OCS",
+        "7": "Software OCS",
+        "8": "Dwell operating"
+      },
+      "bit": 4,
+      "bits": 4
+    },
+    {
+      "name": "Drive state: general",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 773,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Ready",
+        "4": "Warning occurred",
+        "8": "Fault occurred"
+      },
+      "bit": 12,
+      "bits": 4
+    },
+    {
+      "name": "Command sources",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 774,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte (B8-B15): operation command source; low byte (B0-B7): frequency command source"
+    },
+    {
+      "name": "Frequency command source",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 774,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Keypad speed",
+        "1": "Keypad torque",
+        "5": "V1",
+        "7": "V2",
+        "8": "I2",
+        "9": "Pulse",
+        "10": "Built-in RS-485",
+        "11": "Communication option",
+        "12": "User sequence",
+        "13": "Jog",
+        "14": "PID"
+      },
+      "description": "2-4 up/down operation speed, 25-39 multi-step speed frequency",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "Operation command source",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 774,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Keypad",
+        "1": "Communication option",
+        "2": "User sequence",
+        "3": "Built-in RS-485",
+        "4": "Terminal block"
+      },
+      "bit": 8,
+      "bits": 8
+    },
+    {
+      "name": "LCD keypad software version",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "LCD keypad title version",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 776,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Output current (expansion)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 784,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Output frequency (expansion)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 785,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Output speed",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 786,
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "Motor feedback speed",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 787,
+      "type": "int16",
+      "access": "R",
+      "unit": "rpm",
+      "description": "-32768 to 32767 rpm, directional"
+    },
+    {
+      "name": "Output voltage (expansion)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 788,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "DC link voltage (expansion)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 789,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Output power (expansion)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 790,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "Output torque",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 791,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "PID reference",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 792,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "PID feedback",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 793,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Number of poles, motor 1",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 794,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Number of poles, motor 2",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 795,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Number of poles, selected motor",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 796,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Hz / rpm selection (expansion)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 797,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Hz",
+        "1": "rpm"
+      }
+    },
+    {
+      "name": "Digital input information",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "uint16",
+      "access": "R",
+      "description": "B0 to B9 = P1 to P10"
+    },
+    {
+      "name": "Digital input P1",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Digital input P2",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Digital input P3",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Digital input P4",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Digital input P5",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Digital input P6",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Digital input P7",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Digital input P8",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Digital input P9",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Digital input P10",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 800,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Digital output information",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 801,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Digital output: Relay 1",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 801,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Digital output: Q1",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 801,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Digital output: Relay 2",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 801,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Digital output: Relay 3",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 801,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Digital output: Relay 4",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 801,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Virtual digital input information",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Virtual digital input 1",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Virtual digital input 2",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Virtual digital input 3",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Virtual digital input 4",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Virtual digital input 5",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Virtual digital input 6",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Virtual digital input 7",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Virtual digital input 8",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 802,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Selected motor",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 803,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "1st motor",
+        "1": "2nd motor"
+      }
+    },
+    {
+      "name": "Analog input V1",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 804,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Analog input V2",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 806,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Analog input I2",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 807,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Analog output 1",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 808,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Analog output 2",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 809,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Analog output 3",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 810,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Extension I/O"
+    },
+    {
+      "name": "Inverter module temperature",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 813,
+      "type": "uint16",
+      "access": "R",
+      "unit": "°C"
+    },
+    {
+      "name": "Inverter power consumption (kWh)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 814,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Inverter power consumption (MWh)",
+      "group": "Expansion area, monitoring",
+      "area": "holding",
+      "address": 815,
+      "type": "uint16",
+      "access": "R",
+      "unit": "MWh"
+    },
+    {
+      "name": "Latch type trip information 1",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Trip 1: overload",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Trip 1: underload",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Trip 1: inverter overload",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Trip 1: E-thermal",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Trip 1: ground fault",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Trip 1: output open-phase",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Trip 1: input open-phase",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Trip 1: NTC",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Trip 1: overcurrent",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Trip 1: overvoltage",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "Trip 1: external trip",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 12
+    },
+    {
+      "name": "Trip 1: arm short",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 13
+    },
+    {
+      "name": "Trip 1: over heat",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 14
+    },
+    {
+      "name": "Trip 1: fuse open",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 816,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Latch type trip information 2",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Trip 2: thermal",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Trip 2: fan",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Trip 2: error while writing parameter",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Trip 2: pre-PID fail",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Trip 2: bad contact at basic I/O board",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Trip 2: external brake",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Trip 2: no motor",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Trip 2: bad option card",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Trip 2: safety A",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 12
+    },
+    {
+      "name": "Trip 2: safety B",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 817,
+      "type": "bool",
+      "access": "R",
+      "bit": 13
+    },
+    {
+      "name": "Level type trip information",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 818,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Level trip: BX",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 818,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Level trip: low voltage",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 818,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Level trip: lost command",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 818,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Level trip: keypad lost command",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 818,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Level trip: lost option command",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 818,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Level trip: BLE app lost",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 818,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Hardware diagnosis trip information",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 819,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Hardware trip: ADC error",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 819,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Hardware trip: EEPROM error",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 819,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Hardware trip: watchdog-1 error",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 819,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Hardware trip: watchdog-2 error",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 819,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Hardware trip: queue full",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 819,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Hardware trip: communication update error",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 819,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Warning information",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Warning: overload",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Warning: underload",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Warning: inverter overload",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Warning: lost command",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Warning: fan running",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Warning: DB",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Warning: wrong installation of encoder",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Warning: encoder disconnection",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Warning: keypad lost",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Warning: auto tuning failed",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Warning: fan exchange",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Warning: fire mode",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "Warning: communication idle status",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 820,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Power-on time, days",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 832,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Power-on time, minutes",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 833,
+      "type": "uint16",
+      "access": "R",
+      "description": "Minutes exclude the whole days"
+    },
+    {
+      "name": "Run time, days",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 834,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Run time, minutes",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 835,
+      "type": "uint16",
+      "access": "R",
+      "description": "Minutes exclude the whole days"
+    },
+    {
+      "name": "Heat sink fan time, days",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 836,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Heat sink fan time, minutes",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 837,
+      "type": "uint16",
+      "access": "R",
+      "description": "Minutes exclude the whole days"
+    },
+    {
+      "name": "Option 1",
+      "group": "Expansion area, trips and warnings",
+      "area": "holding",
+      "address": 842,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "None",
+        "9": "CANopen"
+      }
+    },
+    {
+      "name": "Frequency command",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 896,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Not saved by the parameter save command; see the notes"
+    },
+    {
+      "name": "Speed command",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 897,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "rpm"
+    },
+    {
+      "name": "Operation command",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 898,
+      "type": "uint16",
+      "access": "RW",
+      "description": "B0 run (1) / stop (0), B1 forward (1) / reverse (0), B2 trip reset (0 to 1), B3 free-run stop (0 to 1). 0003h = forward run, 0001h = reverse run"
+    },
+    {
+      "name": "Operation command: run command (0 stop, 1 run)",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 898,
+      "type": "bool",
+      "access": "RW",
+      "bit": 0
+    },
+    {
+      "name": "Operation command: forward command (1 forward, 0 reverse)",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 898,
+      "type": "bool",
+      "access": "RW",
+      "bit": 1
+    },
+    {
+      "name": "Operation command: trip reset (0 to 1)",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 898,
+      "type": "bool",
+      "access": "RW",
+      "bit": 2
+    },
+    {
+      "name": "Operation command: free-run stop (0 to 1)",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 898,
+      "type": "bool",
+      "access": "RW",
+      "bit": 3
+    },
+    {
+      "name": "Acceleration time (control)",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 899,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s"
+    },
+    {
+      "name": "Deceleration time (control)",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 900,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s"
+    },
+    {
+      "name": "Virtual digital input control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Virtual digital input 1 control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "bool",
+      "access": "RW",
+      "description": "CM.70",
+      "bit": 0
+    },
+    {
+      "name": "Virtual digital input 2 control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "bool",
+      "access": "RW",
+      "description": "CM.71",
+      "bit": 1
+    },
+    {
+      "name": "Virtual digital input 3 control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "bool",
+      "access": "RW",
+      "description": "CM.72",
+      "bit": 2
+    },
+    {
+      "name": "Virtual digital input 4 control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "bool",
+      "access": "RW",
+      "description": "CM.73",
+      "bit": 3
+    },
+    {
+      "name": "Virtual digital input 5 control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "bool",
+      "access": "RW",
+      "description": "CM.74",
+      "bit": 4
+    },
+    {
+      "name": "Virtual digital input 6 control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "bool",
+      "access": "RW",
+      "description": "CM.75",
+      "bit": 5
+    },
+    {
+      "name": "Virtual digital input 7 control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "bool",
+      "access": "RW",
+      "description": "CM.76",
+      "bit": 6
+    },
+    {
+      "name": "Virtual digital input 8 control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 901,
+      "type": "bool",
+      "access": "RW",
+      "description": "CM.77",
+      "bit": 7
+    },
+    {
+      "name": "Digital output control",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 902,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Digital output control: Relay 1",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 902,
+      "type": "bool",
+      "access": "RW",
+      "bit": 0
+    },
+    {
+      "name": "Digital output control: Q1",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 902,
+      "type": "bool",
+      "access": "RW",
+      "bit": 1
+    },
+    {
+      "name": "Digital output control: Relay 2",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 902,
+      "type": "bool",
+      "access": "RW",
+      "bit": 2
+    },
+    {
+      "name": "Digital output control: Relay 3",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 902,
+      "type": "bool",
+      "access": "RW",
+      "bit": 3
+    },
+    {
+      "name": "Digital output control: Relay 4",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 902,
+      "type": "bool",
+      "access": "RW",
+      "bit": 4
+    },
+    {
+      "name": "PID reference command",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 904,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "PID feedback value",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 905,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Motor rated current",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 906,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Motor rated voltage",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 907,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Torque reference",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 912,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Forward motoring torque limit",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 913,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Forward regenerative torque limit",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 914,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Reverse motoring torque limit",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 915,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Reverse regenerative torque limit",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 916,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Torque bias",
+      "group": "Expansion area, control",
+      "area": "holding",
+      "address": 917,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Save parameters",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 992,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      },
+      "description": "Needed to keep values set by communication after a power cycle"
+    },
+    {
+      "name": "Monitor mode initialisation",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 993,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Parameter initialisation",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 994,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "All groups",
+        "2": "dr group",
+        "3": "bA group",
+        "4": "Ad group",
+        "5": "Cn group",
+        "6": "In group",
+        "7": "OU group",
+        "8": "CM group",
+        "9": "AP group",
+        "12": "Pr group",
+        "13": "M2 group"
+      },
+      "description": "Not allowed during a fault trip"
+    },
+    {
+      "name": "Display changed parameters",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 995,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Delete all fault history",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 997,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Delete user-registered codes",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 998,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Hide parameter mode",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 999,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 0-9999 (password); read 0 unlocked, 1 locked. Entering the same value twice in a row is ignored"
+    },
+    {
+      "name": "Lock parameter mode",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 1000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 0-9999 (password); read 0 unlocked, 1 locked"
+    },
+    {
+      "name": "Easy start on",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 1001,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Initialise power consumption",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 1002,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Initialise inverter accumulated operation time",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 1003,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Initialise cooling fan accumulated operation time",
+      "group": "Expansion area, memory control",
+      "area": "holding",
+      "address": 1004,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Target frequency",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7936,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "0 to maximum frequency"
+    },
+    {
+      "name": "Acceleration time (operation group)",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7937,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "Factory 20.0 s"
+    },
+    {
+      "name": "Deceleration time (operation group)",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7938,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "Factory 30.0 s"
+    },
+    {
+      "name": "Command source (operation group)",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7939,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Keypad",
+        "1": "Fx/Rx-1",
+        "2": "Fx/Rx-2",
+        "3": "Int 485",
+        "4": "Field bus"
+      },
+      "description": "Factory 1"
+    },
+    {
+      "name": "Frequency reference source (operation group)",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7940,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Keypad-1",
+        "1": "Keypad-2",
+        "2": "V1",
+        "4": "V2",
+        "5": "I2",
+        "6": "Int 485",
+        "8": "Field bus",
+        "12": "Pulse"
+      },
+      "description": "Factory 0"
+    },
+    {
+      "name": "Multi-step speed frequency 1",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7941,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Factory 10.00"
+    },
+    {
+      "name": "Multi-step speed frequency 2",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7942,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Factory 20.00"
+    },
+    {
+      "name": "Multi-step speed frequency 3",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7943,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Factory 30.00"
+    },
+    {
+      "name": "Output current (operation group)",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7944,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "Scaling assumed as for the other current registers (0.1 A)"
+    },
+    {
+      "name": "Motor revolutions per minute",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7945,
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "Inverter DC link voltage",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7946,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Inverter output voltage",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7947,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Out of order signal",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7948,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Rotation direction",
+      "group": "Operation group",
+      "area": "holding",
+      "address": 7949,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Forward run (F)",
+        "1": "Reverse run (r)"
+      },
+      "description": "The manual shows F and r on the keypad; the numeric codes are assumed"
+    }
+  ]
+}
