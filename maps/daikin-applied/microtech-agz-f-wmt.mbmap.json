@@ -1,0 +1,1001 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Daikin Applied",
+  "model": "MicroTech chiller unit controller",
+  "models": [
+    "AGZ-F",
+    "WMC-E",
+    "WMT"
+  ],
+  "vendor_website": "daikinapplied.com",
+  "description": "MicroTech chiller unit controller (AGZ-F, WMC-E and WMT Magnitude) over Modbus RTU: enable and mode, setpoints, capacity, fluid temperatures and flows, alarms, circuit and compressor pressures, temperatures, current, power, run hours and starts, pumps",
+  "revision": 1,
+  "source": "Daikin Applied, MicroTech Unit Controller Protocol Information, ED 19131-1 (April 2026), Modbus register mapping",
+  "sources": [
+    {
+      "title": "MicroTech Unit Controller Protocol Information",
+      "version": "ED 19131-1, April 2026",
+      "url": "https://tahoeweb.daikinapplied.com/api/general/DownloadDocumentByName/media/ED%2019131-1.pdf/",
+      "note": "Modbus register mapping, tables 11-13",
+      "accessed": "2026-11-15",
+      "sha256": "cee0226e2e4c0ffdb7aee06d7f3d327c7585212b0eb1f50c5f60fa8df9e17226"
+    }
+  ],
+  "notes": [
+    "Modbus RTU through the communication module: address 1, 19200 bit/s, no parity, 1 stop bit by default.",
+    "Register numbers are those of the document (40001 shown as 1), sent one lower (address_base 1). All data are holding registers.",
+    "Values marked x 10 are sent multiplied by 10; temperatures, pressures and flows are in English or metric units depending on register 316. Two-register values (run hours) are high word first.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "parity": "N",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Chiller Local/Network",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Remote",
+        "1": "Local"
+      }
+    },
+    {
+      "name": "Chiller Enable Output",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Run Enabled",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "Run Allowed"
+      }
+    },
+    {
+      "name": "Chiller Capacity Limited",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not Limited",
+        "1": "Limited"
+      }
+    },
+    {
+      "name": "Alarm Digital Output",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No Alarm",
+        "1": "Alarm"
+      }
+    },
+    {
+      "name": "Evaporator Flow Switch Status",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No Flow",
+        "1": "Flow"
+      }
+    },
+    {
+      "name": "Condenser Flow Switch Status",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "Chiller On/Off",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Chiller Enable Setpoint",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable",
+        "2": "Null"
+      }
+    },
+    {
+      "name": "Clear Alarm - Network",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Normal",
+        "1": "Clear Alarms",
+        "2": "Null"
+      }
+    },
+    {
+      "name": "Chiller Mode Output",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Ice",
+        "2": "Cool",
+        "3": "Heat",
+        "4": "Cool/Heat Recovery"
+      }
+    },
+    {
+      "name": "Active Setpoint",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Actual Capacity",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Active Capacity Limit Output",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Chiller Status",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Off",
+        "2": "Start",
+        "3": "Run",
+        "4": "Pre Shutdown",
+        "5": "Service"
+      }
+    },
+    {
+      "name": "Evaporator Entering Fluid Temperature",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 16,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Evaporator Leaving Fluid Temperature",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 17,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Evaporator Flow Rate",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "R",
+      "description": "gal/min or l/s, as set by register 316 (Units)."
+    },
+    {
+      "name": "Condenser Entering Fluid Temperature",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 19,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Condenser Leaving Fluid Temperature",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 20,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Condenser Flow Rate",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "description": "gal/min or l/s, as set by register 316 (Units)."
+    },
+    {
+      "name": "Heat Recovery Entering Fluid Temperatur",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Heat Recovery Leaving Fluid Temperature",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Outdoor Air Temperature",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 24,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Alarm Index (Warning)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Index (Problem)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Index (Fault)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Chiller Mode Setpoint - Network",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Ice",
+        "2": "Cool",
+        "3": "Heat",
+        "4": "Cool/Heat Recovery"
+      }
+    },
+    {
+      "name": "Cool Setpoint - Network",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 35,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Ice Setpoint - Network",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 36,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Heat Setpoint - Network",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 37,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Capacity Limit Setpoint - Network",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Condenser Refrigerant Pressure (Circuit 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 39,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "psi or kPa (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Condenser Saturated Refrigerant Tempera (Circuit 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 40,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Evaporator Refrigerant Pressure (Circuit 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 41,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "psi or kPa (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Evaporator Saturated Refrigerant Temper (Circuit 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 42,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Condenser Refrigerant Pressure (Circuit 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 43,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "psi or kPa (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Condenser Saturated Refrigerant Tempera (Circuit 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 44,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Evaporator Refrigerant Pressure (Circuit 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 45,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "psi or kPa (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Evaporator Saturated Refrigerant Temper (Circuit 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 46,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Suction Refrigerant Pressure (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 63,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "psi or kPa (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Suction Saturated Refrigerant Temperatu (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 64,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Suction Refrigerant Temperature (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 65,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Discharge Refrigerant Pressure (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "psi or kPa (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Discharge Saturated Refrigerant Tempera (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 67,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Discharge Refrigerant Temperature (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Compressor Percent RLA (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 69,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Compressor Current (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Compressor Voltage (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 71,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Compressor Power (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 72,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kW"
+    },
+    {
+      "name": "Compressor Starts (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Compressor Run Hours (Circuit 1 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 74,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Suction Refrigerant Pressure (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "psi or kPa (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Suction Saturated Refrigerant Temperatu (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 77,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Suction Refrigerant Temperature (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 78,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Discharge Refrigerant Pressure (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 79,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "psi or kPa (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Discharge Saturated Refrigerant Tempera (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 80,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Discharge Refrigerant Temperature (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 81,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Compressor Percent RLA (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Compressor Current (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 83,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Compressor Voltage (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 84,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Compressor Power (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 85,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kW"
+    },
+    {
+      "name": "Compressor Starts (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 86,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Compressor Run Hours (Circuit 1 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 87,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Compressor Starts (Circuit 1 Compressor 3)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Compressor Run Hours (Circuit 1 Compressor 3)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 100,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Discharge Refrigerant Temperature (Circuit 2 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 107,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Compressor Starts (Circuit 2 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Compressor Run Hours (Circuit 2 Compressor 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 113,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Compressor Starts (Circuit 2 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 125,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Compressor Run Hours (Circuit 2 Compressor 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 126,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Compressor Starts (Circuit 2 Compressor 3)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 138,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Compressor Run Hours (Circuit 2 Compressor 3)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 139,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Condenser Run Hours (Pump 1)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 297,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Condenser Status (Pump 1)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 299,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Pump OFF Re-",
+        "1": "Pump ON Request"
+      }
+    },
+    {
+      "name": "Condenser Run Hours (Pump 2)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 300,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Condenser Status (Pump 2)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 302,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Pump OFF Re-",
+        "1": "Pump ON Request"
+      }
+    },
+    {
+      "name": "Evaporator Run Hours (Pump 1)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 303,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Evaporator Status (Pump 1)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 305,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Pump OFF Re-",
+        "1": "Pump ON Request"
+      }
+    },
+    {
+      "name": "Evaporator Run Hours (Pump 2)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 306,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Evaporator Status (Pump 2)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Pump OFF Re-",
+        "1": "Pump ON Request"
+      }
+    },
+    {
+      "name": "Units",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 316,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "English",
+        "1": "Metric"
+      }
+    },
+    {
+      "name": "Refrigerant Type",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 1606,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "R22",
+        "2": "R134a",
+        "3": "R407c",
+        "4": "R410a",
+        "5": "R32",
+        "6": "R454C",
+        "7": "R513A",
+        "8": "R515B",
+        "9": "R1233zd(E)",
+        "10": "R1234ze(E)"
+      }
+    },
+    {
+      "name": "Suction Refrigerant Temperature (Circuit 2)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 1974,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Liquid Line Refrigerant Temperature (Circuit 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 1984,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Suction Refrigerant Temperature (Circuit 1)",
+      "group": "Circuits and compressors",
+      "area": "holding",
+      "address": 1990,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°F or °C (x 10), as set by register 316 (Units)."
+    },
+    {
+      "name": "Alarm Module Type (Warning)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2001,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Module ID (Warning)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2002,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Module Payload (Warning)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2003,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Module Type (Problem)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2004,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Module ID (Problem)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2005,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Module Payload (Problem)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2006,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Module Type (Fault)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2007,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Module ID (Fault)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2008,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    },
+    {
+      "name": "Alarm Module Payload (Fault)",
+      "group": "Chiller",
+      "area": "holding",
+      "address": 2009,
+      "type": "uint16",
+      "access": "R",
+      "description": "See the alarm sections of the document."
+    }
+  ]
+}
