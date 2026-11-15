@@ -1,0 +1,4407 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Deep Sea Electronics",
+  "model": "DSE7310",
+  "models": [
+    "DSE7310"
+  ],
+  "vendor_website": "deepseaelectronics.com",
+  "description": "Auto mains failure generator controller over GenComm (Modbus RTU): status and mode, generator and mains instrumentation, engine and ECU data, power, energy and run hours, named alarms and system control keys",
+  "revision": 1,
+  "source": "Deep Sea Electronics, DSE7310 GenComm (SP-228 rev A), pages 3-7, 16 and 154",
+  "sources": [
+    {
+      "title": "DSE7310 GenComm",
+      "version": "SP-228 REV A",
+      "url": "https://www.wincogen.com/wp-content/uploads/PD/Spec_Sheets/Accessories/SP-228_%20DSE7310-GENCOMM.pdf",
+      "note": "section 8: pages 3, 4, 5, 6, 7, 16 and 154 (72xx/73xx family list); copy hosted by a distributor, Wincogen",
+      "accessed": "2026-11-15",
+      "sha256": "ceec7cc3a1d5b5026d2df495d04e42058fb684ea0278de0066ad8c857996dc18"
+    }
+  ],
+  "notes": [
+    "Address = page x 256 + register offset (page 4 offset 0, oil pressure, is register 1024). Read with function 3; system control keys are written with function 16.",
+    "32-bit values are two registers, high word first.",
+    "Unimplemented or out-of-range values read as the GenComm sentinels (0xFFFF, 0x7FFF and the 32-bit equivalents). Many engine (page 5) values only exist with a CAN ECU.",
+    "Named alarms (page 154, 72xx/73xx list): four 4-bit alarm conditions per register, the first in bits 12-15. Page 8, the old alarm system, is not used by this family.",
+    "Registers that GenComm defines for other DSE families (bus, S1/S2 sources, DC plant, battery chargers, 8661 load) are left out; page 6 uses the 8xxx/7xxx allocation.",
+    "Serial settings follow the controller configuration; 9600 8N2 is the GenComm default used by the other DSE maps.",
+    "Written from the manufacturer's GenComm document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "parity": "N",
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "sentinels": {
+    "uint16": {
+      "0xFFFF": "Unimplemented",
+      "0xFFFE": "Over measurable range",
+      "0xFFFD": "Under measurable range",
+      "0xFFFC": "Transducer fault",
+      "0xFFFB": "Bad data",
+      "0xFFFA": "High digital input",
+      "0xFFF9": "Low digital input"
+    },
+    "int16": {
+      "0x7FFF": "Unimplemented",
+      "0x7FFE": "Over measurable range",
+      "0x7FFD": "Under measurable range",
+      "0x7FFC": "Transducer fault",
+      "0x7FFB": "Bad data",
+      "0x7FFA": "High digital input",
+      "0x7FF9": "Low digital input"
+    },
+    "uint32": {
+      "0xFFFFFFFF": "Unimplemented",
+      "0xFFFFFFFE": "Over measurable range",
+      "0xFFFFFFFD": "Under measurable range",
+      "0xFFFFFFFC": "Transducer fault",
+      "0xFFFFFFFB": "Bad data",
+      "0xFFFFFFFA": "High digital input",
+      "0xFFFFFFF9": "Low digital input"
+    },
+    "int32": {
+      "0x7FFFFFFF": "Unimplemented",
+      "0x7FFFFFFE": "Over measurable range",
+      "0x7FFFFFFD": "Under measurable range",
+      "0x7FFFFFFC": "Transducer fault",
+      "0x7FFFFFFB": "Bad data",
+      "0x7FFFFFFA": "High digital input",
+      "0x7FFFFFF9": "Low digital input"
+    }
+  },
+  "enums": {
+    "control_mode": {
+      "0": "Stop",
+      "1": "Auto",
+      "2": "Manual",
+      "3": "Test on load",
+      "4": "Auto with manual restore",
+      "5": "User configuration",
+      "6": "Test off load",
+      "7": "Off"
+    },
+    "phase_rotation": {
+      "0": "Indeterminate",
+      "1": "L1-L2-L3",
+      "2": "L3-L2-L1",
+      "3": "Phase error"
+    },
+    "sm_status": {
+      "0": "Implemented, not changed",
+      "1": "Implemented, changed",
+      "2": "Reserved",
+      "3": "Unimplemented"
+    },
+    "alarm_condition": {
+      "0": "Disabled digital input",
+      "1": "Not active",
+      "2": "Warning",
+      "3": "Shutdown",
+      "4": "Electrical trip",
+      "8": "Inactive indication",
+      "9": "Inactive indication (displayed)",
+      "10": "Active indication",
+      "15": "Unimplemented"
+    },
+    "system_control": {
+      "0x8B74748B": "Select Stop mode",
+      "0x8B75748A": "Select Auto mode",
+      "0x8B767489": "Select Manual mode",
+      "0x8B777488": "Select Test on load mode",
+      "0x8B787487": "Select Auto with manual restore mode",
+      "0x8B797486": "Start engine if in manual or test modes",
+      "0x8B7A7485": "Mute alarm",
+      "0x8B7B7484": "Reset alarms",
+      "0x8B7C7483": "Transfer to generator",
+      "0x8B7D7482": "Transfer to mains",
+      "0x8B7E7481": "Reset mains failure",
+      "0x8B7F7480": "Close Bus (Bus Tie Controller)",
+      "0x8B80747F": "Open Bus (Bus Tie Controller)",
+      "0x8B81747E": "Toggle Bus Open/Closed (Bus Tie Controller)",
+      "0x8B82747D": "Scroll through mode selections (mode button on 330/331/334/335)",
+      "0x8B83747C": "Enable selected mode (scroll button on 330/331/334/335)",
+      "0x8B84747B": "Mimic Mode Button Action (G8600 only)",
+      "0x8B94746B": "Telemetry start if in auto mode",
+      "0x8B95746A": "Cancel telemetry start in auto mode",
+      "0x8B967469": "Reset alarms",
+      "0x8B977468": "Clear telemetry alarm flag",
+      "0x8B987467": "Lock the user controls",
+      "0x8B997466": "Unlock the user controls",
+      "0x8B9A7465": "Reset the maintenance alarm 1 due times",
+      "0x8B9B7464": "MSC alarm inhibit on",
+      "0x8B9C7463": "MSC alarm inhibit off",
+      "0x8B9D7462": "Reset the maintenance alarm 2 due times",
+      "0x8B9E7461": "Reset the maintenance alarm 3 due times",
+      "0x8BA2745D": "Start data logging (temporarily overrides the module state)",
+      "0x8BA3745C": "Stop data logging (temporarily overrides the module state)",
+      "0x8BA4745B": "Erase all data log files internal to the module (NOT on USB)",
+      "0x8BA5745A": "Force USB drive to stop logging, ready to eject",
+      "0x8BB67449": "Reset battery maintenance alarm 1",
+      "0x8BB77448": "Reset battery maintenance alarm 2",
+      "0x8BB87447": "Reset battery maintenance alarm 3",
+      "0x8BB97446": "Auto DPF regeneration inhibit on",
+      "0x8BBA7445": "Auto DPF regeneration inhibit off",
+      "0x8BBB7444": "Start manual DPF regeneration",
+      "0x8BBC7443": "Battery Charger Boost Mode",
+      "0x8BBD7442": "Battery Charger Stop Charging",
+      "0x8BBE7441": "Battery Charger Battery Test",
+      "0x8BBF7440": "Battery Charger Select Alternative Charging Voltage",
+      "0x8BC0743F": "Select Off Mode",
+      "0x8BC1743E": "Throttle Down",
+      "0x8BC2743D": "Throttle Up",
+      "0x8BC3743C": "Wake ECU",
+      "0x8BC4743B": "Lamp Test",
+      "0x8BC5743A": "Battery Charger Auxiliary Boost Mode",
+      "0x8BC67439": "Battery Charger Auxiliary Stop Charging",
+      "0x8BC77438": "Battery Charger Auxiliary Battery Test",
+      "0x8BC87437": "Battery Charger Auxiliary Select Alternative Charging Voltage",
+      "0x8BC97436": "Stop manual DPF regeneration",
+      "0x8BCA7435": "DSE Proprietary",
+      "0x8BCB7434": "Battery Charger Max Current Mode Timed",
+      "0x8BCC7433": "Battery Charger max Current Mode Manual",
+      "0x8BCD7432": "AVR Droop Enable",
+      "0x8BCE7431": "AVR Droop Disable",
+      "0x8BCF7430": "Governor Droop Enable",
+      "0x8BD0742F": "Governor Droop Disable",
+      "0x8BD1742E": "Remote Mains Fail Enable",
+      "0x8BD2742D": "Remote Mains Fail Disable",
+      "0x8BD3742C": "Remote Mains Fail Toggle (on then off, leaving the alarm latched but able to be reset)",
+      "0x8BD4742B": "Enable signal injection",
+      "0x8BD5742A": "Disable signal injection",
+      "0x8BD77428": "Reset maintenance alarm 4 due times",
+      "0x8BD87427": "Reset maintenance alarm 5 due times",
+      "0x8BD97426": "Battery Charger Stop Charging Out 1",
+      "0x8BDA7425": "Battery Charger Stop Charging Out 2",
+      "0x8BDB7424": "Battery Charger Stop Charging Out 1 and Out 2",
+      "0x8BDC7423": "Reset maintenance alarm 6 due times",
+      "0x8BDD7422": "Reset maintenance alarm 7 due times",
+      "0x8BDE7421": "Reset maintenance alarm 8 due times",
+      "0x8BDF7420": "Reset maintenance alarm 9 due times",
+      "0x8BE0741F": "Reset maintenance alarm 10 due times",
+      "0x8BE1741E": "Switch to Multi Set platform (G8600 only)",
+      "0x8BE2741D": "Switch to Single Set platform (G8600 only)",
+      "0x8BE3741C": "Switch to Mains Parallel platform (G8600 or G8660)",
+      "0x8BE4741B": "Switch to Group Controller platform (G8600 or G8660)"
+    }
+  },
+  "registers": [
+    {
+      "name": "Manufacturer code",
+      "group": "Status",
+      "area": "holding",
+      "address": 768,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Model number",
+      "group": "Status",
+      "area": "holding",
+      "address": 769,
+      "type": "uint16",
+      "access": "R",
+      "role": "model"
+    },
+    {
+      "name": "Serial number",
+      "group": "Status",
+      "area": "holding",
+      "address": 770,
+      "type": "uint32",
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "Control mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 772,
+      "type": "uint16",
+      "access": "R",
+      "enum": "control_mode"
+    },
+    {
+      "name": "Control mode selection",
+      "group": "Status",
+      "area": "holding",
+      "address": 773,
+      "type": "uint16",
+      "access": "R",
+      "enum": "control_mode"
+    },
+    {
+      "name": "Control unit not configured",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Control unit failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Shutdown alarm active",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Electrical trip",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Warning alarm active",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Telemetry alarm flag",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Satellite telemetry alarm flag",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "No font file",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Controlled shutdown alarm active",
+      "group": "Status",
+      "area": "holding",
+      "address": 774,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "State machine 1 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "bit": 14,
+      "bits": 2,
+      "access": "R",
+      "enum": "sm_status"
+    },
+    {
+      "name": "State machine 2 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 2,
+      "access": "R",
+      "enum": "sm_status"
+    },
+    {
+      "name": "State machine 3 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "bit": 10,
+      "bits": 2,
+      "access": "R",
+      "enum": "sm_status"
+    },
+    {
+      "name": "State machine 4 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 2,
+      "access": "R",
+      "enum": "sm_status"
+    },
+    {
+      "name": "State machine 5 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "bit": 6,
+      "bits": 2,
+      "access": "R",
+      "enum": "sm_status"
+    },
+    {
+      "name": "State machine 6 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 2,
+      "access": "R",
+      "enum": "sm_status"
+    },
+    {
+      "name": "State machine 7 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "bit": 2,
+      "bits": 2,
+      "access": "R",
+      "enum": "sm_status"
+    },
+    {
+      "name": "State machine 8 status",
+      "group": "Status",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 2,
+      "access": "R",
+      "enum": "sm_status"
+    },
+    {
+      "name": "String checksum",
+      "group": "Status",
+      "area": "holding",
+      "address": 776,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "State machine 1 timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 778,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "State machine 2 timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 779,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "State machine 3 timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 780,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "State machine 4 timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 781,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "State machine 5 timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 782,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "State machine 6 timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 783,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "State machine 7 timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 784,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "State machine 8 timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 785,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "State machine 1 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 786,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "State machine 2 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 787,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "State machine 3 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 788,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "State machine 4 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 789,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "State machine 5 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 790,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "State machine 6 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 791,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "State machine 7 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 792,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "State machine 8 state",
+      "group": "Status",
+      "area": "holding",
+      "address": 793,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Change in event log contents",
+      "group": "Status",
+      "area": "holding",
+      "address": 794,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "External Panel Lock Active",
+      "group": "Status",
+      "area": "holding",
+      "address": 806,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Stop & Panel Lock Active",
+      "group": "Status",
+      "area": "holding",
+      "address": 806,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Lock user controls Active",
+      "group": "Status",
+      "area": "holding",
+      "address": 806,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Telemetry Panel Lock Active",
+      "group": "Status",
+      "area": "holding",
+      "address": 806,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Oil pressure",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1024,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Coolant temperature",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1025,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Oil temperature",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1026,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Fuel level",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1027,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Charge alternator voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1028,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Engine Battery voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1029,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Engine speed",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1030,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "Generator frequency",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1031,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Generator L1-N voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1032,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L2-N voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1034,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L3-N voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1036,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L1-L2 voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1038,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L2-L3 voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1040,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L3-L1 voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1042,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L1 current",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1044,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator L2 current",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1046,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator L3 current",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1048,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator earth current",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1050,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator L1 watts",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1052,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Generator L2 watts",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1054,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Generator L3 watts",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1056,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Generator current lag/lead",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1058,
+      "type": "int16",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Mains frequency",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1059,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1-N voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1060,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2-N voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1062,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3-N voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1064,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1-L2 voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1066,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2-L3 voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1068,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3-L1 voltage",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1070,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains voltage phase lag/lead",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1072,
+      "type": "int16",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Generator phase rotation",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1073,
+      "type": "uint16",
+      "access": "R",
+      "enum": "phase_rotation"
+    },
+    {
+      "name": "Mains phase rotation",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1074,
+      "type": "uint16",
+      "access": "R",
+      "enum": "phase_rotation"
+    },
+    {
+      "name": "Mains current lag/lead",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1075,
+      "type": "int16",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1 current",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1076,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2 current",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1078,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3 current",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1080,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains earth current",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1082,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1 watts",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1084,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2 watts",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1086,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3 watts",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1088,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Governor output",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1219,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "AVR output",
+      "group": "Basic instrumentation",
+      "area": "holding",
+      "address": 1220,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Coolant pressure 1",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1280,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Coolant pressure 2",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1281,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Fuel pressure 1",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1282,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Fuel pressure 2",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1283,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Turbo pressure 1",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1284,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Turbo pressure 2",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1285,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Inlet manifold temperature 1",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1286,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Inlet manifold temperature 2",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1287,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust temperature 1",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1288,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust temperature 2",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1289,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Fuel consumption",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1290,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "L/h",
+      "access": "R"
+    },
+    {
+      "name": "Water in Fuel",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1292,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CAN BIT data",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1293,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Atmospheric pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1294,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Fuel temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1295,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary sender 1 category",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1328,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary sender 1 value",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1329,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary sender 2 category",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1330,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary sender 2 value",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1331,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary sender 3 category",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1332,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary sender 3 value",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1333,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary sender 4 category",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1334,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary sender 4 value",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1335,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust after treatment fuel used",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1344,
+      "type": "uint32",
+      "unit": "L",
+      "access": "R"
+    },
+    {
+      "name": "After treatment temperature T1",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1346,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "After treatment temperature T3",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1347,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Engine reference torque",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1348,
+      "type": "uint32",
+      "unit": "N·m",
+      "access": "R"
+    },
+    {
+      "name": "Engine percentage torque",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1350,
+      "type": "int32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Engine demand torque",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1352,
+      "type": "int32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Percentage load at speed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1354,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Accelerator position",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1355,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Nominal friction percentage torque",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1356,
+      "type": "int16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Oil level",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1357,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Crank case pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1358,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Coolant level",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1359,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Injector Rail 1 pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1360,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "MPa",
+      "access": "R"
+    },
+    {
+      "name": "Injector Rail 2 pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1361,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "MPa",
+      "access": "R"
+    },
+    {
+      "name": "Engine EGR flow",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1362,
+      "type": "uint16",
+      "unit": "kg/h",
+      "access": "R"
+    },
+    {
+      "name": "Pre filter oil pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1363,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Instant break power",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1364,
+      "type": "uint32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust gas port 1-16 temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1366,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Intercooler temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1382,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Turbo oil temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1383,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "ECU temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1384,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Fan speed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1385,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "Total engine revolutions",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1386,
+      "type": "uint32",
+      "scale": 0.001,
+      "access": "R"
+    },
+    {
+      "name": "Air inlet pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1388,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Air filter differential pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1389,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Air trap inlet pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1390,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Turbo pressure 3",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1391,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Turbo pressure 4",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1392,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Inlet manifold temperature 3",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1393,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Inlet manifold temperature 4",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1394,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Inlet manifold temperature 5",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1395,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Inlet manifold temperature 6",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1396,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Trip fuel",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1397,
+      "type": "uint32",
+      "unit": "L",
+      "access": "R"
+    },
+    {
+      "name": "Electrical potential",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1399,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "PGI Engine type",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1400,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PGI Engine version number",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1401,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DPTC filter lamp command",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1402,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust system high temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1403,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DPTC Action regeneration forced",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1404,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Shutdown wait to start",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1405,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Shutdown protection",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1406,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Shutdown Approaching",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1407,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Engine operating state",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1408,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Shutdown coolant override",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1409,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Battle short override",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1410,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Module engine hours",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1411,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Module oil pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1412,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Module coolant temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1413,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Module engine RPM",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1414,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Module charge alternator",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1415,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Module speed feed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1416,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Frequency adjust",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1417,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Engine operating state (1418)",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1418,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Engine alarm warning",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1419,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Engine alarm shutdown",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1420,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Engine alarm electrical trip",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1421,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CAN amber stop lamp",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1422,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CAN amber lamp flash",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1423,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CAN Red stop lamp",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1424,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CAN red lamp flash",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1425,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CAN protect lamp",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1426,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CAN protect lamp flash",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1427,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Malfunction Lamp",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1428,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Malfunction lamp flash",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1429,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Electrical potential (1430)",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1430,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Battery potential",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1431,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Charging potential",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1432,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Charge alternator current",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1433,
+      "type": "uint16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Battery current",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1434,
+      "type": "int16",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Engine torque mode",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1435,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Engine starter mode",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1436,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "CAN CI status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1437,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Demand speed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1438,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Speed up",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1439,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Speed down",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1440,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Speed fail",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1441,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Current SD source",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1442,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Feedback SD CAN",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1443,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Feedback SD analogue",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1444,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Failure codes",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1445,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Actual droop",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1446,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Start status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1447,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Protection override status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1448,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "MTU running state",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1449,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Cylinder cut off",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1450,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Extended stop status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1452,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Current operating mode",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1453,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "MTU required torque",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1454,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Trip average fuel",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1455,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "L/h",
+      "access": "R"
+    },
+    {
+      "name": "ECU rated power",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1456,
+      "type": "uint16",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "ECU rated speed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1457,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "ECU idle speed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1458,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "ECU desired speed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1459,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "ECU preheat status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1460,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Manifold pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1461,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "Intercooler level",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1462,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "CAN link status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1463,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Auto DPF Regeneration Inhibit",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1464,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DPTC Active Regeneration Inhibit",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1465,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Soot Load",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1466,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Ash Load",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1467,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "LCD Temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1470,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "DEF Tank Level",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1471,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "DEF Tank Temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1472,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "DEF Level Status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1473,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DEF Consumption",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1474,
+      "type": "uint16",
+      "unit": "L/h",
+      "access": "R"
+    },
+    {
+      "name": "Aftertreatment Status Reason",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1475,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Aftertreatment Status Severity",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1476,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Time left until action needed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1477,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time until Torque Reduction",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1478,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time until Speed Reduction",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1479,
+      "type": "uint16",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "EGR Pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1480,
+      "type": "uint16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "EGR Temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1481,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Ambient Air Temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1482,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Air Intake Temperature",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1483,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "DEF Lamps – SCR Inducement",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1484,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Generator high-resolution",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1486,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Mains high-resolution frequency",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1487,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Oil Pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1490,
+      "type": "int16",
+      "unit": "kPa",
+      "access": "R"
+    },
+    {
+      "name": "CAN Alternate engine speed",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1491,
+      "type": "uint16",
+      "scale": 0.0,
+      "access": "R"
+    },
+    {
+      "name": "Generator Excitation Field Current",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1492,
+      "type": "uint32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator Excitation Field Voltage",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1494,
+      "type": "uint32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator Output Voltage Bias",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1496,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Exhaust gas port 17-20",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1497,
+      "type": "int16",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Instant Fuel Rate",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1501,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DPTC Filter Status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1502,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DPTC Active Regeneration Inhibit (1503)",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1503,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DPTC Active Regeneration Inhibit (1504)",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1504,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "DEF Tank Status",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1505,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Gas Fuel Pressure",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1506,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Throttle Position 1",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1507,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Throttle Position 2",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1508,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Trip Average Fuel Efficiency",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1511,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kWh/L",
+      "access": "R"
+    },
+    {
+      "name": "Instantaneous Fuel Efficiency",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1512,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kWh/L",
+      "access": "R"
+    },
+    {
+      "name": "Fuel Distance (in mm)",
+      "group": "Engine (extended instrumentation)",
+      "area": "holding",
+      "address": 1513,
+      "type": "int16",
+      "unit": "mm",
+      "access": "R"
+    },
+    {
+      "name": "Generator total watts",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1536,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Generator L1 VA",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1538,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Generator L2 VA",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1540,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Generator L3 VA",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1542,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Generator total VA",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1544,
+      "type": "int32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Generator L1 Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1546,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Generator L2 Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1548,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Generator L3 Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1550,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Generator total Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1552,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Generator power factor L1",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1554,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Generator power factor L2",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1555,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Generator power factor L3",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1556,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Generator average power factor",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1557,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Generator percentage of full",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1558,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator percentage of full Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1559,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Mains total watts",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1560,
+      "type": "int32",
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1 VA",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1562,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2 VA",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1564,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3 VA",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1566,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mains total VA",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1568,
+      "type": "uint32",
+      "unit": "VA",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1 Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1570,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2 Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1572,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3 Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1574,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mains total Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1576,
+      "type": "int32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Mains power factor L1",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1578,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Mains power factor L2",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1579,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Mains power factor L3",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1580,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Mains average power factor",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1581,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Mains percentage of full power",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1582,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Mains percentage of full Var",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1583,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Mains R.O.C.O.F.",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1612,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz/s",
+      "access": "R"
+    },
+    {
+      "name": "Mains vector shift",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1613,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Gen L1 lead/lag",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1614,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Gen L2 lead/lag",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1615,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Gen L3 lead/lag",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1616,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Gen total lead/lag",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1617,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Gen L1 percentage of full power",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1618,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Gen L2 percentage of full power",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1619,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Gen L3 percentage of full power",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1620,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1 lead/lag",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1645,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2 lead/lag",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1646,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3 lead/lag",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1647,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Mains total lead/lag",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1648,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Generator L-N voltage average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1650,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L-N voltage difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1652,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L-N voltage min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1654,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L-N voltage max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1656,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L-L voltage average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1658,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L-L voltage difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1660,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L-L voltage min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1662,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator L-L voltage max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1664,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Generator current average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1666,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator current difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1668,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator current min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1670,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator current max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1672,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Generator watts average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1674,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator watts difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1675,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator watts min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1676,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator watts max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1677,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator VA average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1678,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator VA difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1679,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator VA min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1680,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator VA max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1681,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator Var average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1682,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator Var difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1683,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator Var min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1684,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator Var max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1685,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Generator power factor average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1686,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Generator power factor difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1687,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Generator power factor min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1688,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Generator power factor max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1689,
+      "type": "int16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Mains L-N voltage average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1690,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L-N voltage difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1692,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L-N voltage min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1694,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L-N voltage max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1696,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L-L voltage average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1698,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L-L voltage difference",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1700,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L-L voltage min",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1702,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L-L voltage max",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1704,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Time To Empty (87xx v5.3)",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1748,
+      "type": "int32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1-N voltage 10s rolling average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1750,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2-N voltage 10s rolling average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1752,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3-N voltage 10s rolling average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1754,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L1-L2 voltage 10s rolling average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1756,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L2-L3 voltage 10s rolling average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1758,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains L3-L1 voltage 10s rolling average",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1760,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains voltage asymmetry",
+      "group": "Derived instrumentation",
+      "area": "holding",
+      "address": 1762,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current time since 1/1/70",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1792,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time to next engine maintenance",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1794,
+      "type": "int32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time of next engine maintenance since",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1796,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Engine run time",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1798,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Generator positive kWh",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1800,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Generator negative kWh",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1802,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Generator kVAh",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1804,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Generator kvarh",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1806,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Number of starts",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1808,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Mains positive kWh",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1810,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Mains negative kWh",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1812,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Mains kVAh",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1814,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVAh",
+      "access": "R"
+    },
+    {
+      "name": "Mains kvarh",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1816,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Fuel used",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1826,
+      "type": "uint32",
+      "unit": "L",
+      "access": "R"
+    },
+    {
+      "name": "Maximum positive mains R.O.C.O.F.",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1828,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "Hz/s",
+      "access": "R"
+    },
+    {
+      "name": "Maximum negative mains R.O.C.O.F.",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1830,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "Hz/s",
+      "access": "R"
+    },
+    {
+      "name": "Maximum positive mains vector shift",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1832,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Maximum negative mains vector shift",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1834,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Time to next engine maintenance alarm 1",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1836,
+      "type": "int32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time of next engine maintenance alarm 1",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1838,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time to next engine maintenance alarm 2",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1840,
+      "type": "int32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time of next engine maintenance alarm 2",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1842,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time to next engine maintenance alarm 3",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1844,
+      "type": "int32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Time of next engine maintenance alarm 3",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1846,
+      "type": "uint32",
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Fuel Efficiency KWh/L (accumulated)",
+      "group": "Accumulated instrumentation",
+      "area": "holding",
+      "address": 1892,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "kWh/L",
+      "access": "R"
+    },
+    {
+      "name": "System control function 0 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "System control function 1 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "System control function 2 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "System control function 3 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "System control function 4 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "System control function 5 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "System control function 6 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "System control function 7 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "System control function 8 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "System control function 9 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "System control function 10 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "System control function 11 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "System control function 12 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "System control function 13 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "System control function 14 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "System control function 15 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4096,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "System control function 16-31 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4097,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System control function 32-47 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4098,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System control function 48-63 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4099,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System control function 64-79 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4100,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System control function 80-95 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4101,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System control function 96-111 supported",
+      "group": "Control",
+      "area": "holding",
+      "address": 4102,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System control function 112-127",
+      "group": "Control",
+      "area": "holding",
+      "address": 4103,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System control key",
+      "group": "Control",
+      "area": "holding",
+      "address": 4104,
+      "type": "uint16",
+      "access": "W",
+      "enum": "system_control",
+      "description": "Write the key and its ones complement (register 4105) in one function 16 write."
+    },
+    {
+      "name": "Complement of system control key",
+      "group": "Control",
+      "area": "holding",
+      "address": 4105,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Number of named alarms",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39424,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Emergency stop",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39425,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Low oil pressure",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39425,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "High coolant temperature",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39425,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Low coolant temperature",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39425,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Under speed",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39426,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Over speed",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39426,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator Under frequency",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39426,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator Over frequency",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39426,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator low voltage",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39427,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator high voltage",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39427,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Battery low voltage",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39427,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Battery high voltage",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39427,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Charge alternator failure",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39428,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Fail to start",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39428,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Fail to stop",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39428,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator fail to close",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39428,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Mains fail to close",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39429,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Oil pressure sender fault",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39429,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Loss of magnetic pick up",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39429,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Magnetic pick up open circuit",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39429,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator high current",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39430,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Calibration lost",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39430,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Low fuel level",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39430,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "CAN ECU Warning",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39430,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "CAN ECU Shutdown",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39431,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "CAN ECU Data fail",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39431,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Low oil level switch",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39431,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "High temperature switch",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39431,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Low fuel level switch",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39432,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Expansion unit watchdog alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39432,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "KW overload alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39432,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Negative phase sequence current alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39432,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Earth fault trip alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39433,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator phase rotation alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39433,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Auto Voltage Sense Fail",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39433,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Maintenance alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39433,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Loading frequency alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39434,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Loading voltage alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39434,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Fuel usage running",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39434,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Fuel usage stopped",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39434,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Protections disabled",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39435,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Protections blocked",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39435,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator Short Circuit",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39435,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Mains High Current",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39435,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Mains Earth Fault",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39436,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Mains Short Circuit",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39436,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "ECU protect",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39436,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "ECU Malfunction",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39436,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "ECU Information",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39437,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "ECU Shutdown",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39437,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "ECU Warning",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39437,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "ECU Electrical Trip",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39437,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "ECU After treatment",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39438,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "ECU Water In Fuel",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39438,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator Reverse Power",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39438,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator Positive VAr",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39438,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Generator Negative VAr",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39439,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "LCD Heater Low Voltage",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39439,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "LCD Heater High Voltage",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39439,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "DEF Level Low",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39439,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "SCR Inducement",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39440,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "MSC Old version",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39440,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "MSC ID alarm",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39440,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "MSC failure",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39440,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "MSC priority Error",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39441,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Fuel Sender open circuit",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39441,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Over speed runaway",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39441,
+      "type": "uint16",
+      "bit": 4,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Over frequency run away",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39441,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    },
+    {
+      "name": "Coolant sensor open circuit",
+      "group": "Named alarms",
+      "area": "holding",
+      "address": 39442,
+      "type": "uint16",
+      "bit": 12,
+      "bits": 4,
+      "access": "R",
+      "enum": "alarm_condition"
+    }
+  ]
+}
