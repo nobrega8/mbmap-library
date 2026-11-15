@@ -1,0 +1,2574 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "SolaX",
+  "model": "Energy storage inverters",
+  "models": [
+    "X1-Hybrid G4",
+    "X1-IES",
+    "X1-IES-A",
+    "X1-VAST",
+    "X3-Hybrid G4",
+    "X3-Hybrid G4 PRO",
+    "X3-IES",
+    "X3-IES-A",
+    "X3-IES-P",
+    "X3-ULTRA",
+    "X3-AELIO"
+  ],
+  "vendor_website": "solaxpower.com",
+  "description": "SolaX hybrid and energy storage inverters over Modbus RTU: PV, grid, EPS and battery real-time values, meter values, energy counters, BMS data, status, and inverter, battery and work mode settings",
+  "revision": 1,
+  "source": "SolaX Power, Energy Storage Inverter MODBUS Communication protocols, version V001.02",
+  "sources": [
+    {
+      "title": "SolaX Power Energy Storage Inverter MODBUS Communication protocols",
+      "version": "V001.02",
+      "url": "https://community.symcon.de/uploads/short-url/ecxNpsZsby8yDD7kHPxv4Gz6ENS.pdf",
+      "note": "chapter 3, register tables; copy uploaded to the Symcon community forum",
+      "accessed": "2026-11-15",
+      "sha256": "fa795deca1bc0722a9caf0dac168765d889f6b36ca09043b0ac5b9c3a7803b79"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS485 (the inverter itself has no Modbus TCP; use a gateway). Default address 1. Wait at least 1 s between requests.",
+    "Read data use function 04 (input registers); configuration is read with function 03 and written with 06 or 16. Writable settings have a write address and a separate read-back address; both are listed, the write one marked '(write)'.",
+    "Registers are big endian. The protocol does not state the word order of 32-bit values; this map assumes the low word first, the usual order on SolaX inverters. Check one value on the device.",
+    "Not every register exists on every model; the protocol marks some values as X1 or X3 only.",
+    "The VPP (remote power control) mode tables are not in this map: their registers change meaning with the VPP mode. Some other tables of the protocol that could not be read reliably are also left out.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Real Time –Seconds (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "W",
+      "unit": "s",
+      "description": "RTC-Seconds."
+    },
+    {
+      "name": "Real Time – Minutes (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "W",
+      "unit": "min",
+      "description": "RTC-Minutes."
+    },
+    {
+      "name": "Real Time – Hours (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "W",
+      "unit": "h",
+      "description": "RTC-Hours."
+    },
+    {
+      "name": "Real Time – Days (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "W",
+      "description": "RTC-Days."
+    },
+    {
+      "name": "Real Time – Months (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "W",
+      "description": "RTC-Months."
+    },
+    {
+      "name": "Real Time – Years (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "W",
+      "description": "RTC-Years."
+    },
+    {
+      "name": "Details in \"Appendix D: Safety Code Description\" (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "W",
+      "description": "Safety Code."
+    },
+    {
+      "name": "Export power control limit percentage 0~100% (Inverter GRID Port) (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "W",
+      "unit": "%",
+      "description": "Export Power Percentage."
+    },
+    {
+      "name": "System ON/OFF (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "1": "ON",
+        "0": "Off"
+      },
+      "description": "Inverter OutPut Switch."
+    },
+    {
+      "name": "Details in \"Appendix D: Safety Code Description\"",
+      "group": "Information",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "access": "R",
+      "description": "Safety Code."
+    },
+    {
+      "name": "Export power control limit percentage 0~100% (Inverter GRID Port)",
+      "group": "Information",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Export Power Percentage."
+    },
+    {
+      "name": "Reset the energy from Meter1 or CT1 (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 47,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "ResetMeter1Energy."
+    },
+    {
+      "name": "User password (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 57,
+      "type": "uint16",
+      "access": "W",
+      "description": "User Password."
+    },
+    {
+      "name": "Advance password (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 58,
+      "type": "uint16",
+      "access": "W",
+      "description": "Advance Password."
+    },
+    {
+      "name": "Power control value supplied by the inverter to the grid (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "access": "W",
+      "unit": "W",
+      "description": "Export Power Limit."
+    },
+    {
+      "name": "Enable/Disable Mute in (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "access": "W",
+      "description": "EPS Mute."
+    },
+    {
+      "name": "Battery discharges to the (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 68,
+      "type": "uint16",
+      "access": "W",
+      "unit": "%",
+      "description": "EPS_MinS oC."
+    },
+    {
+      "name": "Output frequency in EPS(Off-Grid) mode. (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 69,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "50Hz",
+        "1": "60HZ"
+      },
+      "description": "EPS Frequncy."
+    },
+    {
+      "name": "Language (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 71,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "English"
+      },
+      "description": "Language."
+    },
+    {
+      "name": "Total Bat Port Number",
+      "group": "Information",
+      "area": "holding",
+      "address": 89,
+      "type": "uint16",
+      "access": "R",
+      "description": "BatPortNum."
+    },
+    {
+      "name": "Set the bias power 1-500",
+      "group": "Information",
+      "area": "holding",
+      "address": 93,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "BiasPower."
+    },
+    {
+      "name": "Reset inverter parameters to default values (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 95,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "ResetMgrEE."
+    },
+    {
+      "name": "This value will be enabled if SelfUse ChargeFromGri d Enable is 1. 10%~100% (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "W",
+      "unit": "%",
+      "description": "SelfUse Charge UpperSOC."
+    },
+    {
+      "name": "Whether to use period 2. (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "SetChrg& Dischrg Period2Enable."
+    },
+    {
+      "name": "Main breaker current limit (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 113,
+      "type": "uint16",
+      "access": "W",
+      "unit": "A",
+      "description": "MainBreaker CurrentLimit."
+    },
+    {
+      "name": "Real Time - Seconds",
+      "group": "Information",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s",
+      "description": "RTC-Seconds."
+    },
+    {
+      "name": "Real Time - Minutes",
+      "group": "Information",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "access": "R",
+      "unit": "min",
+      "description": "RTC-Minutes."
+    },
+    {
+      "name": "Real Time - Hours",
+      "group": "Information",
+      "area": "holding",
+      "address": 135,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h",
+      "description": "RTC-Hours."
+    },
+    {
+      "name": "Real Time - Days",
+      "group": "Information",
+      "area": "holding",
+      "address": 136,
+      "type": "uint16",
+      "access": "R",
+      "description": "RTC-Days."
+    },
+    {
+      "name": "Real Time - Months",
+      "group": "Information",
+      "area": "holding",
+      "address": 137,
+      "type": "uint16",
+      "access": "R",
+      "description": "RTC-Months."
+    },
+    {
+      "name": "Real Time - Years",
+      "group": "Information",
+      "area": "holding",
+      "address": 138,
+      "type": "uint16",
+      "access": "R",
+      "description": "RTC-Years."
+    },
+    {
+      "name": "0:Disable 1:Grid 2:INV (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 141,
+      "type": "uint16",
+      "access": "W",
+      "description": "PgridBias."
+    },
+    {
+      "name": "Charge to the specified (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 142,
+      "type": "uint16",
+      "access": "W",
+      "unit": "%",
+      "description": "EPS_Resta rt_Soc."
+    },
+    {
+      "name": "485CommF unSelect (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 143,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Modbus 485",
+        "1": "EV Charger",
+        "2": "DataHub",
+        "3": "Adatpter Box",
+        "4": "EVC & Adapter Box"
+      },
+      "description": "485CommF unSelect."
+    },
+    {
+      "name": "This value will be enabled if SelfUse ChargeFromGri d Enable is 1. 10%~100%",
+      "group": "Information",
+      "area": "holding",
+      "address": 148,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "SelfUse Charge UpperSOC."
+    },
+    {
+      "name": "Whether to use period 2.",
+      "group": "Information",
+      "area": "holding",
+      "address": 155,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "SetChrg& Dischrg Period2Enable."
+    },
+    {
+      "name": "VPP mode number",
+      "group": "Information",
+      "area": "holding",
+      "address": 160,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "VPP Disable",
+        "1": "Power Control Mode",
+        "2": "Electric Quantity Target Control Mode",
+        "3": "SOC Target Control Mode",
+        "4": "Push Power - Positive/Negative Mode",
+        "5": "Push Power - Zero Mode",
+        "6": "Self-Consume - Charge/Discharge Mode",
+        "7": "Self-Consume - Charge Only Mode",
+        "8": "PV&BAT Individual Setting – Duration Mode",
+        "9": "PV&BAT Individual Setting – Target SOC Mode"
+      },
+      "description": "VPP Mode Num."
+    },
+    {
+      "name": "Meter1 ID: (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 161,
+      "type": "uint16",
+      "access": "W",
+      "description": "Meter1_ID."
+    },
+    {
+      "name": "Meter2 ID: (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "access": "W",
+      "description": "Meter2_ID."
+    },
+    {
+      "name": "Reset the energy from Meter2 or CT2 (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 163,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "ResetMeter2Energy."
+    },
+    {
+      "name": "Direction MeterCT1 (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      },
+      "description": "Direction MeterCT1."
+    },
+    {
+      "name": "Direction MeterCT2 (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      },
+      "description": "Direction MeterCT2."
+    },
+    {
+      "name": "ExecDuration represents the execution time of the mode. If the mode defines a Wa",
+      "group": "Information",
+      "area": "holding",
+      "address": 166,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s",
+      "description": "Exec Duration."
+    },
+    {
+      "name": "If the duration in the mode, ExecDuration, is reached, or other control targets ",
+      "group": "Information",
+      "area": "holding",
+      "address": 167,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s",
+      "description": "WaitTime out."
+    },
+    {
+      "name": "Meter CTSelect (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 170,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Meter",
+        "1": "CT"
+      },
+      "description": "Meter CTSelect."
+    },
+    {
+      "name": "Address of",
+      "group": "Information",
+      "area": "holding",
+      "address": 175,
+      "type": "uint16",
+      "access": "R",
+      "description": "ModBus."
+    },
+    {
+      "name": "ModBus RTU Baud Rate",
+      "group": "Information",
+      "area": "holding",
+      "address": 176,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "115200",
+        "1": "57600",
+        "2": "56000",
+        "3": "38400",
+        "4": "19200",
+        "5": "14400",
+        "6": "9600"
+      },
+      "description": "ModBus RTU Baud Rate."
+    },
+    {
+      "name": "0:Disable 1:Grid 2:INV",
+      "group": "Information",
+      "area": "holding",
+      "address": 178,
+      "type": "uint16",
+      "access": "R",
+      "description": "PgridBias."
+    },
+    {
+      "name": "CT Installation Check",
+      "group": "Information",
+      "area": "holding",
+      "address": 179,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "CT Installation Check."
+    },
+    {
+      "name": "Power control value supplied by the inverter to the grid",
+      "group": "Information",
+      "area": "holding",
+      "address": 182,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "Export Power Limit."
+    },
+    {
+      "name": "Enable/Disable Mute in",
+      "group": "Information",
+      "area": "holding",
+      "address": 183,
+      "type": "uint16",
+      "access": "R",
+      "description": "EPS Mute."
+    },
+    {
+      "name": "Battery discharges to the",
+      "group": "Information",
+      "area": "holding",
+      "address": 184,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "EPS_MinS oC."
+    },
+    {
+      "name": "Output frequency in EPS(Off-Grid) mode.",
+      "group": "Information",
+      "area": "holding",
+      "address": 185,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "50Hz",
+        "1": "60HZ"
+      },
+      "description": "EPS Frequncy."
+    },
+    {
+      "name": "Language",
+      "group": "Information",
+      "area": "holding",
+      "address": 187,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "English"
+      },
+      "description": "Language."
+    },
+    {
+      "name": "Address of (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "access": "W",
+      "description": "ModBus."
+    },
+    {
+      "name": "ModBus RTU Baud Rate (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "115200",
+        "1": "57600",
+        "2": "56000",
+        "3": "38400",
+        "4": "19200",
+        "5": "14400",
+        "6": "9600"
+      },
+      "description": "ModBus RTU Baud Rate."
+    },
+    {
+      "name": "Main breaker current limit",
+      "group": "Information",
+      "area": "holding",
+      "address": 215,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "description": "MainBreaker CurrentLimit."
+    },
+    {
+      "name": "System ON/OFF",
+      "group": "Information",
+      "area": "holding",
+      "address": 218,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "ON",
+        "0": "Off"
+      },
+      "description": "Inverter OutPut Switch."
+    },
+    {
+      "name": "Reset the historical error record (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 219,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "ResetErrorLog."
+    },
+    {
+      "name": "Reset Inverter energy (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 220,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "ResetInverterEnergy."
+    },
+    {
+      "name": "User password",
+      "group": "Information",
+      "area": "holding",
+      "address": 224,
+      "type": "uint16",
+      "access": "R",
+      "description": "User Password."
+    },
+    {
+      "name": "Advance password",
+      "group": "Information",
+      "area": "holding",
+      "address": 225,
+      "type": "uint16",
+      "access": "R",
+      "description": "Advance Password."
+    },
+    {
+      "name": "Switch on SOC (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 228,
+      "type": "uint16",
+      "access": "W",
+      "unit": "%",
+      "description": "Switch OnSOC."
+    },
+    {
+      "name": "Switch off SOC (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 229,
+      "type": "uint16",
+      "access": "W",
+      "unit": "%",
+      "description": "Switch OffSOC."
+    },
+    {
+      "name": "Max. run time (1~60000) (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 230,
+      "type": "uint16",
+      "access": "W",
+      "unit": "min",
+      "description": "MaxRun Time."
+    },
+    {
+      "name": "Min. rest time (1~60000) (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 231,
+      "type": "uint16",
+      "access": "W",
+      "unit": "min",
+      "description": "MinRest Time."
+    },
+    {
+      "name": "Peak shaving mode discharging period 1 power limit (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 238,
+      "type": "uint16",
+      "access": "W",
+      "unit": "W",
+      "description": "Peak Shaving PeriodB PeakLimits 1."
+    },
+    {
+      "name": "Peak shaving mode discharging period 2 power limit (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 239,
+      "type": "uint16",
+      "access": "W",
+      "unit": "W",
+      "description": "Peak Shaving Period DPeak Limits2."
+    },
+    {
+      "name": "Enable (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 240,
+      "type": "uint16",
+      "access": "W",
+      "description": "Peak."
+    },
+    {
+      "name": "Charging (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 241,
+      "type": "uint16",
+      "access": "W",
+      "unit": "W",
+      "description": "Peak."
+    },
+    {
+      "name": "Max. SOC (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 242,
+      "type": "uint16",
+      "access": "W",
+      "unit": "%",
+      "description": "Peak."
+    },
+    {
+      "name": "Peak shaving mode reserved SOC in Period C: 10%~100% (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 243,
+      "type": "uint16",
+      "access": "W",
+      "unit": "%",
+      "description": "Peak."
+    },
+    {
+      "name": "CT Installation Check (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 245,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "CT Installation Check."
+    },
+    {
+      "name": "EVCharger Addr (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 249,
+      "type": "uint16",
+      "access": "W",
+      "description": "EVCharger Addr."
+    },
+    {
+      "name": "AdaptBox Addr (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 251,
+      "type": "uint16",
+      "access": "W",
+      "description": "AdaptBox Addr."
+    },
+    {
+      "name": "Enable period 2 setting in generator mode (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 260,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "Gen Period2 Set Enable."
+    },
+    {
+      "name": "Meter1 ID:",
+      "group": "Information",
+      "area": "holding",
+      "address": 265,
+      "type": "uint16",
+      "access": "R",
+      "description": "Meter1_ID."
+    },
+    {
+      "name": "Meter2 ID:",
+      "group": "Information",
+      "area": "holding",
+      "address": 266,
+      "type": "uint16",
+      "access": "R",
+      "description": "Meter2_ID."
+    },
+    {
+      "name": "Direction MeterCT1",
+      "group": "Information",
+      "area": "holding",
+      "address": 267,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      },
+      "description": "Direction MeterCT1."
+    },
+    {
+      "name": "Direction MeterCT2",
+      "group": "Information",
+      "area": "holding",
+      "address": 268,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Positive",
+        "1": "Negative"
+      },
+      "description": "Direction MeterCT2."
+    },
+    {
+      "name": "Meter CTSelect",
+      "group": "Information",
+      "area": "holding",
+      "address": 277,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Meter",
+        "1": "CT"
+      },
+      "description": "Meter CTSelect."
+    },
+    {
+      "name": "Set the bias power 1-500 (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 281,
+      "type": "uint16",
+      "access": "W",
+      "unit": "W",
+      "description": "BiasPower."
+    },
+    {
+      "name": "485CommF unSelect",
+      "group": "Information",
+      "area": "holding",
+      "address": 318,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Modbus 485",
+        "1": "EV Charger",
+        "2": "DataHub",
+        "3": "Adatpter Box",
+        "4": "EVC & Adapter Box"
+      },
+      "description": "485CommF unSelect."
+    },
+    {
+      "name": "Switch on SOC",
+      "group": "Information",
+      "area": "holding",
+      "address": 321,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Switch OnSOC."
+    },
+    {
+      "name": "Switch off SOC",
+      "group": "Information",
+      "area": "holding",
+      "address": 322,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Switch OffSOC."
+    },
+    {
+      "name": "Max. run time (1~60000)",
+      "group": "Information",
+      "area": "holding",
+      "address": 323,
+      "type": "uint16",
+      "access": "R",
+      "unit": "min",
+      "description": "MaxRun Time."
+    },
+    {
+      "name": "Min. rest time (1~60000)",
+      "group": "Information",
+      "area": "holding",
+      "address": 325,
+      "type": "uint16",
+      "access": "R",
+      "unit": "min",
+      "description": "MinRest Time."
+    },
+    {
+      "name": "Generator Min.",
+      "group": "Information",
+      "area": "holding",
+      "address": 328,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "GenMin Power."
+    },
+    {
+      "name": "Peak shaving mode discharging period 1 power limit",
+      "group": "Information",
+      "area": "holding",
+      "address": 339,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "Peak Shaving PeriodB PeakLimits 1."
+    },
+    {
+      "name": "Peak shaving mode discharging period 2 power limit",
+      "group": "Information",
+      "area": "holding",
+      "address": 340,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "Peak Shaving Period DPeak Limits2."
+    },
+    {
+      "name": "Enable",
+      "group": "Information",
+      "area": "holding",
+      "address": 341,
+      "type": "uint16",
+      "access": "R",
+      "description": "Peak."
+    },
+    {
+      "name": "Charging",
+      "group": "Information",
+      "area": "holding",
+      "address": 342,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "Peak."
+    },
+    {
+      "name": "Max. SOC",
+      "group": "Information",
+      "area": "holding",
+      "address": 343,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Peak."
+    },
+    {
+      "name": "Peak shaving mode reserved SOC in Period C: 10%~100%",
+      "group": "Information",
+      "area": "holding",
+      "address": 344,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Peak."
+    },
+    {
+      "name": "EVCharger Addr",
+      "group": "Information",
+      "area": "holding",
+      "address": 348,
+      "type": "uint16",
+      "access": "R",
+      "description": "EVCharger Addr."
+    },
+    {
+      "name": "AdaptBox Addr",
+      "group": "Information",
+      "area": "holding",
+      "address": 350,
+      "type": "uint16",
+      "access": "R",
+      "description": "AdaptBox Addr."
+    },
+    {
+      "name": "Enable period 2 setting in generator mode",
+      "group": "Information",
+      "area": "holding",
+      "address": 358,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "Gen Period2 Set Enable."
+    },
+    {
+      "name": "Charge from",
+      "group": "Information",
+      "area": "holding",
+      "address": 363,
+      "type": "uint16",
+      "access": "R",
+      "description": "Charge FromGen Enable."
+    },
+    {
+      "name": "Charge from (Charge FromGen Charge SOC)",
+      "group": "Information",
+      "area": "holding",
+      "address": 364,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Charge FromGen Charge SOC."
+    },
+    {
+      "name": "VPP mode number (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 416,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "VPP Disable",
+        "1": "Power Control Mode",
+        "2": "Electric Quantity Target Control Mode",
+        "3": "SOC Target Control Mode",
+        "4": "Push Power - Positive/Negative Mode",
+        "5": "Push Power - Zero Mode",
+        "6": "Self-Consume - Charge/Discharge Mode",
+        "7": "Self-Consume - Charge Only Mode",
+        "8": "PV&BAT Individual Setting – Duration Mode",
+        "9": "PV&BAT Individual Setting – Target SOC Mode"
+      },
+      "description": "VPP Mode Num."
+    },
+    {
+      "name": "New VPP mode execution behavior: (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 417,
+      "type": "uint16",
+      "access": "W",
+      "description": "Exec Mode."
+    },
+    {
+      "name": "Target active power value at the inverter's AC port (positive for absorbing acti (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 418,
+      "type": "int32",
+      "access": "W",
+      "unit": "W",
+      "description": "AcW Target (LSB)."
+    },
+    {
+      "name": "Target reactive power value at the inverter's AC port (positive for absorbing re (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 420,
+      "type": "int32",
+      "access": "W",
+      "unit": "W",
+      "description": "AcVar Target (LSB)."
+    },
+    {
+      "name": "ExecDuration represents the execution time of the mode. If the mode defines a Wa (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 422,
+      "type": "uint16",
+      "access": "W",
+      "unit": "s",
+      "description": "Exec Duration."
+    },
+    {
+      "name": "If the duration in the mode, ExecDuration, is reached, or other control targets  (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 423,
+      "type": "uint16",
+      "access": "W",
+      "unit": "s",
+      "description": "WaitTime out."
+    },
+    {
+      "name": "Battery1 heating level (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 522,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Low",
+        "1": "Medium",
+        "2": "High"
+      },
+      "description": "Bat1Heat Level."
+    },
+    {
+      "name": "Battery2 heating level (write)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 523,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "Low",
+        "1": "Medium",
+        "2": "High"
+      },
+      "description": "Bat2Heat Level."
+    },
+    {
+      "name": "BMS1 Number",
+      "group": "Information",
+      "area": "holding",
+      "address": 768,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Subsystem_ Num."
+    },
+    {
+      "name": "BMS1 Master Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 769,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Master Version."
+    },
+    {
+      "name": "BMS1 Slave1 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 770,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave1 Version."
+    },
+    {
+      "name": "BMS1 Slave2 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 771,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave2 Version."
+    },
+    {
+      "name": "BMS1 Slave3 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 772,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave3 Version."
+    },
+    {
+      "name": "BMS1 Slave4 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 773,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave4 Version."
+    },
+    {
+      "name": "BMS1 Slave5 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 774,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave5 Version."
+    },
+    {
+      "name": "BMS1 Slave6 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 775,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave6 Version."
+    },
+    {
+      "name": "BMS1 Slave7 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 776,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave7 Version."
+    },
+    {
+      "name": "BMS1 Slave8 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 777,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave8 Version."
+    },
+    {
+      "name": "BMS1 Slave9 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 778,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave9 Version."
+    },
+    {
+      "name": "BMS1 Slave10 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 779,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave10 Version."
+    },
+    {
+      "name": "BMS1 Slave11 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 780,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave11 Version."
+    },
+    {
+      "name": "BMS1 Slave12 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 781,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave12 Version."
+    },
+    {
+      "name": "BMS1 Slave13 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 782,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS1_Slave13 Version."
+    },
+    {
+      "name": "BMS2 Number",
+      "group": "Information",
+      "area": "holding",
+      "address": 896,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS2_Subsystem_ Num."
+    },
+    {
+      "name": "BMS2 Slave7 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 904,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS2_Slave7 Version."
+    },
+    {
+      "name": "BMS2 Slave8 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 905,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS2_Slave8 Version."
+    },
+    {
+      "name": "BMS2 Slave9 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 906,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS2_Slave9 Version."
+    },
+    {
+      "name": "BMS2 Slave10 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 907,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS2_Slave10 Version."
+    },
+    {
+      "name": "BMS2 Slave11 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 908,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS2_Slave11 Version."
+    },
+    {
+      "name": "BMS2 Slave12 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 909,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS2_Slave12 Version."
+    },
+    {
+      "name": "BMS2 Slave13 Version",
+      "group": "Information",
+      "area": "holding",
+      "address": 910,
+      "type": "uint16",
+      "access": "R",
+      "description": "BMS2_Slave13 Version."
+    },
+    {
+      "name": "Battery1 heating level",
+      "group": "Information",
+      "area": "holding",
+      "address": 1034,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Low",
+        "1": "Medium",
+        "2": "High"
+      },
+      "description": "Bat1Heat Level."
+    },
+    {
+      "name": "Battery2 heating level",
+      "group": "Information",
+      "area": "holding",
+      "address": 1035,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Low",
+        "1": "Medium",
+        "2": "High"
+      },
+      "description": "Bat2Heat Level."
+    },
+    {
+      "name": "On-Grid current for single-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "GridCurrent (X1)."
+    },
+    {
+      "name": "On-Grid active power for single-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 2,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "GridPower (X1)."
+    },
+    {
+      "name": "PV1 Voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "PvVoltage1."
+    },
+    {
+      "name": "PV2 Voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "PvVoltage2."
+    },
+    {
+      "name": "PV1 Current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "PvCurrent1."
+    },
+    {
+      "name": "PV2 Current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "PvCurrent2."
+    },
+    {
+      "name": "On-Grid frequency for single-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "GridFrequency (X1)."
+    },
+    {
+      "name": "PV1 Power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "PvPower1."
+    },
+    {
+      "name": "PV2 Power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "PvPower2."
+    },
+    {
+      "name": "BMS1 voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 20,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "BatVoltageCharge1."
+    },
+    {
+      "name": "BMS1 current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 21,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "BatCurrentCharge1."
+    },
+    {
+      "name": "BMS1 power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 22,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "BatpowerCharge1."
+    },
+    {
+      "name": "BMS1ConnectState",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disconnected",
+        "1": "Connected"
+      },
+      "description": "BMS1ConnectState."
+    },
+    {
+      "name": "BMS1 ambient temperature",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 24,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Bat1Temperature."
+    },
+    {
+      "name": "BMS charging and discharging status",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 25,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Discharge",
+        "1": "Charge",
+        "2": "Stop"
+      },
+      "description": "BDCStatus."
+    },
+    {
+      "name": "Total PV number, indicating the number of all PV strings of the inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 27,
+      "type": "uint16",
+      "access": "R",
+      "description": "MPPTCount."
+    },
+    {
+      "name": "BMS1 SOC",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 28,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Battery1Capacity."
+    },
+    {
+      "name": "BMS2ConnectState",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 31,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disconnected",
+        "1": "Connected"
+      },
+      "description": "BMS2ConnectState."
+    },
+    {
+      "name": "Today's Bat Discharge energy (Inverter Bat Port)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 32,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "Bat Discharge Energy Today."
+    },
+    {
+      "name": "Today's Bat Charge energy (Inverter Bat Port)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 35,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "Bat Charge Energy Today."
+    },
+    {
+      "name": "BMS1 charge Max. current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "BMS1_ChargeMax Current."
+    },
+    {
+      "name": "BMS1 discharge Max. current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 37,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "BMS1_DischargeMax Current."
+    },
+    {
+      "name": "BMS1 battery capacity",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 38,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "BMS1_Battery Capacity."
+    },
+    {
+      "name": "PV4 Voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 40,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "PvVoltage4."
+    },
+    {
+      "name": "PV5 Voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 41,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "PvVoltage5."
+    },
+    {
+      "name": "PV6 Voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 42,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "PvVoltage6."
+    },
+    {
+      "name": "PV4 Current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 43,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "PvCurrent4."
+    },
+    {
+      "name": "PV5 Current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 44,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "PvCurrent5."
+    },
+    {
+      "name": "PV6 Current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 45,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "PvCurrent6."
+    },
+    {
+      "name": "PV4 Power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 46,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "PvPower4."
+    },
+    {
+      "name": "PV5 Power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 47,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "PvPower5."
+    },
+    {
+      "name": "PV6 Power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 48,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "PvPower6."
+    },
+    {
+      "name": "Total SOC of battery system",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 60,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "BatSystemSOC."
+    },
+    {
+      "name": "Total SOH of battery system",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 61,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "BatSystemSOH."
+    },
+    {
+      "name": "Off-Grid current for single-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 77,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "OffGridCurrent(X1)."
+    },
+    {
+      "name": "Off-Grid power for single-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 78,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "description": "OffGridPower (X1)."
+    },
+    {
+      "name": "Off-Grid frequency for inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 79,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "OffGrid Frequency."
+    },
+    {
+      "name": "Unlock Status allows parameter configuration",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 84,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Locked",
+        "1": "Unlocked"
+      },
+      "description": "InverterLock State."
+    },
+    {
+      "name": "R-phase On-Grid reactive power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 100,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "description": "GridReactive Power_R."
+    },
+    {
+      "name": "S-phase On-Grid reactive power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 101,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "description": "GridReactive Power_S."
+    },
+    {
+      "name": "T-phase On-Grid reactive power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 102,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "description": "GridReactive Power_T."
+    },
+    {
+      "name": "R-phase On-Grid apparent power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 103,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "description": "GridApparent Power_R."
+    },
+    {
+      "name": "S-phase On-Grid apparent power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "description": "GridApparent Power_S."
+    },
+    {
+      "name": "T-phase On-Grid apparent power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 105,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "description": "GridApparent Power_T."
+    },
+    {
+      "name": "R-phase On-Grid voltage for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 106,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "GridVoltage_R (X3)."
+    },
+    {
+      "name": "R-phase On-Grid current for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 107,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "GridCurrent_R (X3)."
+    },
+    {
+      "name": "R-phase On-Grid active power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 108,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "GridPower_R (X3)."
+    },
+    {
+      "name": "R-phase On-Grid frequency for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 109,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "GridFrequency_R(X3)."
+    },
+    {
+      "name": "S-phase On-Grid voltage for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "GridVoltage_S (X3)."
+    },
+    {
+      "name": "S-phase On-Grid current for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 111,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "GridCurrent_S (X3)."
+    },
+    {
+      "name": "S-phase On-Grid active power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 112,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "GridPower_S (X3)."
+    },
+    {
+      "name": "R-phase On-Grid frequency for three-phase inverter (GridFrequency_S(X3))",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 113,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "GridFrequency_S(X3)."
+    },
+    {
+      "name": "T-phase On-Grid voltage for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 114,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "GridVoltage_T (X3)."
+    },
+    {
+      "name": "T-phase On-Grid current for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 115,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "GridCurrent_T (X3)."
+    },
+    {
+      "name": "T-phase On-Grid active power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 116,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "GridPower_T (X3)."
+    },
+    {
+      "name": "T-phase On-Grid frequency for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 117,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "GridFrequency_T(X3)."
+    },
+    {
+      "name": "R-phase Off-Grid voltage for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 118,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "OffGridVolt_R (X3)."
+    },
+    {
+      "name": "R-phase Off-Grid current for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 119,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "OffGridCurrent_R(X3)."
+    },
+    {
+      "name": "R-phase Off-Grid active power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 120,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "OffGridPower_R(X3)."
+    },
+    {
+      "name": "R-phase Off-Grid apparent power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 121,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "description": "OffGridPower Apparent_R (X3)."
+    },
+    {
+      "name": "S-phase Off-Grid voltage for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 122,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "OffGridVolt_S (X3)."
+    },
+    {
+      "name": "S-phase Off-Grid current for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 123,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "OffGridCurrent_S(X3)."
+    },
+    {
+      "name": "S-phase Off-Grid active power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 124,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "OffGridPower_S(X3)."
+    },
+    {
+      "name": "S-phase Off-Grid apparent power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 125,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "description": "OffGridPower Apparent _S(X3)."
+    },
+    {
+      "name": "T-phase Off-Grid voltage for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 126,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "OffGridVolt_T (X3)."
+    },
+    {
+      "name": "T-phase Off-Grid current for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 127,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "OffGridCurrent_T(X3)."
+    },
+    {
+      "name": "T-phase Off-Grid active power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 128,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "OffGridPower_T(X3)."
+    },
+    {
+      "name": "T-phase Off-Grid apparent power for three-phase inverter",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 129,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "description": "OffGridPower Apparent_T (X3)."
+    },
+    {
+      "name": "Today's On-Grid input energy (Inverter GRID Port)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 145,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "EchargeToday."
+    },
+    {
+      "name": "Today's PV energy (Inverter PV Port)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 150,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "SolarEnergy Today."
+    },
+    {
+      "name": "Communication Sate of Meter1",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 184,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Com Error",
+        "1": "Normal"
+      },
+      "description": "Meter1_CommunicationSate."
+    },
+    {
+      "name": "BMS1 cell high temperature",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 186,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C",
+      "description": "BMS1_CellTemp High."
+    },
+    {
+      "name": "BMS1 cell low temperature",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 187,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C",
+      "description": "BMS1_CellTempLow."
+    },
+    {
+      "name": "BMS1 cell high voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 188,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "V",
+      "description": "BMS1_CellVoltage High."
+    },
+    {
+      "name": "BMS1 cell low voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 189,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "V",
+      "description": "BMS1_CellVoltage Low."
+    },
+    {
+      "name": "BMS1 SOH",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 191,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "BMS1_SOH."
+    },
+    {
+      "name": "Total grid power factor (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 196,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "GridPower Factor Total_Meter."
+    },
+    {
+      "name": "R-phase grid power factor (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 197,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "GridPower Factor_R_ Meter."
+    },
+    {
+      "name": "S-phase grid power factor (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 198,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "GridPower Factor_S_ Meter."
+    },
+    {
+      "name": "T-phase grid power factor (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 199,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "GridPower Factor_T_ Meter."
+    },
+    {
+      "name": "Grid frequency (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 200,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "GridFrequencyMeter."
+    },
+    {
+      "name": "Total grid voltage (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 201,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "GridVoltage TotalMeter."
+    },
+    {
+      "name": "R-phase grid voltage (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 202,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "GridVoltage_R_Meter."
+    },
+    {
+      "name": "S-phase grid voltage (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 203,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "GridVoltage_S_Meter."
+    },
+    {
+      "name": "T-phase grid voltage (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 204,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "GridVoltage_T_Meter."
+    },
+    {
+      "name": "Total grid current (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 205,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "GridCurrent TotalMeter."
+    },
+    {
+      "name": "R-phase grid current (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 206,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "GridCurrent_R_Meter."
+    },
+    {
+      "name": "S-phase grid current (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 207,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "GridCurrent_S_Meter."
+    },
+    {
+      "name": "T-phase grid current (Meter or CT)",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 208,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "GridCurrent_T_Meter."
+    },
+    {
+      "name": "PV3 Voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 290,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "PvVoltage3."
+    },
+    {
+      "name": "PV3 Current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 291,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "PvCurrent3."
+    },
+    {
+      "name": "PV3 Power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 292,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "PvPower3."
+    },
+    {
+      "name": "BMS2 voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 295,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "BatVoltageCharge2."
+    },
+    {
+      "name": "BMS2 current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 296,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "BatCurrentCharge2."
+    },
+    {
+      "name": "BMS2 power",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 297,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "BatpowerCharge2."
+    },
+    {
+      "name": "BMS2 SOC",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 301,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Battery2Capacity."
+    },
+    {
+      "name": "BMS2 ambient temperature",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 305,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Bat2Temperature."
+    },
+    {
+      "name": "Battery current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 508,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "BatCurrent All."
+    },
+    {
+      "name": "BMS2 cell high temperature",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 768,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C",
+      "description": "Battery2_TempHigh."
+    },
+    {
+      "name": "BMS2 cell low temperature",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 769,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C",
+      "description": "Battery2_TempLow."
+    },
+    {
+      "name": "BMS2 cell high voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 770,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "V",
+      "description": "Bat2_CellVoltage High."
+    },
+    {
+      "name": "BMS2 cell low voltage",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 771,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "V",
+      "description": "Bat2_CellVoltage Low."
+    },
+    {
+      "name": "BMS2 charge Max. current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 777,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "BMS2_ChgMax Current."
+    },
+    {
+      "name": "BMS2 discharge Max. current",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 778,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "BMS2_DischgMax Current."
+    },
+    {
+      "name": "BMS2 SOH",
+      "group": "Real-time data",
+      "area": "input",
+      "address": 785,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "BMS2_SOH."
+    }
+  ]
+}
