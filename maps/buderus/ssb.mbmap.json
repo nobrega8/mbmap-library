@@ -1,0 +1,1266 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Buderus",
+  "model": "SSB",
+  "models": [
+    "SSB"
+  ],
+  "vendor_website": "buderus.us",
+  "description": "SSB condensing boilers, Modbus RTU: state, status and error code, pumps, temperatures, firing rate, flame current, ignition and burn hour counters, lockout and blocking history, cascade dependents and setpoints",
+  "revision": 1,
+  "source": "Buderus (Bosch Thermotechnology), Modbus for Buderus SSB boilers, Installation and Service Instructions, 6720818450 (2015/10) US",
+  "sources": [
+    {
+      "title": "Modbus for Buderus SSB boilers",
+      "version": "6720818450 (2015/10) US",
+      "url": "https://www.bosch-homecomfort.com/us/media/country_pool/service/technical_guides/6720818450_ssb_boiler_modbus_installation_instructions_en_10.2015_us_us.pdf",
+      "note": "chapters 3-5",
+      "accessed": "2026-11-15",
+      "sha256": "ebc5857516707d858af71c92a849943a32f6a2d33c3bbca1a64f2f477f313bdd"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS485: 9600 bit/s, 8 data bits, no parity, 2 stop bits (1 configurable), address 1 by default.",
+    "Addresses are those of the manual, counted from 0 (the manual adds 1 for software that counts from 1).",
+    "Before any write, set the write enable bit (register 99, bit 0); it clears after the write or after 4 s.",
+    "Temperatures, percentages, pressures and flame current are sent multiplied by 10. Temperatures follow the unit selection in register 98.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "state": {
+      "0": "Reset 0",
+      "1": "Reset (start-up)",
+      "2": "Standby",
+      "3": "Pre-purge init",
+      "4": "Pre-purge",
+      "5": "Safety relay test on",
+      "6": "Safety relay test off",
+      "7": "Ignition 0",
+      "8": "Ignition 1",
+      "9": "Burning",
+      "10": "Shutdown relay test init",
+      "11": "Shutdown relay test",
+      "12": "Post-purge init",
+      "13": "Post-purge",
+      "14": "CH pump init",
+      "15": "CH pumping",
+      "16": "DHW pump init",
+      "17": "DHW pumping",
+      "18": "Lockout",
+      "19": "Blocking",
+      "20": "Rebooting",
+      "21": "Clear E2PROM error",
+      "22": "Store blocking error",
+      "23": "Wait"
+    },
+    "status": {
+      "0": "Standby",
+      "10": "Lockout",
+      "14": "Blocked",
+      "15": "Frost protection",
+      "16": "CH demand",
+      "17": "Resetting",
+      "18": "Storage demand",
+      "19": "DHW tap demand",
+      "20": "DHW pre-heat",
+      "21": "Storage hold warm",
+      "22": "General pumping"
+    },
+    "errors": {
+      "1": "Ignit Error",
+      "2": "Gv Relay Error",
+      "3": "Gv Relay Not Open",
+      "4": "Gv Relay Not Close",
+      "5": "Safety Relay Error",
+      "6": "Safety Relay Open",
+      "7": "Safety Relay Closed",
+      "11": "Blocking Too Long Error",
+      "12": "Fan Error",
+      "13": "Ram Error",
+      "14": "Wrong E2prom Signature",
+      "15": "X Ram Error",
+      "16": "E2Prom Error",
+      "17": "E2Prom Error C",
+      "18": "E2Prom Error Cal Table",
+      "19": "State Error",
+      "20": "Rom Error",
+      "21": "Rom Error C",
+      "22": "Air Sw Not Open",
+      "23": "15Ms Xrl Error",
+      "24": "Air Sw Not Closed",
+      "25": "T Max Lock Error",
+      "26": "Stack Error",
+      "27": "Flame Out Too Late Error",
+      "28": "Flame Error 1",
+      "29": "20Ms Xrl Error",
+      "30": "41Ms Error",
+      "31": "Too Many Flame Failures",
+      "32": "Flow Switch Not Closed Error",
+      "33": "Flow Switch Not Open Error",
+      "34": "Flag Byte Integrity Error",
+      "35": "Ad Hi Cpl Error",
+      "36": "Ad Lo Cpl Error",
+      "37": "Register Error",
+      "45": "WD Error Ram",
+      "46": "WD Error Rom",
+      "47": "WD Error Stack",
+      "48": "WD Error Register",
+      "49": "WD Error Xrl",
+      "50": "Refhi Too Lo Error",
+      "51": "Refhi Too Hi Error",
+      "52": "Reflo Too Lo Error",
+      "53": "Reflo Too Hi Error",
+      "54": "Flame Error 2",
+      "55": "Water Level Detect",
+      "56": "Water Level Meas",
+      "57": "Low Water Cutoff Error",
+      "58": "Low Water Pressure Error",
+      "59": "Low Water Pressure Sensor",
+      "60": "Flue Gas Error",
+      "61": "Return Temp Error",
+      "62": "Blocked Drain Error",
+      "64": "Wd Freq Error",
+      "65": "Phase Error",
+      "66": "Net Freq Error",
+      "67": "Faulty Earth Error",
+      "68": "WD Communication Error",
+      "70": "Overheat Error",
+      "72": "T Supply Open",
+      "73": "T Return Open",
+      "76": "T Dhw Out Open",
+      "80": "T Supply Shorted",
+      "81": "T Return Shorted",
+      "84": "T Dhw Out Shorted",
+      "86": "T Flue Shorted",
+      "87": "Reset Button Error",
+      "93": "Appliance Selection",
+      "107": "Gas Pressure Error",
+      "108": "Flue Press Error"
+    }
+  },
+  "registers": [
+    {
+      "name": "Unit selection: °F",
+      "group": "Control",
+      "area": "holding",
+      "address": 98,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW",
+      "description": "0 = °C, 1 = °F; for reading and writing."
+    },
+    {
+      "name": "Unit selection: psi",
+      "group": "Control",
+      "area": "holding",
+      "address": 98,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW",
+      "description": "0 = bar, 1 = psi."
+    },
+    {
+      "name": "Write enable",
+      "group": "Control",
+      "area": "holding",
+      "address": 99,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW",
+      "description": "Set before each write; cleared after the write or 4 s without communication."
+    },
+    {
+      "name": "Controller reset",
+      "group": "Control",
+      "area": "holding",
+      "address": 99,
+      "type": "bool",
+      "bit": 14,
+      "access": "RW",
+      "description": "Set to reset the controller from lockout; cleared automatically."
+    },
+    {
+      "name": "State",
+      "group": "Status",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "R",
+      "enum": "state"
+    },
+    {
+      "name": "Status",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "R",
+      "enum": "status"
+    },
+    {
+      "name": "Error Code",
+      "group": "Status",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "CH pump",
+      "group": "Status",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0/100 (on/off pump) or 0-100 % (modulating pump)."
+    },
+    {
+      "name": "DHW pump",
+      "group": "Status",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0/100 (on/off pump) or 0-100 % (modulating pump)."
+    },
+    {
+      "name": "General pump",
+      "group": "Status",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0/100 (on/off pump) or 0-100 % (modulating pump)."
+    },
+    {
+      "name": "Supply temperature",
+      "group": "Sensors",
+      "area": "holding",
+      "address": 120,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Return temperature",
+      "group": "Sensors",
+      "area": "holding",
+      "address": 121,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "DHW temperature",
+      "group": "Sensors",
+      "area": "holding",
+      "address": 122,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Flue gas temperature",
+      "group": "Sensors",
+      "area": "holding",
+      "address": 123,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "System (Heat exchanger) temperature (if available)",
+      "group": "Sensors",
+      "area": "holding",
+      "address": 124,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Outside temperature (if available)",
+      "group": "Sensors",
+      "area": "holding",
+      "address": 125,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Firing Rate (power output)",
+      "group": "Sensors",
+      "area": "holding",
+      "address": 140,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Flame (ionization) current",
+      "group": "Sensors",
+      "area": "holding",
+      "address": 142,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "µA"
+    },
+    {
+      "name": "Successful ignition counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 200,
+      "type": "uint16",
+      "access": "R",
+      "scale": 16,
+      "description": "Counted in steps of 16."
+    },
+    {
+      "name": "Failed ignition counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Flame failure counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Burn hours CH",
+      "group": "Counters",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Burn hours DHW",
+      "group": "Counters",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "First Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 220,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Second Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 221,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Third Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 222,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "4th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 223,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "5th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 224,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "6th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 225,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "7th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 226,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "8th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 227,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "9th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 228,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "10th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 229,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "11th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 230,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "12th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 231,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "13th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 232,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "14th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 233,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "15th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 234,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "16th Lockout in history",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 235,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Time after First Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 236,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after Second Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 237,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after Third Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 238,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 4th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 239,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 5th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 240,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 6th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 241,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 7th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 242,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 8th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 243,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 9th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 244,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 10th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 245,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 11th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 246,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 12th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 247,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 13th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 248,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 14th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 249,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 15th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 250,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 16th Lockout",
+      "group": "Lockout history",
+      "area": "holding",
+      "address": 251,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "First Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 260,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Second Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 261,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Third Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 262,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "4th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 263,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "5th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 264,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "6th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 265,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "7th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 266,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "8th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 267,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "9th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 268,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "10th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 269,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "11th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 270,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "12th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 271,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "13th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 272,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "14th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 273,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "15th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 274,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "16th Blocking in history",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 275,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Time after First Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 276,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after Second Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 277,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after Third Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 278,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 4th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 279,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 5th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 280,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 6th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 281,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 7th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 282,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 8th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 283,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 9th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 284,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 10th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 285,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 11th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 286,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 12th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 287,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 13th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 288,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 14th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 289,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 15th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 290,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Time after 16th Blocking",
+      "group": "Blocking history",
+      "area": "holding",
+      "address": 291,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Dependent 01: State",
+      "group": "Dependent 01",
+      "area": "holding",
+      "address": 300,
+      "type": "uint16",
+      "access": "R",
+      "enum": "state"
+    },
+    {
+      "name": "Dependent 01: Error Code",
+      "group": "Dependent 01",
+      "area": "holding",
+      "address": 302,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Dependent 01: Firing Rate (power output)",
+      "group": "Dependent 01",
+      "area": "holding",
+      "address": 303,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Dependent 02: State",
+      "group": "Dependent 02",
+      "area": "holding",
+      "address": 306,
+      "type": "uint16",
+      "access": "R",
+      "enum": "state"
+    },
+    {
+      "name": "Dependent 02: Error Code",
+      "group": "Dependent 02",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Dependent 02: Firing Rate (power output)",
+      "group": "Dependent 02",
+      "area": "holding",
+      "address": 309,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Dependent 03: State",
+      "group": "Dependent 03",
+      "area": "holding",
+      "address": 312,
+      "type": "uint16",
+      "access": "R",
+      "enum": "state"
+    },
+    {
+      "name": "Dependent 03: Error Code",
+      "group": "Dependent 03",
+      "area": "holding",
+      "address": 314,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Dependent 03: Firing Rate (power output)",
+      "group": "Dependent 03",
+      "area": "holding",
+      "address": 315,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Dependent 04: State",
+      "group": "Dependent 04",
+      "area": "holding",
+      "address": 318,
+      "type": "uint16",
+      "access": "R",
+      "enum": "state"
+    },
+    {
+      "name": "Dependent 04: Error Code",
+      "group": "Dependent 04",
+      "area": "holding",
+      "address": 320,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Dependent 04: Firing Rate (power output)",
+      "group": "Dependent 04",
+      "area": "holding",
+      "address": 321,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Dependent 05: State",
+      "group": "Dependent 05",
+      "area": "holding",
+      "address": 324,
+      "type": "uint16",
+      "access": "R",
+      "enum": "state"
+    },
+    {
+      "name": "Dependent 05: Error Code",
+      "group": "Dependent 05",
+      "area": "holding",
+      "address": 326,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Dependent 05: Firing Rate (power output)",
+      "group": "Dependent 05",
+      "area": "holding",
+      "address": 327,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Dependent 06: State",
+      "group": "Dependent 06",
+      "area": "holding",
+      "address": 330,
+      "type": "uint16",
+      "access": "R",
+      "enum": "state"
+    },
+    {
+      "name": "Dependent 06: Error Code",
+      "group": "Dependent 06",
+      "area": "holding",
+      "address": 332,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Dependent 06: Firing Rate (power output)",
+      "group": "Dependent 06",
+      "area": "holding",
+      "address": 333,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Dependent 07: State",
+      "group": "Dependent 07",
+      "area": "holding",
+      "address": 336,
+      "type": "uint16",
+      "access": "R",
+      "enum": "state"
+    },
+    {
+      "name": "Dependent 07: Error Code",
+      "group": "Dependent 07",
+      "area": "holding",
+      "address": 338,
+      "type": "uint16",
+      "access": "R",
+      "enum": "errors"
+    },
+    {
+      "name": "Dependent 07: Firing Rate (power output)",
+      "group": "Dependent 07",
+      "area": "holding",
+      "address": 339,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "CH mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 500,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "DHW mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 501,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "CH set-point",
+      "group": "Settings",
+      "area": "holding",
+      "address": 502,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "DHW set-point",
+      "group": "Settings",
+      "area": "holding",
+      "address": 503,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Reset Curve Boiler Design",
+      "group": "Settings",
+      "area": "holding",
+      "address": 504,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Reset Curve Boiler Mild Weather",
+      "group": "Settings",
+      "area": "holding",
+      "address": 505,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Reset Curve Outdoor Mild Weather",
+      "group": "Settings",
+      "area": "holding",
+      "address": 506,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Reset Curve Outdoor Design",
+      "group": "Settings",
+      "area": "holding",
+      "address": 507,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Warm Weather Shutdown",
+      "group": "Settings",
+      "area": "holding",
+      "address": 508,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Reset Curve Boiler Maximum",
+      "group": "Settings",
+      "area": "holding",
+      "address": 509,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Reset Curve Boiler Minimum",
+      "group": "Settings",
+      "area": "holding",
+      "address": 510,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    },
+    {
+      "name": "Night Setback",
+      "group": "Settings",
+      "area": "holding",
+      "address": 511,
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "°C or °F as selected in register 98 (bit 0)."
+    }
+  ]
+}
