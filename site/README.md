@@ -31,3 +31,32 @@ npm run check    # type check
 
 Manufacturer icons are fetched at build time from each map's `vendor_website`, as
 Modbench does, cached in `.cache/vendor-icons/` and served from the site.
+
+## Languages
+
+English lives at the root of the site and every other language under its own
+prefix (`/pt/`). The languages are listed in `src/i18n/locales.ts` and in
+`astro.config.mjs`.
+
+- **Interface text** is in `src/i18n/en.ts` (the source of every string) and one
+  file per language (`src/i18n/pt.ts`). A key missing from a language shows the
+  English text. Strings may hold `{name}` placeholders; nouns that are counted
+  have a `.one` and a `.many` key.
+- **Pages** are written once, in `src/views/`, and rendered by thin routes in
+  `src/pages/` (English) and `src/pages/<locale>/`. A view reads its language
+  from `Astro.currentLocale`; browser scripts read it from `<html data-locale>`
+  (`src/scripts/i18n.ts`).
+- **Guides** are `docs/guides/<slug>.md` in English; a translation goes in
+  `docs/guides/<locale>/<slug>.md` and the site falls back to English for any
+  guide without one. The figures inside the guides (`src/scripts/guide-widgets.ts`)
+  take their text from `src/scripts/guide-widgets-pt.ts`.
+- **Long prose pages** (About, Contribute, Specification, Compatibility, Terms,
+  Privacy) are English only for now: under another language they show a note and
+  are left out of search engines and the sitemap.
+- Register names, descriptions and notes in the maps are data and stay as the
+  map's author wrote them.
+
+To add a language: add it to `LOCALES`, `LOCALE_NAME`, `LOCALE_TAG` and
+`OG_LOCALE` in `src/i18n/locales.ts` and to `astro.config.mjs`, create
+`src/i18n/<locale>.ts` and register it in `src/i18n/index.ts`, and add the
+`src/pages/<locale>/` routes (copy `src/pages/pt/`).
