@@ -1,0 +1,2425 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Fronius",
+  "model": "GEN24 (SunSpec int + SF)",
+  "models": [
+    "Primo GEN24",
+    "Symo GEN24",
+    "Primo GEN24 Plus",
+    "Symo GEN24 Plus"
+  ],
+  "vendor_website": "fronius.com",
+  "description": "Fronius Primo GEN24 and Symo GEN24 (Plus) inverters through SunSpec: integer inverter model (101-103) with scale factors, nameplate, settings, status, controls, multiple MPPT (including the battery inputs) and basic storage control",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "Fronius GEN24 Modbus TCP & RTU operating instructions 42,0410,2649 (034-28092026) and the GEN24 Modbus register maps (Int&SF storage ROW, version 1.2.7-2)",
+  "sources": [
+    {
+      "title": "Fronius GEN24 Modbus TCP & RTU",
+      "version": "42,0410,2649 034-28092026",
+      "url": "https://www.fronius.com/en/~/downloads/Solar%20Energy/Operating%20Instructions/42,0410,2649.pdf",
+      "note": "addressing, device IDs, models, scale factors",
+      "accessed": "2026-11-15",
+      "sha256": "0eb36d8556ff374fab127d608f7002696f42480a4d40cc6e248450f1502e253e"
+    },
+    {
+      "title": "GEN24 Modbus API external docs (Gen24_Primo_Symo_Inverter_Register_Map_Int&SF_storage_ROW.xlsx)",
+      "version": "1.2.7-2",
+      "url": "https://www.fronius.com/~/downloads/Solar%20Energy/Operating%20Instructions/gen24-modbus-api-external-docs.zip",
+      "note": "Register map workbook, Complete Map sheet",
+      "accessed": "2026-11-15",
+      "sha256": "dc4c5d49362ee0c9721f21886f17fa18497e54c4d92bb5cc2c50472deb266b55"
+    }
+  ],
+  "notes": [
+    "Modbus TCP (unit id 1, port 502) or Modbus RTU (slave id set in the inverter web interface, 9600 bps by default). Functions 03, 06 and 16.",
+    "Addresses are the register numbers printed in the manual (1-based): the first register, 40001, is sent on the wire as 40000.",
+    "This is the integer setting (SunSpec models 101-103); the float setting (111-113) uses different register positions and is not covered. The register positions depend on the model type and on the device: find the model by its ID register and use offsets, as the manual advises.",
+    "Scale factors are registers of their own: a value is its register times 10 to the power of the matching scale factor. Values the device cannot provide read as the unavailable value of the type (0xFFFF, -32768, 0xFFFFFFFF).",
+    "The workbook also exists for the US (storage_US), without storage and for the Verto, Tauro and Argeno inverters, each with its own map; those are not covered. The SunSpec 7xx models of the Primo GEN24 208-240 3.8-10.0 kW are described in the manual but not listed here.",
+    "Writing control registers needs 'Inverter control via Modbus' enabled in the web interface.",
+    "Written from the manufacturer's documents; not tested on a device."
+  ],
+  "protocol": "tcp",
+  "port": 502,
+  "unit_id": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "sentinels": {
+    "uint16": {
+      "0xFFFF": "Not available"
+    },
+    "int16": {
+      "-32768": "Not available"
+    },
+    "uint32": {
+      "0xFFFFFFFF": "Not available"
+    }
+  },
+  "registers": [
+    {
+      "name": "SunSpec identifier",
+      "group": "Common",
+      "area": "holding",
+      "address": 40001,
+      "type": "uint32",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a SunSpec Modbus Map. 0x53756e53 ('SunS')"
+    },
+    {
+      "name": "Common ID",
+      "group": "Common",
+      "area": "holding",
+      "address": 40003,
+      "type": "uint16",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a sunspec model common (1). 1"
+    },
+    {
+      "name": "Common L",
+      "group": "Common",
+      "area": "holding",
+      "address": 40004,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of sunspec model common (1). 65"
+    },
+    {
+      "name": "Common Mn",
+      "group": "Common",
+      "area": "holding",
+      "address": 40005,
+      "type": "string",
+      "access": "R",
+      "length": 16,
+      "description": "Manufacturer. Fronius"
+    },
+    {
+      "name": "Common Md",
+      "group": "Common",
+      "area": "holding",
+      "address": 40021,
+      "type": "string",
+      "access": "R",
+      "length": 16,
+      "description": "Device",
+      "role": "model"
+    },
+    {
+      "name": "Common Opt",
+      "group": "Common",
+      "area": "holding",
+      "address": 40037,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "Options. not supported"
+    },
+    {
+      "name": "Common Vr",
+      "group": "Common",
+      "area": "holding",
+      "address": 40045,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "SW version of inverter. e.g. 1.8.10-0",
+      "role": "firmware"
+    },
+    {
+      "name": "Common SN",
+      "group": "Common",
+      "area": "holding",
+      "address": 40053,
+      "type": "string",
+      "access": "R",
+      "length": 16,
+      "description": "Serialnumber of the inverter. e.g. 12345678",
+      "role": "serial"
+    },
+    {
+      "name": "Common DA",
+      "group": "Common",
+      "area": "holding",
+      "address": 40069,
+      "type": "uint16",
+      "access": "R",
+      "description": "Modbus Device Address. 1 - 247"
+    },
+    {
+      "name": "Inverter ID",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40070,
+      "type": "uint16",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a sunspec model inverter (10x). 101, 103"
+    },
+    {
+      "name": "Inverter L",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40071,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of sunspec model inverter (10x). 50"
+    },
+    {
+      "name": "Inverter A",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40072,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Inverter A_SF",
+      "description": "AC Current"
+    },
+    {
+      "name": "Inverter AphA",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40073,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Inverter A_SF",
+      "description": "Phase A Current"
+    },
+    {
+      "name": "Inverter AphB",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40074,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Inverter A_SF",
+      "description": "Phase B Current. This data-point is supported/not-supported depending on the grid connection. "
+    },
+    {
+      "name": "Inverter AphC",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40075,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Inverter A_SF",
+      "description": "Phase C Current. This data-point is supported/not-supported depending on the grid connection. "
+    },
+    {
+      "name": "Inverter A_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40076,
+      "type": "int16",
+      "access": "R",
+      "description": "auto-scaled on A, AphA, AphB, AphC"
+    },
+    {
+      "name": "Inverter PPVphAB",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40077,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Inverter V_SF",
+      "description": "Phase Voltage AB. This data-point is supported/not-supported depending on the grid connection. "
+    },
+    {
+      "name": "Inverter PPVphBC",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40078,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Inverter V_SF",
+      "description": "Phase Voltage BC. This data-point is supported/not-supported depending on the grid connection. "
+    },
+    {
+      "name": "Inverter PPVphCA",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40079,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Inverter V_SF",
+      "description": "Phase Voltage CA. This data-point is supported/not-supported depending on the grid connection. "
+    },
+    {
+      "name": "Inverter PhVphA",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40080,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Inverter V_SF",
+      "description": "Phase Voltage AN"
+    },
+    {
+      "name": "Inverter PhVphB",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40081,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Inverter V_SF",
+      "description": "Phase Voltage BN. This data-point is supported/not-supported depending on the grid connection. "
+    },
+    {
+      "name": "Inverter PhVphC",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40082,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Inverter V_SF",
+      "description": "Phase Voltage CN. This data-point is supported/not-supported depending on the grid connection. "
+    },
+    {
+      "name": "Inverter V_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40083,
+      "type": "int16",
+      "access": "R",
+      "description": "-1"
+    },
+    {
+      "name": "Inverter W",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40084,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Inverter W_SF",
+      "description": "AC Power"
+    },
+    {
+      "name": "Inverter W_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40085,
+      "type": "int16",
+      "access": "R",
+      "description": "auto-scaled on W"
+    },
+    {
+      "name": "Inverter Hz",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40086,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale_factor": "Inverter Hz_SF",
+      "description": "Line Frequency"
+    },
+    {
+      "name": "Inverter Hz_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40087,
+      "type": "int16",
+      "access": "R",
+      "description": "-2"
+    },
+    {
+      "name": "Inverter VA",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40088,
+      "type": "int16",
+      "access": "R",
+      "unit": "VA",
+      "scale_factor": "Inverter VA_SF",
+      "description": "AC Apparent Power"
+    },
+    {
+      "name": "Inverter VA_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40089,
+      "type": "int16",
+      "access": "R",
+      "description": "auto-scaled on VA"
+    },
+    {
+      "name": "Inverter VAr",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40090,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Inverter VAr_SF",
+      "description": "AC Reactive Power"
+    },
+    {
+      "name": "Inverter VAr_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40091,
+      "type": "int16",
+      "access": "R",
+      "description": "auto-scaled on VAr"
+    },
+    {
+      "name": "Inverter PF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40092,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale_factor": "Inverter PF_SF",
+      "description": "AC Power Factor"
+    },
+    {
+      "name": "Inverter PF_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40093,
+      "type": "int16",
+      "access": "R",
+      "description": "-1"
+    },
+    {
+      "name": "Inverter WH",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40094,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh",
+      "scale_factor": "Inverter WH_SF",
+      "description": "AC Energy"
+    },
+    {
+      "name": "Inverter WH_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40096,
+      "type": "int16",
+      "access": "R",
+      "description": "auto-scaled"
+    },
+    {
+      "name": "Inverter DCA",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40097,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Inverter DCA_SF",
+      "description": "DC Current. not supported if the inverter has multiple DC inputs current of DC-strings can be found in MPPT model 160 "
+    },
+    {
+      "name": "Inverter DCA_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40098,
+      "type": "int16",
+      "access": "R",
+      "description": "not supported"
+    },
+    {
+      "name": "Inverter DCV",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40099,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Inverter DCV_SF",
+      "description": "DC Voltage. not supported if the inverter has multiple DC inputs current of DC-strings can be found in MPPT model 160 "
+    },
+    {
+      "name": "Inverter DCV_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40100,
+      "type": "int16",
+      "access": "R",
+      "description": "not supported"
+    },
+    {
+      "name": "Inverter DCW",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40101,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Inverter DCW_SF",
+      "description": "DC Power"
+    },
+    {
+      "name": "Inverter DCW_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40102,
+      "type": "int16",
+      "access": "R",
+      "description": "auto-scaled on DCW"
+    },
+    {
+      "name": "Inverter TmpCab",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40103,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale_factor": "Inverter Tmp_SF",
+      "description": "Cabinet Temperature"
+    },
+    {
+      "name": "Inverter TmpSnk",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40104,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale_factor": "Inverter Tmp_SF",
+      "description": "Heat Sink Temperature. not supported"
+    },
+    {
+      "name": "Inverter TmpTrns",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40105,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale_factor": "Inverter Tmp_SF",
+      "description": "Transformer Temperature. not supported"
+    },
+    {
+      "name": "Inverter TmpOt",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40106,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale_factor": "Inverter Tmp_SF",
+      "description": "Other Temperature. not supported"
+    },
+    {
+      "name": "Inverter Tmp_SF",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40107,
+      "type": "int16",
+      "access": "R",
+      "description": "-1"
+    },
+    {
+      "name": "Inverter St",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40108,
+      "type": "uint16",
+      "access": "R",
+      "description": "Enumerated value.  Operating state. see all states in our Modbus TCP & RTU user manual under SunSpec Operating Codes",
+      "enum": {
+        "1": "Off",
+        "2": "Sleeping",
+        "3": "Starting",
+        "4": "Running (MPPT)",
+        "5": "Throttled",
+        "6": "Shutting down",
+        "7": "Fault",
+        "8": "Standby"
+      }
+    },
+    {
+      "name": "Inverter StVnd",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40109,
+      "type": "uint16",
+      "access": "R",
+      "description": "Vendor specific operating state code. same as register \"St\"",
+      "enum": {
+        "1": "Off",
+        "2": "Sleeping",
+        "3": "Starting",
+        "4": "Running (MPPT)",
+        "5": "Throttled",
+        "6": "Shutting down",
+        "7": "Fault",
+        "8": "Standby"
+      }
+    },
+    {
+      "name": "Inverter Evt1",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40110,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bitmask value. Event fields"
+    },
+    {
+      "name": "Inverter Evt2",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40112,
+      "type": "uint32",
+      "access": "R",
+      "description": "Reserved for future use"
+    },
+    {
+      "name": "Inverter EvtVnd1",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40114,
+      "type": "uint32",
+      "access": "R",
+      "description": "Vendor defined events"
+    },
+    {
+      "name": "Inverter EvtVnd2",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40116,
+      "type": "uint32",
+      "access": "R",
+      "description": "Vendor defined events"
+    },
+    {
+      "name": "Inverter EvtVnd3",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40118,
+      "type": "uint32",
+      "access": "R",
+      "description": "Vendor defined events. not supported"
+    },
+    {
+      "name": "Inverter EvtVnd4",
+      "group": "Inverter",
+      "area": "holding",
+      "address": 40120,
+      "type": "uint32",
+      "access": "R",
+      "description": "Vendor defined events. not supported"
+    },
+    {
+      "name": "Nameplate ID",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40122,
+      "type": "uint16",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a sunspec model nameplate (120). 120"
+    },
+    {
+      "name": "Nameplate L",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40123,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of sunspec model nameplate (120). 26"
+    },
+    {
+      "name": "Nameplate DERTyp",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40124,
+      "type": "uint16",
+      "access": "R",
+      "description": "Type of DER device. Default value is 4 to indicate PV device.. 82 (PV_STOR)"
+    },
+    {
+      "name": "Nameplate WRtg",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40125,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Nameplate WRtg_SF",
+      "description": "Continuous power output capability of the inverter."
+    },
+    {
+      "name": "Nameplate WRtg_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40126,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor. 1"
+    },
+    {
+      "name": "Nameplate VARtg",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40127,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "scale_factor": "Nameplate VARtg_SF",
+      "description": "Continuous Volt-Ampere capability of the inverter."
+    },
+    {
+      "name": "Nameplate VARtg_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40128,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor. 1"
+    },
+    {
+      "name": "Nameplate VArRtgQ1",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40129,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Nameplate VArRtg_SF",
+      "description": "Continuous VAR capability of the inverter in quadrant 1."
+    },
+    {
+      "name": "Nameplate VArRtgQ2",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40130,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Nameplate VArRtg_SF",
+      "description": "Continuous VAR capability of the inverter in quadrant 2."
+    },
+    {
+      "name": "Nameplate VArRtgQ3",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40131,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Nameplate VArRtg_SF",
+      "description": "Continuous VAR capability of the inverter in quadrant 3."
+    },
+    {
+      "name": "Nameplate VArRtgQ4",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40132,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Nameplate VArRtg_SF",
+      "description": "Continuous VAR capability of the inverter in quadrant 4."
+    },
+    {
+      "name": "Nameplate VArRtg_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40133,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor. 1"
+    },
+    {
+      "name": "Nameplate ARtg",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40134,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Nameplate ARtg_SF",
+      "description": "Maximum RMS AC current level capability of the inverter."
+    },
+    {
+      "name": "Nameplate ARtg_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40135,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor. -2"
+    },
+    {
+      "name": "Nameplate PFRtgQ1",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40136,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Nameplate PFRtg_SF",
+      "description": "Minimum power factor capability of the inverter in quadrant 1.. from -1.0 to 0"
+    },
+    {
+      "name": "Nameplate PFRtgQ2",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40137,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Nameplate PFRtg_SF",
+      "description": "Minimum power factor capability of the inverter in quadrant 2.. from 0 to 1.0"
+    },
+    {
+      "name": "Nameplate PFRtgQ3",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40138,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Nameplate PFRtg_SF",
+      "description": "Minimum power factor capability of the inverter in quadrant 3.. from -1.0 to 0"
+    },
+    {
+      "name": "Nameplate PFRtgQ4",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40139,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Nameplate PFRtg_SF",
+      "description": "Minimum power factor capability of the inverter in quadrant 4.. from 0 to 1.0"
+    },
+    {
+      "name": "Nameplate PFRtg_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40140,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor. -3"
+    },
+    {
+      "name": "Nameplate WHRtg",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40141,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Wh",
+      "scale_factor": "Nameplate WHRtg_SF",
+      "description": "Nominal energy rating of storage device."
+    },
+    {
+      "name": "Nameplate WHRtg_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40142,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor"
+    },
+    {
+      "name": "Nameplate AhrRtg",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40143,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Ah",
+      "scale_factor": "Nameplate AhrRtg_SF",
+      "description": "The usable capacity of the battery.  Maximum charge minus minimum charge from a technology capability perspective (Amp-hour capacity rating).. not supported"
+    },
+    {
+      "name": "Nameplate AhrRtg_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40144,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for amp-hour rating.. not supported"
+    },
+    {
+      "name": "Nameplate MaxChaRte",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40145,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Nameplate MaxChaRte_SF",
+      "description": "Maximum rate of energy transfer into the storage device."
+    },
+    {
+      "name": "Nameplate MaxChaRte_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40146,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor. 0"
+    },
+    {
+      "name": "Nameplate MaxDisChaRte",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40147,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Nameplate MaxDisChaRte_SF",
+      "description": "Maximum rate of energy transfer out of the storage device."
+    },
+    {
+      "name": "Nameplate MaxDisChaRte_SF",
+      "group": "Nameplate",
+      "area": "holding",
+      "address": 40148,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor. 0"
+    },
+    {
+      "name": "Settings ID",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40150,
+      "type": "uint16",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a sunspec model settings (121). 121"
+    },
+    {
+      "name": "Settings L",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40151,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of sunspec model settings (121). 30"
+    },
+    {
+      "name": "Settings WMax",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40152,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Settings WMax_SF",
+      "description": "Setting for maximum power output. Default to WRtg."
+    },
+    {
+      "name": "Settings VRef",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40153,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Settings VRef_SF",
+      "description": "Voltage at the PCC."
+    },
+    {
+      "name": "Settings VRefOfs",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40154,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Settings VRefOfs_SF",
+      "description": "Offset  from PCC to inverter.. 0.0"
+    },
+    {
+      "name": "Settings VMax",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40155,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Settings VMinMax_SF",
+      "description": "Setpoint for maximum voltage.. not supported"
+    },
+    {
+      "name": "Settings VMin",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40156,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Settings VMinMax_SF",
+      "description": "Setpoint for minimum voltage.. not supported"
+    },
+    {
+      "name": "Settings VAMax",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40157,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA",
+      "scale_factor": "Settings VAMax_SF",
+      "description": "Setpoint for maximum apparent power. Default to VARtg.. same as nameplate.VARtg"
+    },
+    {
+      "name": "Settings VArMaxQ1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40158,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Settings VArMax_SF",
+      "description": "Setting for maximum reactive power in quadrant 1. Default to VArRtgQ1.. same as nameplate.VArRtgQ1"
+    },
+    {
+      "name": "Settings VArMaxQ2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40159,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Settings VArMax_SF",
+      "description": "Setting for maximum reactive power in quadrant 2. Default to VArRtgQ2.. same as nameplate.VArRtgQ2"
+    },
+    {
+      "name": "Settings VArMaxQ3",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40160,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Settings VArMax_SF",
+      "description": "Setting for maximum reactive power in quadrant 3. Default to VArRtgQ3.. same as nameplate.VArRtgQ3"
+    },
+    {
+      "name": "Settings VArMaxQ4",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40161,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Settings VArMax_SF",
+      "description": "Setting for maximum reactive power in quadrant 4. Default to VArRtgQ4.. same as nameplate.VArRtgQ4"
+    },
+    {
+      "name": "Settings WGra",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40162,
+      "type": "uint16",
+      "access": "R",
+      "scale_factor": "Settings WGra_SF",
+      "description": "Default ramp rate of change of active power due to command or internal action.. not supported"
+    },
+    {
+      "name": "Settings PFMinQ1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40163,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Settings PFMin_SF",
+      "description": "Setpoint for minimum power factor value in quadrant 1. Default to PFRtgQ1.. same as nameplate.PFRtgQ1"
+    },
+    {
+      "name": "Settings PFMinQ2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40164,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Settings PFMin_SF",
+      "description": "Setpoint for minimum power factor value in quadrant 2. Default to PFRtgQ2.. same as nameplate.PFRtgQ2"
+    },
+    {
+      "name": "Settings PFMinQ3",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40165,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Settings PFMin_SF",
+      "description": "Setpoint for minimum power factor value in quadrant 3. Default to PFRtgQ3.. same as nameplate.PFRtgQ3"
+    },
+    {
+      "name": "Settings PFMinQ4",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40166,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Settings PFMin_SF",
+      "description": "Setpoint for minimum power factor value in quadrant 4. Default to PFRtgQ4.. same as nameplate.PFRtgQ4"
+    },
+    {
+      "name": "Settings VArAct",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40167,
+      "type": "uint16",
+      "access": "R",
+      "description": "VAR action on change between charging and discharging: 1=switch 2=maintain VAR characterization.. not supported"
+    },
+    {
+      "name": "Settings ClcTotVA",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40168,
+      "type": "uint16",
+      "access": "R",
+      "description": "Calculation method for total apparent power. 1=vector 2=arithmetic.. not supported"
+    },
+    {
+      "name": "Settings MaxRmpRte",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40169,
+      "type": "uint16",
+      "access": "R",
+      "scale_factor": "Settings MaxRmpRte_SF",
+      "description": "Setpoint for maximum ramp rate as percentage of nominal maximum ramp rate. This setting will limit the rate that watts delivery to the grid can increase or decrease in response to intermittent PV generation.. not supported"
+    },
+    {
+      "name": "Settings ECPNomHz",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40170,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale_factor": "Settings ECPNomHz_SF",
+      "description": "Setpoint for nominal frequency at the ECP.. not supported"
+    },
+    {
+      "name": "Settings ConnPh",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40171,
+      "type": "uint16",
+      "access": "R",
+      "description": "Identity of connected phase for single phase inverters. A=1 B=2 C=3.. not supported"
+    },
+    {
+      "name": "Settings WMax_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40172,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for real power.. 1"
+    },
+    {
+      "name": "Settings VRef_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40173,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for voltage at the PCC.. 0"
+    },
+    {
+      "name": "Settings VRefOfs_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40174,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for offset voltage.. 0"
+    },
+    {
+      "name": "Settings VMinMax_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40175,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for min/max voltages.. not supported"
+    },
+    {
+      "name": "Settings VAMax_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40176,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for apparent power.. 1"
+    },
+    {
+      "name": "Settings VArMax_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40177,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for reactive power.. 1"
+    },
+    {
+      "name": "Settings WGra_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40178,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for default ramp rate.. not supported"
+    },
+    {
+      "name": "Settings PFMin_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40179,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for minimum power factor.. -3"
+    },
+    {
+      "name": "Settings MaxRmpRte_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40180,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for maximum ramp percentage.. not supported"
+    },
+    {
+      "name": "Settings ECPNomHz_SF",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40181,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for nominal frequency.. not supported"
+    },
+    {
+      "name": "Status ID",
+      "group": "Status",
+      "area": "holding",
+      "address": 40182,
+      "type": "uint16",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a sunspec model status (122). 122"
+    },
+    {
+      "name": "Status L",
+      "group": "Status",
+      "area": "holding",
+      "address": 40183,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of sunspec model status (122). 44"
+    },
+    {
+      "name": "Status PVConn",
+      "group": "Status",
+      "area": "holding",
+      "address": 40184,
+      "type": "uint16",
+      "access": "R",
+      "description": "PV inverter present/available status. Enumerated value.. Bit 0: Connected  Bit 1: Available Bit 2: Operating"
+    },
+    {
+      "name": "Status StorConn",
+      "group": "Status",
+      "area": "holding",
+      "address": 40185,
+      "type": "uint16",
+      "access": "R",
+      "description": "Storage inverter present/available status. Enumerated value.. Bit 0: Connected  Bit 1: Available Bit 2: Operating"
+    },
+    {
+      "name": "Status ECPConn",
+      "group": "Status",
+      "area": "holding",
+      "address": 40186,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECP connection status: disconnected=0  connected=1.. Bit 0: Connected"
+    },
+    {
+      "name": "Status ActWh",
+      "group": "Status",
+      "area": "holding",
+      "address": 40187,
+      "type": "uint64",
+      "access": "R",
+      "unit": "Wh",
+      "description": "AC lifetime active (real) energy output."
+    },
+    {
+      "name": "Status ActVAh",
+      "group": "Status",
+      "area": "holding",
+      "address": 40191,
+      "type": "uint64",
+      "access": "R",
+      "unit": "VAh",
+      "description": "AC lifetime apparent energy output.. not supported"
+    },
+    {
+      "name": "Status ActVArhQ1",
+      "group": "Status",
+      "area": "holding",
+      "address": 40195,
+      "type": "uint64",
+      "access": "R",
+      "unit": "varh",
+      "description": "AC lifetime reactive energy output in quadrant 1.. not supported"
+    },
+    {
+      "name": "Status ActVArhQ2",
+      "group": "Status",
+      "area": "holding",
+      "address": 40199,
+      "type": "uint64",
+      "access": "R",
+      "unit": "varh",
+      "description": "AC lifetime reactive energy output in quadrant 2.. not supported"
+    },
+    {
+      "name": "Status ActVArhQ3",
+      "group": "Status",
+      "area": "holding",
+      "address": 40203,
+      "type": "uint64",
+      "access": "R",
+      "unit": "varh",
+      "description": "AC lifetime negative energy output  in quadrant 3.. not supported"
+    },
+    {
+      "name": "Status ActVArhQ4",
+      "group": "Status",
+      "area": "holding",
+      "address": 40207,
+      "type": "uint64",
+      "access": "R",
+      "unit": "varh",
+      "description": "AC lifetime reactive energy output  in quadrant 4.. not supported"
+    },
+    {
+      "name": "Status VArAval",
+      "group": "Status",
+      "area": "holding",
+      "address": 40211,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Status VArAval_SF",
+      "description": "Amount of VARs available without impacting watts output.. not supported"
+    },
+    {
+      "name": "Status VArAval_SF",
+      "group": "Status",
+      "area": "holding",
+      "address": 40212,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for available VARs.. not supported"
+    },
+    {
+      "name": "Status WAval",
+      "group": "Status",
+      "area": "holding",
+      "address": 40213,
+      "type": "uint16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Status WAval_SF",
+      "description": "Amount of Watts available.. not supported"
+    },
+    {
+      "name": "Status WAval_SF",
+      "group": "Status",
+      "area": "holding",
+      "address": 40214,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for available Watts.. not supported"
+    },
+    {
+      "name": "Status StSetLimMsk",
+      "group": "Status",
+      "area": "holding",
+      "address": 40215,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bit Mask indicating setpoint limit(s) reached.. not supported"
+    },
+    {
+      "name": "Status StActCtl",
+      "group": "Status",
+      "area": "holding",
+      "address": 40217,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bit Mask indicating which inverter controls are currently active."
+    },
+    {
+      "name": "Status TmSrc",
+      "group": "Status",
+      "area": "holding",
+      "address": 40219,
+      "type": "string",
+      "access": "R",
+      "length": 4,
+      "description": "Source of time synchronization.. RTC"
+    },
+    {
+      "name": "Status Tms",
+      "group": "Status",
+      "area": "holding",
+      "address": 40223,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s",
+      "description": "Seconds since 01-01-2000 00:00 UTC"
+    },
+    {
+      "name": "Status RtSt",
+      "group": "Status",
+      "area": "holding",
+      "address": 40225,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit Mask indicating active ride-through status.. not supported"
+    },
+    {
+      "name": "Status Ris",
+      "group": "Status",
+      "area": "holding",
+      "address": 40226,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Ω",
+      "scale_factor": "Status Ris_SF",
+      "description": "Isolation resistance."
+    },
+    {
+      "name": "Status Ris_SF",
+      "group": "Status",
+      "area": "holding",
+      "address": 40227,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for isolation resistance.. auto-scaled on Ris"
+    },
+    {
+      "name": "Controls ID",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40228,
+      "type": "uint16",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a sunspec model controls (123). 123"
+    },
+    {
+      "name": "Controls L",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40229,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of sunspec model controls (123). 24"
+    },
+    {
+      "name": "Controls Conn_WinTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40230,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Time window for connect/disconnect.. 0 - 300"
+    },
+    {
+      "name": "Controls Conn_RvrtTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40231,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Timeout period for connect/disconnect.. 0 - 28800"
+    },
+    {
+      "name": "Controls Conn",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40232,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Enumerated valued.  Connection control.. 0: Disconnected 1: Connected"
+    },
+    {
+      "name": "Controls WMaxLimPct",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40233,
+      "type": "uint16",
+      "access": "RW",
+      "scale_factor": "Controls WMaxLimPct_SF",
+      "description": "Set power output to specified level.. 0% - 100%"
+    },
+    {
+      "name": "Controls WMaxLimPct_WinTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40234,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Time window for power limit change.. 0 - 300"
+    },
+    {
+      "name": "Controls WMaxLimPct_RvrtTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40235,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Timeout period for power limit.. 0 - 28800"
+    },
+    {
+      "name": "Controls WMaxLimPct_RmpTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40236,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Ramp time for moving from current setpoint to new setpoint.. 0 - 65534"
+    },
+    {
+      "name": "Controls WMaxLim_Ena",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40237,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Enumerated valued.  Throttle enable/disable control.. 0: Disabled 1: Enabled"
+    },
+    {
+      "name": "Controls OutPFSet",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40238,
+      "type": "int16",
+      "access": "RW",
+      "scale_factor": "Controls OutPFSet_SF",
+      "description": "Set power factor to specific value - cosine of angle.. from -1.0 to nameplate.PFRtgQ1 and from nameplate.PFRtgQ4 to +1.0"
+    },
+    {
+      "name": "Controls OutPFSet_WinTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40239,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Time window for power factor change.. 0 - 300"
+    },
+    {
+      "name": "Controls OutPFSet_RvrtTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40240,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Timeout period for power factor.. 0 - 28800"
+    },
+    {
+      "name": "Controls OutPFSet_RmpTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40241,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Ramp time for moving from current setpoint to new setpoint.. 0 - 65534"
+    },
+    {
+      "name": "Controls OutPFSet_Ena",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40242,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Enumerated valued.  Fixed power factor enable/disable control.. 0: Disabled 1: Enabled"
+    },
+    {
+      "name": "Controls VArWMaxPct",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40243,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Controls VArPct_SF",
+      "description": "Reactive power in percent of WMax.. not supported"
+    },
+    {
+      "name": "Controls VArMaxPct",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40244,
+      "type": "int16",
+      "access": "RW",
+      "scale_factor": "Controls VArPct_SF",
+      "description": "Reactive power in percent of VArMax.. -100% - +100%"
+    },
+    {
+      "name": "Controls VArAvalPct",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40245,
+      "type": "int16",
+      "access": "R",
+      "scale_factor": "Controls VArPct_SF",
+      "description": "Reactive power in percent of VArAval.. not supported"
+    },
+    {
+      "name": "Controls VArPct_WinTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40246,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Time window for VAR limit change.. 0 - 300"
+    },
+    {
+      "name": "Controls VArPct_RvrtTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40247,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Timeout period for VAR limit.. 0 - 28800"
+    },
+    {
+      "name": "Controls VArPct_RmpTms",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40248,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Ramp time for moving from current setpoint to new setpoint.. 0 - 65534"
+    },
+    {
+      "name": "Controls VArPct_Mod",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40249,
+      "type": "uint16",
+      "access": "R",
+      "description": "Enumerated value. VAR percent limit mode.. 2: VAR limit as a % of VArMax"
+    },
+    {
+      "name": "Controls VArPct_Ena",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40250,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Enumerated valued.  Percent limit VAr enable/disable control.. 0: Disabled 1: Enabled"
+    },
+    {
+      "name": "Controls WMaxLimPct_SF",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40251,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for power output percent.. -2"
+    },
+    {
+      "name": "Controls OutPFSet_SF",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40252,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for power factor.. -3"
+    },
+    {
+      "name": "Controls VArPct_SF",
+      "group": "Controls",
+      "area": "holding",
+      "address": 40253,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for reactive power percent.. 0"
+    },
+    {
+      "name": "MPPT ID",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40254,
+      "type": "uint16",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a sunspec model mppt (160). 160"
+    },
+    {
+      "name": "MPPT L",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40255,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of sunspec model mppt (160). 88"
+    },
+    {
+      "name": "MPPT DCA_SF",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40256,
+      "type": "int16",
+      "access": "R",
+      "description": "Current Scale Factor. auto-scaled on DCA 1-N"
+    },
+    {
+      "name": "MPPT DCV_SF",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40257,
+      "type": "int16",
+      "access": "R",
+      "description": "Voltage Scale Factor. auto-scaled on DCV 1-N"
+    },
+    {
+      "name": "MPPT DCW_SF",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40258,
+      "type": "int16",
+      "access": "R",
+      "description": "Power Scale Factor. auto-scaled on DCW 1-N"
+    },
+    {
+      "name": "MPPT DCWH_SF",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40259,
+      "type": "int16",
+      "access": "R",
+      "description": "Energy Scale Factor. auto-scaled on DCWH 1-N"
+    },
+    {
+      "name": "MPPT Evt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40260,
+      "type": "uint32",
+      "access": "R",
+      "description": "Global Events. not supported"
+    },
+    {
+      "name": "MPPT N",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40262,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of Modules. 4"
+    },
+    {
+      "name": "MPPT TmsPer",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40263,
+      "type": "uint16",
+      "access": "R",
+      "description": "Timestamp Period. not supported"
+    },
+    {
+      "name": "MPPT Module 1 ID",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40264,
+      "type": "uint16",
+      "access": "R",
+      "description": "Input ID. 1"
+    },
+    {
+      "name": "MPPT Module 1 IDStr",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40265,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "Input ID Sting. 'MPPT 1'"
+    },
+    {
+      "name": "MPPT Module 1 DCA",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40273,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "MPPT DCA_SF",
+      "description": "DC Current"
+    },
+    {
+      "name": "MPPT Module 1 DCV",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40274,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "MPPT DCV_SF",
+      "description": "DC Voltage"
+    },
+    {
+      "name": "MPPT Module 1 DCW",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40275,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "MPPT DCW_SF",
+      "description": "DC Power"
+    },
+    {
+      "name": "MPPT Module 1 DCWH",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40276,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh",
+      "scale_factor": "MPPT DCWH_SF",
+      "description": "Lifetime Energy"
+    },
+    {
+      "name": "MPPT Module 1 Tms",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40278,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s",
+      "description": "Timestamp. number of seconds since Jan 1st 2000 00:00 am"
+    },
+    {
+      "name": "MPPT Module 1 Tmp",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40280,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Temperature. not supported"
+    },
+    {
+      "name": "MPPT Module 1 DCSt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40281,
+      "type": "uint16",
+      "access": "R",
+      "description": "Operating State. not supported"
+    },
+    {
+      "name": "MPPT Module 1 DCEvt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40282,
+      "type": "uint32",
+      "access": "R",
+      "description": "Module Events. not supported"
+    },
+    {
+      "name": "MPPT Module 2 ID",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40284,
+      "type": "uint16",
+      "access": "R",
+      "description": "Input ID. 2"
+    },
+    {
+      "name": "MPPT Module 2 IDStr",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40285,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "Input ID Sting. 'MPPT 2'"
+    },
+    {
+      "name": "MPPT Module 2 DCA",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40293,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "MPPT DCA_SF",
+      "description": "DC Current"
+    },
+    {
+      "name": "MPPT Module 2 DCV",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40294,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "MPPT DCV_SF",
+      "description": "DC Voltage"
+    },
+    {
+      "name": "MPPT Module 2 DCW",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40295,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "MPPT DCW_SF",
+      "description": "DC Power"
+    },
+    {
+      "name": "MPPT Module 2 DCWH",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40296,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh",
+      "scale_factor": "MPPT DCWH_SF",
+      "description": "Lifetime Energy"
+    },
+    {
+      "name": "MPPT Module 2 Tms",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40298,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s",
+      "description": "Timestamp. number of seconds since Jan 1st 2000 00:00 am"
+    },
+    {
+      "name": "MPPT Module 2 Tmp",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40300,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Temperature. not supported"
+    },
+    {
+      "name": "MPPT Module 2 DCSt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40301,
+      "type": "uint16",
+      "access": "R",
+      "description": "Operating State. not supported"
+    },
+    {
+      "name": "MPPT Module 2 DCEvt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40302,
+      "type": "uint32",
+      "access": "R",
+      "description": "Module Events. not supported"
+    },
+    {
+      "name": "MPPT Module 3 ID",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40304,
+      "type": "uint16",
+      "access": "R",
+      "description": "Input ID. 3"
+    },
+    {
+      "name": "MPPT Module 3 IDStr",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40305,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "Input ID Sting. 'StCha 3'"
+    },
+    {
+      "name": "MPPT Module 3 DCA",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40313,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "MPPT DCA_SF",
+      "description": "DC Current. When the battery is discharged the data-points of the charge input are set to 0"
+    },
+    {
+      "name": "MPPT Module 3 DCV",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40314,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "MPPT DCV_SF",
+      "description": "DC Voltage"
+    },
+    {
+      "name": "MPPT Module 3 DCW",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40315,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "MPPT DCW_SF",
+      "description": "DC Power. When the battery is discharged the data-points of the charge input are set to 0"
+    },
+    {
+      "name": "MPPT Module 3 DCWH",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40316,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh",
+      "scale_factor": "MPPT DCWH_SF",
+      "description": "Lifetime Energy"
+    },
+    {
+      "name": "MPPT Module 3 Tms",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40318,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s",
+      "description": "Timestamp. number of seconds since Jan 1st 2000 00:00 am"
+    },
+    {
+      "name": "MPPT Module 3 Tmp",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40320,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Temperature. not supported"
+    },
+    {
+      "name": "MPPT Module 3 DCSt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40321,
+      "type": "uint16",
+      "access": "R",
+      "description": "Operating State. not supported"
+    },
+    {
+      "name": "MPPT Module 3 DCEvt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40322,
+      "type": "uint32",
+      "access": "R",
+      "description": "Module Events. not supported"
+    },
+    {
+      "name": "MPPT Module 4 ID",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40324,
+      "type": "uint16",
+      "access": "R",
+      "description": "Input ID. 4"
+    },
+    {
+      "name": "MPPT Module 4 IDStr",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40325,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "description": "Input ID Sting. 'StDisCha 4'"
+    },
+    {
+      "name": "MPPT Module 4 DCA",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40333,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "MPPT DCA_SF",
+      "description": "DC Current. When the battery is charged the data-points of the discharge input are set to 0"
+    },
+    {
+      "name": "MPPT Module 4 DCV",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40334,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "MPPT DCV_SF",
+      "description": "DC Voltage"
+    },
+    {
+      "name": "MPPT Module 4 DCW",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40335,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "MPPT DCW_SF",
+      "description": "DC Power. When the battery is charged the data-points of the discharge input are set to 0"
+    },
+    {
+      "name": "MPPT Module 4 DCWH",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40336,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh",
+      "scale_factor": "MPPT DCWH_SF",
+      "description": "Lifetime Energy"
+    },
+    {
+      "name": "MPPT Module 4 Tms",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40338,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s",
+      "description": "Timestamp. number of seconds since Jan 1st 2000 00:00 am"
+    },
+    {
+      "name": "MPPT Module 4 Tmp",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40340,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Temperature. not supported"
+    },
+    {
+      "name": "MPPT Module 4 DCSt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40341,
+      "type": "uint16",
+      "access": "R",
+      "description": "Operating State. not supported"
+    },
+    {
+      "name": "MPPT Module 4 DCEvt",
+      "group": "MPPT",
+      "area": "holding",
+      "address": 40342,
+      "type": "uint32",
+      "access": "R",
+      "description": "Module Events. not supported"
+    },
+    {
+      "name": "Storage ID",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40344,
+      "type": "uint16",
+      "access": "R",
+      "description": "Well-known value. Uniquely identifies this as a sunspec model storage (124). 124"
+    },
+    {
+      "name": "Storage L",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40345,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of sunspec model storage (124). 24"
+    },
+    {
+      "name": "Storage WChaMax",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40346,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Storage WChaMax_SF",
+      "description": "Setpoint for maximum charge.  Additional Fronius description: Reference Value for maximum Charge and Discharge. Multiply this value by InWRte to define maximum charging and OutWRte to define maximum discharging. Every rate between this two limits is "
+    },
+    {
+      "name": "Storage WChaGra",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40347,
+      "type": "uint16",
+      "access": "R",
+      "scale_factor": "Storage WChaDisChaGra_SF",
+      "description": "Setpoint for maximum charging rate. Default is MaxChaRte.. 100%"
+    },
+    {
+      "name": "Storage WDisChaGra",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40348,
+      "type": "uint16",
+      "access": "R",
+      "scale_factor": "Storage WChaDisChaGra_SF",
+      "description": "Setpoint for maximum discharge rate. Default is MaxDisChaRte.. 100%"
+    },
+    {
+      "name": "Storage StorCtl_Mod",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40349,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Activate hold/discharge/charge storage control mode. Bitfield value.  Additional Fronius description: Active hold/discharge/charge storage control mode. Set the charge field to enable charging and the discharge field to enable discharging. . bit 0: C"
+    },
+    {
+      "name": "Storage VAChaMax",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40350,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "VA",
+      "scale_factor": "Storage VAChaMax_SF",
+      "description": "Setpoint for maximum charging VA."
+    },
+    {
+      "name": "Storage MinRsvPct",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40351,
+      "type": "uint16",
+      "access": "RW",
+      "scale_factor": "Storage MinRsvPct_SF",
+      "description": "Setpoint for minimum reserve for storage as a percentage of the nominal maximum storage."
+    },
+    {
+      "name": "Storage ChaState",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40352,
+      "type": "uint16",
+      "access": "R",
+      "scale_factor": "Storage ChaState_SF",
+      "description": "Currently available energy as a percent of the capacity rating."
+    },
+    {
+      "name": "Storage StorAval",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40353,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Ah",
+      "scale_factor": "Storage StorAval_SF",
+      "description": "State of charge (ChaState) minus storage reserve (MinRsvPct) times capacity rating (AhrRtg).. not supported"
+    },
+    {
+      "name": "Storage InBatV",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40354,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Storage InBatV_SF",
+      "description": "Internal battery voltage.. not supported"
+    },
+    {
+      "name": "Storage ChaSt",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40355,
+      "type": "uint16",
+      "access": "R",
+      "description": "Charge status of storage device. Enumerated value."
+    },
+    {
+      "name": "Storage OutWRte",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40356,
+      "type": "int16",
+      "access": "RW",
+      "scale_factor": "Storage InOutWRte_SF",
+      "description": "Percent of max discharge rate.  Additional Fronius description: Defines maximum Discharge rate. If not used than the default is 100 and WChaMax defines max. Discharge rate. See WChaMax for details "
+    },
+    {
+      "name": "Storage InWRte",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40357,
+      "type": "int16",
+      "access": "RW",
+      "scale_factor": "Storage InOutWRte_SF",
+      "description": "Percent of max charging rate.  Additional Fronius description: Defines maximum Charge rate. If not used than the default is 100 and WChaMax defines max. Charge rate. See WChaMax for details "
+    },
+    {
+      "name": "Storage InOutWRte_WinTms",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40358,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s",
+      "description": "Time window for charge/discharge rate change.. not supported"
+    },
+    {
+      "name": "Storage InOutWRte_RvrtTms",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40359,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Timeout period for charge/discharge rate.. 0 - 28800"
+    },
+    {
+      "name": "Storage InOutWRte_RmpTms",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40360,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s",
+      "description": "Ramp time for moving from current setpoint to new setpoint.. not supported"
+    },
+    {
+      "name": "Storage ChaGriSet",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40361,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0: PV (Charging from grid disabled) 1: GRID (Charging from grid enabled) "
+    },
+    {
+      "name": "Storage WChaMax_SF",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40362,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for maximum charge.. 0"
+    },
+    {
+      "name": "Storage WChaDisChaGra_SF",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40363,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for maximum charge and discharge rate.. 0"
+    },
+    {
+      "name": "Storage VAChaMax_SF",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40364,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for maximum charging VA.. not supported"
+    },
+    {
+      "name": "Storage MinRsvPct_SF",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40365,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for minimum reserve percentage.. -2"
+    },
+    {
+      "name": "Storage ChaState_SF",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40366,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for available energy percent.. -2"
+    },
+    {
+      "name": "Storage StorAval_SF",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40367,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for state of charge.. not supported"
+    },
+    {
+      "name": "Storage InBatV_SF",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40368,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for battery voltage.. not supported"
+    },
+    {
+      "name": "Storage InOutWRte_SF",
+      "group": "Storage",
+      "area": "holding",
+      "address": 40369,
+      "type": "int16",
+      "access": "R",
+      "description": "Scale factor for percent charge/discharge rate.. -2"
+    },
+    {
+      "name": "End block ID",
+      "group": "End block",
+      "area": "holding",
+      "address": 40370,
+      "type": "uint16",
+      "access": "R",
+      "description": "Identifies this as End block. 0xFFFF"
+    },
+    {
+      "name": "End block L",
+      "group": "End block",
+      "area": "holding",
+      "address": 40371,
+      "type": "uint16",
+      "access": "R",
+      "description": "Length of model block. 0x0"
+    }
+  ]
+}
