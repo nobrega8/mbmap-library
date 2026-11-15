@@ -1,0 +1,326 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "SMA",
+  "model": "Sunny Island",
+  "models": [
+    "Sunny Island 3.0M",
+    "Sunny Island 4.4M",
+    "Sunny Island 5.0H",
+    "Sunny Island 6.0H",
+    "Sunny Island 8.0H"
+  ],
+  "vendor_website": "sma.de",
+  "description": "Sunny Island battery inverter over the SMA Modbus profile (Modbus TCP): device type, status, power, battery state of charge, current, voltage and temperature, generator and operating status, and active power control",
+  "revision": 1,
+  "source": "SMA, Sunny Island Modbus interface, user manual SI-Modbus-BA-en-12, section 8.2",
+  "sources": [
+    {
+      "title": "Sunny Island with Modbus interface, User Manual",
+      "version": "SI-Modbus-BA-en-12",
+      "url": "https://files.sma.de/downloads/SI-Modbus-BA-en-12.pdf",
+      "note": "section 8.2, measured values and parameters selected",
+      "accessed": "2026-11-15",
+      "sha256": "e878009db8611781093bc884a7d6f87ce01129cdcea1df404b48b4e748ef18ef"
+    }
+  ],
+  "notes": [
+    "Modbus TCP through the SMA Modbus profile, unit ID 3 (the SMA standard unit ID).",
+    "Addresses are the decimal Modbus registers of the manual. Values are 32-bit, high word first; FIXn formats are scaled by 10^-n.",
+    "Registers 40210, 44031 and 44033 need a logon with the SMA Grid Guard code (register 43090).",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp",
+  "unit_id": 3,
+  "port": 502,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Device type",
+      "group": "Measured values",
+      "area": "input",
+      "address": 30053,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "9331": "Sunny Island 3.0M-12",
+        "9332": "Sunny Island 4.4M-12",
+        "9333": "Sunny Island 6.0H-12",
+        "9334": "Sunny Island 8.0H-12",
+        "9474": "Sunny Island 4.4M-13",
+        "9475": "Sunny Island 6.0H-13",
+        "9476": "Sunny Island 8.0H-13",
+        "9486": "Sunny Island 5.0H-13"
+      },
+      "role": "model"
+    },
+    {
+      "name": "Status",
+      "group": "Measured values",
+      "area": "input",
+      "address": 30201,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "35": "Error (Alm)",
+        "303": "Off",
+        "307": "Ok",
+        "455": "Warning (Wrn)"
+      }
+    },
+    {
+      "name": "Power",
+      "group": "Measured values",
+      "area": "input",
+      "address": 30775,
+      "type": "int32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Battery current",
+      "group": "Measured values",
+      "area": "input",
+      "address": 30843,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "A"
+    },
+    {
+      "name": "Battery state of charge",
+      "group": "Measured values",
+      "area": "input",
+      "address": 30845,
+      "type": "uint32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Battery temperature",
+      "group": "Measured values",
+      "area": "input",
+      "address": 30849,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Battery voltage",
+      "group": "Measured values",
+      "area": "input",
+      "address": 30851,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "V"
+    },
+    {
+      "name": "Generator status",
+      "group": "Measured values",
+      "area": "input",
+      "address": 30917,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "303": "Off",
+        "1392": "Error (Flt)",
+        "1787": "Initialization",
+        "1788": "Ready",
+        "1789": "Warm-up",
+        "1790": "Synchronize",
+        "1791": "Activated",
+        "1792": "Re-synchronize",
+        "1793": "Generator separation",
+        "1794": "Shut-off delay",
+        "1795": "Blocked",
+        "1796": "Locked after error",
+        "16777213": "Information not available"
+      }
+    },
+    {
+      "name": "Lower discharge limit for self-consumption range",
+      "group": "Measured values",
+      "area": "input",
+      "address": 31009,
+      "type": "uint32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Operating status",
+      "group": "Measured values",
+      "area": "input",
+      "address": 33003,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "235": "Parallel grid operation",
+        "1463": "Backup",
+        "2677": "Operation at generator / external input",
+        "3664": "Emergency charge mode",
+        "16777213": "Information not available"
+      }
+    },
+    {
+      "name": "Active power setpoint",
+      "group": "Power control",
+      "area": "holding",
+      "address": 40149,
+      "type": "int32",
+      "access": "W",
+      "unit": "W"
+    },
+    {
+      "name": "Active and reactive power control via communication",
+      "group": "Power control",
+      "area": "holding",
+      "address": 40151,
+      "type": "uint32",
+      "access": "W",
+      "enum": {
+        "802": "Active",
+        "803": "Inactive"
+      }
+    },
+    {
+      "name": "Operating mode active power setpoint",
+      "group": "Power control",
+      "area": "holding",
+      "address": 40210,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "303": "Off",
+        "1077": "Manual setting in W",
+        "1078": "Manual setpoint in % of nominal power",
+        "1079": "External setpoint"
+      },
+      "description": "Needs a logon with the SMA Grid Guard code."
+    },
+    {
+      "name": "Reverse-feeding into the utility grid permitted",
+      "group": "Power control",
+      "area": "holding",
+      "address": 40679,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "1129": "Yes",
+        "1130": "No"
+      }
+    },
+    {
+      "name": "Upper state of charge for reactivation of grid feed-in",
+      "group": "Power control",
+      "area": "holding",
+      "address": 40705,
+      "type": "uint32",
+      "access": "RW",
+      "unit": "%",
+      "description": "0 to 90 %."
+    },
+    {
+      "name": "Lower state of charge for blocking grid feed-in",
+      "group": "Power control",
+      "area": "holding",
+      "address": 40707,
+      "type": "uint32",
+      "access": "RW",
+      "unit": "%",
+      "description": "0 to 100 %."
+    },
+    {
+      "name": "External active power setpoint, fallback behavior",
+      "group": "Power control",
+      "area": "holding",
+      "address": 41193,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "2506": "Keep values",
+        "2507": "Apply fallback values"
+      }
+    },
+    {
+      "name": "External active power setpoint, timeout",
+      "group": "Power control",
+      "area": "holding",
+      "address": 41195,
+      "type": "uint32",
+      "access": "RW",
+      "unit": "s",
+      "description": "1 to 1800 s."
+    },
+    {
+      "name": "External active power setpoint, ramp rate limitation",
+      "group": "Power control",
+      "area": "holding",
+      "address": 44029,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "303": "Off",
+        "308": "On"
+      }
+    },
+    {
+      "name": "External active power setpoint, ramp-up rate",
+      "group": "Power control",
+      "area": "holding",
+      "address": 44031,
+      "type": "uint32",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%/s",
+      "description": "Needs a logon with the SMA Grid Guard code."
+    },
+    {
+      "name": "External active power setpoint, ramp-down rate",
+      "group": "Power control",
+      "area": "holding",
+      "address": 44033,
+      "type": "uint32",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%/s",
+      "description": "Needs a logon with the SMA Grid Guard code."
+    },
+    {
+      "name": "External active power fallback value of the maximum active power",
+      "group": "Power control",
+      "area": "holding",
+      "address": 44037,
+      "type": "int32",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "W"
+    },
+    {
+      "name": "Maximum output active power",
+      "group": "Power control",
+      "area": "holding",
+      "address": 44039,
+      "type": "int32",
+      "access": "W",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "-100 to +100 % of nominal device power."
+    },
+    {
+      "name": "Minimum active power",
+      "group": "Power control",
+      "area": "holding",
+      "address": 44041,
+      "type": "int32",
+      "access": "W",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "-100 to +100 % of nominal device power."
+    }
+  ]
+}
