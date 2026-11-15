@@ -163,14 +163,24 @@ for (const r of info.registers) accessCounts[r.access]++;
         </p>
       </div>
       <div class="actions">
-        <a class="btn primary big" href={fileUrl} download={fileName}>
-          <Icon name="download" /> Download .mbmap.json
-        </a>
-        {exportsList.map((f) => (
-          <a class="btn big" href={f.url} download={f.file} title={f.ext === ".csv" ? "Every register with its map and wire address, type, scale and unit" : "A modbus: block for configuration.yaml with a sensor per readable register"}>
-            <Icon name="download" /> {f.label}
+        <div class="split">
+          <a class="btn primary big" href={fileUrl} download={fileName}>
+            <Icon name="download" /> Download .mbmap.json
           </a>
-        ))}
+          <details class="split-more">
+            <summary class="btn primary big" aria-label="Other formats"><Icon name="down" size={16} /></summary>
+            <ul class="split-menu">
+              {exportsList.map((f) => (
+                <li>
+                  <a href={f.url} download={f.file}>
+                    <strong>{f.label}</strong>
+                    <small>{f.ext === ".csv" ? "Every register, with map and wire address, type, scale and unit" : "A modbus: block for configuration.yaml"}</small>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
         <a class="btn big" href="#raw" data-tab-link="raw"><Icon name="raw" /> Raw JSON</a>
         <a class="btn big" href={links.source}><Icon name="github" /> View on GitHub</a>
         <a class="btn big" href={links.edit} title="Edit the file on GitHub and open a pull request"><Icon name="edit" /> Suggest a correction</a>
