@@ -1,0 +1,401 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Daikin",
+  "model": "DCOM-LT/MB",
+  "models": [
+    "DCOM-LT/MB",
+    "534-001"
+  ],
+  "vendor_website": "daikin.eu",
+  "description": "Modbus RTU interface (P1P2) for Daikin Altherma LT heat pumps: setpoints, operation mode, DHW, quiet and weather-dependent modes, error codes, pump, compressor and heater status, water and refrigerant temperatures and flow",
+  "revision": 1,
+  "source": "Daikin, DCOM-LT/MB reference and installation manual (English)",
+  "sources": [
+    {
+      "title": "DCOM-LT/MB – Reference manual",
+      "url": "https://www.daikin.eu/content/dam/document-library/installation-manuals/ctrl/bms/dcom-lt-mb/DCOM-LT-MB_reference%20and%20installation%20manual_English.pdf",
+      "note": "holding and input register tables",
+      "accessed": "2026-11-15",
+      "sha256": "ff718941c65ed91cb9c4081c7756d5f9f2feba0fee2a3f2211517b898d0bc54b"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS485: 9600 baud, 8 data bits, no parity, 1 stop bit; address set with DIP switch SW1. Functions 03, 04, 06 and 16, up to 64 registers per request.",
+    "Addresses are the DCOM register offsets, sent as they are (Modicon 40001 + offset or 30001 + offset).",
+    "Temperatures in the input registers are temp16: signed, divided by 100. Setpoints are whole °C. A register reads 32767 when the unit does not support it, 32766 when it is not available in the current configuration and 32765 while its value is still loading.",
+    "The manual also lists a second, different set of offsets on a later page; this map follows the main tables.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "sentinels": {
+    "int16": {
+      "32767": "Register unsupported",
+      "32766": "Register unavailable",
+      "32765": "Wait for value"
+    }
+  },
+  "registers": [
+    {
+      "name": "Leaving water main heating setpoint",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "unit": "°C",
+      "access": "RW",
+      "description": "25 to 55 °C."
+    },
+    {
+      "name": "Leaving water main cooling setpoint",
+      "group": "Settings",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "unit": "°C",
+      "access": "RW",
+      "description": "5 to 22 °C."
+    },
+    {
+      "name": "Operation mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Heating",
+        "2": "Cooling"
+      }
+    },
+    {
+      "name": "Space heating/cooling on/off",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Room thermostat heating setpoint",
+      "group": "Settings",
+      "area": "holding",
+      "address": 6,
+      "type": "int16",
+      "unit": "°C",
+      "access": "RW",
+      "description": "12 to 30 °C."
+    },
+    {
+      "name": "Room thermostat cooling setpoint",
+      "group": "Settings",
+      "area": "holding",
+      "address": 7,
+      "type": "int16",
+      "unit": "°C",
+      "access": "RW",
+      "description": "15 to 35 °C."
+    },
+    {
+      "name": "Quiet mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 9,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "DHW reheat setpoint",
+      "group": "Settings",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "unit": "°C",
+      "access": "RW",
+      "description": "30 to 60 °C."
+    },
+    {
+      "name": "DHW reheat on/off",
+      "group": "Settings",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "DHW booster mode on/off",
+      "group": "Settings",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Weather dependent mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 53,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Fixed",
+        "1": "Weather dependent",
+        "2": "Fixed + scheduled",
+        "3": "Weather dependent + scheduled"
+      }
+    },
+    {
+      "name": "Weather dependent LWT heating setpoint offset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 54,
+      "type": "int16",
+      "unit": "°C",
+      "access": "RW",
+      "description": "-10 to 10 °C."
+    },
+    {
+      "name": "Weather dependent LWT cooling setpoint offset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "unit": "°C",
+      "access": "RW",
+      "description": "-10 to 10 °C."
+    },
+    {
+      "name": "Unit error",
+      "group": "Status",
+      "area": "input",
+      "address": 21,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "No error",
+        "1": "Fault",
+        "2": "Warning"
+      }
+    },
+    {
+      "name": "Unit error code",
+      "group": "Status",
+      "area": "input",
+      "address": 22,
+      "type": "string",
+      "length": 1,
+      "access": "R",
+      "description": "Two ASCII characters, MSB first (e.g. \"U8\"); \"--\" when there is no error."
+    },
+    {
+      "name": "Unit error sub code",
+      "group": "Status",
+      "area": "input",
+      "address": 23,
+      "type": "int16",
+      "access": "R",
+      "description": "0 to 99; 32766 when there is no error."
+    },
+    {
+      "name": "Circulation pump running",
+      "group": "Status",
+      "area": "input",
+      "address": 30,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Compressor running",
+      "group": "Status",
+      "area": "input",
+      "address": 31,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Booster heater running",
+      "group": "Status",
+      "area": "input",
+      "address": 32,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Disinfection operation",
+      "group": "Status",
+      "area": "input",
+      "address": 33,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Defrost/startup",
+      "group": "Status",
+      "area": "input",
+      "address": 35,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Hot start",
+      "group": "Status",
+      "area": "input",
+      "address": 36,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "3-way valve",
+      "group": "Status",
+      "area": "input",
+      "address": 37,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "Space heating",
+        "1": "DHW"
+      }
+    },
+    {
+      "name": "Operation mode (actual)",
+      "group": "Status",
+      "area": "input",
+      "address": 38,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "1": "Heating",
+        "2": "Cooling"
+      }
+    },
+    {
+      "name": "Leaving water temperature pre PHE",
+      "group": "Temperatures",
+      "area": "input",
+      "address": 40,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Leaving water temperature pre BUH",
+      "group": "Temperatures",
+      "area": "input",
+      "address": 41,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Return water temperature",
+      "group": "Temperatures",
+      "area": "input",
+      "address": 42,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Domestic hot water temperature",
+      "group": "Temperatures",
+      "area": "input",
+      "address": 43,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Outside air temperature",
+      "group": "Temperatures",
+      "area": "input",
+      "address": 44,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Liquid refrigerant temperature",
+      "group": "Temperatures",
+      "area": "input",
+      "address": 45,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Remote controller room temperature",
+      "group": "Temperatures",
+      "area": "input",
+      "address": 50,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Flow rate",
+      "group": "Temperatures",
+      "area": "input",
+      "address": 49,
+      "type": "int16",
+      "scale": 0.01,
+      "unit": "L/min",
+      "access": "R"
+    }
+  ]
+}
