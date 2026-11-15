@@ -1,0 +1,2891 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Eurotherm",
+  "model": "3200 Series",
+  "models": [
+    "3216",
+    "3208",
+    "32h8",
+    "3204"
+  ],
+  "vendor_website": "eurotherm.com",
+  "description": "PID temperature and process controllers: process value, setpoints, output, PID terms, alarms, timer and programmer, input, output and comms configuration",
+  "revision": 1,
+  "source": "Eurotherm, 3200 Series User Manual, HA028651 issue 13, Jan 2014, section 15.6",
+  "sources": [
+    {
+      "title": "3200 Series PID Temperature Controllers User Manual",
+      "version": "HA028651 Issue 13.0, Jan 2014",
+      "url": "https://d3dmuhgh3oppig.cloudfront.net/media/sureheat/files/product_downloads/eurotherm-3216-3208-3204-user-manual-issue13-8e13d17e.pdf",
+      "note": "section 15.6, Parameter Modbus Addresses (copy hosted by a distributor, SureHeat)",
+      "accessed": "2026-11-15",
+      "sha256": "1789d88f10ef0c74d6814a50cdc02033926758cc4e4b0c1ab7f1ef6398842815"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over EIA232, EIA485 or EIA422 (3216 only); address, baud rate and parity are set in the COMMS list (addresses 131, 12548, 12549).",
+    "Addresses are the decimal Modbus addresses of the manual. Values are 16-bit signed integers; values with decimals are sent as scaled integers, multiplied by 10 to the power of the decimal resolution configured for that value (123.5 is 1235 with one decimal), so this map gives no fixed scale.",
+    "Time values are in minutes for 'hours' resolution and in seconds for 'minutes' resolution. Native 32-bit float and time access is described in the 2000 Series Communications Handbook (HA026230).",
+    "Do not write continuously to setpoints 2, 24 and 25: they are saved to non-volatile memory with a limited number of writes. Use the remote setpoint (26) instead.",
+    "Read-only status values are marked R; the manual gives no access column, so other parameters are marked RW.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "PV (Temperature) Input Value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "description": "PV.IN"
+    },
+    {
+      "name": "Target Setpoint",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "access": "RW",
+      "description": "TG.SP"
+    },
+    {
+      "name": "Manual Output Value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "access": "RW",
+      "description": "MAN.OP"
+    },
+    {
+      "name": "Working Output",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "R",
+      "description": "WRK.OP"
+    },
+    {
+      "name": "Working Setpoint",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 5,
+      "type": "int16",
+      "access": "R",
+      "description": "WKG.SP"
+    },
+    {
+      "name": "Proportional Band",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 6,
+      "type": "int16",
+      "access": "RW",
+      "description": "PB"
+    },
+    {
+      "name": "Control Action",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 7,
+      "type": "int16",
+      "access": "RW",
+      "description": "CTRL.A",
+      "enum": {
+        "0": "Reverse Acting",
+        "1": "Direct Acting"
+      }
+    },
+    {
+      "name": "Integral Time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 8,
+      "type": "int16",
+      "access": "RW",
+      "description": "Ti"
+    },
+    {
+      "name": "Derivative Time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 9,
+      "type": "int16",
+      "access": "RW",
+      "description": "Td"
+    },
+    {
+      "name": "Input Range Low Limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "access": "RW",
+      "description": "RNG.LO"
+    },
+    {
+      "name": "Input Range High Limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "access": "RW",
+      "description": "RNG.HI"
+    },
+    {
+      "name": "Alarm 1 Threshold",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "access": "RW",
+      "description": "A1.---"
+    },
+    {
+      "name": "Alarm 2 Threshold",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 14,
+      "type": "int16",
+      "access": "RW",
+      "description": "A2.---"
+    },
+    {
+      "name": "Active Setpoint Select",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 15,
+      "type": "int16",
+      "access": "RW",
+      "description": "SP.SEL",
+      "enum": {
+        "0": "Setpoint 1",
+        "1": "Setpoint 2"
+      }
+    },
+    {
+      "name": "Channel 2 Deadband",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 16,
+      "type": "int16",
+      "access": "RW",
+      "description": "D.BAND"
+    },
+    {
+      "name": "Cutback Low",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 17,
+      "type": "int16",
+      "access": "RW",
+      "description": "CB.Lo"
+    },
+    {
+      "name": "Cutback High",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 18,
+      "type": "int16",
+      "access": "RW",
+      "description": "CB.HI"
+    },
+    {
+      "name": "Relative Cool/Ch2 Gain",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 19,
+      "type": "int16",
+      "access": "RW",
+      "description": "R2G"
+    },
+    {
+      "name": "Motor Travel Time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 21,
+      "type": "int16",
+      "access": "RW",
+      "description": "MTR.T"
+    },
+    {
+      "name": "Timer Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 23,
+      "type": "int16",
+      "access": "RW",
+      "description": "T.STAT",
+      "enum": {
+        "0": "Reset",
+        "1": "Run",
+        "2": "Hold",
+        "3": "End"
+      }
+    },
+    {
+      "name": "Setpoint 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 24,
+      "type": "int16",
+      "access": "RW",
+      "description": "SP1"
+    },
+    {
+      "name": "Setpoint 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 25,
+      "type": "int16",
+      "access": "RW",
+      "description": "SP2"
+    },
+    {
+      "name": "Remote (comms) setpoint",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 26,
+      "type": "int16",
+      "access": "RW",
+      "description": "Rm.SP"
+    },
+    {
+      "name": "Local Trim",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 27,
+      "type": "int16",
+      "access": "RW",
+      "description": "LOC.t"
+    },
+    {
+      "name": "Manual Reset",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 28,
+      "type": "int16",
+      "access": "RW",
+      "description": "MR"
+    },
+    {
+      "name": "Output High Limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 30,
+      "type": "int16",
+      "access": "RW",
+      "description": "OP.HI"
+    },
+    {
+      "name": "Output Low Limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 31,
+      "type": "int16",
+      "access": "RW",
+      "description": "OP.LO"
+    },
+    {
+      "name": "Safe Output Value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 34,
+      "type": "int16",
+      "access": "RW",
+      "description": "SAFE"
+    },
+    {
+      "name": "Setpoint Rate Limit Value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 35,
+      "type": "int16",
+      "access": "RW",
+      "description": "SP.RAT",
+      "enum": {
+        "0": "no rate limit"
+      }
+    },
+    {
+      "name": "Calculated Error (PV-SP)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 39,
+      "type": "int16",
+      "access": "R",
+      "description": "P.Err"
+    },
+    {
+      "name": "Alarm 1 Hysteresis",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 47,
+      "type": "int16",
+      "access": "RW",
+      "description": "A1.HYS"
+    },
+    {
+      "name": "Alarm 2 Hysteresis",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "access": "RW",
+      "description": "A2.HYS"
+    },
+    {
+      "name": "Alarm 3 Hysteresis",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 69,
+      "type": "int16",
+      "access": "RW",
+      "description": "A3.HYS"
+    },
+    {
+      "name": "Alarm 4 Hysteresis",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 71,
+      "type": "int16",
+      "access": "RW",
+      "description": "A4.HYS"
+    },
+    {
+      "name": "Instrument Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "int16",
+      "access": "R",
+      "description": "StAt"
+    },
+    {
+      "name": "Instrument Status: Alarm 1 Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Alarm 2 Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Alarm 3 Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Alarm 4 Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Auto/Manual Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Sensor Break Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Loop Break Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: CT Low load current alarm status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: CT High leakage current alarm status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Program End",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: PV Over-range (by > 5% of span)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: CT Overcurrent alarm status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: New Alarm Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Timer/Ramp Running",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Remote (comms) SP Fail",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Instrument Status: Auto-tune Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 75,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Inverted Instrument Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 76,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Load Leakage Current",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 79,
+      "type": "int16",
+      "access": "R",
+      "description": "LL.AMP"
+    },
+    {
+      "name": "Load ON Current",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 80,
+      "type": "int16",
+      "access": "R",
+      "description": "LD.AMP"
+    },
+    {
+      "name": "Alarm 3 Threshold",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 81,
+      "type": "int16",
+      "access": "RW",
+      "description": "A3.---"
+    },
+    {
+      "name": "Alarm 4 Threshold",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 82,
+      "type": "int16",
+      "access": "RW",
+      "description": "A4.---"
+    },
+    {
+      "name": "Loop Break Time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 83,
+      "type": "int16",
+      "access": "RW",
+      "description": "LBT"
+    },
+    {
+      "name": "Forced manual output value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 84,
+      "type": "int16",
+      "access": "RW",
+      "description": "F.OP"
+    },
+    {
+      "name": "Forced manual output mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 85,
+      "type": "int16",
+      "access": "RW",
+      "description": "F.MOD",
+      "enum": {
+        "0": "None",
+        "1": "Step",
+        "2": "Last"
+      }
+    },
+    {
+      "name": "Ch1 On/Off Hysteresis in Eng Units",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 86,
+      "type": "int16",
+      "access": "RW",
+      "description": "HYST.H"
+    },
+    {
+      "name": "Digital Inputs Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 87,
+      "type": "int16",
+      "access": "R",
+      "description": "Di.IP"
+    },
+    {
+      "name": "Digital Inputs Status: Logic input 1A",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 87,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Digital Inputs Status: Logic input LA",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 87,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Digital Inputs Status: Logic input LB",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 87,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Digital Inputs Status: Power has failed since last alarm acknowledge",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 87,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Ch2 On/Off Hysteresis in Eng Units",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 88,
+      "type": "int16",
+      "access": "RW",
+      "description": "HYST.C"
+    },
+    {
+      "name": "Input Filter Time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 101,
+      "type": "int16",
+      "access": "RW",
+      "description": "FILT.T"
+    },
+    {
+      "name": "Filter time constant for the rate of change alarm",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 102,
+      "type": "int16",
+      "access": "RW",
+      "description": "RC.FT"
+    },
+    {
+      "name": "PV rate of change",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 103,
+      "type": "int16",
+      "access": "R",
+      "description": "RC.PV"
+    },
+    {
+      "name": "Home Display",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 106,
+      "type": "int16",
+      "access": "RW",
+      "description": "Home",
+      "enum": {
+        "0": "Standard PV and SP display",
+        "1": "PV and Output Power display",
+        "2": "PV and Time remaining display",
+        "3": "PV and Timer elapsed time display",
+        "4": "PV and Alarm 1 setpoint",
+        "5": "PV and Load Current",
+        "6": "PV only",
+        "7": "PV and Composite SP/Time remaining",
+        "8": "Target setpoint",
+        "9": "No PV",
+        "10": "PV is not displayed when controller in Standby"
+      }
+    },
+    {
+      "name": "Instrument version number",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "R",
+      "description": "Hexadecimal, e.g. 0x0111 is V1.11",
+      "role": "firmware"
+    },
+    {
+      "name": "Setpoint High Limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 111,
+      "type": "int16",
+      "access": "RW",
+      "description": "SP.HI"
+    },
+    {
+      "name": "Setpoint Low Limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 112,
+      "type": "int16",
+      "access": "RW",
+      "description": "SP.LO"
+    },
+    {
+      "name": "Instrument type code",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 122,
+      "type": "int16",
+      "access": "R",
+      "role": "model"
+    },
+    {
+      "name": "Instrument Comms Address",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 131,
+      "type": "int16",
+      "access": "RW",
+      "description": "ADDR"
+    },
+    {
+      "name": "PV Offset",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 141,
+      "type": "int16",
+      "access": "RW",
+      "description": "PV.OFS"
+    },
+    {
+      "name": "Calibration Adjust",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 146,
+      "type": "int16",
+      "access": "RW",
+      "description": "C.Adj"
+    },
+    {
+      "name": "Instrument Mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 199,
+      "type": "int16",
+      "access": "RW",
+      "description": "IM",
+      "enum": {
+        "0": "Operating mode - all algorithms and I/O are active",
+        "1": "Standby - control outputs are off",
+        "2": "Config Mode - all outputs are inactive"
+      }
+    },
+    {
+      "name": "Input value in millivolts",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 202,
+      "type": "int16",
+      "access": "R",
+      "description": "MV.IN"
+    },
+    {
+      "name": "Comms PV Value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 203,
+      "type": "int16",
+      "access": "RW",
+      "description": "PV.CM"
+    },
+    {
+      "name": "CJC Temperature",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 215,
+      "type": "int16",
+      "access": "R",
+      "description": "CJC.IN"
+    },
+    {
+      "name": "Sensor Break Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 258,
+      "type": "int16",
+      "access": "R",
+      "description": "SBR",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "New Alarm Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 260,
+      "type": "int16",
+      "access": "R",
+      "description": "NEW.AL",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Loop Break",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 263,
+      "type": "int16",
+      "access": "R",
+      "description": "LBR",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Auto-tune Enable",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 270,
+      "type": "int16",
+      "access": "RW",
+      "description": "A.TUNE",
+      "enum": {
+        "0": "Off",
+        "1": "Enabled"
+      }
+    },
+    {
+      "name": "Mode of the Loop",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 273,
+      "type": "int16",
+      "access": "RW",
+      "description": "A-M",
+      "enum": {
+        "0": "Auto",
+        "1": "Manual"
+      }
+    },
+    {
+      "name": "Acknowledge all alarms",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 274,
+      "type": "int16",
+      "access": "RW",
+      "description": "Ac.All",
+      "enum": {
+        "1": "Acknowledge"
+      }
+    },
+    {
+      "name": "Local Remote (Comms) Setpoint Select",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 276,
+      "type": "int16",
+      "access": "RW",
+      "description": "L-R"
+    },
+    {
+      "name": "Remote setpoint in percent",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 277,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Remote input high scalar",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 278,
+      "type": "int16",
+      "access": "RW",
+      "description": "REM.HI"
+    },
+    {
+      "name": "Remote input low scalar",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 279,
+      "type": "int16",
+      "access": "RW",
+      "description": "REM.LO"
+    },
+    {
+      "name": "Retransmitted setpoint high limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 280,
+      "type": "int16",
+      "access": "RW",
+      "description": "ROP.HI"
+    },
+    {
+      "name": "Retransmitted setpoint low limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 281,
+      "type": "int16",
+      "access": "RW",
+      "description": "ROP.LO"
+    },
+    {
+      "name": "Alarm 1 Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 294,
+      "type": "int16",
+      "access": "RW",
+      "description": "A1.STS",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Alarm 2 Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 295,
+      "type": "int16",
+      "access": "RW",
+      "description": "A2.STS",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Alarm 3 Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 296,
+      "type": "int16",
+      "access": "RW",
+      "description": "A3.STS",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Alarm 4 Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 297,
+      "type": "int16",
+      "access": "RW",
+      "description": "A4.STS",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Low Load Current Threshold",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 304,
+      "type": "int16",
+      "access": "RW",
+      "description": "LD.ALM"
+    },
+    {
+      "name": "High Leakage Current Alarm",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 305,
+      "type": "int16",
+      "access": "RW",
+      "description": "LK.ALM",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Over Current Alarm Threshold",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 306,
+      "type": "int16",
+      "access": "RW",
+      "description": "HC.ALM"
+    },
+    {
+      "name": "Load Alarm Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 307,
+      "type": "int16",
+      "access": "RW",
+      "description": "LOAD.A",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Leak alarm Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 308,
+      "type": "int16",
+      "access": "RW",
+      "description": "LEAK.A"
+    },
+    {
+      "name": "Over Current alarm Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 309,
+      "type": "int16",
+      "access": "RW",
+      "description": "HILC.A",
+      "enum": {
+        "0": "Off",
+        "1": "Active"
+      }
+    },
+    {
+      "name": "Recipe to Recall",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 313,
+      "type": "int16",
+      "access": "RW",
+      "description": "REC.NO"
+    },
+    {
+      "name": "Recipe to Save",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 314,
+      "type": "int16",
+      "access": "RW",
+      "description": "StOrE"
+    },
+    {
+      "name": "Timer type configuration",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 320,
+      "type": "int16",
+      "access": "RW",
+      "description": "TM.CFG",
+      "enum": {
+        "0": "No Timer",
+        "1": "Dwell Timer",
+        "2": "Delay Timer",
+        "3": "Soft Start Timer",
+        "10": "Programmer (Programmer Option only)"
+      }
+    },
+    {
+      "name": "Timer Resolution",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 321,
+      "type": "int16",
+      "access": "RW",
+      "description": "TM.RES",
+      "enum": {
+        "0": "Hours:Mins",
+        "1": "Mins:Secs"
+      }
+    },
+    {
+      "name": "Soft Start Setpoint",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 322,
+      "type": "int16",
+      "access": "RW",
+      "description": "SS.SP"
+    },
+    {
+      "name": "Soft Start Power Limit",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 323,
+      "type": "int16",
+      "access": "RW",
+      "description": "SS.PWR"
+    },
+    {
+      "name": "Requested Timer Duration",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 324,
+      "type": "int16",
+      "access": "RW",
+      "description": "DWELL"
+    },
+    {
+      "name": "Elapsed Time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 325,
+      "type": "int16",
+      "access": "RW",
+      "description": "T.ELAP"
+    },
+    {
+      "name": "Time Remaining",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 326,
+      "type": "int16",
+      "access": "RW",
+      "description": "T.REMN"
+    },
+    {
+      "name": "Timer Start threshold",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 327,
+      "type": "int16",
+      "access": "RW",
+      "description": "THRES"
+    },
+    {
+      "name": "Timer End Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 328,
+      "type": "int16",
+      "access": "RW",
+      "description": "End.T",
+      "enum": {
+        "0": "Off",
+        "1": "Dwell at current setpoint",
+        "2": "Transfer to Setpoint 2 and dwell",
+        "3": "Reset programmer when the program ends"
+      }
+    },
+    {
+      "name": "‘Servo’ Mode (programmer option only)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 329,
+      "type": "int16",
+      "access": "RW",
+      "description": "SERVO"
+    },
+    {
+      "name": "Event outputs",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 331,
+      "type": "int16",
+      "access": "RW",
+      "description": "EVENT"
+    },
+    {
+      "name": "Number of program cycles",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 332,
+      "type": "int16",
+      "access": "RW",
+      "description": "P.CYCL"
+    },
+    {
+      "name": "Currently running program cycle",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 333,
+      "type": "int16",
+      "access": "RW",
+      "description": "CYCLE"
+    },
+    {
+      "name": "Heat/Ch1 Control Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 512,
+      "type": "int16",
+      "access": "RW",
+      "description": "CTRL.H",
+      "enum": {
+        "0": "Off",
+        "1": "On/Off Control",
+        "2": "PID Control",
+        "3": "mtr Valve Position Control"
+      }
+    },
+    {
+      "name": "Cool/Ch2 Control Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 513,
+      "type": "int16",
+      "access": "RW",
+      "description": "CTRL.C",
+      "enum": {
+        "0": "Off",
+        "1": "On/Off Control",
+        "2": "PID Control"
+      }
+    },
+    {
+      "name": "Proportional Band Units",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 514,
+      "type": "int16",
+      "access": "RW",
+      "description": "PB.UNT",
+      "enum": {
+        "0": "Engineering Units",
+        "1": "Percent of Span"
+      }
+    },
+    {
+      "name": "Level 2 Code",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 515,
+      "type": "int16",
+      "access": "RW",
+      "description": "Lev2.P"
+    },
+    {
+      "name": "Display Units",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 516,
+      "type": "int16",
+      "access": "RW",
+      "description": "UNITS",
+      "enum": {
+        "0": "Degrees C",
+        "1": "Degrees F",
+        "2": "Kelvin",
+        "3": "None",
+        "4": "Percent"
+      }
+    },
+    {
+      "name": "Level 3 Code",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 517,
+      "type": "int16",
+      "access": "RW",
+      "description": "Lev3.P"
+    },
+    {
+      "name": "Config Code",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 518,
+      "type": "int16",
+      "access": "RW",
+      "description": "Conf.P"
+    },
+    {
+      "name": "Cold start (factory defaults on next reset)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 519,
+      "type": "int16",
+      "access": "RW",
+      "description": "Cold"
+    },
+    {
+      "name": "Feature passcode C",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 520,
+      "type": "int16",
+      "access": "RW",
+      "description": "PASS.C"
+    },
+    {
+      "name": "Feature passcode 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 521,
+      "type": "int16",
+      "access": "RW",
+      "description": "PASS.2"
+    },
+    {
+      "name": "Cooling Algorithm Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 524,
+      "type": "int16",
+      "access": "RW",
+      "description": "COOL.t",
+      "enum": {
+        "0": "Linear",
+        "1": "Oil",
+        "2": "Water",
+        "3": "Fan"
+      }
+    },
+    {
+      "name": "Decimal Point Position",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 525,
+      "type": "int16",
+      "access": "RW",
+      "description": "DEC.P",
+      "enum": {
+        "0": "XXXX.",
+        "1": "XXX.X",
+        "2": "XX.XX"
+      }
+    },
+    {
+      "name": "Standby Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 530,
+      "type": "int16",
+      "access": "RW",
+      "description": "STBY.T",
+      "enum": {
+        "0": "Absolute Alarm Outputs Active – others off",
+        "1": "All outputs inactive"
+      }
+    },
+    {
+      "name": "Ramp Units",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 531,
+      "type": "int16",
+      "access": "RW",
+      "description": "RAMP.U",
+      "enum": {
+        "0": "Ramp per Minute",
+        "1": "Ramp per Hour",
+        "2": "Ramp per Second"
+      }
+    },
+    {
+      "name": "Ammeter configuration (3208/3204 only)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 532,
+      "type": "int16",
+      "access": "RW",
+      "description": "Meter",
+      "enum": {
+        "0": "No ammeter",
+        "1": "Heat Output (0-100%)",
+        "2": "Cool Output (0-100% cooling)",
+        "3": "Working Setpoint (scaled within SP limits)",
+        "4": "PV (scaled within range)",
+        "5": "Output Power (scaled within Op Low and OP High limits)",
+        "6": "Output centered between –100% and 100%",
+        "7": "Error (PV-SP) (scaled between +/- 10 degrees)",
+        "8": "Instantaneous Amps (scaled 0 to CT Span)",
+        "9": "Load Current (scaled 0 to CT Span)"
+      }
+    },
+    {
+      "name": "User Calibration Enable",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 533,
+      "type": "int16",
+      "access": "RW",
+      "description": "uCAL"
+    },
+    {
+      "name": "Alarm 1 Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 536,
+      "type": "int16",
+      "access": "RW",
+      "description": "A1.TYP",
+      "enum": {
+        "0": "Off",
+        "1": "Absolute High",
+        "2": "Absolute Low",
+        "3": "Deviation High",
+        "4": "Deviation Low",
+        "5": "Deviation Band"
+      }
+    },
+    {
+      "name": "Alarm 2 Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 537,
+      "type": "int16",
+      "access": "RW",
+      "description": "A2.TYP",
+      "enum": {
+        "0": "Off",
+        "1": "Absolute High",
+        "2": "Absolute Low",
+        "3": "Deviation High",
+        "4": "Deviation Low",
+        "5": "Deviation Band"
+      }
+    },
+    {
+      "name": "Alarm 3 Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 538,
+      "type": "int16",
+      "access": "RW",
+      "description": "A3.TYP",
+      "enum": {
+        "0": "Off",
+        "1": "Absolute High",
+        "2": "Absolute Low",
+        "3": "Deviation High",
+        "4": "Deviation Low",
+        "5": "Deviation Band"
+      }
+    },
+    {
+      "name": "Alarm 4 Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 539,
+      "type": "int16",
+      "access": "RW",
+      "description": "A4.TYP",
+      "enum": {
+        "0": "Off",
+        "1": "Absolute High",
+        "2": "Absolute Low",
+        "3": "Deviation High",
+        "4": "Deviation Low",
+        "5": "Deviation Band"
+      }
+    },
+    {
+      "name": "Alarm 1 Latching Mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 540,
+      "type": "int16",
+      "access": "RW",
+      "description": "A1.LAT",
+      "enum": {
+        "0": "No latching",
+        "1": "Latch - Automatic Reset",
+        "2": "Latch – Manual Reset"
+      }
+    },
+    {
+      "name": "Alarm 2 Latching Mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 541,
+      "type": "int16",
+      "access": "RW",
+      "description": "A2.LAT",
+      "enum": {
+        "0": "No latching",
+        "1": "Latch - Automatic Reset",
+        "2": "Latch – Manual Reset"
+      }
+    },
+    {
+      "name": "Alarm 3 Latching Mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 542,
+      "type": "int16",
+      "access": "RW",
+      "description": "A3.LAT",
+      "enum": {
+        "0": "No latching",
+        "1": "Latch - Automatic Reset",
+        "2": "Latch – Manual Reset"
+      }
+    },
+    {
+      "name": "Alarm 4 Latching Mode",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 543,
+      "type": "int16",
+      "access": "RW",
+      "description": "A4.LAT",
+      "enum": {
+        "0": "No latching",
+        "1": "Latch - Automatic Reset",
+        "2": "Latch – Manual Reset"
+      }
+    },
+    {
+      "name": "Alarm Blocking Mode Enable (A1.BLK)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 544,
+      "type": "int16",
+      "access": "RW",
+      "description": "A1.BLK",
+      "enum": {
+        "0": "OFF",
+        "1": "BLOCK"
+      }
+    },
+    {
+      "name": "Alarm Blocking Mode Enable (A2.BLK)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 545,
+      "type": "int16",
+      "access": "RW",
+      "description": "A2.BLK",
+      "enum": {
+        "0": "OFF",
+        "1": "BLOCK"
+      }
+    },
+    {
+      "name": "Alarm Blocking Mode Enable (A3.BLK)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 546,
+      "type": "int16",
+      "access": "RW",
+      "description": "A3.BLK",
+      "enum": {
+        "0": "OFF",
+        "1": "BLOCK"
+      }
+    },
+    {
+      "name": "Alarm Blocking Mode Enable (A4.BLK)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 547,
+      "type": "int16",
+      "access": "RW",
+      "description": "A4.BLK",
+      "enum": {
+        "0": "OFF",
+        "1": "BLOCK"
+      }
+    },
+    {
+      "name": "Digital Outputs Status",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 551,
+      "type": "int16",
+      "access": "RW",
+      "description": "Di.OP"
+    },
+    {
+      "name": "Digital Outputs Status: Output 1A",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 551,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Digital Outputs Status: Output 2A",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 551,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Digital Outputs Status: Output 3 on 32h8 and 3208 controllers",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 551,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Digital Outputs Status: Output 4/AA",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 551,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Adjust High Offset",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 560,
+      "type": "int16",
+      "access": "RW",
+      "description": "OFS.HI"
+    },
+    {
+      "name": "Adjust Low Offset",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 561,
+      "type": "int16",
+      "access": "RW",
+      "description": "OFS.LO"
+    },
+    {
+      "name": "Adjust High Point",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 562,
+      "type": "int16",
+      "access": "RW",
+      "description": "PNT.HI"
+    },
+    {
+      "name": "Adjust Low Point",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 563,
+      "type": "int16",
+      "access": "RW",
+      "description": "PNT.LO"
+    },
+    {
+      "name": "CT Range",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 572,
+      "type": "int16",
+      "access": "RW",
+      "description": "CT.RNG"
+    },
+    {
+      "name": "Sensor Break Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 578,
+      "type": "int16",
+      "access": "RW",
+      "description": "Sb.tyP",
+      "enum": {
+        "0": "No Sensor Break",
+        "1": "Non-Latching Sensor Break",
+        "2": "Latching Sensor Break"
+      }
+    },
+    {
+      "name": "Customer ID",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 629,
+      "type": "int16",
+      "access": "RW",
+      "description": "Id"
+    },
+    {
+      "name": "Calibration Phase",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 768,
+      "type": "int16",
+      "access": "RW",
+      "description": "PHASE",
+      "enum": {
+        "0": "None",
+        "1": "0 mv",
+        "2": "50 mv",
+        "3": "150 Ohm",
+        "4": "400 Ohm",
+        "5": "CJC",
+        "6": "CT 0 mA",
+        "7": "CT 70 mA",
+        "8": "Factory Defaults",
+        "9": "Output 1 mA low cal",
+        "10": "Output 1 mA high cal",
+        "11": "Output 2 mA low cal",
+        "12": "Output 2 mA high cal",
+        "13": "Output 3 ma low cal (3208/3204 only)",
+        "14": "Output 3 ma high cal (3208/3204 only)",
+        "15": "Remote setpoint input low volts",
+        "16": "Remote setpoint input high volts",
+        "17": "Remote setpoint input low current",
+        "18": "Remote setpoint input high current"
+      }
+    },
+    {
+      "name": "Calibration Start",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 769,
+      "type": "int16",
+      "access": "RW",
+      "description": "GO",
+      "enum": {
+        "0": "No",
+        "1": "Yes (start cal)",
+        "2": "Cal Busy",
+        "3": "Cal Pass",
+        "4": "Cal Fail"
+      }
+    },
+    {
+      "name": "Analogue Output Calibration Value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 775,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Key lock",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1104,
+      "type": "int16",
+      "access": "RW",
+      "description": "K.LOC",
+      "enum": {
+        "0": "unlocked",
+        "1": "all keys locked",
+        "2": "Edit keys (raise and lower) disabled",
+        "3": "Mode key disabled",
+        "4": "Manual mode disabled",
+        "5": "Enter standby mode when Mode combination pressed",
+        "6": "Timer keys disabled"
+      }
+    },
+    {
+      "name": "Programmer Dwell 1 Duration",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1280,
+      "type": "int16",
+      "access": "RW",
+      "description": "Dwel.1"
+    },
+    {
+      "name": "Programmer Target Setpoint 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1281,
+      "type": "int16",
+      "access": "RW",
+      "description": "TSP.1"
+    },
+    {
+      "name": "Programmer Ramp Rate 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1282,
+      "type": "int16",
+      "access": "RW",
+      "description": "RMP.1"
+    },
+    {
+      "name": "Programmer Dwell 2 Duration",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1283,
+      "type": "int16",
+      "access": "RW",
+      "description": "Dwel.2"
+    },
+    {
+      "name": "Programmer Target Setpoint 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1284,
+      "type": "int16",
+      "access": "RW",
+      "description": "TSP.2"
+    },
+    {
+      "name": "Programmer Ramp Rate 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1285,
+      "type": "int16",
+      "access": "RW",
+      "description": "RMP.2"
+    },
+    {
+      "name": "Programmer Dwell 3 Duration",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1286,
+      "type": "int16",
+      "access": "RW",
+      "description": "Dwel.3"
+    },
+    {
+      "name": "Programmer Target Setpoint 3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1287,
+      "type": "int16",
+      "access": "RW",
+      "description": "TSP.3"
+    },
+    {
+      "name": "Programmer Ramp Rate 3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1288,
+      "type": "int16",
+      "access": "RW",
+      "description": "RMP.3"
+    },
+    {
+      "name": "Programmer Dwell 4 Duration",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1289,
+      "type": "int16",
+      "access": "RW",
+      "description": "Dwel.4"
+    },
+    {
+      "name": "Programmer Target Setpoint 4",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1290,
+      "type": "int16",
+      "access": "RW",
+      "description": "TSP.4"
+    },
+    {
+      "name": "Programmer Ramp Rate 4",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 1291,
+      "type": "int16",
+      "access": "RW",
+      "description": "RMP.4"
+    },
+    {
+      "name": "Auto-tune Configures R2G",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 4176,
+      "type": "int16",
+      "access": "RW",
+      "description": "AT.R2G",
+      "enum": {
+        "0": "YES",
+        "1": "No"
+      }
+    },
+    {
+      "name": "Input Sensor Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12290,
+      "type": "int16",
+      "access": "RW",
+      "description": "IN.TYP",
+      "enum": {
+        "0": "J Type Thermocouple",
+        "1": "K Type Thermocouple",
+        "2": "L Type Thermocouple",
+        "3": "R Type Thermocouple",
+        "4": "B Type Thermocouple",
+        "5": "N Type Thermocouple",
+        "6": "T Type Thermocouple",
+        "7": "S Type Thermocouple",
+        "8": "RTD",
+        "9": "millivolt",
+        "10": "Comms Input (see Modbus address 203)",
+        "11": "Custom Input (Downloadable)"
+      }
+    },
+    {
+      "name": "CJC Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12291,
+      "type": "int16",
+      "access": "RW",
+      "description": "CJ.tyP",
+      "enum": {
+        "0": "Auto",
+        "1": "0 Degrees C",
+        "2": "50 Degrees C"
+      }
+    },
+    {
+      "name": "Linear Input High",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12306,
+      "type": "int16",
+      "access": "RW",
+      "description": "mV.HI"
+    },
+    {
+      "name": "Linear Input Low",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12307,
+      "type": "int16",
+      "access": "RW",
+      "description": "mV.LO"
+    },
+    {
+      "name": "Logic Input A channel hardware type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12352,
+      "type": "int16",
+      "access": "RW",
+      "description": "L.TYPE",
+      "enum": {
+        "0": "None",
+        "1": "Logic Inputs"
+      }
+    },
+    {
+      "name": "Logic input A function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12353,
+      "type": "int16",
+      "access": "RW",
+      "description": "L.D.IN",
+      "enum": {
+        "40": "None",
+        "41": "Acknowledge all alarms",
+        "42": "Select SP1/2",
+        "43": "Lock All Keys",
+        "44": "Timer Reset",
+        "45": "Timer Run",
+        "46": "Timer Run/Reset",
+        "47": "Timer Hold",
+        "48": "Auto/Manual Select",
+        "49": "Standby Select",
+        "50": "Remote setpoint",
+        "51": "Recipe select through IO1",
+        "52": "Remote key UP",
+        "53": "Remote key DOWN"
+      }
+    },
+    {
+      "name": "Logic input A polarity",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12361,
+      "type": "int16",
+      "access": "RW",
+      "description": "L.SENS",
+      "enum": {
+        "0": "Normal",
+        "1": "Inverted"
+      }
+    },
+    {
+      "name": "Logic Input B channel hardware type (3208/3204 only)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12368,
+      "type": "int16",
+      "access": "RW",
+      "description": "L.TYPE (LB)",
+      "enum": {
+        "0": "None",
+        "1": "Logic Inputs"
+      }
+    },
+    {
+      "name": "Logic input B function (3208/3204 only)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12369,
+      "type": "int16",
+      "access": "RW",
+      "description": "L.D.IN (LB)",
+      "enum": {
+        "40": "None",
+        "41": "Acknowledge all alarms",
+        "42": "Select SP1/2",
+        "43": "Lock All Keys",
+        "44": "Timer Reset",
+        "45": "Timer Run",
+        "46": "Timer Run/Reset",
+        "47": "Timer Hold",
+        "48": "Auto/Manual Select",
+        "49": "Standby Select",
+        "50": "Remote setpoint",
+        "51": "Recipe select through IO1",
+        "52": "Remote key UP",
+        "53": "Remote key DOWN"
+      }
+    },
+    {
+      "name": "Logic input B polarity (3208/3204 only)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12377,
+      "type": "int16",
+      "access": "RW",
+      "description": "L.SENS (LB)",
+      "enum": {
+        "0": "Normal",
+        "1": "Inverted"
+      }
+    },
+    {
+      "name": "Comms Module Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12544,
+      "type": "int16",
+      "access": "RW",
+      "description": "ID",
+      "enum": {
+        "0": "None",
+        "1": "EIA232",
+        "2": "EIA232",
+        "3": "EIA232",
+        "4": "Remote setpoint input"
+      }
+    },
+    {
+      "name": "Baud Rate",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12548,
+      "type": "int16",
+      "access": "RW",
+      "description": "BAUD",
+      "enum": {
+        "0": "9600",
+        "1": "19200",
+        "2": "4800",
+        "3": "2400",
+        "4": "1200"
+      }
+    },
+    {
+      "name": "Parity setting",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12549,
+      "type": "int16",
+      "access": "RW",
+      "description": "PRTY",
+      "enum": {
+        "0": "None",
+        "1": "Even",
+        "2": "Odd"
+      }
+    },
+    {
+      "name": "RX/TX Delay",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12550,
+      "type": "int16",
+      "access": "RW",
+      "description": "DELAY",
+      "enum": {
+        "0": "no delay",
+        "1": "delay"
+      }
+    },
+    {
+      "name": "Comms Retransmission Variable selection",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12551,
+      "type": "int16",
+      "access": "RW",
+      "description": "RETRN",
+      "enum": {
+        "0": "Off",
+        "1": "Working Setpoint",
+        "2": "PV",
+        "3": "Output Power",
+        "4": "Error"
+      }
+    },
+    {
+      "name": "Retransmission broadcast register address",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12552,
+      "type": "int16",
+      "access": "RW",
+      "description": "REG.AD"
+    },
+    {
+      "name": "Current Transformer",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12608,
+      "type": "int16",
+      "access": "RW",
+      "description": "Ct.Id"
+    },
+    {
+      "name": "CT Source",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12609,
+      "type": "int16",
+      "access": "RW",
+      "description": "CT.SRC",
+      "enum": {
+        "0": "None",
+        "1": "IO1",
+        "2": "OP2",
+        "8": "AA (OP4)"
+      }
+    },
+    {
+      "name": "CT Alarm Latch Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12610,
+      "type": "int16",
+      "access": "RW",
+      "description": "CT.LAT",
+      "enum": {
+        "0": "No latching",
+        "1": "Latch – Automatic Reset",
+        "2": "Latch – Manual Reset"
+      }
+    },
+    {
+      "name": "IO channel 1 hardware type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12672,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.ID",
+      "enum": {
+        "0": "None",
+        "1": "Relay",
+        "2": "Logic I/O",
+        "3": "DC OP",
+        "4": "Triac (SSR)"
+      }
+    },
+    {
+      "name": "IO1 Digital input function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12673,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.D.IN",
+      "enum": {
+        "40": "None",
+        "41": "Acknowledge all alarms",
+        "42": "Select SP1/2",
+        "43": "Lock All Keys",
+        "44": "Timer Reset",
+        "45": "Timer Run",
+        "46": "Timer Run/Reset",
+        "47": "Timer Hold",
+        "48": "Auto/Manual Select",
+        "49": "Standby Select",
+        "50": "Remote setpoint",
+        "51": "Recipe select through IO1",
+        "52": "Remote key UP",
+        "53": "Remote key DOWN"
+      }
+    },
+    {
+      "name": "I/O Channel Function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12675,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.Func",
+      "enum": {
+        "0": "None (or Telemetry Output)",
+        "1": "Digital Output",
+        "2": "Heat or UP if valve position",
+        "3": "Cool or DOWN if valve position",
+        "4": "Digital Input",
+        "10": "DC Output no function",
+        "11": "DC Output Heat",
+        "12": "DC Output Cool",
+        "13": "DC Output WSP retransmission",
+        "14": "DC Output PV retransmission",
+        "15": "DC Output OP retransmission"
+      }
+    },
+    {
+      "name": "IO Channel 1 DC Output Range",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12676,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.RNG",
+      "enum": {
+        "0": "0-20mA",
+        "1": "4-20mA"
+      }
+    },
+    {
+      "name": "IO Channel 1 Source A",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12678,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.SRC.A",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "IO Channel 1 Source B",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12679,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.SRC.B",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "IO Channel 1 Source C",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12680,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.SRC.C",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "IO Channel 1 Source D",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12681,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.SRC.D",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "IO channel 1 polarity",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12682,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.SENS",
+      "enum": {
+        "0": "Normal",
+        "1": "Inverted"
+      }
+    },
+    {
+      "name": "IO1 Time proportioning Output minimum pulse time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12706,
+      "type": "int16",
+      "access": "RW",
+      "description": "1.PLS"
+    },
+    {
+      "name": "Output 2 Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12736,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.ID",
+      "enum": {
+        "0": "None",
+        "1": "Relay",
+        "2": "Logic Output",
+        "3": "DC OP",
+        "4": "Triac (SSR)"
+      }
+    },
+    {
+      "name": "Output 2 Channel function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12739,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.FUNC",
+      "enum": {
+        "0": "None (or Telemetry Output)",
+        "1": "Digital Output",
+        "2": "Heat or UP if valve position",
+        "3": "Cool or DOWN if valve position",
+        "10": "DC Output no function",
+        "11": "DC Output Heat",
+        "12": "DC Output Cool",
+        "13": "DC Output WSP retransmission",
+        "14": "DC Output PV retransmission",
+        "15": "DC Output OP retransmission"
+      }
+    },
+    {
+      "name": "IO Channel 2 DC Output Range",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12740,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.RNG",
+      "enum": {
+        "0": "0-20mA",
+        "1": "4-20mA"
+      }
+    },
+    {
+      "name": "Output 2 source A",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12742,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.SRC.A",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output 2 source B",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12743,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.SRC.B",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output 2 source C",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12744,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.SRC.C",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output 2 source D",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12745,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.SRC.D",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output 2 Polarity",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12746,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.SENS",
+      "enum": {
+        "0": "Normal",
+        "1": "Inverted"
+      }
+    },
+    {
+      "name": "Output 2 Time proportioning Output minimum pulse time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12770,
+      "type": "int16",
+      "access": "RW",
+      "description": "2.PLS"
+    },
+    {
+      "name": "Output 3 Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12800,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.ID",
+      "enum": {
+        "0": "None",
+        "1": "Relay",
+        "3": "DC OP"
+      }
+    },
+    {
+      "name": "Output 3 Channel function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12803,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.FUNC",
+      "enum": {
+        "0": "None (or Telemetry Output)",
+        "1": "Digital Output",
+        "2": "Heat or UP if valve position",
+        "3": "Cool or DOWN if valve position",
+        "10": "DC Output no function",
+        "11": "DC Output Heat",
+        "12": "DC Output Cool",
+        "13": "DC Output WSP retransmission",
+        "14": "DC Output PV retransmission",
+        "15": "DC Output OP retransmission"
+      }
+    },
+    {
+      "name": "IO Channel 3 DC Output Range",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12804,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.RNG",
+      "enum": {
+        "0": "0-20mA",
+        "1": "4-20mA"
+      }
+    },
+    {
+      "name": "Output 3 source A",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12806,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.SRC.A",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output 3 source B",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12807,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.SRC.B",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output 3 source C",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12808,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.SRC.C",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output 3 source D",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12809,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.SRC.D",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output 3 Polarity",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12810,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.SENS",
+      "enum": {
+        "0": "Normal",
+        "1": "Inverted"
+      }
+    },
+    {
+      "name": "Output 3 Time proportioning Output minimum pulse time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 12834,
+      "type": "int16",
+      "access": "RW",
+      "description": "3.PLS"
+    },
+    {
+      "name": "Output AA Type",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13056,
+      "type": "int16",
+      "access": "RW",
+      "description": "4.TYPE",
+      "enum": {
+        "0": "None",
+        "1": "Relay"
+      }
+    },
+    {
+      "name": "Output 4 Channel function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13059,
+      "type": "int16",
+      "access": "RW",
+      "description": "4.FUNC",
+      "enum": {
+        "0": "None (or Telemetry Output)",
+        "1": "Digital Output",
+        "2": "Heat or UP if valve position",
+        "3": "Cool or DOWN if valve position"
+      }
+    },
+    {
+      "name": "Output AA source A",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13062,
+      "type": "int16",
+      "access": "RW",
+      "description": "4.SRC.A",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output AA source B",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13063,
+      "type": "int16",
+      "access": "RW",
+      "description": "4.SRC.B",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output AA source C",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13064,
+      "type": "int16",
+      "access": "RW",
+      "description": "4.SRC.C",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output AA source D",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13065,
+      "type": "int16",
+      "access": "RW",
+      "description": "4.SRC.D",
+      "enum": {
+        "0": "None",
+        "1": "Alarm 1",
+        "2": "Alarm 2",
+        "3": "Alarm 3",
+        "4": "Alarm 4",
+        "5": "All Alarms (1-4)",
+        "6": "New Alarm",
+        "7": "CT Alarm (Load, Leak or Overcurrent)",
+        "8": "Loop Break Alarm",
+        "9": "Sensor Break Alarm",
+        "10": "Timer End (or Not Ramping)",
+        "11": "Timer Run (or Ramping)",
+        "12": "Auto/Manual",
+        "13": "Remote fail",
+        "14": "Power fail",
+        "15": "Programmer event"
+      }
+    },
+    {
+      "name": "Output Polarity",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13066,
+      "type": "int16",
+      "access": "RW",
+      "description": "4.SENS",
+      "enum": {
+        "0": "Normal",
+        "1": "Inverted"
+      }
+    },
+    {
+      "name": "Output AA Time proportioning Output minimum pulse time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 13090,
+      "type": "int16",
+      "access": "RW",
+      "description": "4.PLS"
+    }
+  ]
+}

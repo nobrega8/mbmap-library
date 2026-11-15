@@ -1,0 +1,2055 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Autonics",
+  "model": "TK Series",
+  "vendor_website": "autonics.com",
+  "description": "PID temperature controllers: present value, setpoints, heating and cooling MV, indicators, heater current, PID, input, output, alarm and communication parameters",
+  "revision": 1,
+  "source": "Autonics, TK Series User Manual for Communication, chapter 2 (Modbus Mapping Table)",
+  "sources": [
+    {
+      "title": "TK Series User Manual for Communication",
+      "url": "https://www.instrumart.com/assets/Autonics-TK-communication-manual.pdf",
+      "note": "chapter 2, Modbus Mapping Table (copy hosted by a distributor, Instrumart)",
+      "accessed": "2026-11-15",
+      "sha256": "71ca1ad4e2552f3b227318134c13f4088d503b16fb19c237b5d5abc5ac27621f"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS485 (TK models with the communication option). Address, speed, parity and stop bits are parameters 218-221; the device answers after the response waiting time (222).",
+    "Addresses are protocol addresses, from 0; the manual writes them as 000001, 100001, 300001 and 400001 references with the hexadecimal protocol address in brackets.",
+    "Values are 16-bit integers shown with the decimal point of the display: temperatures and set values follow the input's decimal point (input register 1001); MV, manual reset, filter and control times are in tenths.",
+    "Coils, discrete inputs and the indicator status word (input register 1006) give the same front-panel indicators.",
+    "Display mnemonics are given with digits for the TK display's special characters (AL!L is AL1L, O@MA is O2MA).",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Control output run/stop (coil)",
+      "group": "Control",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "RW",
+      "enum": {
+        "0": "Run",
+        "1": "Stop"
+      },
+      "description": "Display: R-S."
+    },
+    {
+      "name": "Auto-tuning run/stop (coil)",
+      "group": "Control",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "description": "Display: AT."
+    },
+    {
+      "name": "°C indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 0,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "°F indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 1,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "% indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 2,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "OUT1 indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 3,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "OUT2 indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 4,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "AT (auto-tuning) indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 5,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "SV1 indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "SV2 indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 7,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "SV3 indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 8,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "AL1 indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "AL2 indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 10,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "MAN (manual control) indicator",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 11,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "DI-1 input",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 12,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "DI-2 input",
+      "group": "Indicators",
+      "area": "discrete",
+      "address": 13,
+      "type": "bool",
+      "access": "R",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      }
+    },
+    {
+      "name": "Product number (high word)",
+      "group": "Identification",
+      "area": "input",
+      "address": 100,
+      "type": "uint16",
+      "access": "R",
+      "role": "model"
+    },
+    {
+      "name": "Product number (low word)",
+      "group": "Identification",
+      "area": "input",
+      "address": 101,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Hardware version",
+      "group": "Identification",
+      "area": "input",
+      "address": 102,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Software version",
+      "group": "Identification",
+      "area": "input",
+      "address": 103,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Model name",
+      "group": "Identification",
+      "area": "input",
+      "address": 104,
+      "type": "string",
+      "access": "R",
+      "description": "10 registers, e.g. \"TK4\" followed by option, power and output codes.",
+      "length": 10
+    },
+    {
+      "name": "Coil status start address",
+      "group": "Identification",
+      "area": "input",
+      "address": 117,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Coil status quantity",
+      "group": "Identification",
+      "area": "input",
+      "address": 118,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Input status start address",
+      "group": "Identification",
+      "area": "input",
+      "address": 119,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Input status quantity",
+      "group": "Identification",
+      "area": "input",
+      "address": 120,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Holding register start address",
+      "group": "Identification",
+      "area": "input",
+      "address": 121,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Holding register quantity",
+      "group": "Identification",
+      "area": "input",
+      "address": 122,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Input register start address",
+      "group": "Identification",
+      "area": "input",
+      "address": 123,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Input register quantity",
+      "group": "Identification",
+      "area": "input",
+      "address": 124,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Present value (PV)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1000,
+      "type": "int16",
+      "access": "R",
+      "description": "Display: PV. -1999 to 9999; decimal point per register 1001."
+    },
+    {
+      "name": "Decimal point location",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1001,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "0",
+        "1": "0.0",
+        "2": "0.00",
+        "3": "0.000"
+      }
+    },
+    {
+      "name": "Indicator unit",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1002,
+      "type": "int16",
+      "access": "R",
+      "enum": {
+        "0": "°C",
+        "1": "°F",
+        "2": "%",
+        "3": "OFF"
+      }
+    },
+    {
+      "name": "SV setting value",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1003,
+      "type": "int16",
+      "access": "R",
+      "description": "Display: SV."
+    },
+    {
+      "name": "Heating side MV",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1004,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Display: H-MV. 0 to 1000 = 0.0 to 100.0 %",
+      "scale": 0.1
+    },
+    {
+      "name": "Cooling side MV",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1005,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Display: C-MV. 0 to 1000 = 0.0 to 100.0 %",
+      "scale": 0.1
+    },
+    {
+      "name": "Indicator status",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits as below; same as the discrete inputs."
+    },
+    {
+      "name": "Indicator status: °C indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: °F indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: % indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: OUT1 indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: OUT2 indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: AT (auto-tuning) indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: SV1 indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: SV2 indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: SV3 indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: AL1 indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: AL2 indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: MAN (manual control) indicator",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: DI-1 input",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Indicator status: DI-2 input",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1006,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Heater current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 1007,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "description": "0.0 to 50.0 A",
+      "scale": 0.1
+    },
+    {
+      "name": "SV set value",
+      "group": "Parameter 0 group",
+      "area": "holding",
+      "address": 0,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: SV."
+    },
+    {
+      "name": "Heating MV (manual)",
+      "group": "Parameter 0 group",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "Display: H-MV. 0 to 1000 = 0.0 to 100.0 %",
+      "scale": 0.1
+    },
+    {
+      "name": "Cooling MV (manual)",
+      "group": "Parameter 0 group",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "Display: C-MV. 0 to 1000 = 0.0 to 100.0 %",
+      "scale": 0.1
+    },
+    {
+      "name": "Auto/manual control",
+      "group": "Parameter 0 group",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto",
+        "1": "Manual"
+      }
+    },
+    {
+      "name": "Control output run/stop",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 50,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Run",
+        "1": "Stop"
+      },
+      "description": "Display: R-S."
+    },
+    {
+      "name": "Multi SV number",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 51,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "SV-0",
+        "1": "SV-1",
+        "2": "SV-2",
+        "3": "SV-3"
+      },
+      "description": "Display: SV-N."
+    },
+    {
+      "name": "Heater current monitoring",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 52,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "description": "Display: CT-A. 0 to 500 = 0.0 to 50.0 A",
+      "scale": 0.1
+    },
+    {
+      "name": "Alarm output 1 low-limit set value",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 53,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: AL1L."
+    },
+    {
+      "name": "Alarm output 1 high-limit set value",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 54,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: AL1H."
+    },
+    {
+      "name": "Alarm output 2 low-limit set value",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: AL2L."
+    },
+    {
+      "name": "Alarm output 2 high-limit set value",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: AL2H."
+    },
+    {
+      "name": "Set value SV-0",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 57,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: SV-0."
+    },
+    {
+      "name": "Set value SV-1",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 58,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: SV-1."
+    },
+    {
+      "name": "Set value SV-2",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 59,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: SV-2."
+    },
+    {
+      "name": "Set value SV-3",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 60,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: SV-3."
+    },
+    {
+      "name": "Alarm output 3 low-limit set value",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 61,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: AL3L."
+    },
+    {
+      "name": "Alarm output 3 high-limit set value",
+      "group": "Parameter 1 group",
+      "area": "holding",
+      "address": 62,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: AL3H."
+    },
+    {
+      "name": "Auto-tuning run/stop",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 100,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "description": "Display: AT."
+    },
+    {
+      "name": "Heating proportional band",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 101,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: H-P. 1 to 9999 = 0.1 to 999.9"
+    },
+    {
+      "name": "Cooling proportional band",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 102,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: C-P. 1 to 9999 = 0.1 to 999.9"
+    },
+    {
+      "name": "Heating integral time",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 103,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: H-I."
+    },
+    {
+      "name": "Cooling integral time",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 104,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: C-I."
+    },
+    {
+      "name": "Heating derivative time",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 105,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: H-D."
+    },
+    {
+      "name": "Cooling derivative time",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 106,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: C-D."
+    },
+    {
+      "name": "Dead band / overlap band",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 107,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: DB."
+    },
+    {
+      "name": "Manual reset",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 108,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "Display: REST. 0 to 1000 = 0.0 to 100.0 %",
+      "scale": 0.1
+    },
+    {
+      "name": "Heating hysteresis",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 109,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: hHYS."
+    },
+    {
+      "name": "Heating OFF offset",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 110,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: hOST."
+    },
+    {
+      "name": "Cooling hysteresis",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 111,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: cHYS."
+    },
+    {
+      "name": "Cooling OFF offset",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 112,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: cOST."
+    },
+    {
+      "name": "MV low-limit set value",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 113,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "Display: L-MV."
+    },
+    {
+      "name": "MV high-limit set value",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 114,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "Display: H-MV."
+    },
+    {
+      "name": "Ramp up change rate",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 115,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: RAMU."
+    },
+    {
+      "name": "Ramp down change rate",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 116,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: RAMD."
+    },
+    {
+      "name": "Ramp time unit",
+      "group": "Parameter 2 group",
+      "area": "holding",
+      "address": 117,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Seconds",
+        "1": "Minutes",
+        "2": "Hours"
+      },
+      "description": "Display: rUNT."
+    },
+    {
+      "name": "Input type",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 150,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: IN-T. Code from the input type table of the product manual."
+    },
+    {
+      "name": "Sensor temperature unit",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 151,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "°C",
+        "1": "°F"
+      },
+      "description": "Display: UNIT."
+    },
+    {
+      "name": "Analog low-limit input value",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 152,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: L-RG."
+    },
+    {
+      "name": "Analog high-limit input value",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 153,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: H-RG."
+    },
+    {
+      "name": "Scaling decimal point",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 154,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "0",
+        "1": "0.0",
+        "2": "0.00",
+        "3": "0.000"
+      },
+      "description": "Display: DOT."
+    },
+    {
+      "name": "Low-limit scale value",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 155,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: L-SC."
+    },
+    {
+      "name": "High-limit scale value",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 156,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: H-SC."
+    },
+    {
+      "name": "Display unit",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 157,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "°C",
+        "1": "°F",
+        "2": "%",
+        "3": "OFF"
+      },
+      "description": "Display: dUNT."
+    },
+    {
+      "name": "Input correction",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 158,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: IN-B."
+    },
+    {
+      "name": "Input digital filter",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 159,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: MAvF. 1 to 1200 = 0.1 to 120.0 s",
+      "scale": 0.1
+    },
+    {
+      "name": "SV low-limit set value",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 160,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: L-SV."
+    },
+    {
+      "name": "SV high-limit set value",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 161,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: H-SV."
+    },
+    {
+      "name": "Control output operation mode",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 162,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Heating",
+        "1": "Cooling",
+        "2": "Heating & cooling"
+      },
+      "description": "Display: O-FT."
+    },
+    {
+      "name": "Control type",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 163,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "PID",
+        "1": "ON/OFF"
+      },
+      "description": "Display: C-MD. Heating & cooling type adds 2: PID/ON-OFF and 3: ON-OFF/PID combinations (see the product manual)."
+    },
+    {
+      "name": "Auto-tuning mode",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 164,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "TUN1",
+        "1": "TUN2"
+      },
+      "description": "Display: ATT."
+    },
+    {
+      "name": "OUT1 control output selection",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 165,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "SSR",
+        "1": "Current"
+      },
+      "description": "Display: OUT1."
+    },
+    {
+      "name": "OUT1 SSR output type",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 166,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Standard",
+        "1": "Cycle",
+        "2": "Phase"
+      },
+      "description": "Display: O1SR."
+    },
+    {
+      "name": "OUT1 current output range",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 167,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "4-20 mA",
+        "1": "0-20 mA"
+      },
+      "description": "Display: O1MA."
+    },
+    {
+      "name": "OUT2 control output selection",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 168,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "SSR",
+        "1": "Current"
+      },
+      "description": "Display: OUT2."
+    },
+    {
+      "name": "OUT2 current output range",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 169,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "4-20 mA",
+        "1": "0-20 mA"
+      },
+      "description": "Display: O2MA."
+    },
+    {
+      "name": "Heating control time",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 170,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: H-T. 1 to 1200 = 0.1 to 120.0 s",
+      "scale": 0.1
+    },
+    {
+      "name": "Cooling control time",
+      "group": "Parameter 3 group",
+      "area": "holding",
+      "address": 171,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: C-T. 1 to 1200 = 0.1 to 120.0 s",
+      "scale": 0.1
+    },
+    {
+      "name": "Alarm output 1 operation mode",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 200,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "DVCC (deviation high)",
+        "2": "DDV (deviation low)",
+        "3": "DDVC (deviation high/low)",
+        "4": "CDV (deviation high/low reverse)",
+        "5": "PVCC (absolute high)",
+        "6": "DDPV (absolute low)",
+        "7": "LBA (loop break)",
+        "8": "SBA (sensor break)",
+        "9": "HBA (heater burnout)"
+      },
+      "description": "Display: AL-1."
+    },
+    {
+      "name": "Alarm output 1 option",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 201,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "AL-A (standard)",
+        "1": "AL-B (alarm latch)",
+        "2": "AL-C (standby sequence 1)",
+        "3": "AL-D (latch and standby 1)",
+        "4": "AL-E (standby sequence 2)",
+        "5": "AL-F (latch and standby 2)"
+      },
+      "description": "Display: AL1T."
+    },
+    {
+      "name": "Alarm output 1 hysteresis",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 202,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: A1HY."
+    },
+    {
+      "name": "Alarm output 1 N.O./N.C.",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 203,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "N.O.",
+        "1": "N.C."
+      },
+      "description": "Display: A1N."
+    },
+    {
+      "name": "Alarm output 1 ON delay time",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 204,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: A1ON."
+    },
+    {
+      "name": "Alarm output 1 OFF delay time",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 205,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: A1OF."
+    },
+    {
+      "name": "Alarm output 2 operation mode",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 206,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "DVCC (deviation high)",
+        "2": "DDV (deviation low)",
+        "3": "DDVC (deviation high/low)",
+        "4": "CDV (deviation high/low reverse)",
+        "5": "PVCC (absolute high)",
+        "6": "DDPV (absolute low)",
+        "7": "LBA (loop break)",
+        "8": "SBA (sensor break)",
+        "9": "HBA (heater burnout)"
+      },
+      "description": "Display: AL-2."
+    },
+    {
+      "name": "Alarm output 2 option",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 207,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "AL-A (standard)",
+        "1": "AL-B (alarm latch)",
+        "2": "AL-C (standby sequence 1)",
+        "3": "AL-D (latch and standby 1)",
+        "4": "AL-E (standby sequence 2)",
+        "5": "AL-F (latch and standby 2)"
+      },
+      "description": "Display: AL2T."
+    },
+    {
+      "name": "Alarm output 2 hysteresis",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 208,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: A2HY."
+    },
+    {
+      "name": "Alarm output 2 N.O./N.C.",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 209,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "N.O.",
+        "1": "N.C."
+      },
+      "description": "Display: A2N."
+    },
+    {
+      "name": "Alarm output 2 ON delay time",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 210,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: A2ON."
+    },
+    {
+      "name": "Alarm output 2 OFF delay time",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 211,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: A2OF."
+    },
+    {
+      "name": "LBA time",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 212,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: LBaT."
+    },
+    {
+      "name": "LBA band",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 214,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: LBaB."
+    },
+    {
+      "name": "Analog transmission output 1 mode",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 215,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "PV",
+        "1": "SV",
+        "2": "H-MV",
+        "3": "C-MV"
+      },
+      "description": "Display: AoM1."
+    },
+    {
+      "name": "Transmission output 1 low-limit value",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 216,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: FsL1."
+    },
+    {
+      "name": "Transmission output 1 high-limit value",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 217,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: FsH1."
+    },
+    {
+      "name": "Communication address",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 218,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: ADRS. 1 to 99"
+    },
+    {
+      "name": "Communication speed",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 219,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "2400",
+        "1": "4800",
+        "2": "9600",
+        "3": "19200",
+        "4": "38400"
+      },
+      "description": "Display: BPS."
+    },
+    {
+      "name": "Communication parity",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 220,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Even",
+        "2": "Odd"
+      },
+      "description": "Display: PRTY."
+    },
+    {
+      "name": "Communication stop bits",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 221,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "1",
+        "1": "2"
+      },
+      "description": "Display: STP."
+    },
+    {
+      "name": "Communication response waiting time",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 222,
+      "type": "int16",
+      "access": "RW",
+      "unit": "ms",
+      "description": "Display: RSwT. 5 to 99 ms"
+    },
+    {
+      "name": "Communication write",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 223,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Enabled",
+        "1": "Disabled"
+      },
+      "description": "Display: COMW."
+    },
+    {
+      "name": "Alarm output 3 operation mode",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 224,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "DVCC (deviation high)",
+        "2": "DDV (deviation low)",
+        "3": "DDVC (deviation high/low)",
+        "4": "CDV (deviation high/low reverse)",
+        "5": "PVCC (absolute high)",
+        "6": "DDPV (absolute low)",
+        "7": "LBA (loop break)",
+        "8": "SBA (sensor break)",
+        "9": "HBA (heater burnout)"
+      },
+      "description": "Display: AL-3."
+    },
+    {
+      "name": "Alarm output 3 option",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 225,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "AL-A (standard)",
+        "1": "AL-B (alarm latch)",
+        "2": "AL-C (standby sequence 1)",
+        "3": "AL-D (latch and standby 1)",
+        "4": "AL-E (standby sequence 2)",
+        "5": "AL-F (latch and standby 2)"
+      },
+      "description": "Display: AL3T."
+    },
+    {
+      "name": "Alarm output 3 hysteresis",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 226,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: A3HY."
+    },
+    {
+      "name": "Alarm output 3 N.O./N.C.",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 227,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "N.O.",
+        "1": "N.C."
+      },
+      "description": "Display: A3N."
+    },
+    {
+      "name": "Alarm output 3 ON delay time",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 228,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: A3ON."
+    },
+    {
+      "name": "Alarm output 3 OFF delay time",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 229,
+      "type": "int16",
+      "access": "RW",
+      "unit": "s",
+      "description": "Display: A3OF."
+    },
+    {
+      "name": "Analog transmission output 2 mode",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 230,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "PV",
+        "1": "SV",
+        "2": "H-MV",
+        "3": "C-MV"
+      },
+      "description": "Display: AoM2."
+    },
+    {
+      "name": "Transmission output 2 low-limit value",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 231,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: FsL2."
+    },
+    {
+      "name": "Transmission output 2 high-limit value",
+      "group": "Parameter 4 group",
+      "area": "holding",
+      "address": 232,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: FsH2."
+    },
+    {
+      "name": "Multi SV",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 250,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "1",
+        "1": "2",
+        "2": "4"
+      },
+      "description": "Display: MtSV."
+    },
+    {
+      "name": "Digital input key function",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 251,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "STOP",
+        "1": "Alarm reset",
+        "2": "AT",
+        "3": "OFF"
+      },
+      "description": "Display: DI-K."
+    },
+    {
+      "name": "DI-1 input terminal function",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 252,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "STOP",
+        "2": "Alarm reset",
+        "3": "Manual",
+        "4": "Multi SV"
+      },
+      "description": "Display: DI-1."
+    },
+    {
+      "name": "DI-2 input terminal function",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 253,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "STOP",
+        "2": "Alarm reset",
+        "3": "Manual",
+        "4": "Multi SV"
+      },
+      "description": "Display: DI-2."
+    },
+    {
+      "name": "Manual control, initial MV",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 254,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto MV",
+        "1": "Preset MV"
+      },
+      "description": "Display: ItMV."
+    },
+    {
+      "name": "Manual control, preset MV",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 255,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "Display: PrMV."
+    },
+    {
+      "name": "Sensor error MV",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 256,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "Display: ErMV."
+    },
+    {
+      "name": "Control stop MV",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 257,
+      "type": "int16",
+      "access": "RW",
+      "unit": "%",
+      "description": "Display: StMV."
+    },
+    {
+      "name": "Control stop, alarm output",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 258,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Continue",
+        "1": "OFF"
+      },
+      "description": "Display: StAL."
+    },
+    {
+      "name": "User level",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 259,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "Standard",
+        "1": "High"
+      },
+      "description": "Display: USER."
+    },
+    {
+      "name": "Parameter initialization",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 260,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      },
+      "description": "Display: INIT."
+    },
+    {
+      "name": "SV setting lock",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 261,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "description": "Display: LcSV."
+    },
+    {
+      "name": "Parameter 1 group lock",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 262,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "description": "Display: LcP1."
+    },
+    {
+      "name": "Parameter 2 group lock",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 263,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "description": "Display: LcP2."
+    },
+    {
+      "name": "Parameter 3 group lock",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 264,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "description": "Display: LcP3."
+    },
+    {
+      "name": "Parameter 4 group lock",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 265,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "description": "Display: LcP4."
+    },
+    {
+      "name": "Parameter 5 group lock",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 266,
+      "type": "int16",
+      "access": "RW",
+      "enum": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "description": "Display: LcP5."
+    },
+    {
+      "name": "Password setting",
+      "group": "Parameter 5 group",
+      "area": "holding",
+      "address": 267,
+      "type": "int16",
+      "access": "RW",
+      "description": "Display: PWD. 0 = off, 2 to 9999 = password, 1 = read-only password"
+    },
+    {
+      "name": "User parameter 0",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 300,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 1",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 301,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 2",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 302,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 3",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 303,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 4",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 304,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 5",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 305,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 6",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 306,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 7",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 307,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 8",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 308,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 9",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 309,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 10",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 310,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 11",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 311,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 12",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 312,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 13",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 313,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 14",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 314,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 15",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 315,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 16",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 316,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 17",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 317,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 18",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 318,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 19",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 319,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 20",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 320,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 21",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 321,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 22",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 322,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 23",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 323,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 24",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 324,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 25",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 325,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 26",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 326,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 27",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 327,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 28",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 328,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    },
+    {
+      "name": "User parameter 29",
+      "group": "User parameter group",
+      "area": "holding",
+      "address": 329,
+      "type": "int16",
+      "access": "RW",
+      "description": "Holds the parameter assigned to this slot of the user parameter group."
+    }
+  ]
+}
