@@ -1,0 +1,2709 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "SmartGen",
+  "model": "HGM7100N series",
+  "models": [
+    "HGM7100N",
+    "HGM7110N",
+    "HGM7120N"
+  ],
+  "vendor_website": "smartgen.cn",
+  "description": "HGM7100N series genset controllers (auto start; HGM7120N adds mains monitoring and transfer): alarm flags, mains and generator electrical values, engine data, status, run time and counters, time, and remote control keys",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "SmartGen HGM7100N Genset Controller Communication Protocol, v1.3 (2025-06-21)",
+  "sources": [
+    {
+      "title": "HGM7100N Communication Protocol",
+      "version": "1.3 (2025-06-21)",
+      "url": "https://www.smartgen.cn/yun/data/download/HGM7100N_Protocol_en.pdf",
+      "note": "Section 5, address and data tables",
+      "accessed": "2026-11-15",
+      "sha256": "f8c7051196f0d91b94f773def3ea86b41dd518704664ec352f4fb9bdceba02dc"
+    }
+  ],
+  "notes": [
+    "Modbus RTU, 9600 bps 8N1 (2 stop bits selectable), address 1 to 255. Function 03 reads the holding registers, 06 writes only addresses 199 to 210 and 225 to 231, and 05 places the remote-control coils.",
+    "Addresses are decimal as in the manual, counted from 0. Alarm flags are bits of registers 0 to 35, the first listed item being bit 0 (LSB).",
+    "32-bit values (powers, energy, fuel, MCU ID) take two registers; the manual does not state the word order, so high word first is assumed.",
+    "Scaled values are marked in the manual with (*10) or (*100): the register holds the value times 10 or 100.",
+    "The manual gives no units; the usual units for this controller family (V, A, Hz, kW, kvar, kVA, rpm, %) are shown on the electrical values and may need checking.",
+    "Coils 5 and 6 differ between the models: close/open generator on the HGM7110N, change-over mains/gen on the HGM7120N.",
+    "Written from the manufacturer's protocol document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Remote start key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote stop key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote auto key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote manual key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 4,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote C/O mains key (HGM7120N) or close gen key (HGM7110N)",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 5,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote C/O gen key (HGM7120N) or open gen key (HGM7110N)",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 6,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote up key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 7,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote down key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 8,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote left key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 9,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote right key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 10,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote confirm key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 11,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote mute key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 12,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote backup generator start key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 13,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote backup generator stop key",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 14,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote oil engine fast stop",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 15,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Remote control output 1",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 19,
+      "type": "bool",
+      "access": "W",
+      "description": "1 activates, 0 releases"
+    },
+    {
+      "name": "Remote control output 2",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 20,
+      "type": "bool",
+      "access": "W",
+      "description": "1 activates, 0 releases"
+    },
+    {
+      "name": "Remote control output 3",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 21,
+      "type": "bool",
+      "access": "W",
+      "description": "1 activates, 0 releases"
+    },
+    {
+      "name": "Remote control output 4",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 22,
+      "type": "bool",
+      "access": "W",
+      "description": "1 activates, 0 releases"
+    },
+    {
+      "name": "Remote control output 5",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 23,
+      "type": "bool",
+      "access": "W",
+      "description": "1 activates, 0 releases"
+    },
+    {
+      "name": "Remote control output 6",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 24,
+      "type": "bool",
+      "access": "W",
+      "description": "1 activates, 0 releases"
+    },
+    {
+      "name": "Remote lock/unlock",
+      "group": "Remote control",
+      "area": "coil",
+      "address": 30,
+      "type": "bool",
+      "access": "W",
+      "description": "1 locks, 0 unlocks"
+    },
+    {
+      "name": "Common Alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Common Shutdown Alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Common Warning Alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Common Trip and Stop Alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Common Open Without Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "1 for active",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "System In Auto Mode",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "System In Manual Mode",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "System In Stop Mode",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 0,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Emergency Stop Alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Over Speed Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Under Speed Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Loss of Speed Signal Alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Gen Over Frequency Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Gen Under Frequency Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Gen Over Volt Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Gen Under Volt Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Fail to Start Alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Gen Over Current Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Time Due Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Reverse Power Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Over Power Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "High Temp. Input Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Low Oil Pressure Input Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Low Level Input Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Temp. Sensor Open Circuit",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "High Temp. Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Oil Pressure Sensor Open Circuit",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Low Oil Pressure Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Level Sensor Open Circuit",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Low Level Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 1 Open Circuit",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 1 High Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 1 Low Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 2 Open Circuit",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 2 High Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 2 Low Alarm Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Input 1 Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 8,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Input 2 Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 8,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Input 3 Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 8,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Input 4 Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 8,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Input 5 Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 8,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Input 6 Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 8,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Input 7 Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 8,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Over Current Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Time Due Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Reverse Power Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Over Power Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Input 1 Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Input 2 Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Input 3 Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Input 4 Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Input 5 Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Input 6 Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Input 7 Trip Shutdown",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 12,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Over Current Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Time Due Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Reverse Power Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Over Power Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Input 1 Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Input 2 Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Input 3 Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Input 4 Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Input 5 Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Input 6 Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Input 7 Trip",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 16,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Over Speed Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Under Speed Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Loss of Speed Signal Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Gen Over Frequency Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Gen Under Frequency Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Gen Over Volt Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Gen Under Volt Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Gen Over Current Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Fail to Stop Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Fail to Charge Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Battery Over Volt Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Battery Under Volt Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Time Due Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Reverse Power Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Over Power Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Gen Loss of Phase Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 21,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Gen Reverse Phase Sequence Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 21,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Fail to Switch Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 21,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Temp. Sensor Open Circuit (21)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 21,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "High Temp. Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 21,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Low Temp. Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 21,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Oil Pressure Sensor Open Circuit (21)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 21,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Low Oil Pressure Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 21,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Level Sensor Open Circuit (22)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 22,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Low Level Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 22,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 1 Open Circuit (22)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 22,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 1 High",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 22,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 1 Low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 22,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 2 Open Circuit (22)",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 22,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 2 High",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 22,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Flexible Sensor 2 Low",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 22,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Cycle Start Comm. Failure Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 26,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Input 1 Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Input 2 Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Input 3 Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Input 4 Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Input 5 Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Input 6 Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Input 7 Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Box Temp. High Warning",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 29,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Alarm Shutdown Inhibit Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Time Due Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "In Scheduled Not Run Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 31,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Auto Mode Input",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Auto Mode Inactive",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Alt. Config. 1 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Alt. Config. 2 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Alt. Config. 3 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Over Current Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Reverse Power Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Over Power Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Input 1 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Input 2 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Input 3 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Input 4 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Input 5 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Input 6 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Input 7 Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Mains Normal Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Mains Abnormal Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Gen Normal Running Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Gen Shutdown Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Mains On-load Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Gen On-load Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "In Auto Mode Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Not In Auto Mode Indication",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Emergency Input Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Input 1 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Input 2 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Input 3 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Input 4 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Input 5 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Input 6 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Input 7 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Fuel Relay Output Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Starting Relay Output Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Programmable Output 1 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Programmable Output 2 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Programmable Output 3 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Programmable Output 4 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Programmable Output 5 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Programmable Output 6 Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Mains Normal",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 43,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Mains Closed",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 43,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Gen Normal",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 43,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Gen Closed",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 43,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Alarm Indicator Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 43,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Running Indicator Status",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 43,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Mains Abnormal",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Mains Over Volt",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Mains Under Volt",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Mains Over Frequency",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Mains Under Frequency",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Mains Loss Of Phase",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Mains Reverse Phase Sequence",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Mains Blackout",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 44,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Input 1 Active",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Input 2 Active",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Input 3 Active",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Input 4 Active",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Input 5 Active",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Input 6 Active",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Input 7 Active",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 45,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Mains UAB",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Mains UBC",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Mains UCA",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 57,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Mains UA",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 58,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Mains UB",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 59,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Mains UC",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 60,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Mains UA Phase",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 61,
+      "type": "int16",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Mains UB Phase",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 62,
+      "type": "int16",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Mains UC Phase",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 63,
+      "type": "int16",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Mains Frequency",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "Hz"
+    },
+    {
+      "name": "Gen UAB",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 75,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Gen UBC",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 76,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Gen UCA",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 77,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Gen UA",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 78,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Gen UB",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 79,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Gen UC",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 80,
+      "type": "int16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Gen UA Phase",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 81,
+      "type": "int16",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Gen UB Phase",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 82,
+      "type": "int16",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Gen UC Phase",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 83,
+      "type": "int16",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Gen Frequency",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 84,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "Hz"
+    },
+    {
+      "name": "A-Phase Current",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 95,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "B-Phase Current",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 96,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "C-Phase Current",
+      "group": "Electrical",
+      "area": "holding",
+      "address": 97,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "A-Phase Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 103,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "B-Phase Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 105,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "C-Phase Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 107,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "Total Active Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 109,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "A-Phase Reactive Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 111,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kvar"
+    },
+    {
+      "name": "B-Phase Reactive Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 113,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kvar"
+    },
+    {
+      "name": "C-Phase Reactive Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 115,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kvar"
+    },
+    {
+      "name": "Total Reactive Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 117,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kvar"
+    },
+    {
+      "name": "A-Phase Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 119,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kVA"
+    },
+    {
+      "name": "B-Phase Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 121,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kVA"
+    },
+    {
+      "name": "C-Phase Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 123,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kVA"
+    },
+    {
+      "name": "Total Apparent Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 125,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kVA"
+    },
+    {
+      "name": "A-Phase Power Factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 127,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "B-Phase Power Factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 128,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "C-Phase Power Factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 129,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Average Power Factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 130,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Current Running Time (hour)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 131,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Current Running Time (minute)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 132,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Current Running Time (second)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Current Electric Energy",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 134,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Average Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 136,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "Historical Power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 138,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kW"
+    },
+    {
+      "name": "Load Percentage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 140,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Engine Speed",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 141,
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "Battery Voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 142,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Charger Voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 143,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Resis. Value of Temp Sensor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 148,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Temp Sensor Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 149,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Resis. Value of Pressure Sensor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Pressure Sensor Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 151,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Resis. Value of Level Sensor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 152,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Level Sensor Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 153,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Resis. Value of Flexible Sensor 1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 154,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Flexible Sensor 1 Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 155,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Resis. Value of Flexible Sensor 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 156,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Flexible Sensor 2 Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 157,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Coolant Level",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 162,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Engine Oil Temp.",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 163,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Coolant Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 164,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Fuel Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 165,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Fuel Temp",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 166,
+      "type": "int16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Inlet Temp",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 167,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Outlet Temp",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 168,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Turbo Pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 169,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Fuel Consumption",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 170,
+      "type": "uint16",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Total Fuel Consumption",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 171,
+      "type": "uint32",
+      "access": "R",
+      "description": "ECU engine data (signed); reserved if the engine has no ECU"
+    },
+    {
+      "name": "Generator Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 189,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Standby",
+        "1": "Pre-heat",
+        "2": "Fuel output",
+        "3": "Crank",
+        "4": "Crank interval",
+        "5": "Safety on delay",
+        "6": "Start idle",
+        "7": "Warming up",
+        "8": "Waiting for load",
+        "9": "Normal running",
+        "10": "Cooling",
+        "11": "Stop idle",
+        "12": "ETS",
+        "13": "Waiting for stop",
+        "14": "Fail to stop",
+        "15": "After stop"
+      }
+    },
+    {
+      "name": "Gen Delay Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 190,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Remote Start Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 191,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No delay",
+        "1": "Start delay",
+        "2": "Stop delay"
+      }
+    },
+    {
+      "name": "Remote Start Delay Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 192,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Switch Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 193,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off load",
+        "1": "Mains on-load",
+        "2": "Gen on-load",
+        "3": "Open delay",
+        "4": "Switch transfer delay",
+        "5": "Mains close delay",
+        "6": "Gen close delay",
+        "7": "Waiting for breaker open",
+        "8": "Waiting for gen close",
+        "9": "Waiting for mains close",
+        "10": "Normal"
+      }
+    },
+    {
+      "name": "Switch Transfer Delay",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 194,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Mains Status",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 195,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Mains normal",
+        "1": "Mains normal delay",
+        "2": "Mains abnormal",
+        "3": "Mains abnormal delay"
+      }
+    },
+    {
+      "name": "Mains Delay Value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 196,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Total Running Time (hour)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 199,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Total Running Time (minute)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 200,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Total Running Time (second)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Total Start Times",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Total kWh",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 203,
+      "type": "int32",
+      "access": "RW",
+      "unit": "kWh"
+    },
+    {
+      "name": "Total kvarh",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 205,
+      "type": "int32",
+      "access": "RW",
+      "unit": "kvarh"
+    },
+    {
+      "name": "Total kVAh",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 207,
+      "type": "int32",
+      "access": "RW",
+      "unit": "kVAh"
+    },
+    {
+      "name": "Maintenance Countdown (hour)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 211,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Countdown (minute)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 212,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Maintenance Countdown (second)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 213,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Controller Model",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 217,
+      "type": "uint16",
+      "access": "R",
+      "role": "model"
+    },
+    {
+      "name": "Controller Software Version",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 218,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "role": "firmware"
+    },
+    {
+      "name": "Controller Hardware Version",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 219,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Controller Issued Time (year)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 220,
+      "type": "uint16",
+      "access": "R",
+      "description": "Last two digits of the year"
+    },
+    {
+      "name": "Controller Issued Time (month)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 221,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Controller Issued Time (day)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 222,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Controller Time (year)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 225,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Last two digits of the year"
+    },
+    {
+      "name": "Controller Time (month)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 226,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Controller Time (day)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 227,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Controller Time (week)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 228,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Controller Time (hour)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 229,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Controller Time (minute)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 230,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Controller Time (second)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 231,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "MCUID_H1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 270,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "MCUID_H2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 272,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "MCUID_L",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 274,
+      "type": "uint32",
+      "access": "R"
+    }
+  ]
+}
