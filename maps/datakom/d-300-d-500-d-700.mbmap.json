@@ -1,0 +1,1557 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Datakom",
+  "model": "D-300 to D-700 genset controllers",
+  "models": [
+    "D-300",
+    "D-500",
+    "D-700"
+  ],
+  "vendor_website": "datakom.com.tr",
+  "description": "Genset controllers: mains and genset voltages, currents, powers, power factors and frequency, battery and sensor readings, harmonics, operating status and mode, counters, energies and pushbutton commands",
+  "revision": 1,
+  "firmware": "5.6",
+  "source": "Datakom, D-300 / 500 / 700 Modbus Application Manual, V5.6 (25.04.2016)",
+  "sources": [
+    {
+      "title": "D-300 / 500 / 700 Modbus Application Manual",
+      "version": "V5.6 (25.04.2016)",
+      "url": "https://www.datakom.com.tr/upload/Files/500_MODBUS.pdf",
+      "accessed": "2026-11-15",
+      "sha256": "8222940774f059a875e73c313f7c781285b122400fe71eb09b164f95f73eb407"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS485 or RS232 (2400 to 115200 baud, 8 data bits, no parity, 1 stop bit) and Modbus TCP on Ethernet models. Read with function 03 (up to 16 registers), write with 06 or 16; address 1 to 240.",
+    "Addresses are those of the manual, as sent.",
+    "32-bit values are high word first. The manual does not say which values are signed; powers, power factors and temperatures are taken as signed here.",
+    "The manual's page with the energy and fuel counters appears twice with different addresses; this map keeps the first table (11569 on).",
+    "Not in this map: the alarm bit arrays (10504-10551), digital input, output and LED status arrays, function flags, the scopemeter and LCD buffers.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Pushbutton simulation BIT 0",
+      "group": "Commands",
+      "area": "holding",
+      "address": 8193,
+      "type": "uint16",
+      "access": "W",
+      "description": "Pushbutton simulation: bit 0 stop, bit 1 manual (D-700) or run (D-500), bit 2 auto, bit 3 test, bit 4 run (D-700), and further bits as listed in the manual."
+    },
+    {
+      "name": "Select channel for harmonic analysis and scopemeter display",
+      "group": "Commands",
+      "area": "holding",
+      "address": 8194,
+      "type": "uint16",
+      "unit": "%",
+      "access": "W",
+      "enum": {
+        "0": "Mains voltage L1",
+        "1": "Mains voltage L2",
+        "2": "Mains voltage L3",
+        "3": "Genset voltage L1",
+        "4": "Genset voltage L2",
+        "5": "Genset voltage L3",
+        "6": "Mains voltage L1-L2",
+        "7": "Mains voltage L2-L3",
+        "8": "Mains voltage L3-L1",
+        "9": "Genset voltage L1-L2",
+        "10": "Genset voltage L2-L3",
+        "11": "Genset voltage L3-L1",
+        "12": "Mains current L1",
+        "13": "Mains current L2",
+        "14": "Mains current L3",
+        "15": "Genset current L1",
+        "16": "Genset current L2",
+        "17": "Genset current L3",
+        "18": "Mains neutral current",
+        "19": "Genset neutral current"
+      }
+    },
+    {
+      "name": "Hard reset",
+      "group": "Commands",
+      "area": "holding",
+      "address": 8210,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 14536 to reset the unit."
+    },
+    {
+      "name": "Mains phase L1 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10240,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L2 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10242,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L3 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10244,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L1 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10246,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L2 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10248,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L3 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10250,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L1-L2 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10252,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L2-L3 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10254,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L3-L1 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10256,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L1-L2 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10258,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L2-L3 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10260,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L3-L1 voltage",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10262,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L1 current",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10264,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L2 current",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10266,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L3 current",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10268,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L1 current",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10270,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L2 current",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10272,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L3 current",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10274,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains neutral current",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10276,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Genset neutral current",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10278,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L1 active power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10280,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L2 active power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10282,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L3 active power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10284,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L1 active power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10286,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L2 active power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10288,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L3 active power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10290,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Mains total active power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10292,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Genset total active power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10294,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L1 reactive power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10296,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L2 reactive power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10298,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L3 reactive power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10300,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L1 reactive power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10302,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L2 reactive power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10304,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L3 reactive power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10306,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Mains total reactive power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10308,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Genset total reactive power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10310,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L1 apparent power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10312,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L2 apparent power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10314,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L3 apparent power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10316,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L1 apparent power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10318,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L2 apparent power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10320,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L3 apparent power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10322,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Mains total apparent power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10324,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Genset total apparent power",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10326,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L1 power factor",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10328,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L2 power factor",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10329,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Mains phase L3 power factor",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10330,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L1 power factor",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10331,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L2 power factor",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10332,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Genset phase L3 power factor",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10333,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Mains total power factor",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10334,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Genset total power factor",
+      "group": "Mains and genset",
+      "area": "holding",
+      "address": 10335,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Mains frequency",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10338,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Genset frequency",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10339,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Charge Input voltage",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10340,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Battery voltage",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10341,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Charge Input_2 voltage",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10343,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Battery_2 voltage",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10344,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 1 ohm value",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10345,
+      "type": "uint16",
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 2 ohm value",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10346,
+      "type": "uint16",
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 3 ohm value",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10347,
+      "type": "uint16",
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 4 ohm value",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10348,
+      "type": "uint16",
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 5 ohm value",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10349,
+      "type": "uint16",
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 6 ohm value",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10350,
+      "type": "uint16",
+      "unit": "Ω",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 7 reading",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10351,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Analog input 8 reading",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10352,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Oil pressure",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10361,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "bar",
+      "access": "R",
+      "description": "Oil pressure in bars (multiply by 14.50 to for psi)"
+    },
+    {
+      "name": "Engine temp",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10362,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Engine temp in °C (multiply by 1.8 then add 32 for °F)"
+    },
+    {
+      "name": "Fuel level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10363,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R",
+      "description": "Fuel level in %"
+    },
+    {
+      "name": "Oil temp",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10364,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Oil temp in °C (multiply by 1.8 then add 32 for °F)"
+    },
+    {
+      "name": "Canopy temp",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10365,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Canopy temp in °C (multiply by 1.8 then add 32 for °F)"
+    },
+    {
+      "name": "Ambient temp",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10366,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Ambient temp in °C (multiply by 1.8 then add 32 for °F)"
+    },
+    {
+      "name": "Oil pressure_2",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10367,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "bar",
+      "access": "R",
+      "description": "Oil pressure_2 in bars (multiply by 14.50 for psi)"
+    },
+    {
+      "name": "Engine temp_2",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10368,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Engine temp_2 in °C (multiply by 1.8 then add 32 for °F)"
+    },
+    {
+      "name": "Fuel level_2",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10369,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R",
+      "description": "Fuel level_2 in %"
+    },
+    {
+      "name": "Oil temp_2",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10370,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Oil temp_2 in °C (multiply by 1.8 then add 32 to convert to °F)"
+    },
+    {
+      "name": "Canopy temp_2",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10371,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Canopy temp_2 in °C (multiply by 1.8 then add 32 for °F)"
+    },
+    {
+      "name": "Ambient temp_2",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10372,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Ambient temp_2 in °C (multiply by 1.8 then add 32 for °F)"
+    },
+    {
+      "name": "Magnetic pickup input reading (rpm)",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10375,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "Engine rpm",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10376,
+      "type": "uint16",
+      "unit": "rpm",
+      "access": "R"
+    },
+    {
+      "name": "Genset average voltage",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10377,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Genset average current",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10379,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Mains average voltage",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10381,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Mains average current",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10383,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Minimum battery voltage, measured during cranking",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10385,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s Total Harmonic Distortion level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10386,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s fundamental level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10387,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 03 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10388,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 05 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10389,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 07 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10390,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 09 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10391,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 11 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10392,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 13 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10393,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 15 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10394,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 17 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10395,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 19 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10396,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 21 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10397,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 23 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10398,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 25 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10399,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 27 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10400,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 29 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10401,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel’s harmonic 31 level",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10402,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Selected channel for harmonic analysis and scopemeter display",
+      "group": "Engine and DC",
+      "area": "holding",
+      "address": 10403,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Latitude from GPS/GSM",
+      "group": "Status",
+      "area": "holding",
+      "address": 10594,
+      "type": "int32",
+      "access": "R"
+    },
+    {
+      "name": "Longitude from GPS/GSM",
+      "group": "Status",
+      "area": "holding",
+      "address": 10596,
+      "type": "int32",
+      "access": "R"
+    },
+    {
+      "name": "Altitude from GPS/GSM",
+      "group": "Status",
+      "area": "holding",
+      "address": 10598,
+      "type": "int32",
+      "access": "R"
+    },
+    {
+      "name": "Unit operation status",
+      "group": "Status",
+      "area": "holding",
+      "address": 10604,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "genset at rest",
+        "1": "wait before fuel",
+        "2": "engine preheat",
+        "3": "wait oil flash off",
+        "4": "crank rest",
+        "5": "cranking",
+        "6": "engine run idle speed",
+        "7": "engine heating",
+        "8": "running off load",
+        "9": "synchronizing to mains",
+        "10": "load transfer to genset",
+        "11": "gen cb activation",
+        "12": "genset cb timer"
+      }
+    },
+    {
+      "name": "Unit mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 10605,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "STOP mode",
+        "2": "RUN mode (D500)",
+        "4": "AUTO mode",
+        "8": "TEST mode"
+      }
+    },
+    {
+      "name": "Genset operation timer",
+      "group": "Status",
+      "area": "holding",
+      "address": 10606,
+      "type": "uint16",
+      "access": "R",
+      "description": "Genset operation timer. In various wait statuses, the genset operation status will change at the expiration of this timer."
+    },
+    {
+      "name": "GOV control output %",
+      "group": "Status",
+      "area": "holding",
+      "address": 10607,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "AVR control output %",
+      "group": "Status",
+      "area": "holding",
+      "address": 10608,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Device identity",
+      "group": "Status",
+      "area": "holding",
+      "address": 10609,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "54016": "D-300",
+        "54528": "D-500",
+        "55040": "D-700"
+      },
+      "role": "model"
+    },
+    {
+      "name": "Device hardware version information",
+      "group": "Status",
+      "area": "holding",
+      "address": 10610,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Device software version information",
+      "group": "Status",
+      "area": "holding",
+      "address": 10611,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Counter: number of genset runs",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10616,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Counter: number of genset cranks",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10618,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Counter: number of genset on load",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10620,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Counter: engine hours run",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10622,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Counter: engine hours since last service",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10624,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Counter: engine days since last service",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10626,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "d",
+      "access": "R"
+    },
+    {
+      "name": "Counter: genset total active energy (kWh)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10628,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Counter: genset total inductive reactive energy (kVArh-ind)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10630,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Counter: genset total capacitive reactive energy (kVArh-cap)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10632,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Counter: remaining engine hours to service-1",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10634,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Counter: remaining engine days to service-1",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10636,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "d",
+      "access": "R"
+    },
+    {
+      "name": "Counter: remaining engine hours to service-2",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10638,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Counter: remaining engine days to service-2",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10640,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "d",
+      "access": "R"
+    },
+    {
+      "name": "Counter: remaining engine hours to service-3",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10642,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Counter: remaining engine days to service-3",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10644,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "d",
+      "access": "R"
+    },
+    {
+      "name": "GPRS IP as 4 bytes",
+      "group": "Counters",
+      "area": "holding",
+      "address": 10646,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum battery_2 voltage, measured during cranking",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11172,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Battery Charge Current",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11173,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Battery Charge Current of battery 2",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11174,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Counter: mains total active energy (kWh)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11569,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Counter: mains total inductive reactive energy (kVArh-ind)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11571,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Counter: mains total capacitive reactive energy (kVArh-cap)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11573,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Counter: total export active energy (kWh)",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11575,
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Counter: fuel counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11577,
+      "type": "uint32",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Flowmeter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11680,
+      "type": "uint32",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Ethernet reset counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11682,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Ethernet TCP/IP packet counter",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11683,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Multi genset total active power",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11175,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Multi genset total reactive power",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11177,
+      "type": "int32",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Multi genset average active power load %",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11374,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Multi genset average reactive power load %",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11375,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Multi genset average power factor",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11376,
+      "type": "int16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Multi genset speed correction %",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11377,
+      "type": "uint16",
+      "scale": 0.1,
+      "access": "R"
+    },
+    {
+      "name": "Multi genset voltage correction %",
+      "group": "Counters",
+      "area": "holding",
+      "address": 11378,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    }
+  ]
+}
