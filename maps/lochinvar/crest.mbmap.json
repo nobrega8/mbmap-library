@@ -1,0 +1,653 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Lochinvar",
+  "model": "Crest",
+  "models": [
+    "Crest FB",
+    "Crest OF",
+    "Crest FCB",
+    "Hellcat"
+  ],
+  "vendor_website": "lochinvar.com",
+  "description": "Crest condensing boilers (FB/OF 751-6001, FCB 1000-6000) and Hellcat, ModBus memory map: switches and relays, setpoints, temperatures, firing rate, cascade power, status, blocking and lockout codes, BAS control inputs",
+  "revision": 1,
+  "source": "Lochinvar, ModBus and BACnet Communication Instructions for Crest FB/OF751-6001, FCB1000-6000 and Regent IWH500-1000, 100161012_2000020084 Rev X",
+  "sources": [
+    {
+      "title": "ModBus and BACnet Communication Instructions for Crest FB/OF751-6001, FCB1000-6000 and Regent IWH500-1000",
+      "version": "100161012_2000020084 Rev X",
+      "url": "https://assets.lochinvar.com/damroot/Original/10017/MODB_100161012_2000020084_REV%20X_(71343).pdf",
+      "note": "ModBus memory map, configuration bits, unit operation",
+      "accessed": "2026-11-15",
+      "sha256": "1f9119a0926369a45f3a34f29de19164ec378d15155cbc342f96450097728de4"
+    }
+  ],
+  "notes": [
+    "Modbus RTU through the ModBus communication board: address by DIP switches 1-8, 9600 or 19200 bit/s (switch 9), no or even parity (switch 10).",
+    "Addresses are the manual's Modicon numbers without the leading digit (input register 30009 is input register 9), counted from 1 (address_base 1).",
+    "Temperatures are degrees Celsius x 10 (683 = 68.3 °C). Values the BAS writes (holding registers 40002 and up) are only used when the matching configuration bit in 40001 is set, and must be refreshed within the ModBus timer set on the unit.",
+    "Status, blocking and lockout codes (input registers 30014-30016) are listed in the troubleshooting chapter of the manual.",
+    "The same document has a separate memory map for the Regent water heater, not in this map.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Boiler Enable",
+      "group": "Coils",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW"
+    },
+    {
+      "name": "Tank Thermostat",
+      "group": "Coils",
+      "area": "coil",
+      "address": 5,
+      "type": "bool",
+      "access": "RW"
+    },
+    {
+      "name": "Manual Reset High Limit",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 1,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Flow Switch",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 2,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gas Pressure Switch",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 3,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Louver Proving Switch",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 4,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Blower Proving Switch 1",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 5,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FB/OF 1501-6001 only."
+    },
+    {
+      "name": "Blocked Drain Switch",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 6,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Flame 1",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 8,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Enable",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FB/OF 1501-6001 only."
+    },
+    {
+      "name": "Tank Thermostat (discrete 10)",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 10,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FB/OF 1501-6001 only."
+    },
+    {
+      "name": "Blocked Flue",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 11,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Internal LWCO",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 18,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Gas Pressure Switch 2",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 19,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Flue Damper Proving Switch",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 21,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Flame 2",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 23,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Enable (discrete 26)",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 26,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Tank Thermostat (discrete 30)",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 30,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Run-time Contacts",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 33,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Alarm Contacts",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 34,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "SH Pump",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 35,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "HWG Pump",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 36,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Louver Relay",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 37,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gas Valve 1",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 38,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "System Pump",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 39,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Vent Damper Relay",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 44,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Gas Valve 2",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 46,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Blower #1 Power",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 49,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Blower #2 Power",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 50,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FB/OF 1501-6001 only."
+    },
+    {
+      "name": "Spark Igniter",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 51,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Air Valve Trigger",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 52,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Air Valve Proving",
+      "group": "Discrete inputs",
+      "area": "discrete",
+      "address": 53,
+      "type": "bool",
+      "access": "R",
+      "description": "Crest FB/OF 1501-6001 only."
+    },
+    {
+      "name": "Discrete Inputs 1 - 16",
+      "group": "Input registers",
+      "area": "input",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per discrete input, as the discrete input list."
+    },
+    {
+      "name": "Discrete Inputs 17 - 32",
+      "group": "Input registers",
+      "area": "input",
+      "address": 2,
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per discrete input, as the discrete input list."
+    },
+    {
+      "name": "Discrete Inputs 33 - 48",
+      "group": "Input registers",
+      "area": "input",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per discrete input, as the discrete input list."
+    },
+    {
+      "name": "System Pump Speed In",
+      "group": "Input registers",
+      "area": "input",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Cascade Total Power",
+      "group": "Input registers",
+      "area": "input",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Cascade Current Power",
+      "group": "Input registers",
+      "area": "input",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Firing Rate",
+      "group": "Input registers",
+      "area": "input",
+      "address": 12,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Boiler Pump Speed Out",
+      "group": "Input registers",
+      "area": "input",
+      "address": 13,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Boiler Status Code",
+      "group": "Input registers",
+      "area": "input",
+      "address": 14,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Boiler Blocking Code",
+      "group": "Input registers",
+      "area": "input",
+      "address": 15,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Boiler Lockout Code",
+      "group": "Input registers",
+      "area": "input",
+      "address": 16,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Air Damper Target Angle",
+      "group": "Input registers",
+      "area": "input",
+      "address": 19,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Gas Damper Target Angle",
+      "group": "Input registers",
+      "area": "input",
+      "address": 20,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Fan Speed Target",
+      "group": "Input registers",
+      "area": "input",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "O2 Sensor Status",
+      "group": "Input registers",
+      "area": "input",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Current Trim Factor",
+      "group": "Input registers",
+      "area": "input",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Barometer",
+      "group": "Input registers",
+      "area": "input",
+      "address": 25,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Discrete Inputs 49 - 64",
+      "group": "Input registers",
+      "area": "input",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per discrete input, as the discrete input list."
+    },
+    {
+      "name": "Lock-out Error Leader",
+      "group": "Input registers",
+      "area": "input",
+      "address": 27,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Lock-out Error Member 1",
+      "group": "Input registers",
+      "area": "input",
+      "address": 28,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Lock-out Error Member 2",
+      "group": "Input registers",
+      "area": "input",
+      "address": 29,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Lock-out Error Member 3",
+      "group": "Input registers",
+      "area": "input",
+      "address": 30,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Lock-out Error Member 4",
+      "group": "Input registers",
+      "area": "input",
+      "address": 31,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Lock-out Error Member 5",
+      "group": "Input registers",
+      "area": "input",
+      "address": 32,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Lock-out Error Member 6",
+      "group": "Input registers",
+      "area": "input",
+      "address": 33,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Lock-out Error Member 7",
+      "group": "Input registers",
+      "area": "input",
+      "address": 34,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Flame 1 (input 36)",
+      "group": "Input registers",
+      "area": "input",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Flame 2 (input 37)",
+      "group": "Input registers",
+      "area": "input",
+      "address": 37,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Correct O2 Reading",
+      "group": "Input registers",
+      "area": "input",
+      "address": 38,
+      "type": "uint16",
+      "access": "R",
+      "description": "Crest FCB1000-6000 only."
+    },
+    {
+      "name": "Configuration",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Configuration: Boiler Enable from BAS",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW"
+    },
+    {
+      "name": "Configuration: Tank Thermostat from BAS",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW"
+    },
+    {
+      "name": "Configuration: Rate Command / 0-10V Input / Setpoint Command from BAS",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW"
+    },
+    {
+      "name": "Configuration: Tank Setpoint from BAS",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW"
+    },
+    {
+      "name": "Configuration: System Supply Temperature from BAS",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW"
+    },
+    {
+      "name": "Configuration: Outdoor Temperature from BAS",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW"
+    },
+    {
+      "name": "Configuration: Tank Temperature from BAS",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 6,
+      "access": "RW"
+    },
+    {
+      "name": "Configuration: System Return Temperature from BAS",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 1,
+      "type": "bool",
+      "bit": 7,
+      "access": "RW"
+    },
+    {
+      "name": "Coils",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "0-10 Volt Input / Rate Command / Setpoint Command",
+      "group": "Holding registers",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "%"
+    }
+  ]
+}
