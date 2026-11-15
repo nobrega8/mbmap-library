@@ -1,0 +1,1850 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Intesis",
+  "model": "INMBSPAN001A100",
+  "models": [
+    "INMBSPAN001A100"
+  ],
+  "vendor_website": "intesis.com",
+  "description": "Modbus RTU gateway for Panasonic Aquarea H/J/K/L/M air-to-water heat pumps: on/off, operating mode, zones, tank, setpoints, temperatures, energy, compensation curves, error codes and gateway settings",
+  "revision": 1,
+  "source": "HMS Networks / Intesis, INMBSPAN001A100 User Manual v1.0.2",
+  "sources": [
+    {
+      "title": "INMBSPAN001A100 User Manual v1.0.2",
+      "url": "https://www.hms-networks.com/docs/default-source/products/intesis/manuals-and-guides---manuals/inmbspan001a100-user-manual-v1-0-0-en.pdf",
+      "note": "chapter Modbus registers",
+      "accessed": "2026-11-15",
+      "sha256": "5d7e445f248c71035243d4368ee807509c503f615dd232937a4981fb99781f6f"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over EIA-485, function 03 or 04 to read, 06 or 16 to write. Baud rate and address are set with the DIP switches (default 9600 bit/s, 8N1).",
+    "Registers that apply to specific Aquarea series say so in their descriptions.",
+    "Addresses are the protocol addresses of the manual (the PLC addresses less 1), from 0.",
+    "Temperatures are in °C, °C x 10 or °F, as set with the DIP switches; their entries say so. Invalid values read 0xFFFF (unsigned) or 0x8000 (signed).",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "System On/Off",
+      "group": "Registers",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Outdoor Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Outlet Water Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Inlet Water Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Operating Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Heat",
+        "2": "Heat Tank",
+        "3": "Tank",
+        "4": "Cool Tank",
+        "5": "Cool",
+        "6": "Auto",
+        "7": "Auto Tank",
+        "8": "Auto Heat",
+        "9": "Auto Heat Tank",
+        "10": "Auto Cool",
+        "11": "Auto Cool Tank"
+      }
+    },
+    {
+      "name": "Heat Mode Water Temp. Setting Method",
+      "group": "Registers",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Compensation curve",
+        "2": "Direct"
+      }
+    },
+    {
+      "name": "Cool Mode Water Temp. Setting Method",
+      "group": "Registers",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Compensation curve",
+        "2": "Direct"
+      }
+    },
+    {
+      "name": "Zone 1/Zone 2 On/Off",
+      "group": "Registers",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Zone 1 On / Zone 2 Off",
+        "2": "Zone 1 Off / Zone 2 On",
+        "3": "Zone 1 On / Zone 2 On"
+      }
+    },
+    {
+      "name": "Zone 1 Sensors",
+      "group": "Registers",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Water temperature",
+        "2": "External room sensor",
+        "3": "Internal room sensor",
+        "4": "Room thermistor",
+        "5": "Pool Sensor"
+      }
+    },
+    {
+      "name": "Zone 2 Sensors",
+      "group": "Registers",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Water temperature",
+        "2": "External room sensor",
+        "3": "Internal room sensor",
+        "4": "Room thermistor",
+        "5": "Pool Sensor"
+      }
+    },
+    {
+      "name": "Zone 1: (Water Shift/ Water/Room/Pool) Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 2: (Water Shift/ Water/Room/Pool) Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 1: Actual (Water Shift/ Water/Room/Pool) Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 14,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 2: Actual (Water Shift/ Water/Room/Pool) Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 15,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 1: Temperature Setting Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Room temperature",
+        "2": "Compensation curve (Water Temp)",
+        "3": "Direct (Water Temp)",
+        "4": "Pool Temp"
+      }
+    },
+    {
+      "name": "Zone 2: Temperature Setting Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Room temperature",
+        "2": "Compensation curve (Water Temp)",
+        "3": "Direct (Water Temp)",
+        "4": "Pool Temp"
+      }
+    },
+    {
+      "name": "Zone 1 Min. Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 18,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 1 Max. Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 19,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 2 Min. Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 20,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 2 Max. Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 21,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Tank On/Off",
+      "group": "Registers",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Tank Current Water Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 32,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Tank Water Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 33,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Tank Heater",
+      "group": "Registers",
+      "area": "holding",
+      "address": 34,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Internal",
+        "2": "External"
+      }
+    },
+    {
+      "name": "Tank Min. Water Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 35,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Tank Max. Water Setpoint Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 36,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Tank Mode Energy Consumption",
+      "group": "Registers",
+      "area": "holding",
+      "address": 45,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W"
+    },
+    {
+      "name": "Heat Mode Energy Consumption",
+      "group": "Registers",
+      "area": "holding",
+      "address": 46,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W"
+    },
+    {
+      "name": "(Cool Mode / Heat Recovery Mode) Energy Consumption",
+      "group": "Registers",
+      "area": "holding",
+      "address": 47,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W"
+    },
+    {
+      "name": "Type of Modbus Gateway",
+      "group": "Registers",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Standard Gateway",
+        "2": "Checker Gateway"
+      }
+    },
+    {
+      "name": "Gateway Firmware Version",
+      "group": "Registers",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value in hexadecimal format Example for version 1.4: 0x14"
+    },
+    {
+      "name": "Error Code",
+      "group": "Registers",
+      "area": "holding",
+      "address": 52,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "De-ice Status",
+      "group": "Registers",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Current Error Status",
+      "group": "Registers",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No error",
+        "1": "Error"
+      }
+    },
+    {
+      "name": "Tank Connection",
+      "group": "Registers",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Number of Zones",
+      "group": "Registers",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "1 zone",
+        "2": "2 zones"
+      }
+    },
+    {
+      "name": "Zone 1 Setup",
+      "group": "Registers",
+      "area": "holding",
+      "address": 83,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Room",
+        "2": "Pool"
+      }
+    },
+    {
+      "name": "Zone 2 Setup",
+      "group": "Registers",
+      "area": "holding",
+      "address": 84,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Room",
+        "2": "Pool"
+      }
+    },
+    {
+      "name": "Direction",
+      "group": "Registers",
+      "area": "holding",
+      "address": 85,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Room",
+        "2": "Tank"
+      }
+    },
+    {
+      "name": "Outdoor Type",
+      "group": "Registers",
+      "area": "holding",
+      "address": 86,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "STD",
+        "2": "TCAP",
+        "3": "HWT"
+      }
+    },
+    {
+      "name": "Heat-Cool Meter",
+      "group": "Registers",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      },
+      "description": "Only for K series onwards."
+    },
+    {
+      "name": "Tank Meter",
+      "group": "Registers",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      },
+      "description": "Only for K series onwards."
+    },
+    {
+      "name": "Electricity Meter HP",
+      "group": "Registers",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      },
+      "description": "Only for K series onwards."
+    },
+    {
+      "name": "SG Ready: Control Pattern",
+      "group": "Registers",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Normal",
+        "2": "HP stop",
+        "3": "Capacity 1",
+        "4": "Capacity 2"
+      },
+      "description": "Only for K series onwards."
+    },
+    {
+      "name": "Water Pressure",
+      "group": "Registers",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mbar",
+      "description": "0 .. 5080 mbar Only for K series onwards."
+    },
+    {
+      "name": "Water Inlet 2 Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 113,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches. Only for L series onwards."
+    },
+    {
+      "name": "RC-1: Room Thermostat Internal Sensor Temperature (Integer Part)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 116,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Model Series Selection",
+      "group": "Registers",
+      "area": "holding",
+      "address": 117,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "H-Series",
+        "2": "J-Series",
+        "3": "K-Series",
+        "4": "L-Series",
+        "5": "M-Series"
+      }
+    },
+    {
+      "name": "RC-2: Room Thermostat Internal Sensor Temperature (Integer Part)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 118,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Heat Mode Energy Consumption Total",
+      "group": "Registers",
+      "area": "holding",
+      "address": 120,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "0 .. 4294967294 kWh"
+    },
+    {
+      "name": "Heat Mode Energy Generation Total",
+      "group": "Registers",
+      "area": "holding",
+      "address": 122,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "0 .. 4294967294 kWh"
+    },
+    {
+      "name": "(Cool Mode / Heat Recovery Mode) Energy Consumption Total",
+      "group": "Registers",
+      "area": "holding",
+      "address": 124,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "0 .. 4294967294 kWh"
+    },
+    {
+      "name": "(Cool Mode / Heat Recovery Mode) Energy Generation Total",
+      "group": "Registers",
+      "area": "holding",
+      "address": 126,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "0 .. 4294967294 kWh"
+    },
+    {
+      "name": "Tank Mode Energy Consumption (128)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 128,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "0 .. 4294967294 kWh"
+    },
+    {
+      "name": "Tank Mode Energy Generation",
+      "group": "Registers",
+      "area": "holding",
+      "address": 130,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "0 .. 4294967294 kWh"
+    },
+    {
+      "name": "External SW",
+      "group": "Registers",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Heat-Cool SW",
+      "group": "Registers",
+      "area": "holding",
+      "address": 151,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "External Compressor SW",
+      "group": "Registers",
+      "area": "holding",
+      "address": 152,
+      "type": "uint16",
+      "access": "RW",
+      "description": "For H, J, K, and L series For M series"
+    },
+    {
+      "name": "Solar Connection",
+      "group": "Registers",
+      "area": "holding",
+      "address": 153,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No",
+        "1": "Yes & Buffer Tank",
+        "2": "Yes & DHW Tank"
+      }
+    },
+    {
+      "name": "SG Ready",
+      "group": "Registers",
+      "area": "holding",
+      "address": 154,
+      "type": "uint16",
+      "access": "RW",
+      "description": "For H, J, K, and L series For M series"
+    },
+    {
+      "name": "AT Buffer Tank",
+      "group": "Registers",
+      "area": "holding",
+      "address": 155,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "SG Ready DHW Capacity Up (1-0)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 156,
+      "type": "uint16",
+      "access": "RW",
+      "description": "50 .. 150% Resolution: ± 5%"
+    },
+    {
+      "name": "SG Ready Heat Capacity Up (1-0)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 157,
+      "type": "uint16",
+      "access": "RW",
+      "description": "50 .. 150% Resolution: ± 5%"
+    },
+    {
+      "name": "Compensation Curve - Heat - Zone 1 - Max. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 158,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Heat - Zone 1 - Min. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 159,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Heat - Zone 1 - Outdoor Air Min. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 160,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Heat - Zone 1 - Outdoor Air Max. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 161,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Heat - Zone 2 - Max. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 162,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Heat -Zone 2 - Min. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 163,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Heat - Zone 2 - Outdoor Air Min. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 164,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Heat - Zone 2 - Outdoor Air Max. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 165,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Cool - Zone 1 - Max. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 166,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Cool - Zone 1 - Min. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 167,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Cool - Zone 1 - Outdoor Air Min. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 168,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Cool - Zone 1 - Outdoor Air Max. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 169,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Cool - Zone 2 - Max. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 170,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Cool - Zone 2 - Min. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 171,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Cool - Zone 2 - Outdoor Air Min. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 172,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compensation Curve - Cool - Zone 2 - Outdoor Air Max. Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 173,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Solar (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 174,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "2 Way Valve Direction (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 175,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Zone1: Water Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 176,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone2: Water Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 177,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 1 Temperature (Target)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 178,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 2 Temperature (Target)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 179,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Buffer Tank: Water Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 180,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Solar: Water Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 181,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Pool: Water Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 182,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Water Outlet Temperature (Target)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 183,
+      "type": "int16",
+      "access": "R",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Compressor Total On Time",
+      "group": "Registers",
+      "area": "holding",
+      "address": 184,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h",
+      "description": "High word at this address, low word at the next one."
+    },
+    {
+      "name": "Tank Mode Energy Generation (187)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 187,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W"
+    },
+    {
+      "name": "Heat Mode Energy Generation",
+      "group": "Registers",
+      "area": "holding",
+      "address": 188,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W"
+    },
+    {
+      "name": "(Cool Mode / Heat Recovery Mode) Energy Generation",
+      "group": "Registers",
+      "area": "holding",
+      "address": 189,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W"
+    },
+    {
+      "name": "Powerful (Request)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 197,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "OFF",
+        "2": "ON 30 mins",
+        "3": "ON 60 mins",
+        "4": "ON 90 mins"
+      }
+    },
+    {
+      "name": "Quiet (Request)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 198,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "OFF",
+        "2": "Level 1",
+        "3": "Level 2",
+        "4": "Level 3"
+      }
+    },
+    {
+      "name": "Quiet Timer",
+      "group": "Registers",
+      "area": "holding",
+      "address": 199,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Cancel",
+        "2": "Set"
+      }
+    },
+    {
+      "name": "System Reset (Request)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 200,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "No Request",
+        "1": "Request"
+      }
+    },
+    {
+      "name": "Sterilization (Request)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "No Request",
+        "1": "Request"
+      }
+    },
+    {
+      "name": "Optional PCB Connection",
+      "group": "Registers",
+      "area": "holding",
+      "address": 208,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Buffer Tank Connection",
+      "group": "Registers",
+      "area": "holding",
+      "address": 212,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Heater Capacity",
+      "group": "Registers",
+      "area": "holding",
+      "address": 213,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "W",
+      "description": "If NOT Big- A2W If Big-A2W and Big-A2W Heater Capacity ≤ 18kW If Big-A2W and Big-A2W Heater Capacity > 18 kW"
+    },
+    {
+      "name": "Bivalent control pattern",
+      "group": "Registers",
+      "area": "holding",
+      "address": 216,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Alternative",
+        "2": "Parallel",
+        "3": "Advance parallel"
+      }
+    },
+    {
+      "name": "Bivalent Heat Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 217,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Bivalent DHW Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 218,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Demand Control",
+      "group": "Registers",
+      "area": "holding",
+      "address": 219,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      }
+    },
+    {
+      "name": "Defrost Signal",
+      "group": "Registers",
+      "area": "holding",
+      "address": 222,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      },
+      "description": "Only for J series onwards."
+    },
+    {
+      "name": "Zone 1: (Water Shift/Water/ Room/Pool) Set Temperature for Heat Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 226,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 1: (Water Shift/Water/ Room) Set Temperature for Cool Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 227,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 2:(Water Shift/Water/ Room/Pool) Set Temperature for Heat Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 228,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Zone 2: (Water Shift/Water/ Room) Set Temperature for Cool Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 229,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Current Lv",
+      "group": "Registers",
+      "area": "holding",
+      "address": 235,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 .. 20 Lv"
+    },
+    {
+      "name": "SG Ready: DHW Capacity Up (2-0)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 248,
+      "type": "uint16",
+      "access": "RW",
+      "description": "50 .. 150% Resolution: ± 5%"
+    },
+    {
+      "name": "SG Ready: Heat Capacity Up (2-1)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 249,
+      "type": "uint16",
+      "access": "RW",
+      "description": "50 .. 150% Resolution: ± 5%"
+    },
+    {
+      "name": "Tank: Floor Operation Time (Maximum)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 256,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "0 .. 600 min Resolution: ± 30 min"
+    },
+    {
+      "name": "Tank: Heat Up Time (Maximum)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 257,
+      "type": "uint16",
+      "access": "R",
+      "unit": "min",
+      "description": "5 .. 240 min Resolution: ± 5 min"
+    },
+    {
+      "name": "Tank: Re-heat Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 258,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Tank: Sterilization Boiling Temperature",
+      "group": "Registers",
+      "area": "holding",
+      "address": 259,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches."
+    },
+    {
+      "name": "Tank: Sterilization Operation Time (Maximum)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 260,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "5 .. 60 min Resolution: ± 5 min"
+    },
+    {
+      "name": "SG Ready: Cool Capacity Up (1: 2)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 261,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches. Only for J series onwards."
+    },
+    {
+      "name": "SG Ready: Cool Capacity Up (2-2)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 262,
+      "type": "int16",
+      "access": "RW",
+      "description": "°C, °C x 10 or °F as set with the DIP switches. Only for J series onwards."
+    },
+    {
+      "name": "External SW (267)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 267,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Close",
+        "2": "Open"
+      }
+    },
+    {
+      "name": "Heat-Cool SW (268)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 268,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Heat",
+        "2": "Cool"
+      }
+    },
+    {
+      "name": "Powerful (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 269,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Quiet (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 270,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Heat Mode Water Set Temperature Range",
+      "group": "Registers",
+      "area": "holding",
+      "address": 271,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Range 1",
+        "2": "Range 2",
+        "3": "Range 3"
+      }
+    },
+    {
+      "name": "Room Heater (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 273,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Tank Heater (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 274,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Bivalent (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 275,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Last Error Number (x1)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 276,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "10": "No error 0 .. 9"
+      }
+    },
+    {
+      "name": "Last Error Number (x2)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 277,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "10": "No error 0 .. 9"
+      }
+    },
+    {
+      "name": "Last Error Number (x3)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 278,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "10": "No error 0 .. 9"
+      }
+    },
+    {
+      "name": "Last Error Character",
+      "group": "Registers",
+      "area": "holding",
+      "address": 280,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No error",
+        "1": "U",
+        "2": "H",
+        "3": "F"
+      }
+    },
+    {
+      "name": "Sterilization Status (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 289,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Indoor Unit Model Reference",
+      "group": "Registers",
+      "area": "holding",
+      "address": 305,
+      "type": "uint16",
+      "access": "R",
+      "description": "To be read as a 0x value Example: EEPROM number and version: A53D8170C Hex: 0x8170"
+    },
+    {
+      "name": "Outdoor Unit Model Reference",
+      "group": "Registers",
+      "area": "holding",
+      "address": 314,
+      "type": "uint16",
+      "access": "R",
+      "description": "To be read as a 0x value Example: EEPROM number and version: A53D8191C Hex: 0x8191"
+    },
+    {
+      "name": "Capacity Rank",
+      "group": "Registers",
+      "area": "holding",
+      "address": 351,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 .. 30 kW"
+    },
+    {
+      "name": "Electricity Meter HP (Error Status)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 352,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "No error",
+        "2": "Error"
+      }
+    },
+    {
+      "name": "Heat-Cool Meter (Error Status)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 353,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "No error",
+        "2": "Error"
+      }
+    },
+    {
+      "name": "Tank Meter (Error Status)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 354,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "No error",
+        "2": "Error"
+      }
+    },
+    {
+      "name": "Modbus Meter Gateway (Error Status)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 358,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "No error",
+        "2": "Error",
+        "3": "Communication not established yet"
+      }
+    },
+    {
+      "name": "Heat Mode Energy Consumption (360)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 360,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W Only for K series onwards."
+    },
+    {
+      "name": "(Cool Mode / Heat Recovery Mode) Energy Consumption (361)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 361,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W Only for K series onwards."
+    },
+    {
+      "name": "Tank Mode Energy Consumption (362)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 362,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W Only for K series onwards."
+    },
+    {
+      "name": "Heat Mode Energy Generation (363)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 363,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W Only for K series onwards."
+    },
+    {
+      "name": "(Cool Mode / Heat Recovery Mode) Energy Generation (364)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 364,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W Only for K series onwards."
+    },
+    {
+      "name": "Tank Mode Energy Generation (365)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 365,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "0 .. 65534 W Only for K series onwards."
+    },
+    {
+      "name": "Total Energy Consumption",
+      "group": "Registers",
+      "area": "holding",
+      "address": 366,
+      "type": "uint32",
+      "access": "R",
+      "description": "0 .. 4294967294 Wh Only for K series onwards."
+    },
+    {
+      "name": "Total Heat Mode Energy Generation",
+      "group": "Registers",
+      "area": "holding",
+      "address": 368,
+      "type": "uint32",
+      "access": "R",
+      "description": "0 .. 4294967294 Wh Only for K series onwards."
+    },
+    {
+      "name": "(Total Cool Mode / Heat Recovery Mode) Energy Generation",
+      "group": "Registers",
+      "area": "holding",
+      "address": 370,
+      "type": "uint32",
+      "access": "R",
+      "description": "0 .. 4294967294 Wh Only for K series onwards."
+    },
+    {
+      "name": "Total Tank Mode Energy Generation",
+      "group": "Registers",
+      "area": "holding",
+      "address": 372,
+      "type": "uint32",
+      "access": "R",
+      "description": "0 .. 4294967294 Wh Only for K series onwards."
+    },
+    {
+      "name": "Consumption Reset",
+      "group": "Registers",
+      "area": "holding",
+      "address": 378,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "No Request",
+        "1337": "Request to Clear"
+      }
+    },
+    {
+      "name": "SG Ready: Power Consumption [1-0]: DHW",
+      "group": "Registers",
+      "area": "holding",
+      "address": 417,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "W",
+      "description": "500 .. 10000 W Resolution: ±100 W Only for M series."
+    },
+    {
+      "name": "SG Ready: Power Consumption [1-1]: Heat",
+      "group": "Registers",
+      "area": "holding",
+      "address": 418,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "W",
+      "description": "500 .. 10000 W Resolution: ±100 W Only for M series."
+    },
+    {
+      "name": "SG Ready: Power Consumption [1-2]: Cool",
+      "group": "Registers",
+      "area": "holding",
+      "address": 419,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "W",
+      "description": "500 .. 10000 W Resolution: ±100 W Only for M series."
+    },
+    {
+      "name": "SG Ready: Power Consumption [2-0]: DHW",
+      "group": "Registers",
+      "area": "holding",
+      "address": 420,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "W",
+      "description": "500 .. 10000 W Resolution: ±100 W Only for M series."
+    },
+    {
+      "name": "SG Ready: Power Consumption [2-1]: Heat",
+      "group": "Registers",
+      "area": "holding",
+      "address": 421,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "W",
+      "description": "500 .. 10000 W Resolution: ±100 W Only for M series."
+    },
+    {
+      "name": "SG Ready: Power Consumption [2-2]: Cool",
+      "group": "Registers",
+      "area": "holding",
+      "address": 422,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "W",
+      "description": "500 .. 10000 W Resolution: ±100 W Only for M series."
+    },
+    {
+      "name": "SG Ready: HPU Stop Consumption",
+      "group": "Registers",
+      "area": "holding",
+      "address": 423,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "W",
+      "description": "500 .. 10000 W Resolution: ±100 W Only for M series."
+    },
+    {
+      "name": "Anti-stick Mode",
+      "group": "Registers",
+      "area": "holding",
+      "address": 426,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      },
+      "description": "Only for M series."
+    },
+    {
+      "name": "DHW Circulation",
+      "group": "Registers",
+      "area": "holding",
+      "address": 427,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "Only for M series."
+    },
+    {
+      "name": "Power Consumption: Minimum Range",
+      "group": "Registers",
+      "area": "holding",
+      "address": 428,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "0.5 Kw",
+        "6": "3.0 Kw",
+        "11": "7.0 Kw"
+      },
+      "description": "Only for M series."
+    },
+    {
+      "name": "Power Consumption: Maximum Range",
+      "group": "Registers",
+      "area": "holding",
+      "address": 429,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "0.5 Kw",
+        "6": "3.0 Kw",
+        "11": "7.0 Kw"
+      },
+      "description": "Only for M series."
+    },
+    {
+      "name": "Electrical Anode (Actual)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 432,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "Only for M series."
+    },
+    {
+      "name": "Big-A2W Heater Capacity (If Big-A2W)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 437,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "≤18 kW",
+        "1": ">18 kW"
+      }
+    },
+    {
+      "name": "Big-A2W",
+      "group": "Registers",
+      "area": "holding",
+      "address": 438,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No",
+        "1": "Yes"
+      },
+      "description": "Only for M series."
+    },
+    {
+      "name": "Gateway ID",
+      "group": "Gateway",
+      "area": "holding",
+      "address": 460,
+      "type": "uint16",
+      "access": "R",
+      "description": "3328 (0x0D00)"
+    },
+    {
+      "name": "Gateway Reset",
+      "group": "Gateway",
+      "area": "holding",
+      "address": 463,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1"
+    },
+    {
+      "name": "Baudrate",
+      "group": "Gateway",
+      "area": "holding",
+      "address": 464,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "2400 bps",
+        "4": "38500 bps"
+      }
+    },
+    {
+      "name": "Gateway's Modbus Server Address",
+      "group": "Gateway",
+      "area": "holding",
+      "address": 465,
+      "type": "uint16",
+      "access": "R",
+      "description": "1 .. 63"
+    },
+    {
+      "name": "DIP Switches Value",
+      "group": "Gateway",
+      "area": "holding",
+      "address": 466,
+      "type": "uint16",
+      "access": "R",
+      "description": "Current DIP switches value"
+    }
+  ]
+}
