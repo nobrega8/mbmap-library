@@ -1,0 +1,349 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Belimo",
+  "model": "Air/Water Actuator",
+  "models": [
+    "..24A-MOD"
+  ],
+  "vendor_website": "belimo.com",
+  "description": "Belimo air and water actuators with Modbus RTU: setpoint, override, position, sensor 1, service flags and configuration",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "Belimo, Air/water actuator Modbus Register, V3.8 (05.09.2023)",
+  "sources": [
+    {
+      "title": "Air/water actuator Modbus Register",
+      "version": "V3.8 (05.09.2023)",
+      "url": "https://www.belimo.com/mam/general-documents/system_integration/Modbus/belimo_Modbus-Register_AirWater_V3_8_en-gb.pdf",
+      "note": "Modbus register description",
+      "accessed": "2026-11-15",
+      "sha256": "300b79838d16f259ef490f1887e2c1b39b496befd02e173c199029e16f957423"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS-485: 1-8-N-2 by default (also N-1, E-1, O-1), 9600 to 115200 bd (factory 38400), address 1 to 247 (factory 1).",
+    "All registers are holding registers (functions 3 and 6; 4, 2 and 16 also accepted). The manual numbers registers from 1 (No.) and from 0 (Address); the Address column is used here (address base 0).",
+    "32-bit values take two consecutive registers, least significant word first.",
+    "A register not supported by the device or its settings reads 65535.",
+    "Written from the manufacturer's register description; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 38400,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Scaled between Min (106) and Max (107). Factory 0"
+    },
+    {
+      "name": "Override control",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Open",
+        "2": "Close",
+        "3": "Min",
+        "4": "Mid",
+        "5": "Max",
+        "6": "Fast open",
+        "7": "Fast close"
+      },
+      "description": "Fast open and fast close increase mechanical wear; use only for time-critical events such as frost protection"
+    },
+    {
+      "name": "Command",
+      "group": "Control",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Adaption",
+        "2": "Test",
+        "3": "Sync",
+        "4": "Reset"
+      },
+      "description": "Returns to None after the command; Reset clears the malfunction and service information"
+    },
+    {
+      "name": "Actuator type",
+      "group": "Identification",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Actuator not connected",
+        "1": "Air / water",
+        "2": "VAV / EPIV",
+        "3": "Fire",
+        "4": "Energy Valve",
+        "5": "6-way EPIV"
+      }
+    },
+    {
+      "name": "Relative position",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Absolute position",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "scale": 1,
+      "description": "Degrees for rotary actuators, millimetres for linear ones"
+    },
+    {
+      "name": "Sensor 1 value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "description": "Unit depends on Sensor 1 type (107): mV (Active), ohm (Passive), 0/1 (Switch), °C or °F x 10 for temperature sensors (0.1 scaling)"
+    },
+    {
+      "name": "Analog setpoint",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Setpoint when the actuator is controlled by an analog signal"
+    },
+    {
+      "name": "Bus termination",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 99,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inactive",
+        "1": "Active"
+      },
+      "description": "120 ohm termination; set with the configuration tools"
+    },
+    {
+      "name": "Series number, 1st part",
+      "group": "Identification",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "R",
+      "description": "Example 00839-31324-064-008: 1st part 00839"
+    },
+    {
+      "name": "Series number, 2nd part",
+      "group": "Identification",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Series number, 4th part",
+      "group": "Identification",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "R",
+      "description": "302 = version 3.02",
+      "role": "firmware"
+    },
+    {
+      "name": "Malfunction and service information",
+      "group": "Service",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit field: see the individual bits"
+    },
+    {
+      "name": "Service: mechanical travel increased",
+      "group": "Service",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Service: actuator cannot move",
+      "group": "Service",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Service: internal activity",
+      "group": "Service",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Service: gear train disengaged",
+      "group": "Service",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Service: bus watchdog triggered",
+      "group": "Service",
+      "area": "holding",
+      "address": 104,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Min",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "0 to Max - 20 %; factory 0"
+    },
+    {
+      "name": "Max",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Min + 20 % to 100 %; factory 100"
+    },
+    {
+      "name": "Sensor 1 type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Active / hybrid",
+        "2": "Passive 1K",
+        "3": "Passive 20K",
+        "4": "Switch",
+        "5": "PT1000 (°C)",
+        "6": "NI1000 (°C)",
+        "7": "NTC10K2 (°C)",
+        "8": "PT1000 (°F)",
+        "9": "NI1000 (°F)",
+        "10": "NTC10K2 (°F)"
+      },
+      "description": "Restart the actuator after changing it"
+    },
+    {
+      "name": "Bus fail position",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None / last setpoint",
+        "1": "Fast close",
+        "2": "Fast open",
+        "3": "Mid position (parametrised)"
+      }
+    },
+    {
+      "name": "Bus watchdog timeout",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 = off (0 to 3600); factory 0, or 120 when a bus fail position is set"
+    },
+    {
+      "name": "Setpoint source",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Analog (0-10 V on wire 3)",
+        "1": "Bus"
+      },
+      "description": "Factory bus"
+    },
+    {
+      "name": "Fail-safe bridging time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 189,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s",
+      "description": "0 to 10; electronic fail-safe actuators only"
+    },
+    {
+      "name": "Fail-safe position",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 190,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Electronic fail-safe actuators only; the rotary knob must be on \"Tool\""
+    }
+  ]
+}
