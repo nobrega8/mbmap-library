@@ -1,0 +1,660 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Armstrong",
+  "model": "Design Envelope 4300",
+  "models": [
+    "4300",
+    "4380"
+  ],
+  "vendor_website": "armstrongfluidtechnology.com",
+  "description": "Design Envelope 4300 and 4380 vertical in-line pumps with IVS drive, Modbus register map version 2 (firmware 1.17 and newer): speed, power, voltage, current, sensorless head and flow, I/O, units, counters, control mode, HOA, setpoints, alarms and warnings",
+  "revision": 1,
+  "firmware_min": "1.17",
+  "source": "Armstrong, Design Envelope 4300 & 4380 Vertical In-line pumping unit with IVS drive, Installation & Operating Instructions 101.82, section 3.3",
+  "sources": [
+    {
+      "title": "Design Envelope 4300 & 4380 Vertical In-line pumping unit with IVS drive, Installation and Operating Instructions",
+      "version": "101.82",
+      "url": "https://armstrongfluidtechnology.com/~/media/documents/installation_maintenance_parts/installation-and-operating-instructions/101-82_de_4300-4380_vil_withivsdrive_io.pdf?la=en-gb",
+      "note": "section 3.3, Modbus register map version 2 (firmware v1.17 and newer); section 7 alarm and warning tables",
+      "accessed": "2026-11-15",
+      "sha256": "73f7cfe283d30f9be3935dcb1cfd7de9ddea8aadc3a10ed5a92ed8e7128d2293"
+    }
+  ],
+  "notes": [
+    "Modbus RTU or Modbus TCP; address, baud rate, parity and stop bits are set on the pump control module.",
+    "Addresses are the start addresses of the manual (the column next to them is the Modbus register number, one higher). Read with function 03, write with 06.",
+    "Firmware v1.16 and older use a different register map (version 1, section 3.1 of the manual), not in this map.",
+    "The manual does not give the word order of 32-bit values; this map assumes the high word first.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Actual speed (rpm)",
+      "group": "Status",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "Actual speed (%)",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "Percent of nominal motor speed."
+    },
+    {
+      "name": "Motor power",
+      "group": "Status",
+      "area": "holding",
+      "address": 102,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "kW or hp, as register 252."
+    },
+    {
+      "name": "Motor input voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Motor input current",
+      "group": "Status",
+      "area": "holding",
+      "address": 105,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "A"
+    },
+    {
+      "name": "Sensorless head",
+      "group": "Status",
+      "area": "holding",
+      "address": 107,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Sensorless flow",
+      "group": "Status",
+      "area": "holding",
+      "address": 109,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Total flow",
+      "group": "Status",
+      "area": "holding",
+      "address": 111,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Parallel sensorless mode."
+    },
+    {
+      "name": "Total power",
+      "group": "Status",
+      "area": "holding",
+      "address": 113,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Parallel sensorless mode."
+    },
+    {
+      "name": "Number of running pumps",
+      "group": "Status",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "R",
+      "description": "Parallel sensorless mode."
+    },
+    {
+      "name": "Max sensorless flow",
+      "group": "Status",
+      "area": "holding",
+      "address": 116,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Max sensorless head",
+      "group": "Status",
+      "area": "holding",
+      "address": 118,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Status",
+      "group": "Status",
+      "area": "holding",
+      "address": 122,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Pump rotating",
+      "group": "Status",
+      "area": "holding",
+      "address": 122,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Digital inputs",
+      "group": "I/O",
+      "area": "holding",
+      "address": 200,
+      "type": "uint16",
+      "access": "R",
+      "description": "Input 1 is bit 0, input 2 is bit 1."
+    },
+    {
+      "name": "Analog input 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 201,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "V or mA as configured."
+    },
+    {
+      "name": "Analog input 2",
+      "group": "I/O",
+      "area": "holding",
+      "address": 203,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "V or mA as configured."
+    },
+    {
+      "name": "Analog output 1",
+      "group": "I/O",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "mA"
+    },
+    {
+      "name": "Digital outputs",
+      "group": "I/O",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "access": "R",
+      "description": "Output 1 is bit 0, output 2 is bit 1."
+    },
+    {
+      "name": "Relays",
+      "group": "I/O",
+      "area": "holding",
+      "address": 207,
+      "type": "uint16",
+      "access": "R",
+      "description": "Relay 1 is bit 0, relay 2 is bit 1."
+    },
+    {
+      "name": "Flow units",
+      "group": "Units",
+      "area": "holding",
+      "address": 250,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "l/s",
+        "2": "m³/h",
+        "3": "gpm"
+      }
+    },
+    {
+      "name": "Pressure units",
+      "group": "Units",
+      "area": "holding",
+      "address": 251,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "bar",
+        "2": "kPa",
+        "3": "psi",
+        "4": "ft",
+        "5": "m"
+      }
+    },
+    {
+      "name": "Power units",
+      "group": "Units",
+      "area": "holding",
+      "address": 252,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "kW",
+        "2": "hp"
+      }
+    },
+    {
+      "name": "Speed units",
+      "group": "Units",
+      "area": "holding",
+      "address": 253,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "rpm",
+        "2": "%"
+      }
+    },
+    {
+      "name": "Temperature units",
+      "group": "Units",
+      "area": "holding",
+      "address": 254,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "°C",
+        "2": "°F"
+      }
+    },
+    {
+      "name": "Total pump running hours",
+      "group": "Counters",
+      "area": "holding",
+      "address": 275,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Trip pump running hours",
+      "group": "Counters",
+      "area": "holding",
+      "address": 277,
+      "type": "uint32",
+      "access": "RW",
+      "unit": "h",
+      "description": "Write 0 to reset."
+    },
+    {
+      "name": "Total controller running hours",
+      "group": "Counters",
+      "area": "holding",
+      "address": 279,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Present controller running hours",
+      "group": "Counters",
+      "area": "holding",
+      "address": 281,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h",
+      "description": "Since the controller was powered on."
+    },
+    {
+      "name": "Total pump energy",
+      "group": "Counters",
+      "area": "holding",
+      "address": 283,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh"
+    },
+    {
+      "name": "Trip pump energy",
+      "group": "Counters",
+      "area": "holding",
+      "address": 285,
+      "type": "uint32",
+      "access": "RW",
+      "unit": "kWh",
+      "description": "Write 0 to reset."
+    },
+    {
+      "name": "Control mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 300,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Parallel",
+        "2": "Inputs",
+        "3": "Remote",
+        "4": "Constant flow",
+        "5": "Constant pressure",
+        "6": "Linear pressure",
+        "7": "Quadratic pressure",
+        "8": "Quadratic pressure maximum",
+        "9": "Quadratic pressure minimum",
+        "10": "Quadratic pressure max/min"
+      }
+    },
+    {
+      "name": "HOA state",
+      "group": "Control",
+      "area": "holding",
+      "address": 301,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Hand",
+        "2": "Auto"
+      }
+    },
+    {
+      "name": "Active parameters",
+      "group": "Control",
+      "area": "holding",
+      "address": 302,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Standard",
+        "2": "Mode 1 (heating)",
+        "3": "Mode 2 (cooling)"
+      }
+    },
+    {
+      "name": "Minimum speed limit",
+      "group": "Control",
+      "area": "holding",
+      "address": 303,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "rpm"
+    },
+    {
+      "name": "Maximum speed limit",
+      "group": "Control",
+      "area": "holding",
+      "address": 304,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "rpm"
+    },
+    {
+      "name": "Hand mode speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 305,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "rpm or % as register 253."
+    },
+    {
+      "name": "BMS set speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 306,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "rpm or % as register 253."
+    },
+    {
+      "name": "Start/stop",
+      "group": "Control",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Stop pump",
+        "1": "Start pump"
+      }
+    },
+    {
+      "name": "Alarms",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 400,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bit field; bit positions follow the alarm summary table of the manual (section 7.1)."
+    },
+    {
+      "name": "Warnings",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 402,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bit field; bit positions follow the warning summary table (section 7.2)."
+    },
+    {
+      "name": "Acknowledge warnings",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 404,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Write the bits of the warnings to acknowledge."
+    },
+    {
+      "name": "Standard mode: zero flow head",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 500,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Standard mode: design head",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 502,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Standard mode: design flow",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 504,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Standard mode: minimum flow",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 506,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Mode 1: zero flow head",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 508,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Mode 1: design head",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 510,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Mode 1: design flow",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 512,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Mode 1: minimum flow",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 514,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Mode 2: zero flow head",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 516,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Mode 2: design head",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 518,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Mode 2: design flow",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 520,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Mode 2: minimum flow",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 522,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Units as configured on the pump control module (registers 250-254)."
+    },
+    {
+      "name": "Control setpoint",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 539,
+      "type": "uint32",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "Pressure or flow, for constant pressure or constant flow mode."
+    },
+    {
+      "name": "Pump name",
+      "group": "Information",
+      "area": "holding",
+      "address": 900,
+      "type": "string",
+      "access": "R",
+      "length": 8
+    },
+    {
+      "name": "Serial number",
+      "group": "Information",
+      "area": "holding",
+      "address": 908,
+      "type": "string",
+      "access": "R",
+      "length": 7,
+      "role": "serial"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Information",
+      "area": "holding",
+      "address": 915,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Major.minor of the controller.",
+      "role": "firmware"
+    },
+    {
+      "name": "Hardware version",
+      "group": "Information",
+      "area": "holding",
+      "address": 916,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "BMS Modbus version",
+      "group": "Information",
+      "area": "holding",
+      "address": 917,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware patch version",
+      "group": "Information",
+      "area": "holding",
+      "address": 918,
+      "type": "uint16",
+      "access": "R"
+    }
+  ]
+}
