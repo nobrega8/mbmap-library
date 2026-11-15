@@ -3,70 +3,877 @@
   "mbmap": 2,
   "vendor": "Ziegler",
   "model": "Delta Energy",
-  "revision": 1,
-  "vendor_website": "ziegler-instrument.com",
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table ziegler/delta-energy; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/ziegler-delta-energy.htm. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Ziegler Delta Energy.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+  "models": [
+    "EMD96"
   ],
+  "vendor_website": "ziegler-instrument.com",
+  "description": "Multifunction power meter (Delta Energy EMD96): voltages, currents, powers, power factor, frequency, energies and demands as input registers, with the settings as holding registers",
+  "revision": 2,
+  "revised": "2026-11-15",
+  "source": "Ziegler / Delta Energy Systems, Manual EMD96 (multifunction meter), section 9 RS 485 (Modbus)",
+  "sources": [
+    {
+      "title": "Delta Energy Manual EMD96",
+      "url": "https://github.com/user-attachments/files/34887681/Ziegler-Delat-Energy.Manual-EMD96._.PDF._.Ac.Power._.Transformer.pdf",
+      "note": "Section 9, tables 4 and 5; attached to issue #378",
+      "accessed": "2026-11-15",
+      "sha256": "c1841ca1fedf2f1fa8070648fb324a7e56c669042374d40e200e88b313d61719"
+    }
+  ],
+  "notes": [
+    "Modbus RTU, 2-wire RS-485, 2400 to 19200 baud (set from the front panel or with the RS-485 set-up code), address 1 to 247, even, odd or no parity. Input registers (function 04) hold the measurements and holding registers (03, 16) the settings.",
+    "Every value is a 32-bit IEEE 754 float in two registers. A read can ask for 20 parameters at most. The default order is most significant word first; writing 2141.0 to the word order register switches it.",
+    "Addresses are the manual's start addresses (30001 is address 0 and 40001 is address 0), written in decimal.",
+    "The manual ticks which parameters exist on 3-phase 4-wire, 3-phase 3-wire and single-phase systems; the descriptions say where a parameter is not available.",
+    "The 20 user-assignable registers (0x200 to 0x226) are not listed.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Volts 2", "area": "holding", "address": 2, "type": "float32", "access": "R"},
-    {"name": "Volts 3", "area": "holding", "address": 4, "type": "float32", "access": "R"},
-    {"name": "Current 1", "area": "holding", "address": 6, "type": "float32", "access": "R"},
-    {"name": "Current 2", "area": "holding", "address": 8, "type": "float32", "access": "R"},
-    {"name": "Current 3", "area": "holding", "address": 10, "type": "float32", "access": "R"},
-    {"name": "W1", "area": "holding", "address": 12, "type": "float32", "access": "R"},
-    {"name": "W2", "area": "holding", "address": 14, "type": "float32", "access": "R"},
-    {"name": "W3", "area": "holding", "address": 16, "type": "float32", "access": "R"},
-    {"name": "VA1", "area": "holding", "address": 18, "type": "float32", "access": "R"},
-    {"name": "VA2", "area": "holding", "address": 20, "type": "float32", "access": "R"},
-    {"name": "VA3", "area": "holding", "address": 22, "type": "float32", "access": "R"},
-    {"name": "Var1", "area": "holding", "address": 24, "type": "float32", "access": "R"},
-    {"name": "Var2", "area": "holding", "address": 26, "type": "float32", "access": "R"},
-    {"name": "Var3", "area": "holding", "address": 28, "type": "float32", "access": "R"},
-    {"name": "PF1", "area": "holding", "address": 30, "type": "float32", "access": "R"},
-    {"name": "PF2", "area": "holding", "address": 32, "type": "float32", "access": "R"},
-    {"name": "PF3", "area": "holding", "address": 34, "type": "float32", "access": "R"},
-    {"name": "Phase angle 1", "area": "holding", "address": 36, "type": "float32", "access": "R"},
-    {"name": "Phase angle 2", "area": "holding", "address": 38, "type": "float32", "access": "R"},
-    {"name": "Phase angle 3", "area": "holding", "address": 40, "type": "float32", "access": "R"},
-    {"name": "Volts ave", "area": "holding", "address": 42, "type": "float32", "access": "R"},
-    {"name": "Volts sum", "area": "holding", "address": 44, "type": "float32", "access": "R"},
-    {"name": "Current ave", "area": "holding", "address": 46, "type": "float32", "access": "R"},
-    {"name": "Current sum", "area": "holding", "address": 48, "type": "float32", "access": "R"},
-    {"name": "Watts ave", "area": "holding", "address": 50, "type": "float32", "access": "R"},
-    {"name": "Watts sum", "area": "holding", "address": 52, "type": "float32", "access": "R"},
-    {"name": "Va ave", "area": "holding", "address": 54, "type": "float32", "access": "R"},
-    {"name": "Va sum", "area": "holding", "address": 56, "type": "float32", "access": "R"},
-    {"name": "Var ave", "area": "holding", "address": 58, "type": "float32", "access": "R"},
-    {"name": "Var sum", "area": "holding", "address": 60, "type": "float32", "access": "R"},
-    {"name": "Pf ave", "area": "holding", "address": 62, "type": "float32", "access": "R"},
-    {"name": "Pf sum", "area": "holding", "address": 64, "type": "float32", "access": "R"},
-    {"name": "Phase angle ave", "area": "holding", "address": 66, "type": "float32", "access": "R"},
-    {"name": "Phase angle sum", "area": "holding", "address": 68, "type": "float32", "access": "R"},
-    {"name": "Freq", "area": "holding", "address": 70, "type": "float32", "access": "R"},
-    {"name": "Wh import", "area": "holding", "address": 72, "type": "float32", "access": "R"},
-    {"name": "Wh export", "area": "holding", "address": 74, "type": "float32", "access": "R"},
-    {"name": "Varh import", "area": "holding", "address": 76, "type": "float32", "access": "R"},
-    {"name": "Varh export", "area": "holding", "address": 78, "type": "float32", "access": "R"},
-    {"name": "Vah", "area": "holding", "address": 80, "type": "float32", "access": "R"},
-    {"name": "W demand (import)", "area": "holding", "address": 84, "type": "float32", "access": "R"},
-    {"name": "W max demand (import)", "area": "holding", "address": 86, "type": "float32", "access": "R"},
-    {"name": "W demand (export)", "area": "holding", "address": 88, "type": "float32", "access": "R"},
-    {"name": "W max demand (export)", "area": "holding", "address": 90, "type": "float32", "access": "R"},
-    {"name": "Va demand", "area": "holding", "address": 100, "type": "float32", "access": "R"},
-    {"name": "Va max demand", "area": "holding", "address": 102, "type": "float32", "access": "R"},
-    {"name": "A demand", "area": "holding", "address": 104, "type": "float32", "access": "R"},
-    {"name": "A max demand", "area": "holding", "address": 106, "type": "float32", "access": "R"},
-    {"name": "Volts ave max", "area": "holding", "address": 132, "type": "float32", "access": "R"},
-    {"name": "Volts ave min", "area": "holding", "address": 134, "type": "float32", "access": "R"}
+    {
+      "name": "Demand Reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 0,
+      "type": "float32",
+      "access": "W",
+      "description": "Write 0 to reset the demand values"
+    },
+    {
+      "name": "Demand Period",
+      "group": "Settings",
+      "area": "holding",
+      "address": 2,
+      "type": "float32",
+      "access": "RW",
+      "description": "Minutes: 8, 15, 20 or 30"
+    },
+    {
+      "name": "Energy display on modbus",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 = Wh, 2 = kWh, 3 = MWh"
+    },
+    {
+      "name": "System voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "System current",
+      "group": "Settings",
+      "area": "holding",
+      "address": 8,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "System type",
+      "group": "Settings",
+      "area": "holding",
+      "address": 10,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 = 1 phase 2 wire, 2 = 3 phase 3 wire, 3 = 3 phase 4 wire"
+    },
+    {
+      "name": "Pulse width",
+      "group": "Settings",
+      "area": "holding",
+      "address": 12,
+      "type": "float32",
+      "access": "RW",
+      "description": "60, 100 or 200 ms"
+    },
+    {
+      "name": "Energy reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "access": "W",
+      "description": "Write 0 to reset the energy counter"
+    },
+    {
+      "name": "Run/on hour and interruption reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 16,
+      "type": "float32",
+      "access": "W",
+      "description": "Write 0 to reset"
+    },
+    {
+      "name": "RS-485 set-up code",
+      "group": "Settings",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "access": "RW",
+      "description": "Baud rate, parity and stop bits as a code (table 6 of the manual): 2400 = 0-3, 4800 = 4-7, 9600 = 8-11, 19200 = 12-15"
+    },
+    {
+      "name": "Node address",
+      "group": "Settings",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 to 247"
+    },
+    {
+      "name": "Pulse divisor",
+      "group": "Settings",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "access": "RW",
+      "description": "1, 10, 100 or 1000 (Wh); 1 for kWh and MWh"
+    },
+    {
+      "name": "Min reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "access": "W",
+      "description": "Write 0 to reset the minimum values"
+    },
+    {
+      "name": "Max reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 26,
+      "type": "float32",
+      "access": "W",
+      "description": "Write 0 to reset the maximum values"
+    },
+    {
+      "name": "PT primary",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32,
+      "type": "float32",
+      "access": "RW",
+      "description": "Up to 692.8 kV L-L, and limited by the 1000 MVA per phase restriction with the CT primary"
+    },
+    {
+      "name": "CT primary",
+      "group": "Settings",
+      "area": "holding",
+      "address": 34,
+      "type": "float32",
+      "access": "RW",
+      "description": "Up to 9999"
+    },
+    {
+      "name": "System power",
+      "group": "Settings",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "access": "R",
+      "description": "Nominal system power from the nominal voltage and current"
+    },
+    {
+      "name": "Energy digit reset count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 38,
+      "type": "float32",
+      "access": "RW",
+      "description": "7 to 14 in Wh, 7 to 12 in kWh, 7 to 9 in MWh"
+    },
+    {
+      "name": "Register order / word order",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "access": "RW",
+      "description": "Write 2141.0 to set the word order the meter detects for floating-point values"
+    },
+    {
+      "name": "CT secondary",
+      "group": "Settings",
+      "area": "holding",
+      "address": 42,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 (1 A) or 5 (5 A)"
+    },
+    {
+      "name": "PT secondary",
+      "group": "Settings",
+      "area": "holding",
+      "address": 44,
+      "type": "float32",
+      "access": "RW",
+      "description": "See section 3.2.1.3 of the manual"
+    },
+    {
+      "name": "Relay output select",
+      "group": "Settings",
+      "area": "holding",
+      "address": 46,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 = pulse, 128 = limit"
+    },
+    {
+      "name": "Pulse/limit parameter select",
+      "group": "Settings",
+      "area": "holding",
+      "address": 48,
+      "type": "float32",
+      "access": "RW",
+      "description": "For pulse: 0 import active, 1 export active, 2 import reactive, 3 export reactive energy"
+    },
+    {
+      "name": "Limit trip point",
+      "group": "Settings",
+      "area": "holding",
+      "address": 50,
+      "type": "float32",
+      "access": "RW",
+      "description": "Percent: 10 to 100 for a low alarm, 10 to 120 for a high alarm"
+    },
+    {
+      "name": "Hysteresis",
+      "group": "Settings",
+      "area": "holding",
+      "address": 52,
+      "type": "float32",
+      "access": "RW",
+      "description": "0.5 to 50"
+    },
+    {
+      "name": "Limit delay (on)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 54,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 to 10"
+    },
+    {
+      "name": "Limit delay (off)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 56,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 to 10"
+    },
+    {
+      "name": "Password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 70,
+      "type": "float32",
+      "access": "RW",
+      "description": "0000 to 9999; reads 0 when locked and 1 when not"
+    },
+    {
+      "name": "Limit configuration select",
+      "group": "Settings",
+      "area": "holding",
+      "address": 72,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 high alarm, energised relay; 1 high alarm, de-energised; 2 low alarm, energised; 3 low alarm, de-energised"
+    },
+    {
+      "name": "Auto scroll",
+      "group": "Settings",
+      "area": "holding",
+      "address": 76,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 off, 1 on"
+    },
+    {
+      "name": "30 mA noise current elimination",
+      "group": "Settings",
+      "area": "holding",
+      "address": 78,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 off, 30 on"
+    },
+    {
+      "name": "Volts 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 0,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Volts 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "Volts 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 4,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "Current 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 6,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 8,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "Current 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 10,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "W1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 12,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Available on: 3-phase 4-wire, single-phase"
+    },
+    {
+      "name": "W2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 14,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "W3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 16,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "VA1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 18,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Available on: 3-phase 4-wire, single-phase"
+    },
+    {
+      "name": "VA2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 20,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "VA3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 22,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "VAR1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 24,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Available on: 3-phase 4-wire, single-phase"
+    },
+    {
+      "name": "VAR2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 26,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "VAR3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 28,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "PF1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30,
+      "type": "float32",
+      "access": "R",
+      "description": "Available on: 3-phase 4-wire, single-phase"
+    },
+    {
+      "name": "PF2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 32,
+      "type": "float32",
+      "access": "R",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "PF3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 34,
+      "type": "float32",
+      "access": "R",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "Phase Angle 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 36,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Available on: 3-phase 4-wire, single-phase"
+    },
+    {
+      "name": "Phase Angle 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 38,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "Phase Angle 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 40,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "Volts Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 42,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Volts Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 44,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "Current Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 46,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 48,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "Watts Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 50,
+      "type": "float32",
+      "access": "R",
+      "unit": "W",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "Watts Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 52,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "VA Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 54,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "VA Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 56,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "VAr Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 58,
+      "type": "float32",
+      "access": "R",
+      "unit": "var",
+      "description": "Available on: 3-phase 4-wire, 3-phase 3-wire"
+    },
+    {
+      "name": "VAr Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 60,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "PF Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 62,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "PF Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 64,
+      "type": "float32",
+      "access": "R",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "Phase Angle Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 66,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Phase Angle Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 68,
+      "type": "float32",
+      "access": "R",
+      "unit": "°",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "Freq",
+      "group": "Measurements",
+      "area": "input",
+      "address": 70,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Wh Import",
+      "group": "Measurements",
+      "area": "input",
+      "address": 72,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Unit set by \"Energy display on modbus\" (holding register 4): Wh, kWh or MWh"
+    },
+    {
+      "name": "Wh Export",
+      "group": "Measurements",
+      "area": "input",
+      "address": 74,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Unit set by \"Energy display on modbus\" (holding register 4): Wh, kWh or MWh"
+    },
+    {
+      "name": "VARh Import",
+      "group": "Measurements",
+      "area": "input",
+      "address": 76,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Unit set by \"Energy display on modbus\" (holding register 4): Wh, kWh or MWh"
+    },
+    {
+      "name": "VARh Export",
+      "group": "Measurements",
+      "area": "input",
+      "address": 78,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh",
+      "description": "Unit set by \"Energy display on modbus\" (holding register 4): Wh, kWh or MWh"
+    },
+    {
+      "name": "VAh",
+      "group": "Measurements",
+      "area": "input",
+      "address": 80,
+      "type": "float32",
+      "access": "R",
+      "unit": "VAh",
+      "description": "Unit set by \"Energy display on modbus\" (holding register 4): Wh, kWh or MWh"
+    },
+    {
+      "name": "W Demand (Import)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 84,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "W Max Demand (Import)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 86,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "W Demand (Export)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 88,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "W Max Demand (Export)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 90,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "VA Demand",
+      "group": "Measurements",
+      "area": "input",
+      "address": 100,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "VA Max Demand",
+      "group": "Measurements",
+      "area": "input",
+      "address": 102,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "A Demand",
+      "group": "Measurements",
+      "area": "input",
+      "address": 104,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "A Max Demand",
+      "group": "Measurements",
+      "area": "input",
+      "address": 106,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Volts Ave Max",
+      "group": "Measurements",
+      "area": "input",
+      "address": 132,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Volts Ave Min",
+      "group": "Measurements",
+      "area": "input",
+      "address": 134,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Current Ave Max",
+      "group": "Measurements",
+      "area": "input",
+      "address": 140,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current Ave Min",
+      "group": "Measurements",
+      "area": "input",
+      "address": 142,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "VL 1 - 2 (calculated)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 200,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "VL 2 - 3 (calculated)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 202,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "VL 3 - 1 (calculated)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 204,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Available on: 3-phase 4-wire"
+    },
+    {
+      "name": "Run Hour",
+      "group": "Measurements",
+      "area": "input",
+      "address": 226,
+      "type": "float32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "On Hour",
+      "group": "Measurements",
+      "area": "input",
+      "address": 228,
+      "type": "float32",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "No. Of Interrupts",
+      "group": "Measurements",
+      "area": "input",
+      "address": 230,
+      "type": "uint32",
+      "access": "R"
+    }
   ]
 }
