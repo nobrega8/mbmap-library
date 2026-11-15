@@ -1,0 +1,395 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "SMA",
+  "model": "Sunny Tripower Storage X and Sunny Island X",
+  "models": [
+    "Sunny Tripower Storage X",
+    "STPS X",
+    "Sunny Island X"
+  ],
+  "vendor_website": "sma.de",
+  "description": "Remote control of Sunny Tripower Storage X and Sunny Island X systems over Modbus TCP: identity, nominal powers, operating status, battery state of charge, active power limits and setpoints, battery charge and discharge power, and fallback settings",
+  "revision": 1,
+  "source": "SMA, SMA Modbus Interface, Remote Control – Sunny Tripower Storage X / Sunny Island X, technical information SMAModbus-STPS-X-SI-X-TI-en-11, version 1.1",
+  "sources": [
+    {
+      "title": "SMA Modbus Interface – Remote Control – Sunny Tripower Storage X / Sunny Island X",
+      "version": "SMAModbus-STPS-X-SI-X-TI-en-11, version 1.1",
+      "url": "https://files.sma.de/downloads/SMAModbus-STPS-X-SI-X-TI-en-11.pdf",
+      "accessed": "2026-11-14",
+      "sha256": "48dd7a6f418bdf7f85486b204cfb986b2e6c8f53d185b973703a277c881d5e27"
+    }
+  ],
+  "notes": [
+    "Modbus TCP only, port 502, through the device configured as System Manager. Read with function 04 (03 also works on SMA devices), write with 16. Addresses are SMA's decimal register numbers as sent.",
+    "Unit ID 1 is the communication product, 2 the system and 3 each device; every entry gives the unit IDs it answers on. The map's unit_id is 3.",
+    "For external battery control on unit ID 3, the manual sets 40210 = 1079, 41195 = 10 and 44029 = 303, disables the energy management of the System Manager, and then sends 44449 and 44451 together (four registers) at regular intervals. The external system then takes over battery protection.",
+    "Values are 32-bit, high word first; FIX1 to FIX3 formats have that many decimals.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "tcp",
+  "port": 502,
+  "unit_id": 3,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Serial number",
+      "group": "Unit ID 1",
+      "area": "input",
+      "address": 30005,
+      "type": "uint32",
+      "access": "R",
+      "description": "Returns the serial number of a device. Unit ID 1. Format RAW.",
+      "role": "serial"
+    },
+    {
+      "name": "Device category",
+      "group": "Unit ID 1",
+      "area": "input",
+      "address": 30051,
+      "type": "uint32",
+      "access": "R",
+      "description": "Returns a key figure from the tag list that indicates the device category (e.g. 8009 – Hybrid inverter). Unit ID 1. Format ENUM."
+    },
+    {
+      "name": "Nominal active power WMaxOutRtg",
+      "group": "Unit ID 2",
+      "area": "input",
+      "address": 33017,
+      "type": "int32",
+      "access": "R",
+      "description": "Returns the nominal active power of the grid feedin, e.g. 50,000 W Unit ID 2. Format FIX0.",
+      "unit": "W"
+    },
+    {
+      "name": "Operating mode active power controller",
+      "group": "Unit ID 2",
+      "area": "holding",
+      "address": 41315,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "3352": "Operating mode Open-loop control",
+        "3353": "Operating mode Closed-loop control"
+      },
+      "description": "Sets the standard regulation mode, default: 3352 (open-loop control). Unit ID 2. Format TAGLIST."
+    },
+    {
+      "name": "Limitation of active power in %",
+      "group": "Unit ID 2",
+      "area": "holding",
+      "address": 44505,
+      "type": "uint32",
+      "scale": 0.01,
+      "access": "RW",
+      "description": "Returns the limitation in percent. Two decimals, range: 0–10,000, default: 10,000 (100%). Unit ID 2. Format FIX2.",
+      "unit": "%"
+    },
+    {
+      "name": "Current state of health; 5-minute value; device sta- tus Returns a key figure from the tag list that indicates the state of the device or system.",
+      "group": "Unit ID 2 and 3",
+      "area": "input",
+      "address": 30201,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit IDs 2 and 3. Format TAGLIST."
+    },
+    {
+      "name": "Accumulated connected power of the PV inverter",
+      "group": "Unit ID 2 and 3",
+      "area": "input",
+      "address": 30233,
+      "type": "uint32",
+      "access": "R",
+      "description": "(W) Sets the active power limit, e.g. 50,000 W for an STPS 50-20. No decimal offset (FIX0), unit: watt. Unit IDs 2 and 3. Format FIX0."
+    },
+    {
+      "name": "Current battery state of charge (SOC in relation to present capacity), in % Returns the state of charge (SOC) of a single battery (Unit ID 3) in percent, without decimal offset. This value is the \"User SOC\", i.e. the actual SOC minus the upper and lower charging/discharging limits.",
+      "group": "Unit ID 2 and 3",
+      "area": "input",
+      "address": 30845,
+      "type": "uint32",
+      "access": "R",
+      "description": "Unit IDs 2 and 3. Format FIX0.",
+      "unit": "Wh"
+    },
+    {
+      "name": "Nominal active power WMaxInRtg, in W",
+      "group": "Unit ID 2 and 3",
+      "area": "input",
+      "address": 33019,
+      "type": "int32",
+      "access": "R",
+      "description": "Unit IDs 2 and 3. Format FIX0.",
+      "unit": "W"
+    },
+    {
+      "name": "Quick shut-down of the inverters",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 40018,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "381": "Standby",
+        "1467": "start",
+        "1749": "full stop (AC and DC sides)"
+      },
+      "description": "Allows quick disconnection of the system (Unit ID 2) or of individual devices (Unit ID 3) by sending tags: Unit IDs 2 and 3. Format ENUM."
+    },
+    {
+      "name": "General operating status",
+      "group": "Unit ID 2 and 3",
+      "area": "input",
+      "address": 40029,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "303": "Off",
+        "309": "Operation",
+        "569": "Switched on",
+        "1295": "Standby",
+        "1795": "Blocked",
+        "16777213": "Information not available"
+      },
+      "description": "Returns the general operating status: Unit IDs 2 and 3. Format TAGLIST."
+    },
+    {
+      "name": "Nominal battery capacity",
+      "group": "Unit ID 2 and 3",
+      "area": "input",
+      "address": 40187,
+      "type": "uint32",
+      "access": "R",
+      "description": "Returns the nominal capacity in watt hours (Wh) without decimal offset. Unit IDs 2 and 3. Format FIX0.",
+      "unit": "Wh"
+    },
+    {
+      "name": "Nominal grid voltage",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 40472,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Returns the nominal grid voltage in volt, e.g. 230 V or 400 V. Unit IDs 2 and 3. Format FIX0.",
+      "unit": "V"
+    },
+    {
+      "name": "Behavior during failure of external setpoint",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 41193,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "2506": "Keep values",
+        "2507": "Use fallback values"
+      },
+      "description": "Sets the fallback behavior: Unit IDs 2 and 3. Format TAGLIST."
+    },
+    {
+      "name": "Timeout for external setpoint",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 41195,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Sets the time in seconds (1 to 1,800s), default:                         TION 600s. Unit IDs 2 and 3. Format DURA-.",
+      "unit": "s"
+    },
+    {
+      "name": "Activation threshold, grid feed-in",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 41369,
+      "type": "int32",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "Sets the activation threshold for grid feed-in. S32 with three decimals (FIX3), default: 5 %. Unit IDs 2 and 3. Format FIX3.",
+      "unit": "%"
+    },
+    {
+      "name": "Deactivation threshold grid feed-in",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 41371,
+      "type": "int32",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "Sets the deactivation threshold for grid feed-in. S32 with three decimals (FIX3), default: 5 %. Unit IDs 2 and 3. Format FIX3.",
+      "unit": "%"
+    },
+    {
+      "name": "Activation threshold power consumption",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 41373,
+      "type": "int32",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "Sets the activation threshold for power consumption. S32 with three decimals (FIX3), default: 5 %. Unit IDs 2 and 3. Format FIX3.",
+      "unit": "%"
+    },
+    {
+      "name": "Deactivation threshold power consumption",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 41375,
+      "type": "int32",
+      "scale": 0.001,
+      "access": "RW",
+      "description": "Sets the deactivation threshold for power consumption. S32 with three decimals (FIX3), default: 5 %. Unit IDs 2 and 3. Format FIX3.",
+      "unit": "%"
+    },
+    {
+      "name": "Soft start rate P",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 44001,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Indicates the soft start rate in %/min. Range: 1 to 10,000, default: 1,200 %/min. Unit IDs 2 and 3. Format FIX0.",
+      "unit": "%/min"
+    },
+    {
+      "name": "Soft start P after a grid fault",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 44013,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Activates (308) or deactivates (303) the soft start after a grid fault. Unit IDs 2 and 3. Format TAGLIST.",
+      "enum": {
+        "303": "Off",
+        "308": "On"
+      }
+    },
+    {
+      "name": "Nominal active power WMaxOut",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 44381,
+      "type": "int32",
+      "access": "RW",
+      "description": "Sets the nominal active power of the grid feed-in, e.g. 12,000 W. Unit IDs 2 and 3. Format FIX0.",
+      "unit": "W"
+    },
+    {
+      "name": "Nominal active power WMaxIn",
+      "group": "Unit ID 2 and 3",
+      "area": "holding",
+      "address": 44383,
+      "type": "int32",
+      "access": "RW",
+      "description": "Sets the nominal active power of the intake, e.g. -60,000 W to 0 W. Unit IDs 2 and 3. Format FIX0.",
+      "unit": "W"
+    },
+    {
+      "name": "Operating status of battery",
+      "group": "Unit ID 3",
+      "area": "input",
+      "address": 30955,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "303": "Off",
+        "2291": "Battery standby",
+        "2292": "Battery charging",
+        "2293": "Battery discharging"
+      },
+      "description": "Returns a key figure from the tag list that indicates the state of the battery: Unit ID 3. Format TAGLIST."
+    },
+    {
+      "name": "Battery state of charge",
+      "group": "Unit ID 3",
+      "area": "input",
+      "address": 31391,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "35": "Error",
+        "303": "Off",
+        "307": "OK",
+        "455": "Warning"
+      },
+      "description": "Returns a key figure from the tag list Unit ID 3. Format TAGLIST."
+    },
+    {
+      "name": "Operating mode active power setpoint",
+      "group": "Unit ID 3",
+      "area": "holding",
+      "address": 40210,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "303": "Off",
+        "1077": "Manual setpoint in W",
+        "1078": "Manual setpoint in %",
+        "1079": "External active power setpoint"
+      },
+      "description": "Sets the operating mode for the active power setpoint: Unit ID 3. Format TAGLIST."
+    },
+    {
+      "name": "Active power limitation, in W",
+      "group": "Unit ID 3",
+      "area": "holding",
+      "address": 40212,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Indicates an absolute limitation in watt. Unit ID 3. Format FIX0.",
+      "unit": "W"
+    },
+    {
+      "name": "Active power limitation in %",
+      "group": "Unit ID 3",
+      "area": "holding",
+      "address": 40214,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Indicates a relative limitation in percent. Unit ID 3. Format FIX0.",
+      "unit": "%"
+    },
+    {
+      "name": "Operating mode of the BMS",
+      "group": "Unit ID 3",
+      "area": "holding",
+      "address": 40236,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "303": "Off",
+        "308": "On",
+        "2289": "Battery charging",
+        "2290": "Battery discharging",
+        "2424": "Default setting"
+      },
+      "description": "Sets the operating mode of the battery management system: Unit ID 3. Format TAGLIST."
+    },
+    {
+      "name": "Maximum active power battery",
+      "group": "Unit ID 3",
+      "area": "holding",
+      "address": 44449,
+      "type": "int32",
+      "scale": 0.01,
+      "access": "W",
+      "description": "Important for battery control. S32 with two decimals (%), range: -10,000 % to 10,000. e.g. 3500 = 35 % of nominal power. Should be written at the same time as register 44451. Unit ID 3. Format FIX2.",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum active power battery",
+      "group": "Unit ID 3",
+      "area": "holding",
+      "address": 44451,
+      "type": "int32",
+      "scale": 0.01,
+      "access": "W",
+      "description": "Important for battery control. S32 with two decimals (%), range: -10,000 % to 10,000. e.g. 3500 = 35 % of nominal power. Should be written at the same time as register 44449. Unit ID 3. Format FIX2.",
+      "unit": "%"
+    }
+  ]
+}
