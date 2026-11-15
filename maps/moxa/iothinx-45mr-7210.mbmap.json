@@ -3,41 +3,62 @@
   "mbmap": 2,
   "vendor": "Moxa",
   "model": "ioThinx 45MR-7210",
-  "models": ["ioThinx 45MR-7210"],
+  "models": [
+    "ioThinx 45MR-7210"
+  ],
   "vendor_website": "moxa.com",
-  "description": "System + field power input monitor ioThinx 45MR slot module. Addresses are module-relative; actual PDU address = slot_base + relative_address. FC03: spStatus (rel 0, system power status WORD), spLowerLimitValue (rel 1-2, f32 lower alarm threshold), spUpperLimitValue (rel 3-4, f32 upper alarm threshold), fpStatus (rel 5, field power status WORD). Write spLowerLimitValue/spUpperLimitValue to configure system power alarm thresholds.",
-  "revision": 2,
-  "source": "Omni Console device library (OmniCoreST), modbus-library/moxa-iothinx-45mr-7210.toml; Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A. Not verified against the manufacturer's documentation",
+  "description": "System and field power input monitor (ioThinx 45MR-7210, -T): system power status and alarm limits, field power status",
+  "revision": 3,
+  "source": "Moxa, ioThinx 4510 Series User's Manual, version 2.1 (August 2019), Appendix A: 45MR-7210(-T), System and Field Power Input Registers",
   "notes": [
-    "Moxa ioThinx 45MR-7210.",
-    "Converted automatically from the Omni Console device library (OmniCoreST).",
-    "Not verified against the manufacturer's documentation.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual.",
-    "| Moxa ioThinx 45MR-7210 — System Power + Field Power Input Monitor",
-    "|",
-    "| Source: ioThinx 4510 Series User's Manual V2.1, August 2019, Appendix A",
-    "| Protocol: Modbus/TCP via ioThinx 4510 adapter, port 502",
-    "|",
-    "| IMPORTANT: Addresses are MODULE-RELATIVE. Actual PDU address = slot_base + relative_address.",
-    "| Slot base depends on which slot this module occupies in the ioThinx 4510 chassis.",
-    "|",
-    "| Monitors system power (SP) and field power (FP) rails.",
-    "| spLowerLimitValue and spUpperLimitValue define the alarm threshold window for system power.",
-    "|",
-    "| FC03 (holding R/W): see [[registers]] below",
-    "| (No FC01/FC02/FC04 entries documented for this module)"
+    "Modbus/TCP through the ioThinx 4510 adapter, port 502. The addresses are relative to the module: the address on the wire is the start of the module's slot plus the address given here.",
+    "The manual lists the four parameters with their lengths (1, 2, 2 and 1 registers) and types, in this order, but does not say which function code or area they use or whether the limits are writable. They are listed here as holding registers, as the earlier map did, and the limits as read/write: check on a device.",
+    "The status values are 0, 1 and 2 (see the RESTful API list in the manual); their meaning is not given there.",
+    "Written from the manufacturer's manual; not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "omniconsole",
+  "x_status": "official",
   "registers": [
-    {"name": "spStatus (system power status; R)", "area": "holding", "address": 0, "type": "uint16", "access": "R"},
-    {"name": "spLowerLimitValue hi-word (f32 system power lower alarm threshold; R/W)", "area": "holding", "address": 1, "type": "uint16", "access": "R"},
-    {"name": "spLowerLimitValue lo-word", "area": "holding", "address": 2, "type": "uint16", "access": "R"},
-    {"name": "spUpperLimitValue hi-word (f32 system power upper alarm threshold; R/W)", "area": "holding", "address": 3, "type": "uint16", "access": "R"},
-    {"name": "spUpperLimitValue lo-word", "area": "holding", "address": 4, "type": "uint16", "access": "R"},
-    {"name": "fpStatus (field power status; R)", "area": "holding", "address": 5, "type": "uint16", "access": "R"}
+    {
+      "name": "System power status (spStatus)",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "System power lower limit (spLowerLimitValue)",
+      "area": "holding",
+      "address": 1,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "System power upper limit (spUpperLimitValue)",
+      "area": "holding",
+      "address": 3,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Field power status (fpStatus)",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R"
+    }
+  ],
+  "revised": "2026-11-15",
+  "sources": [
+    {
+      "title": "ioThinx 4510 Series User's Manual",
+      "version": "2.1",
+      "url": "https://moxa.com/Moxa/media/PDIM/S100000582/moxa-iothinx-4510-series-manual-v2.1.pdf",
+      "note": "Appendix A, 45MR-7210(-T) registers",
+      "accessed": "2026-11-15",
+      "sha256": "08f2de3f2908ac1fd22bc08f070a648eba6d787b9960a587f41bacfcb195995b"
+    }
   ]
 }
