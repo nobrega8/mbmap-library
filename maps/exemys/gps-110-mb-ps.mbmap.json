@@ -1,0 +1,384 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Exemys",
+  "model": "GPS-110-MB-PS",
+  "models": [
+    "GPS-110-MB-PS"
+  ],
+  "vendor_website": "exemys.com",
+  "description": "GPS receiver with a Modbus slave: position, altitude, speed, course, time and date, GPS quality and satellites",
+  "revision": 1,
+  "source": "Exemys, GPS-110-MB-PS User's Manual, Rev. 3",
+  "sources": [
+    {
+      "title": "GPS-110-MB-PS User's Manual",
+      "version": "Rev. 3",
+      "url": "https://www.exemys.com/beta/docs/english/GPS-MB-PS_UM_E.pdf",
+      "note": "chapter Modbus registers",
+      "accessed": "2026-11-15",
+      "sha256": "31038941222a104b66332fc495110fa099708be0224619c17ad01650744545b7"
+    }
+  ],
+  "notes": [
+    "Modbus slave on its serial port and over Ethernet (Modbus TCP); the Modbus slave ID is set in the configuration.",
+    "Main registers and alternative registers (latitude and longitude in degrees, minutes and a 7-digit fraction, date and time in separate fields) are both listed.",
+    "Register numbers are those of the manual (40001 is the first holding register), counted from 1 (address_base 1).",
+    "32-bit values are two registers, the first holding the lower part and the second the upper part (low word first).",
+    "Values the source does not send read as 0. Latitude and longitude are degrees multiplied by 10,000,000 (signed); ASCII registers hold the character code.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "port": 502,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Latitude",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40001,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Longitude",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40003,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Altitude",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40005,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.1,
+      "unit": "m"
+    },
+    {
+      "name": "Geoidal separation",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40007,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m"
+    },
+    {
+      "name": "True course",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40008,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Magnetic variation",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40010,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Speed",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40011,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "km/h"
+    },
+    {
+      "name": "Speed over ground",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40012,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "km/h"
+    },
+    {
+      "name": "GPS Quality",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40013,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Number of satellites in view",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40014,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Age of differential GPS data",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40015,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Unit: seconds."
+    },
+    {
+      "name": "Horizontal Dilution of precision",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40016,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "UTC Date",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40017,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Decimal number in the form ddmmyyyy (for example 123045 is 12:30:45)."
+    },
+    {
+      "name": "UTC Time",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40019,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Decimal number in the form hhmmss (for example 123045 is 12:30:45)."
+    },
+    {
+      "name": "State (A: active / V: no signal) Mode [A: Autonomous / D: Differential/ E: Estimated]",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40021,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Mode (main registers)",
+      "group": "Main Registers",
+      "area": "holding",
+      "address": 40022,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code: A autonomous, D differential, E estimated."
+    },
+    {
+      "name": "Latitude–Degrees",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40050,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Latitude– Minutes",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40051,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Latitude–Minutes fraction",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40052,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "7 digits"
+    },
+    {
+      "name": "Longitude–Degrees",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40054,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Longitude–Minutes",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40055,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Longitude - Minutes fraction",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40056,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "7 digits"
+    },
+    {
+      "name": "Altitude (Alternative Registers)",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40058,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.1,
+      "unit": "ft"
+    },
+    {
+      "name": "Geoidal separation (Alternative Registers)",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40060,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ft"
+    },
+    {
+      "name": "Speed (Alternative Registers)",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40061,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Unit: knot."
+    },
+    {
+      "name": "Speed over ground (Alternative Registers)",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40062,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Unit: knot."
+    },
+    {
+      "name": "UTC Date + UTC Time",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40063,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Seconds since 1970 Unit: seconds."
+    },
+    {
+      "name": "UTC Time (Alternative Registers)",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40065,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Seconds since12:00 AM Unit: seconds."
+    },
+    {
+      "name": "Time",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40067,
+      "type": "uint16",
+      "access": "R",
+      "description": "hh"
+    },
+    {
+      "name": "Minutes",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40068,
+      "type": "uint16",
+      "access": "R",
+      "description": "mm"
+    },
+    {
+      "name": "Seconds",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40069,
+      "type": "uint16",
+      "access": "R",
+      "description": "ss"
+    },
+    {
+      "name": "Day",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40070,
+      "type": "uint16",
+      "access": "R",
+      "description": "dd"
+    },
+    {
+      "name": "Month",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40071,
+      "type": "uint16",
+      "access": "R",
+      "description": "mm"
+    },
+    {
+      "name": "Year",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40072,
+      "type": "uint16",
+      "access": "R",
+      "description": "yyyy"
+    },
+    {
+      "name": "State [active / no signal] Mode [A: Autonomous / D: Differential/ E: Estimated]",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40073,
+      "type": "uint16",
+      "access": "R",
+      "description": "1o0"
+    },
+    {
+      "name": "Mode (alternative registers)",
+      "group": "Alternative Registers",
+      "area": "holding",
+      "address": 40074,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Autonomous",
+        "1": "Differential",
+        "2": "Estimated"
+      }
+    }
+  ]
+}

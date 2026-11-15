@@ -1,0 +1,1455 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Exemys",
+  "model": "SGW1-IA3-MB-NM",
+  "models": [
+    "SGW1-IA3-MB-NM"
+  ],
+  "vendor_website": "exemys.com",
+  "description": "NMEA 0183 to Modbus converter: position, speed, course, depth, wind, water speed, heading, temperatures and rudder angle from the sentences of marine instruments",
+  "revision": 1,
+  "source": "Exemys, SGW1-IA3-MB-NM User's Manual, Rev. 9",
+  "sources": [
+    {
+      "title": "SGW1-IA3-MB-NM User's Manual",
+      "version": "Rev. 9",
+      "url": "https://www.exemys.com/beta/docs/english/SGW1-IA3-MB-NM_UM_E.pdf",
+      "note": "chapter Modbus registers",
+      "accessed": "2026-11-15",
+      "sha256": "2ced2dc6c8bc3ef5e9a1d44e1a2144e0958f1baf73f792e1ff743d5abd69bcfa"
+    }
+  ],
+  "notes": [
+    "NMEA 0183 talker to Modbus slave converter: the registers of each NMEA sentence (GGA, VTG, MWV, XDR, VHW, ROT, VBW, DPT, HDM, ZDA, HDT, RMC, RMB, APB, DBT, MTW, MTA, RSA, VDO and others) hold the fields of the last sentence received.",
+    "Modbus RTU and Modbus TCP; the Modbus slave ID for the internal register memory is set in the configuration.",
+    "Register numbers are those of the manual (40001 is the first holding register), counted from 1 (address_base 1).",
+    "32-bit values are two registers, the first holding the lower part and the second the upper part (low word first).",
+    "Values the source does not send read as 0. Latitude and longitude are degrees multiplied by 10,000,000 (signed); ASCII registers hold the character code.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "port": 502,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "UTC Time",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40001,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Decimal number in the form hhmmss (for example 123045 is 12:30:45)."
+    },
+    {
+      "name": "Latitude",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40003,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Longitude",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40005,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "GPS Quality",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40007,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Number of Satellites",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40008,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Horizontal Dilution",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40009,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Altitude",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40010,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 0.1,
+      "description": "Unit: meters/feet."
+    },
+    {
+      "name": "Altitude Unit",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40012,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Geoidal Separation",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40013,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Unit: meters/feet."
+    },
+    {
+      "name": "Geoidal Separation Units",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40014,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Age of differential GPS data",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40015,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "s"
+    },
+    {
+      "name": "True track made good",
+      "group": "VTG",
+      "area": "holding",
+      "address": 40016,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Magnetic track made good",
+      "group": "VTG",
+      "area": "holding",
+      "address": 40017,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Ground speed, knots",
+      "group": "VTG",
+      "area": "holding",
+      "address": 40018,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Ground speed, Kilometers per hour",
+      "group": "VTG",
+      "area": "holding",
+      "address": 40019,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "km/h"
+    },
+    {
+      "name": "Wind angle",
+      "group": "MWV",
+      "area": "holding",
+      "address": 40020,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Reference",
+      "group": "MWV",
+      "area": "holding",
+      "address": 40021,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Wind speed",
+      "group": "MWV",
+      "area": "holding",
+      "address": 40022,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Unit: kph/knots."
+    },
+    {
+      "name": "Wind speed units",
+      "group": "MWV",
+      "area": "holding",
+      "address": 40023,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Status",
+      "group": "MWV",
+      "area": "holding",
+      "address": 40024,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Sensor type 1",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40025,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Sensor reading 1",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40026,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Sensor units 1",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40027,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Sensor type 2",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40028,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Sensor reading 2",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40029,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Sensor units 1 (XDR)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40030,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Sensor type 3",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40031,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Sensor reading 3",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40032,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Sensor units 3",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40033,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Degrees True",
+      "group": "VHW",
+      "area": "holding",
+      "address": 40034,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Degrees Magnetic",
+      "group": "VHW",
+      "area": "holding",
+      "address": 40035,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Speed",
+      "group": "VHW",
+      "area": "holding",
+      "address": 40036,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Speed (VHW)",
+      "group": "VHW",
+      "area": "holding",
+      "address": 40037,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "km/h"
+    },
+    {
+      "name": "Turn Velocity",
+      "group": "ROT",
+      "area": "holding",
+      "address": 40038,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°/min"
+    },
+    {
+      "name": "State",
+      "group": "ROT",
+      "area": "holding",
+      "address": 40039,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Longitudinal water speed",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40040,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Transverse water speed",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40041,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Status (VBW)",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40042,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Longitudinal ground speed",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40043,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Transverse ground speed",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40044,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Status (VBW) 40045",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40045,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Stern longitudinal water speed",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40046,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Status (VBW) 40047",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40047,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Stern transverse water speed",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40048,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Status (VBW) 40049",
+      "group": "VBW",
+      "area": "holding",
+      "address": 40049,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Water depth",
+      "group": "DPT",
+      "area": "holding",
+      "address": 40050,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m"
+    },
+    {
+      "name": "Offset",
+      "group": "DPT",
+      "area": "holding",
+      "address": 40051,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m"
+    },
+    {
+      "name": "Degrees magnetic",
+      "group": "HDM",
+      "area": "holding",
+      "address": 40052,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "UTC Time (ZDA)",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40053,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Decimal number in the form hhmmss (for example 123045 is 12:30:45)."
+    },
+    {
+      "name": "UTC Date",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40055,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Decimal number in the form ddmmyyyy (for example 123045 is 12:30:45)."
+    },
+    {
+      "name": "Hours",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40057,
+      "type": "uint16",
+      "access": "R",
+      "unit": "h"
+    },
+    {
+      "name": "Minutes",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40058,
+      "type": "uint16",
+      "access": "R",
+      "unit": "min"
+    },
+    {
+      "name": "Real degrees",
+      "group": "HDT",
+      "area": "holding",
+      "address": 40059,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Time (UTC)",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40060,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Decimal number in the form hhmmss (for example 123045 is 12:30:45)."
+    },
+    {
+      "name": "Status (RMC)",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40062,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Latitude (RMC)",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40063,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Longitude (RMC)",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40065,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Speed over ground",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40067,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Track made good",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40068,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Date (UTC)",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40069,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Decimal number in the form ddmmyy (for example 123045 is 12:30:45)."
+    },
+    {
+      "name": "Magnetic variation",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40071,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Variation",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40072,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Mode",
+      "group": "RMC",
+      "area": "holding",
+      "address": 40073,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Status (RMB)",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40074,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Cross Track Error",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40075,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "mi"
+    },
+    {
+      "name": "Course",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40076,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Destination Waypoint Latitude",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40077,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Destination Waypoint Longitude",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40079,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Range to destination",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40081,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "mi"
+    },
+    {
+      "name": "Bearing to destination",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40082,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Destination closing velocity",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40083,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Arrival Status",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40084,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Mode (RMB)",
+      "group": "RMB",
+      "area": "holding",
+      "address": 40085,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Status 1",
+      "group": "APB",
+      "area": "holding",
+      "address": 40086,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Status 2",
+      "group": "APB",
+      "area": "holding",
+      "address": 40087,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Cross Track Error Magnitude",
+      "group": "APB",
+      "area": "holding",
+      "address": 40088,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "mi"
+    },
+    {
+      "name": "Direction to steer",
+      "group": "APB",
+      "area": "holding",
+      "address": 40089,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Status 3",
+      "group": "APB",
+      "area": "holding",
+      "address": 40090,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Status 4",
+      "group": "APB",
+      "area": "holding",
+      "address": 40091,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Bearing origin to destination",
+      "group": "APB",
+      "area": "holding",
+      "address": 40092,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Magnetic/True",
+      "group": "APB",
+      "area": "holding",
+      "address": 40093,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Bearing, present position to Destination",
+      "group": "APB",
+      "area": "holding",
+      "address": 40094,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Magnetic/True (APB)",
+      "group": "APB",
+      "area": "holding",
+      "address": 40095,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Magnetic/True (APB) 40097",
+      "group": "APB",
+      "area": "holding",
+      "address": 40097,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Mode (APB)",
+      "group": "APB",
+      "area": "holding",
+      "address": 40098,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Water depth (DBT)",
+      "group": "DBT",
+      "area": "holding",
+      "address": 40099,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ft"
+    },
+    {
+      "name": "Water depth (DBT) 40100",
+      "group": "DBT",
+      "area": "holding",
+      "address": 40100,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m"
+    },
+    {
+      "name": "Water depth (DBT) 40101",
+      "group": "DBT",
+      "area": "holding",
+      "address": 40101,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "fathom"
+    },
+    {
+      "name": "Water temperature",
+      "group": "MTW",
+      "area": "holding",
+      "address": 40102,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Air temperature",
+      "group": "MTA",
+      "area": "holding",
+      "address": 40103,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Starboard rudder sensor",
+      "group": "RSA",
+      "area": "holding",
+      "address": 40104,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Status (RSA)",
+      "group": "RSA",
+      "area": "holding",
+      "address": 40105,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Port Rudder Sensor",
+      "group": "RSA",
+      "area": "holding",
+      "address": 40106,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Status (RSA) 40107",
+      "group": "RSA",
+      "area": "holding",
+      "address": 40107,
+      "type": "uint16",
+      "access": "R",
+      "description": "ASCII code of the character the device sent."
+    },
+    {
+      "name": "Message type",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40108,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Repeat indicator",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40109,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "User ID",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40110,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little"
+    },
+    {
+      "name": "Navigation Status",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40112,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Rate of turn (ROT)",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40113,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°/min"
+    },
+    {
+      "name": "Velocity over ground (SOG)",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40114,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "knots"
+    },
+    {
+      "name": "Position accuracy",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40115,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Longitude (VDO)",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40116,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Latitude (VDO)",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40118,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "scale": 1e-07,
+      "unit": "°"
+    },
+    {
+      "name": "Course over ground (COG)",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40120,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "True Heading (HDG)",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40121,
+      "type": "uint16",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Time (UTC) (VDO)",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40122,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Receptor Integrity control (RAIM)",
+      "group": "VDO",
+      "area": "holding",
+      "address": 40123,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Param[1]",
+      "group": "SXN",
+      "area": "holding",
+      "address": 40124,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Automatic Unit: Int 32/ Float 32."
+    },
+    {
+      "name": "Param[2]",
+      "group": "SXN",
+      "area": "holding",
+      "address": 40126,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Automatic Unit: Int 32/ Float 32."
+    },
+    {
+      "name": "Param[3]",
+      "group": "SXN",
+      "area": "holding",
+      "address": 40128,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Automatic Unit: Int 32/ Float 32."
+    },
+    {
+      "name": "Param[4]",
+      "group": "SXN",
+      "area": "holding",
+      "address": 40130,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Automatic Unit: Int 32/ Float 32."
+    },
+    {
+      "name": "Param[5]",
+      "group": "SXN",
+      "area": "holding",
+      "address": 40132,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Automatic Unit: Int 32/ Float 32."
+    },
+    {
+      "name": "Param[6]",
+      "group": "SXN",
+      "area": "holding",
+      "address": 40134,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Automatic Unit: Int 32/ Float 32."
+    },
+    {
+      "name": "Param[7]",
+      "group": "SXN",
+      "area": "holding",
+      "address": 40136,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Automatic Unit: Int 32/ Float 32."
+    },
+    {
+      "name": "Param[8]",
+      "group": "SXN",
+      "area": "holding",
+      "address": 40138,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Automatic Unit: Int 32/ Float 32."
+    },
+    {
+      "name": "Wind direction min (A#0)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40150,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Wind direction average(A#1)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40151,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Wind direction max (A#2)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40152,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Wind speed min (S#0)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40153,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Wind speed average (S#1)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40154,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Wind speed max (S#2)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40155,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Rain accumulation (V#0)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40156,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Rain current intensity (R#0)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40158,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Hail accumulation (V#1)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40159,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Hail current intensity (R#1)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40161,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Heating temperature (C#2)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40162,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Supply Voltage (U#0)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40163,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "Heating voltage (U#1)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40164,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1
+    },
+    {
+      "name": "3.5V reference voltage (U#2)",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40165,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Latitude – Minutes fraction",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40168,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "8 digits"
+    },
+    {
+      "name": "Longitude - Minutes fraction",
+      "group": "XDR",
+      "area": "holding",
+      "address": 40172,
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "8 digits"
+    },
+    {
+      "name": "Year",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40201,
+      "type": "uint16",
+      "access": "R",
+      "description": "yyyy Unit: Int."
+    },
+    {
+      "name": "Month",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40202,
+      "type": "uint16",
+      "access": "R",
+      "description": "mm Unit: Int."
+    },
+    {
+      "name": "Day",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40203,
+      "type": "uint16",
+      "access": "R",
+      "description": "dd Unit: Int."
+    },
+    {
+      "name": "Hour",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40204,
+      "type": "uint16",
+      "access": "R",
+      "description": "hh Unit: Int."
+    },
+    {
+      "name": "Minutes (ZDA)",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40205,
+      "type": "uint16",
+      "access": "R",
+      "description": "mm Unit: Int."
+    },
+    {
+      "name": "Seconds",
+      "group": "ZDA",
+      "area": "holding",
+      "address": 40206,
+      "type": "uint16",
+      "access": "R",
+      "description": "ss Unit: Int."
+    },
+    {
+      "name": "Longitude - Degrees",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40207,
+      "type": "uint16",
+      "access": "R",
+      "description": "º Unit: Int."
+    },
+    {
+      "name": "Longitude - Minutes",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40208,
+      "type": "uint16",
+      "access": "R",
+      "description": "Min * 100 + Sec / 0.6 Unit: Int."
+    },
+    {
+      "name": "Longitude - Sign",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40209,
+      "type": "uint16",
+      "access": "R",
+      "description": "W=0 / E=1 Unit: Int."
+    },
+    {
+      "name": "Latitude - Degrees",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40210,
+      "type": "uint16",
+      "access": "R",
+      "description": "º Unit: Int."
+    },
+    {
+      "name": "Latitude - Minutes",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40211,
+      "type": "uint16",
+      "access": "R",
+      "description": "Min * 100 + Sec / 0.6 Unit: Int."
+    },
+    {
+      "name": "Latitude - Sign.    Example of the new alternative format: Longitud en NMEA: 12202,26957864,W * 12202,26957864,W º = 122 * 12202,26957864,W => 02*100 + 26 = 226 * 12202,26957864,W = 0 ------    Alternative Latitude and Longitude. seconds 30 seconds SGW1-MB-NM NMEA to Modbus converter - Exemys (2.0): --------------------------------------------------- >",
+      "group": "GGA",
+      "area": "holding",
+      "address": 40212,
+      "type": "uint16",
+      "access": "R",
+      "description": "S=0 / N=1 Unit: Int."
+    },
+    {
+      "name": "Param[1] (MAI)",
+      "group": "MAI",
+      "area": "holding",
+      "address": 40221,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Param[2] (MAI)",
+      "group": "MAI",
+      "area": "holding",
+      "address": 40222,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Param[3] (MAI)",
+      "group": "MAI",
+      "area": "holding",
+      "address": 40223,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Param[4] (MAI)",
+      "group": "MAI",
+      "area": "holding",
+      "address": 40224,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Param[5] (MAI)",
+      "group": "MAI",
+      "area": "holding",
+      "address": 40225,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Param[6] (MAI)",
+      "group": "MAI",
+      "area": "holding",
+      "address": 40226,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Param[7] (MAI)",
+      "group": "MAI",
+      "area": "holding",
+      "address": 40227,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Param[8] (MAI)",
+      "group": "MAI",
+      "area": "holding",
+      "address": 40228,
+      "type": "uint16",
+      "access": "R"
+    }
+  ]
+}
