@@ -1,0 +1,1492 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Grundfos",
+  "model": "E-pumps",
+  "models": [
+    "MAGNA3",
+    "MGE",
+    "CUE"
+  ],
+  "vendor_website": "grundfos.com",
+  "description": "Grundfos E-pumps (MAGNA3, MGE motors, CUE drives) through the CIM 200 / CIU 200 Modbus RTU, CIM 500 Modbus TCP or built-in SoftCIM: control, setpoint, status, alarms, head, flow, power, energy, temperatures and heat energy",
+  "revision": 1,
+  "source": "Grundfos, Modbus for Grundfos pumps, functional profile and user manual, 98367081 05.2025",
+  "sources": [
+    {
+      "title": "Modbus for Grundfos pumps, functional profile and user manual",
+      "version": "98367081 05.2025",
+      "url": "https://api.grundfos.com/literature/Grundfosliterature-6012947.pdf",
+      "note": "chapter Modbus register addresses",
+      "accessed": "2026-11-15",
+      "sha256": "a2686160bb1951af7fdcf7009ddad1d3ef37c43b507e7dec17dfceed47338387"
+    }
+  ],
+  "notes": [
+    "Modbus RTU through the CIM 200 / CIU 200 module or the pump's built-in SoftCIM, Modbus TCP through the CIM 500. CIM 200 defaults: 19200 bit/s, even parity, 1 stop bit; address and speed by DIP switches or software settings (registers 00003-00010).",
+    "Register numbers are those of the manual, counted from 1: register 00104 is sent as 103 (address_base 1). All registers can be read with function 03 or 04; the control and configuration blocks are written with 06 or 16.",
+    "32-bit values are two registers, high word first (the names end in HI and LO in the manual).",
+    "A value of 0xFFFF means the data is not available on this pump or without the sensor; the manual marks which registers each model supports.",
+    "Written from the manufacturer's functional profile; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "sentinels": {
+    "uint16": {
+      "0xFFFF": "Not available"
+    },
+    "uint32": {
+      "0xFFFFFFFF": "Not available"
+    }
+  },
+  "registers": [
+    {
+      "name": "Slave minimum reply delay",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SlaveMinimumReplyDelay. The minimum reply delay from the slave in ms. Value range: 0-10000, i.e. up to 10 seconds reply delay. This delay is typically used in conjunction with a modem. The delay value is stored in the device and remains after a power-off. The delay set here is added to the internal delay in the device. Default setting: 0. Note that this is not supported by the built-in SoftCIM Modbus RTU."
+    },
+    {
+      "name": "Software defined modbus address",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SoftwareDefinedModbusAddress. This register holds the active Modbus address. The default value is 0xE7 (231), and there is normally no need to change this value. Note that for the CIM 200, this value is used only when you set the transmission speed to \"Software-defined\" on DIP switches SW4 and SW5. Otherwise, the CIM 200 ignores it."
+    },
+    {
+      "name": "Software defined bit rate",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1200 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "1": "2400 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "2": "4800 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "3": "9600 bit/s",
+        "4": "19200 bit/s",
+        "5": "38400 bit/s"
+      },
+      "description": "SoftwareDefinedBitRate. Modbus software-defined value for transmission speed. The software-defined value for transmission speed is stored in the device and remains after a power-off. Note that for the CIM 200, this value is used only when you set the transmission speed to \"software-defined\" on DIP switches SW4 and SW5. Otherwise, the CIM 200 ignores it."
+    },
+    {
+      "name": "Auto ack control bits",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      },
+      "description": "AutoAckControlBits. Used for selecting the behaviour of control bit acknowledgements from the CIM/CIU Control bits are not automatically lowered when accepted by the device. The user must lower the triggered control bit manually before the control bit can be triggered again. Control bits are automatically lowered when accepted by the device. The user does not have to lower it manually."
+    },
+    {
+      "name": "Software defined parity",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No parity (default)",
+        "1": "Even parity",
+        "2": "Odd parity"
+      },
+      "description": "SoftwareDefinedParity. Parity setting when using software-defined settings. Note that for the CIM 200, this value is used only when the transmission speed is set to \"software-defined\" on DIP switches SW4 and SW5. Otherwise, the CIM 200 ignores it."
+    },
+    {
+      "name": "Software defined stop bit",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No stop bit",
+        "1": "1 stop bit (default)",
+        "2": "2 stop bits"
+      },
+      "description": "SoftwareDefinedStopBit. Stop bit setting when using software-defined settings Note that for the CIM 200, this value is used only when the transmission speed is set to \"software-defined\" on DIP switches SW4 and SW5. Otherwise, the CIM 200 ignores it."
+    },
+    {
+      "name": "Watchdog",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Watchdog. Configuration of watchdog timeout [5; 3600 s], default: Disabled='0', minimum value 5 s • Watchdog is fed whenever the device is addressed by a valid telegram. • An interruption of telegrams for over the timeout activates the watchdog. • Action: The pump is set to Local mode. • Values 1-4: set timeout to 5 s. Values >3600: set timeout to 3600 s."
+    },
+    {
+      "name": "Genibus diode off",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "GENIbus diode LED2 has normal function",
+        "1": "GENIbus diode LED2 is permanently switched off"
+      },
+      "description": "GENIbusDiodeOff. For disabling the CIM 200 or CIM 500 GENIbus LED2"
+    },
+    {
+      "name": "Genibus CRC error count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "description": "GENIbusCRCErrorCnt. It holds a CRC error counter for the GENIbus connection to the E-pump."
+    },
+    {
+      "name": "Genibus data error count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "R",
+      "description": "GENIbusDataErrorCnt. It holds a data error counter for the GENIbus connection to the E-pump."
+    },
+    {
+      "name": "Version number",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "description": "VersionNumber. A Grundfos-specific version number, BCD coded unsigned integer value.",
+      "role": "firmware"
+    },
+    {
+      "name": "Actual modbus address",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "description": "ActualModbusAddress. It holds the current Modbus slave address of the device. Valid value range: 1-247"
+    },
+    {
+      "name": "Genibus TX count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 25,
+      "type": "uint32",
+      "access": "R",
+      "description": "GENIbusTXcountHI. It holds a transmit counter for the total number of telegrams sent to the E-pump on the GENIbus connection."
+    },
+    {
+      "name": "Genibus RX count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 27,
+      "type": "uint32",
+      "access": "R",
+      "description": "GENIbusRXcountHI. It holds a receive counter for the total number of telegrams received from the E-pump on the GENIbus connection."
+    },
+    {
+      "name": "Unit family",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "R",
+      "description": "UnitFamily. 1 Circulator pumps 5 UPE, 3 phase"
+    },
+    {
+      "name": "Unit type",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "R",
+      "description": "UnitType. 7 Magna, 1 phase"
+    },
+    {
+      "name": "Unit version",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "access": "R",
+      "description": "UnitVersion. 9 Magna, 1 phase, small"
+    },
+    {
+      "name": "Product software version",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 34,
+      "type": "uint32",
+      "access": "R",
+      "description": "ProductSoftwareVersionHI. Product software version (BCD digit 1-4 aa.bb) Product software version (BCD digit 5-8 cc.dd)"
+    },
+    {
+      "name": "Product software day month",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "description": "ProductSoftwareDayMonth. Product software date (BCD ddmm)"
+    },
+    {
+      "name": "Product software year",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "access": "R",
+      "description": "ProductSoftwareYear. Product software date (BCD yyyy)"
+    },
+    {
+      "name": "Remote access request",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW",
+      "description": "Control bit that sets local or remote control Set this bit to 1 if a Modbus master should control the E-pump. You can read the actual status from register 00201 bit 8. 0 = Local; 1 = Remote (controlled by Modbus master)"
+    },
+    {
+      "name": "On off request",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW",
+      "description": "Control bit that switches the E-pump on or off You can read the actual status from register 00201 bit 9. 0 = Off (stop); 1 = On (start)"
+    },
+    {
+      "name": "Reset alarm",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW",
+      "description": "Control bit that resets alarms and warnings from the E-pump This control bit is triggered on rising edge only, i.e. setting logical 0 to 1. See section CIM configuration register block , address 00005 for acknowledgement behaviour. 0 = No resetting; 1 = Resetting alarm"
+    },
+    {
+      "name": "Copy to local",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW",
+      "description": "Control bit that enables copying of remote settings to local pump settings Only available on MAGNA3, CUE and MGE model H and later You can read the actual status from register 00201 bit 1. Note that copy of the Control Context, which is Control mode, Operating mode, On/off and Setpoint, from the remote setting to the local setting takes place when CopyToLocal has been enabled, but only during a Re"
+    },
+    {
+      "name": "Enable max flow limit",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW",
+      "description": "Control bit that enables or disables the FLOWLIMIT function Set the maximum flow limit value in register 00106. Only available on MAGNA3 and MGE model H and later You can read the actual status from register 00201 bit 2. 0 = Disabled (only used in control mode FLOWADAPT); 1 = Enabled (used in all control modes)"
+    },
+    {
+      "name": "Control mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Constant speed",
+        "1": "Constant frequency",
+        "3": "Constant head",
+        "4": "Constant pressure",
+        "5": "Constant differential pressure",
+        "6": "Proportional pressure",
+        "7": "Constant flow",
+        "8": "Constant temperature",
+        "9": "Constant differential temperature",
+        "10": "Constant level",
+        "128": "AUTOADAPT",
+        "129": "FLOWADAPT (set FLOWLIMIT in register 00106)",
+        "130": "Closed-loop sensor",
+        "131": "AUTOADAPT(CP)"
+      },
+      "description": "ControlMode. Control bit that sets the control mode enumeration Note that some modes are not supported by all E-pumps. You can read the actual control mode from register 00203."
+    },
+    {
+      "name": "Operation mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (setpoint control according to selected control mode)",
+        "4": "OpenLoopMin (running at minimum speed)",
+        "6": "OpenLoopMax (running at maximum speed)"
+      },
+      "description": "OperationMode. A state enumeration to control the E-pump operating mode Note that \"OnOffReq\" has higher priority than \"OperationMode\", that is, you must set \"OnOffReq\" to \"On\" for \"OperationMode\" to have any effect. You can read the actual operation mode from register 00204."
+    },
+    {
+      "name": "Setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Setpoint. It sets the E-pump setpoint. The scale is 0.01 %, so the value must be from 0 to 10000 to represent the entire 0-100 % range. Closed loop: Percentage of setpoint range Open loop Percentage of nominal frequency Common examples 4700: 47 % 8000: 80 % You can read the actual setpoint from register 00338 UserSetpoint."
+    },
+    {
+      "name": "Relay control: Relay 1 control",
+      "group": "Control",
+      "area": "holding",
+      "address": 105,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW",
+      "description": "Controls the state of relay 1 Only E-pumps and CUE 0 = Closed; 1 = Open"
+    },
+    {
+      "name": "Relay control: Relay 2 control",
+      "group": "Control",
+      "area": "holding",
+      "address": 105,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW",
+      "description": "Controls the state of relay 2. Only CUE, large MGE, MGE model H and later 0 = Closed; 1 = Open"
+    },
+    {
+      "name": "Relay control: Relay 3 control",
+      "group": "Control",
+      "area": "holding",
+      "address": 105,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW",
+      "description": "Controls the state of relay 3 Only MGE model H and later 0 = Closed; 1 = Open"
+    },
+    {
+      "name": "Relay control: Relay 4 control",
+      "group": "Control",
+      "area": "holding",
+      "address": 105,
+      "type": "bool",
+      "bit": 3,
+      "access": "RW",
+      "description": "Controls the state of relay 4 Only MGE model H and later 0 = Closed; 1 = Open"
+    },
+    {
+      "name": "Set max flow limit",
+      "group": "Control",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "description": "SetMaxFlowLimit. It sets the maximum flow limit: FLOWLIMIT. It must be enabled in register 00101, bit 5. m3/h. The value is set in 0.01 If enabled, the FLOWLIMIT is active in all control modes. If disabled, the maximum flow limit is only active in FLOWADAPT control mode. Read the actual value in register 00345. Only available on MAGNA3 and MGE model H and later",
+      "unit": "m³/h"
+    },
+    {
+      "name": "Set pump unix RTC",
+      "group": "Control",
+      "area": "holding",
+      "address": 107,
+      "type": "uint32",
+      "access": "RW",
+      "description": "SetPumpUnixRtcHI. It sets the real-time clock in the pump in unix format (seconds since 01-01-1970). Only available on MAGNA3 and MGE model H and later."
+    },
+    {
+      "name": "Sensor feedback",
+      "group": "Control",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SensorFeedback. Closed loop sensor feedback via Modbus, scaling 0.01 %"
+    },
+    {
+      "name": "Set Kp",
+      "group": "Control",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "SetKp. It sets the proportional gain, Kp. The scale is 0.1. Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Set Ti",
+      "group": "Control",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "SetTi. It sets the integral action time, Ti. The scale is 0.1 s. Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Set direct ctr",
+      "group": "Control",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Inverse control",
+        "1": "Direct control"
+      },
+      "description": "SetDirectCtr. Selection of Direct/Inverse control Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Low flow stop",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "It indicates if the state of \"Low Flow Stop\" function is active or not active. Only available on MGE model H and later 0 = Pump is not in \"Low Flow Stop\" state; 1 = Pump is in \"Low Flow Stop\" state"
+    },
+    {
+      "name": "Copy to local (status)",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "It indicates if the remote settings of setpoint, operating mode, control mode and on/off state will be automatically copied to local settings. Only available on MAGNA3 and MGE model H and later 0 = Copying disabled; 1 = Copying enabled"
+    },
+    {
+      "name": "Max flow limit enabled",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "It indicates if the MaxFlowLimit is enabled. Enable it with register 00101, bit 5. Only available on MAGNA3 and MGE model H and later 0 = Disabled; 1 = Enabled"
+    },
+    {
+      "name": "Reset alarm ack",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 3,
+      "access": "R",
+      "description": "It indicates if a ResetAlarm command was acknowledged by the device. This bit is set when the CIU has accepted a ResetAlarm command, and the programmer can clear the ResetAlarm bit. The ResetAlarmAck bit is automatically cleared to 0 by the CIU when the ResetAlarm bit is cleared by the master device, and a new ResetAlarm command can be attempted by raising the ResetAlarm bit again. This functional"
+    },
+    {
+      "name": "Setpoint influence",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 4,
+      "access": "R",
+      "description": "It indicates if setpoint influence is active. Only available on MAGNA3 and MGE model H and later 0 = Not active; 1 = Active"
+    },
+    {
+      "name": "At max power",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 5,
+      "access": "R",
+      "description": "It indicates if the E-pump is running at its power limit. Only available on MAGNA3 and MGE model H and later 0 = Not running at power limit; 1 = Running at power limit"
+    },
+    {
+      "name": "Rotation",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 6,
+      "access": "R",
+      "description": "It indicates if the E-pump is rotating, that is running, or not. 0 = No rotation; 1 = Rotation"
+    },
+    {
+      "name": "Direction",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 7,
+      "access": "R",
+      "description": "It indicates the current rotational direction of the E-pump as seen from the ventilator side. 0 = Clockwise; 1 = Counterclockwise"
+    },
+    {
+      "name": "Access mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 8,
+      "access": "R",
+      "description": "It indicates if the E-pump is locally or remotely controlled. 0 = Local (a local control source with higher priority controls the E-pump); 1 = Remote (controlled by Modbus master)"
+    },
+    {
+      "name": "On off",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 9,
+      "access": "R",
+      "description": "It indicates if the E-pump is on or off. Started does not necessarily indicate rotation, for instance in case of low-flow stop. 0 = Off (stopped, the green LED on the E-pump flashes); 1 = On (started, the green LED on the E-pump is on)"
+    },
+    {
+      "name": "Alarm",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 10,
+      "access": "R",
+      "description": "It indicates if there is an alarm or not. 0 = No alarm; 1 = Alarm (red LED on the E-pump is on)"
+    },
+    {
+      "name": "Warning",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 11,
+      "access": "R",
+      "description": "It indicates if there is a warning or not. The E-pump will continue running even if there is a warning. 0 = No warning; 1 = Warning (red LED on the E-pump is on)"
+    },
+    {
+      "name": "Forced to local",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 12,
+      "access": "R",
+      "description": "State of the \"Forced to local\" control option Only available on MAGNA3 and MGE model H and later 0 = Not forced to local; 1 = Forced to local"
+    },
+    {
+      "name": "At max speed",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 13,
+      "access": "R",
+      "description": "It indicates if the E-pump is running at maximum speed. 0 = No; 1 = Yes"
+    },
+    {
+      "name": "At min speed",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 15,
+      "access": "R",
+      "description": "It indicates if the E-pump is running at minimum speed. 0 = No; 1 = Yes"
+    },
+    {
+      "name": "Process feedback",
+      "group": "Status",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "ProcessFeedback. It indicates the actual process feedback from the E-pump. The scale is 0.01 %, so the valid value range is from 0 to 10000. This value can be compared with the setpoint value. Closed loop: Percentage of closed-loop feedback sensor range Open loop: Percentage of E-pump performance Common examples: 4700: 47 % 8000: 80 %"
+    },
+    {
+      "name": "Control mode (status)",
+      "group": "Status",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Constant speed",
+        "1": "Constant frequency",
+        "3": "Constant head",
+        "4": "Constant pressure",
+        "5": "Constant differential pressure",
+        "6": "Proportional pressure",
+        "7": "Constant flow",
+        "8": "Constant temperature",
+        "9": "Constant differential temperature",
+        "10": "Constant level",
+        "128": "AUTOADAPT",
+        "129": "FLOWADAPT",
+        "130": "Closed-loop sensor",
+        "131": "AUTOADAPT(CP)"
+      },
+      "description": "ControlMode. It indicates the actual control mode. Not all modes are supported by all E-pump types."
+    },
+    {
+      "name": "Operation mode (status)",
+      "group": "Status",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Auto-control (normal, setpoint control according to selected control mode)",
+        "4": "OpenLoopMin (running at minimum speed)",
+        "6": "OpenLoopMax (running at maximum speed)",
+        "7": "UserCurve",
+        "8": "StopButton",
+        "9": "HandMode"
+      },
+      "description": "OperationMode. It indicates the actual operating mode."
+    },
+    {
+      "name": "Alarm code",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "R",
+      "description": "AlarmCode. The Grundfos-specific alarm code."
+    },
+    {
+      "name": "Warning code",
+      "group": "Status",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "access": "R",
+      "description": "WarningCode. The Grundfos-specific warning code."
+    },
+    {
+      "name": "Months to bearing service",
+      "group": "Status",
+      "area": "holding",
+      "address": 207,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 8,
+      "access": "R",
+      "description": "It indicates the number of months until the next bearing service (not available on all E-pumps). This value can be 0, 1, 3, 6, 12 and 24 months, if available. A value of 24 months means \"24 months or more\". A value of 0xFF indicates that the information is not available."
+    },
+    {
+      "name": "Bearing service type",
+      "group": "Status",
+      "area": "holding",
+      "address": 207,
+      "type": "bool",
+      "bit": 8,
+      "access": "R",
+      "description": "It indicates the type of the next bearing service (not available on all E-pumps). 0 = Lubricate bearings; 1 = Change bearings"
+    },
+    {
+      "name": "Drive state",
+      "group": "Status",
+      "area": "holding",
+      "address": 208,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Stopped",
+        "1": "Accelerating",
+        "2": "Decelerating",
+        "3": "Steady state/closed loop",
+        "4": "-",
+        "5": "Accelerating halt",
+        "6": "Decelerating halt",
+        "7": "Start on the run (flying cut-in)"
+      },
+      "description": "DriveState. Dynamic drive state variable: Only MGE motors and CUE drives"
+    },
+    {
+      "name": "Feedback sensor unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 209,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "bar",
+        "1": "mbar",
+        "2": "m",
+        "3": "kPa",
+        "4": "psi",
+        "5": "ft",
+        "6": "m3/h",
+        "7": "m3/s",
+        "8": "l/s",
+        "9": "gpm",
+        "10": "°C",
+        "11": "°F",
+        "12": "%",
+        "13": "K",
+        "14": "W"
+      },
+      "description": "FeedbackSensorUnit. It indicates the unit of the feedback sensor."
+    },
+    {
+      "name": "Feedback sensor min",
+      "group": "Status",
+      "area": "holding",
+      "address": 210,
+      "type": "uint16",
+      "access": "R",
+      "description": "FeedbackSensorMin. Minimum value of the feedback sensor The unit of the sensor minimum is defined by register 00209."
+    },
+    {
+      "name": "Feedback sensor max",
+      "group": "Status",
+      "area": "holding",
+      "address": 211,
+      "type": "uint16",
+      "access": "R",
+      "description": "FeedbackSensorMax. Maximum value of the feedback sensor The unit of the sensor maximum is defined by register 00209."
+    },
+    {
+      "name": "Nom frequency",
+      "group": "Status",
+      "area": "holding",
+      "address": 212,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "Hz",
+      "description": "NomFrequency. Nominal pump frequency Scale: 0.1 Hz Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Min frequency",
+      "group": "Status",
+      "area": "holding",
+      "address": 213,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "MinFrequency. Minimum pump frequency in % of nominal frequency Scale is 0.01 % Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Max frequency",
+      "group": "Status",
+      "area": "holding",
+      "address": 214,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "MaxFrequency. Maximum pump frequency in % of nominal frequency Scale: 0.01 % Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Setpoint range min",
+      "group": "Status",
+      "area": "holding",
+      "address": 215,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SetpointRangeMin. Minimum value of setpoint range in % of sensor maximum value Scale: 0.01 % Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Setpoint range max",
+      "group": "Status",
+      "area": "holding",
+      "address": 216,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SetpointRangeMax. Maximum value of setpoint range in % of sensor maximum value Scale: 0.01 % Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Flow estimation state",
+      "group": "Status",
+      "area": "holding",
+      "address": 221,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Flow estimation within range",
+        "1": "Flow estimation below range",
+        "2": "Flow estimation above range"
+      },
+      "description": "FlowEstimationState. State of the flow estimation algoritm"
+    },
+    {
+      "name": "Kp",
+      "group": "Status",
+      "area": "holding",
+      "address": 222,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Kp. Actual proportional gain Scale: 0.1 Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Ti",
+      "group": "Status",
+      "area": "holding",
+      "address": 223,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "Ti. Actual integral action time Scale: 0.1 s Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Direct control",
+      "group": "Status",
+      "area": "holding",
+      "address": 224,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Inverse control",
+        "1": "Direct control"
+      },
+      "description": "DirectControl. Actual selection between Direct/Inverse control Only available on MAGNA3 and MGE model H and later"
+    },
+    {
+      "name": "Control source",
+      "group": "Status",
+      "area": "holding",
+      "address": 225,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Display",
+        "2": "Bus",
+        "3": "GO app",
+        "4": "Digital input",
+        "5": "OFF button"
+      },
+      "description": "ControlSource"
+    },
+    {
+      "name": "Head",
+      "group": "Data",
+      "area": "holding",
+      "address": 301,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "Head. Actual system head/pressure"
+    },
+    {
+      "name": "Volume flow",
+      "group": "Data",
+      "area": "holding",
+      "address": 302,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "VolumeFlow. Actual system flow"
+    },
+    {
+      "name": "Relative performance",
+      "group": "Data",
+      "area": "holding",
+      "address": 303,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "RelativePerformance. Performance relative to maximum performance"
+    },
+    {
+      "name": "Speed",
+      "group": "Data",
+      "area": "holding",
+      "address": 304,
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm",
+      "description": "Speed. Motor speed"
+    },
+    {
+      "name": "Frequency",
+      "group": "Data",
+      "area": "holding",
+      "address": 305,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "Hz",
+      "description": "Frequency. Actual control signal applied to motor"
+    },
+    {
+      "name": "Digital input",
+      "group": "Data",
+      "area": "holding",
+      "address": 306,
+      "type": "uint16",
+      "access": "R",
+      "description": "DigitalInput. Logical value of external digital input signals"
+    },
+    {
+      "name": "Digital output",
+      "group": "Data",
+      "area": "holding",
+      "address": 307,
+      "type": "uint16",
+      "access": "R",
+      "description": "DigitalOutput. Logical value of external digital output signals"
+    },
+    {
+      "name": "Actual setpoint",
+      "group": "Data",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "ActualSetpoint. Actual setpoint: Open loop: % of nominal frequency Closed loop: % of sensor maximum"
+    },
+    {
+      "name": "Motor current",
+      "group": "Data",
+      "area": "holding",
+      "address": 309,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "MotorCurrent. Actual motor current"
+    },
+    {
+      "name": "DC link voltage",
+      "group": "Data",
+      "area": "holding",
+      "address": 310,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "DCLinkVoltage. Frequency converter DC-Link voltage"
+    },
+    {
+      "name": "Motor voltage",
+      "group": "Data",
+      "area": "holding",
+      "address": 311,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "MotorVoltage. Motor voltage"
+    },
+    {
+      "name": "Power",
+      "group": "Data",
+      "area": "holding",
+      "address": 312,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W",
+      "description": "PowerHI. Total power consumption of the system"
+    },
+    {
+      "name": "Remote flow",
+      "group": "Data",
+      "area": "holding",
+      "address": 314,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "RemoteFlow. Measured flow at external sensor"
+    },
+    {
+      "name": "Inlet pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 315,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "offset": -1.0,
+      "description": "InletPressure. System inlet pressure, relative to atmospheric pressure It has an offset of -1.000 bar."
+    },
+    {
+      "name": "Remote pressure 1",
+      "group": "Data",
+      "area": "holding",
+      "address": 316,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "RemotePressure1. Measured pressure at external sensor, relative to atmospheric pressure"
+    },
+    {
+      "name": "Feed tank level",
+      "group": "Data",
+      "area": "holding",
+      "address": 317,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "m",
+      "offset": -100.0,
+      "description": "FeedTankLevel. Feed tank level Offset -100m"
+    },
+    {
+      "name": "Power electronic temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 318,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "PowerElectronicTemp. Temperature in frequency converter"
+    },
+    {
+      "name": "Motor temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 319,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "MotorTemp. Motor winding temperature"
+    },
+    {
+      "name": "Remote temp 1",
+      "group": "Data",
+      "area": "holding",
+      "address": 320,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "RemoteTemp1. Temperature at external sensor"
+    },
+    {
+      "name": "Electronic temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 321,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "ElectronicTemp. E-pump electronics temperature"
+    },
+    {
+      "name": "Pump liquid temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 322,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "PumpLiquidTemp. Pumped-liquid temperature"
+    },
+    {
+      "name": "Bearing temp DE",
+      "group": "Data",
+      "area": "holding",
+      "address": 323,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "BearingTempDE. Bearing temperature, drive end"
+    },
+    {
+      "name": "Bearing temp n DE",
+      "group": "Data",
+      "area": "holding",
+      "address": 324,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "BearingTempNDE. Bearing temperature, non-drive end"
+    },
+    {
+      "name": "Aux sensor input",
+      "group": "Data",
+      "area": "holding",
+      "address": 325,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "AuxSensorInput. Auxiliary sensor input"
+    },
+    {
+      "name": "Specific energy consumption",
+      "group": "Data",
+      "area": "holding",
+      "address": 326,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Wh/m³",
+      "description": "SpecificEnergyConsumption. Specific energy consumption"
+    },
+    {
+      "name": "Operation time",
+      "group": "Data",
+      "area": "holding",
+      "address": 327,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h",
+      "description": "OperationTimeHI. Total operating time of the system"
+    },
+    {
+      "name": "Total powered time",
+      "group": "Data",
+      "area": "holding",
+      "address": 329,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h",
+      "description": "TotalPoweredTimeHI. Total power-on time of the system"
+    },
+    {
+      "name": "Torque",
+      "group": "Data",
+      "area": "holding",
+      "address": 331,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "N·m",
+      "description": "Torque. Motor torque"
+    },
+    {
+      "name": "Energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 332,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "EnergyHI. Total energy consumption of the system"
+    },
+    {
+      "name": "Number of starts",
+      "group": "Data",
+      "area": "holding",
+      "address": 334,
+      "type": "uint32",
+      "access": "R",
+      "description": "NumberOfStartsHI. Number of times the E-pump has been started"
+    },
+    {
+      "name": "Remote temp 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 337,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "RemoteTemp2. Temperature at external temperature sensor 2"
+    },
+    {
+      "name": "User setpoint",
+      "group": "Data",
+      "area": "holding",
+      "address": 338,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "UserSetpoint. User-selected setpoint. Open loop: % of nominal frequency. Closed loop: % of setpoint range"
+    },
+    {
+      "name": "Differential pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 339,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "Diffpressure. Pressure between pump flanges"
+    },
+    {
+      "name": "Outlet pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 340,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "OutletPressure. Pressure at pump outlet"
+    },
+    {
+      "name": "Remote pressure 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 341,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "RemotePressure2. Pressure measured by external sensor 2"
+    },
+    {
+      "name": "Load percent",
+      "group": "Data",
+      "area": "holding",
+      "address": 342,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "LoadPercent. Motor current in percent of rated motor current"
+    },
+    {
+      "name": "Pump unix RTC",
+      "group": "Data",
+      "area": "holding",
+      "address": 343,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s",
+      "description": "PumpUnixRtcHI. Pump time and date in UNIX format (seconds since 01-01-1970 00:00:00)"
+    },
+    {
+      "name": "Max flow limit",
+      "group": "Data",
+      "area": "holding",
+      "address": 345,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "MaxFlowLimit. Actual maximum flow limit"
+    },
+    {
+      "name": "Remote diff temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 346,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "RemoteDiffTemp. Remote differential temperature"
+    },
+    {
+      "name": "Inlet diff pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 347,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "InletDiffPressure. Inlet differential pressure"
+    },
+    {
+      "name": "Outlet diff pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 348,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "OutletDiffPressure. Outlet differential pressure"
+    },
+    {
+      "name": "Remote diff pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 349,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "RemoteDiffPressure. Remote differential pressure"
+    },
+    {
+      "name": "Storage tank level",
+      "group": "Data",
+      "area": "holding",
+      "address": 350,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "m",
+      "offset": -100.0,
+      "description": "StorageTankLevel. Storage tank level Offset -100"
+    },
+    {
+      "name": "Ambient temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 351,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "AmbientTemp. Ambient temperature"
+    },
+    {
+      "name": "Heat energy counter 1",
+      "group": "Data",
+      "area": "holding",
+      "address": 352,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "HeatEnergyCounter1HI. Total accumulated heat energy in pump lifetime (direction 1)"
+    },
+    {
+      "name": "Heat power",
+      "group": "Data",
+      "area": "holding",
+      "address": 354,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W",
+      "description": "HeatPowerHI. Actual heat power"
+    },
+    {
+      "name": "Heat diff temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 356,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "HeatDiffTemp. Differential temperature between forward and return pipe used for heat calculation"
+    },
+    {
+      "name": "Volume 1",
+      "group": "Data",
+      "area": "holding",
+      "address": 357,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "m³",
+      "description": "Volume1HI. Total pumped volume (direction 1)"
+    },
+    {
+      "name": "Heat energy counter 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 359,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "HeatEnergyCounter2HI. Total accumulated heat energy in pump lifetime (direction 2)"
+    },
+    {
+      "name": "Volume 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 361,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "m³",
+      "description": "Volume2HI. Total pumped volume (direction 2)"
+    },
+    {
+      "name": "Conductivity",
+      "group": "Data",
+      "area": "holding",
+      "address": 363,
+      "type": "uint16",
+      "access": "R",
+      "description": "Conductivity. Conductivity measurement. The manual gives 0.1 NTU for conductivity and 1 uS/cm for turbidity, which look swapped; check the scale on the device."
+    },
+    {
+      "name": "pH measurement",
+      "group": "Data",
+      "area": "holding",
+      "address": 364,
+      "type": "uint16",
+      "access": "R",
+      "description": "PHMeasure. PH measurement",
+      "scale": 0.01
+    },
+    {
+      "name": "Turbidity",
+      "group": "Data",
+      "area": "holding",
+      "address": 365,
+      "type": "uint16",
+      "access": "R",
+      "description": "Turbidity. Turbidity measurement. The manual gives 0.1 NTU for conductivity and 1 uS/cm for turbidity, which look swapped; check the scale on the device."
+    },
+    {
+      "name": "Simulation alarm code",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 701,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Simulation. AlarmCode. Alarm code to simulate"
+    },
+    {
+      "name": "Simulation warning code",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 702,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Simulation. WarningCode. Warning code to simulate"
+    },
+    {
+      "name": "Simulation activate",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 708,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Deactivate simulation",
+        "1": "Activate simulation"
+      },
+      "description": "Simulation. Activate. Used for activating alarm simulation with alarms and warnings selected from registers 00701 and 00702"
+    },
+    {
+      "name": "Simulation active",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 709,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Alarm simulation not active",
+        "1": "Alarm simulation active"
+      },
+      "description": "Simulation. Active. Status on alarm simulation"
+    }
+  ]
+}

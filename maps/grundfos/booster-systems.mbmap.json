@@ -1,0 +1,3070 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Grundfos",
+  "model": "Booster systems",
+  "models": [
+    "Hydro MPC",
+    "Hydro Multi-B",
+    "Hydro Multi-E",
+    "TPED",
+    "MAGNA3-D"
+  ],
+  "vendor_website": "grundfos.com",
+  "description": "Grundfos booster systems (Hydro MPC, Hydro Multi-B, Hydro Multi-E, TPED, GENIECON and DDD controllers) through the CIM 200 / CIU 200 Modbus RTU, CIM 500 Modbus TCP or SoftCIM: system control, pump control, status, pressures, flows, energy and per-pump data",
+  "revision": 1,
+  "source": "Grundfos, Modbus for Grundfos boosters, functional profile and user manual, 98393459 09.2025",
+  "sources": [
+    {
+      "title": "Modbus for Grundfos boosters, functional profile and user manual",
+      "version": "98393459 09.2025",
+      "url": "https://api.grundfos.com/literature/Grundfosliterature-6012934.pdf",
+      "note": "chapter Modbus register addresses",
+      "accessed": "2026-11-15",
+      "sha256": "d27de2acf315cfd90bcd212395bb591789a2e39d169987c36c8433662d6f3b13"
+    }
+  ],
+  "notes": [
+    "Modbus RTU through the CIM 200 / CIU 200 module or the built-in SoftCIM, Modbus TCP through the CIM 500. CIM 200 defaults: 19200 bit/s, even parity, 1 stop bit.",
+    "Per-pump data: one block of ten registers per pump at 00401 + 10 x n (pumps 1-6, then the pilot pump at 00461 and the backup pump at 00471).",
+    "Register numbers are those of the manual, counted from 1: register 00104 is sent as 103 (address_base 1). All registers can be read with function 03 or 04; the control and configuration blocks are written with 06 or 16.",
+    "32-bit values are two registers, high word first (the names end in HI and LO in the manual).",
+    "A value of 0xFFFF means the data is not available on this pump or without the sensor; the manual marks which registers each model supports.",
+    "Written from the manufacturer's functional profile; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "sentinels": {
+    "uint16": {
+      "0xFFFF": "Not available"
+    },
+    "uint32": {
+      "0xFFFFFFFF": "Not available"
+    }
+  },
+  "registers": [
+    {
+      "name": "Slave minimum reply delay",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SlaveMinimumReplyDelay. The minimum reply delay from the slave in ms. Value range: 0-10000, i.e. up to 10 seconds reply delay. This delay is typically used in conjunction with a modem. The delay value is stored in the device and remains after a power-off. The delay set here is added to the internal delay in the device. Default setting: 0. Note that this is not supported by the built-in SoftCIM Modbus RTU."
+    },
+    {
+      "name": "Software defined modbus address",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SoftwareDefinedModbusAddress. This register holds the active Modbus address. The default value is 0xE7 (231), and there is normally no need to change this value. Note that for the CIM 200, this value is used only when you set the transmission speed to \"Software-defined\" on DIP switches SW4 and SW5. Otherwise, the CIM 200 ignores it."
+    },
+    {
+      "name": "Software defined bit rate",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1200 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "1": "2400 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "2": "4800 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "3": "9600 bit/s",
+        "4": "19200 bit/s",
+        "5": "38400 bit/s"
+      },
+      "description": "SoftwareDefinedBitRate. Modbus software-defined value for transmission speed. The software-defined value for transmission speed is stored in the device and remains after a power-off. Note that for the CIM 200, this value is used only when you set the transmission speed to \"software-defined\" on DIP switches SW4 and SW5. Otherwise, the CIM 200 ignores it."
+    },
+    {
+      "name": "Auto ack control bits",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      },
+      "description": "AutoAckControlBits. Used for selecting the behaviour of control bit acknowledgements from the CIM/CIU Control bits are not automatically lowered when accepted by the device. The user must lower the triggered control bit manually before the control bit can be triggered again. Control bits are automatically lowered when accepted by the device. The user does not have to lower it manually."
+    },
+    {
+      "name": "Software defined parity",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No parity (default)",
+        "1": "Even parity",
+        "2": "Odd parity"
+      },
+      "description": "SoftwareDefinedParity. Parity setting when using software-defined settings. Note that for the CIM 200, this value is used only when the transmission speed is set to \"software-defined\" on DIP switches SW4 and SW5. Otherwise, the CIM 200 ignores it."
+    },
+    {
+      "name": "Software defined stop bit",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No stop bit",
+        "1": "1 stop bit (default)",
+        "2": "2 stop bits"
+      },
+      "description": "SoftwareDefinedStopBit. Stop bit setting when using software-defined settings Note that for the CIM 200, this value is used only when the transmission speed is set to \"software-defined\" on DIP switches SW4 and SW5. Otherwise, the CIM 200 ignores it."
+    },
+    {
+      "name": "Watchdog",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Watchdog. Configuration of watchdog timeout [5; 3600 s], default: Disabled='0', minimum value 5 s • Watchdog is fed whenever the device is addressed by a valid telegram. • An interruption of telegrams for over the timeout activates the watchdog. • Action: The booster is set to Local mode. • Values 1-4: set timeout to 5 s. Values >3600: set timeout to 3600 s."
+    },
+    {
+      "name": "Genibus diode off",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "GENIbus diode LED2 has normal function",
+        "1": "GENIbus diode LED2 is permanently switched off"
+      },
+      "description": "GENIbusDiodeOff. For disabling the CIM 200 or CIM 500 GENIbus LED24)"
+    },
+    {
+      "name": "Genibus CRC error count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "description": "GENIbusCRCErrorCnt. It holds a CRC error counter for the GENIbus connection to the booster."
+    },
+    {
+      "name": "Genibus data error count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "R",
+      "description": "GENIbusDataErrorCnt. It holds a data error counter for the GENIbus connection to the booster."
+    },
+    {
+      "name": "Version number",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "description": "VersionNumber. A Grundfos-specific version number, BCD coded unsigned integer value.",
+      "role": "firmware"
+    },
+    {
+      "name": "Actual modbus address",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "description": "ActualModbusAddress. It holds the current Modbus slave address of the device. Valid value range: 1-247"
+    },
+    {
+      "name": "Genibus TX count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 25,
+      "type": "uint32",
+      "access": "R",
+      "description": "GENIbusTXcountHI. It holds a transmit counter for the total number of telegrams sent to the booster on the GENIbus connection."
+    },
+    {
+      "name": "Genibus RX count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 27,
+      "type": "uint32",
+      "access": "R",
+      "description": "GENIbusRXcountHI. It holds a receive counter for the total number of telegrams received from the booster on the GENIbus connection."
+    },
+    {
+      "name": "Unit family",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "R",
+      "description": "UnitFamily. 1 Circulator pumps 5 UPE, 3 phase"
+    },
+    {
+      "name": "Unit type",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "R",
+      "description": "UnitType. 7 Magna, 1 phase"
+    },
+    {
+      "name": "Unit version",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "access": "R",
+      "description": "UnitVersion. 9 Magna, 1 phase, small"
+    },
+    {
+      "name": "Product software version",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 34,
+      "type": "uint32",
+      "access": "R",
+      "description": "ProductSoftwareVersionHI. Product software version (BCD digit 1-4 aa.bb) Product software version (BCD digit 5-8 cc.dd)"
+    },
+    {
+      "name": "Product software day month",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "description": "ProductSoftwareDayMonth. Product software date (BCD ddmm)"
+    },
+    {
+      "name": "Product software year",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "access": "R",
+      "description": "ProductSoftwareYear. Product software date (BCD yyyy)"
+    },
+    {
+      "name": "Remote access request",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 0,
+      "access": "RW",
+      "description": "Control bit that sets local or remote control Set this bit to 1 if a Modbus master should control the booster system. For Hydro MPC, GENIECON and DDD, it is also necessary to enable bus control via the controller HMI (\"Settings\" > \"Secondary functions\" > \"Control source\", select \"From bus\"). If the RemoteAccessReq bit is set to logical 0, the booster operates with local mode settings as selected v"
+    },
+    {
+      "name": "On off request",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 1,
+      "access": "RW",
+      "description": "Control bit that switches the booster system to on or off 0 = Off (stop); 1 = On (start)"
+    },
+    {
+      "name": "Reset alarm",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 2,
+      "access": "RW",
+      "description": "Control bit that resets alarms and warnings from the booster system This control bit is triggered on rising edge only, i.e. setting logical 0 to 1. 0 = No resetting; 1 = Resetting alarm"
+    },
+    {
+      "name": "Copy to local 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 4,
+      "access": "RW",
+      "description": "Control bit that enables copyingof ControlMode, OperationMode and Setpoint to Local when changing from Remote to Local."
+    },
+    {
+      "name": "Reset acc counters",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "bit": 5,
+      "access": "RW",
+      "description": "Control bit that resets the accumulation counters (volume and energy). 0 = No resetting; 1 = Resetting"
+    },
+    {
+      "name": "Control mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Constant speed",
+        "1": "Constant frequency",
+        "3": "Constant head",
+        "4": "Constant pressure",
+        "5": "Constant differential pressure",
+        "6": "Proportional pressure",
+        "7": "Constant flow",
+        "8": "Constant temperature",
+        "9": "Constant temp. difference",
+        "10": "Constant level",
+        "128": "AutoAdapt (Automatic adaption for DDD)",
+        "129": "FlowAdapt",
+        "130": "Closed-loop sensor"
+      },
+      "description": "ControlMode. Control bit that sets the control mode. See section Control modes. Note that if MPC or DDD is set to control source \"From the CU 35X\", it is still possible to change ControlMode from Modbus if the RemoteAccessReq bit is set to \"1\"."
+    },
+    {
+      "name": "Operation mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control",
+        "4": "OpenLoopMin",
+        "6": "OpenLoopMax"
+      },
+      "description": "OperationMode. A state enumeration to control the operating mode of the booster system. Note that \"OnOffReq\" has higher priority than the OperationMode, that is you must set \"OnOffReq\" to \"On\" for the OperationMode to have any effect. The Hydro Multi-E model G can only run in auto- control mode and OpenLoopMax."
+    },
+    {
+      "name": "Setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Setpoint. It sets the setpoint of the booster. The scale is 0.01 %, so the value must be from 0 to 10000 to represent the entire 0-100 % range. Closed loop: MPC, GENIECON, Multi-E: Percentage of closed- loop feedback sensor maximum value TPED, MAGNA3-D: Percentage of the setpoint range Open loop: MPC, Multi-E: Percentage of the maximum performance TPED, MAGNA3-D: Percentage of the nominal pump frequency 4700: 47 % 8000: 80 %"
+    },
+    {
+      "name": "Control pump 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (controlled by the booster system)",
+        "1": "Forced start",
+        "2": "Forced stop"
+      },
+      "description": "ControlPump1. It forces the control of pump 1. The default is auto-control."
+    },
+    {
+      "name": "Control pump 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (controlled by the booster system)",
+        "1": "Forced start",
+        "2": "Forced stop"
+      },
+      "description": "ControlPump2. It forces the control of pump 2. The default is auto-control."
+    },
+    {
+      "name": "Control pump 3",
+      "group": "Control",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (controlled by the booster system)",
+        "1": "Forced start",
+        "2": "Forced stop"
+      },
+      "description": "ControlPump3. It forces the control of pump 3. The default is auto-control."
+    },
+    {
+      "name": "Control pump 4",
+      "group": "Control",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (controlled by the booster system)",
+        "1": "Forced start",
+        "2": "Forced stop"
+      },
+      "description": "ControlPump4. It forces the control of pump 4. The default is auto-control."
+    },
+    {
+      "name": "Control pump 5",
+      "group": "Control",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (controlled by the booster system)",
+        "1": "Forced start",
+        "2": "Forced stop"
+      },
+      "description": "ControlPump5. It forces the control of pump 5. The default is auto-control."
+    },
+    {
+      "name": "Control pump 6",
+      "group": "Control",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (controlled by the booster system)",
+        "1": "Forced start",
+        "2": "Forced stop"
+      },
+      "description": "ControlPump6. It forces the control of pump 6. The default is auto-control."
+    },
+    {
+      "name": "Set tank fill start limit",
+      "group": "Control",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SetTankFillStartLimit. It sets the start limit in tank-filling mode. The scale is 0.01 % of tank height. See register 00215 for the actual tank height. For tank-filling mode, see section Tank-filling applications."
+    },
+    {
+      "name": "Set tank fill stop limit",
+      "group": "Control",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SetTankFillStopLimit. It sets the stop limit in tank-filling mode. The scale is 0.01 % of tank height."
+    },
+    {
+      "name": "Set tank fill alarm high limit",
+      "group": "Control",
+      "area": "holding",
+      "address": 113,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SetTankFillAlarmHighLimit. It sets the alarm high-limit in tank-filling mode. The scale is 0.01 % of tank height."
+    },
+    {
+      "name": "Set tank fill warning low limit",
+      "group": "Control",
+      "area": "holding",
+      "address": 114,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SetTankFillWarningLowLimit. It sets the warning low-limit in tank-filling mode. The scale is 0.01 % of tank height."
+    },
+    {
+      "name": "Set prop control reduction",
+      "group": "Control",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SetPropControlReduction. It sets reduction in % in proportional-pressure mode. The scale is 0.01 %."
+    },
+    {
+      "name": "Set prop control flow max",
+      "group": "Control",
+      "area": "holding",
+      "address": 116,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "SetPropControlFlowMax. It sets manual flow max. in proportional-pressure mode. m3/h. The scale is 0.1"
+    },
+    {
+      "name": "Control pilotpump",
+      "group": "Control",
+      "area": "holding",
+      "address": 117,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (controlled by the booster system)",
+        "1": "Forced start",
+        "2": "Forced stop"
+      },
+      "description": "ControlPilotpump. It forces the control of the pilot pump. The default is auto-control."
+    },
+    {
+      "name": "Control backuppump",
+      "group": "Control",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Auto-control (controlled by the booster system)",
+        "1": "Forced start",
+        "2": "Forced stop"
+      },
+      "description": "ControlBackuppump. It forces the control of the backup pump. The default is auto-control."
+    },
+    {
+      "name": "Setpoint DDD sensor 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 119,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor1. Sets DDD remote sensor 1 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 120,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor2. Sets DDD remote sensor 2 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 3",
+      "group": "Control",
+      "area": "holding",
+      "address": 121,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor3. Sets DDD remote sensor 3 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 4",
+      "group": "Control",
+      "area": "holding",
+      "address": 122,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor4. Sets DDD remote sensor 4 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 5",
+      "group": "Control",
+      "area": "holding",
+      "address": 123,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor5. Sets DDD remote sensor 5 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 6",
+      "group": "Control",
+      "area": "holding",
+      "address": 124,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor6. Sets DDD remote sensor 6 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 7",
+      "group": "Control",
+      "area": "holding",
+      "address": 125,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor7. Sets DDD remote sensor 7 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 8",
+      "group": "Control",
+      "area": "holding",
+      "address": 126,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor8. Sets DDD remote sensor 8 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 9",
+      "group": "Control",
+      "area": "holding",
+      "address": 127,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor9. Sets DDD remote sensor 9 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Setpoint DDD sensor 10",
+      "group": "Control",
+      "area": "holding",
+      "address": 128,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "SetpointDDDSensor10. Sets DDD remote sensor 10 setpoint. The scale is 0.001 bar."
+    },
+    {
+      "name": "Control system feedback sensor",
+      "group": "Control",
+      "area": "holding",
+      "address": 129,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "3": "Flow sensor",
+        "6": "Pressure sensor"
+      },
+      "description": "ControlSystemFeedbackSensor"
+    },
+    {
+      "name": "Control remote sensor 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 130,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Control.RemoteSensor1. It writes the value of remote sensor 1 to MPC. Scale: 0.01 %"
+    },
+    {
+      "name": "Control remote sensor 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 131,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Control.RemoteSensor2. It writes the value of remote sensor 2 to MPC. Scale: 0.01 %"
+    },
+    {
+      "name": "Control remote sensor 3",
+      "group": "Control",
+      "area": "holding",
+      "address": 132,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Control.RemoteSensor3. It writes the value of remote sensor 3 to MPC. Scale: 0.01 %"
+    },
+    {
+      "name": "Control remote sensor 4",
+      "group": "Control",
+      "area": "holding",
+      "address": 133,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Control.RemoteSensor4. It writes the value of remote sensor 4 to MPC. Scale: 0.01 %"
+    },
+    {
+      "name": "Control remote sensor 5",
+      "group": "Control",
+      "area": "holding",
+      "address": 134,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Control.RemoteSensor5. It writes the value of remote sensor 5 to MPC. Scale: 0.01 %"
+    },
+    {
+      "name": "Control remote sensor 6",
+      "group": "Control",
+      "area": "holding",
+      "address": 135,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "Control.RemoteSensor6. It writes the value of remote sensor 6 to MPC. Scale: 0.01 %"
+    },
+    {
+      "name": "Set pump 1 speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 136,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SetPump1Speed. Manual speed setpoint of the pump, 0.01 %.",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Set pump 2 speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 137,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SetPump2Speed. Manual speed setpoint of the pump, 0.01 %.",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Set pump 3 speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 138,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SetPump3Speed. Manual speed setpoint of the pump, 0.01 %.",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Set pump 4 speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 139,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SetPump4Speed. Manual speed setpoint of the pump, 0.01 %.",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Set pump 5 speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 140,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "SetPump5Speed. Manual speed setpoint of the pump, 0.01 %."
+    },
+    {
+      "name": "Set pump 6 speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 141,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SetPump6Speed. Manual speed setpoint of the pump, 0.01 %.",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Set pilot pump speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 142,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SetPilotPumpSpeed. Manual speed setpoint of the pump, 0.01 %.",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Set backup pump speed",
+      "group": "Control",
+      "area": "holding",
+      "address": 143,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SetBackupPumpSpeed. Manual speed setpoint of the pump, 0.01 %.",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Set Kp",
+      "group": "Control",
+      "area": "holding",
+      "address": 144,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "description": "SetKp. It sets the system PI controller proportional gain. Scale: 0.1, ZERO=-10.0"
+    },
+    {
+      "name": "Set Ti",
+      "group": "Control",
+      "area": "holding",
+      "address": 145,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "SetTi. It sets the system PI controller integral action time. Scale: 0.1 s"
+    },
+    {
+      "name": "Bus sensor meas id",
+      "group": "Control",
+      "area": "holding",
+      "address": 146,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BusSensorMeasId. Sensor ID for the DDD block of fieldbus sensor measurement (1-10)"
+    },
+    {
+      "name": "Bus sensor meas seq id",
+      "group": "Control",
+      "area": "holding",
+      "address": 147,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BusSensorMeasSeqId. Sequence ID for the DDD block of fieldbus sensor measurement"
+    },
+    {
+      "name": "Bus sensor meas block size",
+      "group": "Control",
+      "area": "holding",
+      "address": 148,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BusSensorMeasBlockSize. Size of the DDD block of fieldbus sensor measurement (1-8)"
+    },
+    {
+      "name": "Bus sensor meas value 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 149,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "BusSensorMeasValue1. DDD fieldbus sensor measurement 1 Scaling 0.001 bar"
+    },
+    {
+      "name": "Bus sensor meas value 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 150,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "BusSensorMeasValue2. DDD fieldbus sensor measurement 2 Scaling 0.001 bar"
+    },
+    {
+      "name": "Bus sensor meas value 3",
+      "group": "Control",
+      "area": "holding",
+      "address": 151,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "BusSensorMeasValue3. DDD fieldbus sensor measurement 3 Scaling 0.001 bar"
+    },
+    {
+      "name": "Bus sensor meas value 4",
+      "group": "Control",
+      "area": "holding",
+      "address": 152,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "BusSensorMeasValue4. DDD fieldbus sensor measurement 4 Scaling 0.001 bar"
+    },
+    {
+      "name": "Bus sensor meas value 5",
+      "group": "Control",
+      "area": "holding",
+      "address": 153,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "BusSensorMeasValue5. DDD fieldbus sensor measurement 5 Scaling 0.001 bar"
+    },
+    {
+      "name": "Bus sensor meas value 6",
+      "group": "Control",
+      "area": "holding",
+      "address": 154,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "BusSensorMeasValue6. DDD fieldbus sensor measurement 6 Scaling 0.001 bar"
+    },
+    {
+      "name": "Bus sensor meas value 7",
+      "group": "Control",
+      "area": "holding",
+      "address": 155,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "BusSensorMeasValue7. DDD fieldbus sensor measurement 7 Scaling 0.001 bar"
+    },
+    {
+      "name": "Bus sensor meas value 8",
+      "group": "Control",
+      "area": "holding",
+      "address": 156,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "BusSensorMeasValue8. DDD fieldbus sensor measurement 8 Scaling 0.001 bar"
+    },
+    {
+      "name": "Copy to local",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "It copies remote settings to local settings. 1 = Enable, 0: Disable"
+    },
+    {
+      "name": "Reset acc counters ack",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "Acknowledgement of ResetAccCounters (volume and energy) This functionality is only used when AutoAcknowledgeEvents is disabled. 0 = No acknowledgement; 1 = Command acknowledged"
+    },
+    {
+      "name": "Reset alarm ack",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 3,
+      "access": "R",
+      "description": "It indicates if a ResetAlarm command was acknowledged by the device. This bit is set when the module or unit accepts a ResetAlarm command, and the programmer can clear the ResetAlarm bit. The CIM/SoftCIM automatically clears the ResetAlarmAck bit to 0 when the master device clears the ResetAlarm bit, and a new ResetAlarm command can be attempted by raising the ResetAlarm bit again. This functional"
+    },
+    {
+      "name": "Setpoint influence",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 4,
+      "access": "R",
+      "description": "Setpoint influence status 0 = No setpoint influence; 1 = Setpoint influence active"
+    },
+    {
+      "name": "At max power",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 5,
+      "access": "R",
+      "description": "Running at power limit 0 = Not at power limit; 1 = At power limit"
+    },
+    {
+      "name": "Rotation",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 6,
+      "access": "R",
+      "description": "It indicates if any pumps are rotating (running) or not. 0 = No rotation; 1 = Rotation"
+    },
+    {
+      "name": "Access mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 8,
+      "access": "R",
+      "description": "It indicates if the booster system is locally or remotely controlled. system) 0 = Local (a local control source with higher priority controls the; 1 = Remote (controlled by Modbus master)"
+    },
+    {
+      "name": "On off",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 9,
+      "access": "R",
+      "description": "It indicates if the booster system is on or off. \"Started\" does not necessarily indicate rotation, for instance, in case of low-flow stop. 0 = Off (stopped, the green LED on the booster system flashes); 1 = On (started, the green LED on the booster system is on)"
+    },
+    {
+      "name": "Alarm",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 10,
+      "access": "R",
+      "description": "It indicates if there is an alarm or not. 0 = No alarm; 1 = Alarm (red LED on the booster system is on)"
+    },
+    {
+      "name": "Warning",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 11,
+      "access": "R",
+      "description": "It indicates if there is a warning or not. The system continues running even if there is a warning. 0 = No warning; 1 = Warning (red LED on the booster system is on)"
+    },
+    {
+      "name": "At max speed",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 13,
+      "access": "R",
+      "description": "It indicates if the system is running at maximum speed. 0 = No; 1 = Yes"
+    },
+    {
+      "name": "At min speed",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "bool",
+      "bit": 15,
+      "access": "R",
+      "description": "It indicates if the system is running at minimum speed. 0 = No; 1 = Yes"
+    },
+    {
+      "name": "Process feedback",
+      "group": "Status",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "ProcessFeedback. It indicates the actual process feedback from the booster system. The scale is 0.01 %, so the valid value range is from 0 to 10000. This value can be compared with the setpoint value. Closed loop: MPC, GENIECON, Multi-E: percentage of closed-loop feedback sensor maximum value TPED, MAGNA3-D: percentage of the setpoint range Open loop: MPC, GENIECON, Multi-E: percentage of the maximum performance TPED, MAGNA3-D: percentage of the nominal pump frequency Common examples: 4700: 47 %"
+    },
+    {
+      "name": "Control mode (status)",
+      "group": "Status",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Constant speed",
+        "1": "Constant frequency",
+        "3": "Constant head",
+        "4": "Constant pressure",
+        "5": "Constant differential pressure",
+        "6": "Proportional pressure",
+        "7": "Constant flow",
+        "8": "Constant temperature",
+        "9": "Constant temp. difference",
+        "10": "Constant level",
+        "128": "AUTOADAPT (Automatic adaption for DDD)",
+        "129": "FLOWADAPT",
+        "130": "Closed-loop sensor"
+      },
+      "description": "ControlMode. Actual control mode Note that if MPC, GENIECON or DDD is set to be locally controlled, it is still possible to change ControlMode from Modbus if the RemoteAccessReq bit is set to \"1\"."
+    },
+    {
+      "name": "Operation mode (status)",
+      "group": "Status",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Auto-control (setpoint control according to selected control",
+        "4": "OpenLoopMin (running at minimum speed)",
+        "6": "OpenLoopMax (running at maximum speed)"
+      },
+      "description": "OperationMode. Actual operating mode mode)"
+    },
+    {
+      "name": "Alarm code",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "R",
+      "description": "AlarmCode. Grundfos-specific alarm code"
+    },
+    {
+      "name": "Warning code",
+      "group": "Status",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "access": "R",
+      "description": "WarningCode. Grundfos-specific alarm code"
+    },
+    {
+      "name": "Pumps present",
+      "group": "Status",
+      "area": "holding",
+      "address": 208,
+      "type": "uint16",
+      "access": "R",
+      "description": "PumpsPresent. Presence of pumps This value is bit-interpreted: Bit 0: Pump 1 Bit 1: Pump 2 Bit 2: Pump 3 Bit 3: Pump 4 Bit 4: Pump 5 Bit 5: Pump 6 Bit 6: Pilot pump Bit 7: Backup pump A bit value of \"1\" indicates that at least one pump is present."
+    },
+    {
+      "name": "Pumps running",
+      "group": "Status",
+      "area": "holding",
+      "address": 209,
+      "type": "uint16",
+      "access": "R",
+      "description": "PumpsRunning. Running status of pumps This value is bit-interpreted: Bit 0: Pump 1 Bit 1: Pump 2 Bit 2: Pump 3 Bit 3: Pump 4 Bit 4: Pump 5 Bit 5: Pump 6 Bit 6: Pilot pump Bit 7: Backup pump A bit value of \"1\" indicates that at least one pump is running."
+    },
+    {
+      "name": "Pumps alarm",
+      "group": "Status",
+      "area": "holding",
+      "address": 210,
+      "type": "uint16",
+      "access": "R",
+      "description": "PumpsAlarm. Alarm status of pumps This value is bit-interpreted: Bit 0: Pump 1 Bit 1: Pump 2 Bit 2: Pump 3 Bit 3: Pump 4 Bit 4: Pump 5 Bit 5: Pump 6 Bit 6: Pilot pump Bit 7: Backup pump A bit value of \"1\" indicates that at least one pump has an alarm."
+    },
+    {
+      "name": "Pumps comm fault",
+      "group": "Status",
+      "area": "holding",
+      "address": 211,
+      "type": "uint16",
+      "access": "R",
+      "description": "PumpsCommFault. Communication status of pumps This value is bit-interpreted: Bit 0: Pump 1 Bit 1: Pump 2 Bit 2: Pump 3 Bit 3: Pump 4 Bit 4: Pump 5 Bit 5: Pump 6 Bit 6: Pilot pump Bit 7: Backup pump A bit value of \"1\" indicates that there is no communication with at least one pump."
+    },
+    {
+      "name": "System active functions",
+      "group": "Status",
+      "area": "holding",
+      "address": 212,
+      "type": "uint16",
+      "access": "R",
+      "description": "SystemActiveFunctions. Active system functions Hydro MPC, GENIECON support all bits. Hydro Multi-B only supports bits 7 and 12. Bit 0: - Bit 1: Emergency Run function active Bit 2: Standby pumps active Bit 3: Pump test run active Bit 4: Alternative setpoint active Bit 5: Clock program active Bit 6: Remote VNC, Virtual Network Connection, active Bit 7: Remote bus active Bit 8: Remote service port active Bit 9: Pressure relief function active Bit 10: Soft pressure function active Bit 11: Low-flow "
+    },
+    {
+      "name": "Pumps auto mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 213,
+      "type": "uint16",
+      "access": "R",
+      "description": "PumpsAutoMode. Auto-control mode status of pumps This value is bit-interpreted: Bit 0: Pump 1 Bit 1: Pump 2 Bit 2: Pump 3 Bit 3: Pump 4 Bit 4: Pump 5 Bit 5: Pump 6 Bit 6: Pilot pump Bit 7: Backup pump A bit value of \"0\" indicates that at least one pump is manually operated (Forced to Start or Stop). A bit value of \"1\" indicates that at least one pump is in auto-control mode."
+    },
+    {
+      "name": "Application type",
+      "group": "Status",
+      "area": "holding",
+      "address": 214,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Pressure boosting",
+        "2": "Heating pumps on hot side",
+        "3": "Heating pumps on cold side",
+        "4": "AirCon pumps on hot side",
+        "5": "AirCon pumps on cold side",
+        "6": "MPC S2000 heating pumps on hot side",
+        "7": "MPC S2000 heating pumps on cold side",
+        "8": "MPC S2000 AirCon pumps on hot side",
+        "9": "MPC S2000 AirCon pumps on cold side",
+        "10": "Tank filling (level sensor)",
+        "11": "Tank filling (float switches)"
+      },
+      "description": "ApplicationType. System application type status You cannot change application type from the Modbus."
+    },
+    {
+      "name": "Tank fill tank height",
+      "group": "Status",
+      "area": "holding",
+      "address": 215,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "TankFillTankHeight. Actual tank height in tank-filling mode The scale is 0.01 % of the tank height."
+    },
+    {
+      "name": "Tank fill start limit",
+      "group": "Status",
+      "area": "holding",
+      "address": 216,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "TankFillStartLimit. Actual start limit in tank-filling mode The scale is 0.01 % of the tank height."
+    },
+    {
+      "name": "Tank fill stop limit",
+      "group": "Status",
+      "area": "holding",
+      "address": 217,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "TankFillStopLimit. Actual stop limit in tank-filling mode. The scale is 0.01 % of the tank height."
+    },
+    {
+      "name": "Tank fill alarm high limit",
+      "group": "Status",
+      "area": "holding",
+      "address": 218,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "TankFillAlarmHighLimit. Actual alarm high-limit in tank-filling mode The scale is 0.01 % of the tank height."
+    },
+    {
+      "name": "Tank fill warning low limit",
+      "group": "Status",
+      "area": "holding",
+      "address": 219,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "TankFillWarningLowLimit. Actual warning low-limit in tank-filling mode The scale is 0.01 % of the tank height."
+    },
+    {
+      "name": "Feedback sensor unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 220,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "bar",
+        "1": "mbar",
+        "2": "m",
+        "3": "kPa",
+        "4": "psi",
+        "5": "ft",
+        "6": "m3/h",
+        "8": "l/s",
+        "9": "gpm",
+        "10": "°C",
+        "11": "°F",
+        "12": "%",
+        "13": "K",
+        "14": "l/h",
+        "255": "-"
+      },
+      "description": "FeedBackSensorUnit. Unit of feedback sensor m3/s"
+    },
+    {
+      "name": "Feedback sensor min",
+      "group": "Status",
+      "area": "holding",
+      "address": 221,
+      "type": "uint16",
+      "access": "R",
+      "description": "FeedBackSensorMin. Minimum of feedback sensor"
+    },
+    {
+      "name": "Feedback sensor max",
+      "group": "Status",
+      "area": "holding",
+      "address": 222,
+      "type": "uint16",
+      "access": "R",
+      "description": "FeedBackSensorMax. Maximum of feedback sensor"
+    },
+    {
+      "name": "System feedback sensor",
+      "group": "Status",
+      "area": "holding",
+      "address": 223,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "3": "Flow sensor",
+        "6": "Pressure sensor"
+      },
+      "description": "SystemFeedbackSensor"
+    },
+    {
+      "name": "Analog in 1 unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 224,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn1Unit. Scaling of the matching analog input value (00376-00382), as an enumeration from the manual: 51 = 0.001 bar, 95 = 0.01 m3/h, 84 = 0.01 K, 110 = 0.01 °C, 83 = 0.01 m, 7 = 1 W, 107 = 0.01 %.",
+      "enum": {
+        "7": "1 W",
+        "51": "0.001 bar",
+        "83": "0.01 m",
+        "84": "0.01 K",
+        "95": "0.01 m³/h",
+        "107": "0.01 %",
+        "110": "0.01 °C"
+      }
+    },
+    {
+      "name": "Analog in 2 unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 225,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn2Unit. Scaling of the matching analog input value (00376-00382), as an enumeration from the manual: 51 = 0.001 bar, 95 = 0.01 m3/h, 84 = 0.01 K, 110 = 0.01 °C, 83 = 0.01 m, 7 = 1 W, 107 = 0.01 %.",
+      "enum": {
+        "7": "1 W",
+        "51": "0.001 bar",
+        "83": "0.01 m",
+        "84": "0.01 K",
+        "95": "0.01 m³/h",
+        "107": "0.01 %",
+        "110": "0.01 °C"
+      }
+    },
+    {
+      "name": "Analog in 3 unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 226,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn3Unit. Scaling of the matching analog input value (00376-00382), as an enumeration from the manual: 51 = 0.001 bar, 95 = 0.01 m3/h, 84 = 0.01 K, 110 = 0.01 °C, 83 = 0.01 m, 7 = 1 W, 107 = 0.01 %.",
+      "enum": {
+        "7": "1 W",
+        "51": "0.001 bar",
+        "83": "0.01 m",
+        "84": "0.01 K",
+        "95": "0.01 m³/h",
+        "107": "0.01 %",
+        "110": "0.01 °C"
+      }
+    },
+    {
+      "name": "Analog in 4 unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 227,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn4Unit. Scaling of the matching analog input value (00376-00382), as an enumeration from the manual: 51 = 0.001 bar, 95 = 0.01 m3/h, 84 = 0.01 K, 110 = 0.01 °C, 83 = 0.01 m, 7 = 1 W, 107 = 0.01 %.",
+      "enum": {
+        "7": "1 W",
+        "51": "0.001 bar",
+        "83": "0.01 m",
+        "84": "0.01 K",
+        "95": "0.01 m³/h",
+        "107": "0.01 %",
+        "110": "0.01 °C"
+      }
+    },
+    {
+      "name": "Analog in 5 unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 228,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn5Unit. Scaling of the matching analog input value (00376-00382), as an enumeration from the manual: 51 = 0.001 bar, 95 = 0.01 m3/h, 84 = 0.01 K, 110 = 0.01 °C, 83 = 0.01 m, 7 = 1 W, 107 = 0.01 %.",
+      "enum": {
+        "7": "1 W",
+        "51": "0.001 bar",
+        "83": "0.01 m",
+        "84": "0.01 K",
+        "95": "0.01 m³/h",
+        "107": "0.01 %",
+        "110": "0.01 °C"
+      }
+    },
+    {
+      "name": "Analog in 6 unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 229,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn6Unit. Scaling of the matching analog input value (00376-00382), as an enumeration from the manual: 51 = 0.001 bar, 95 = 0.01 m3/h, 84 = 0.01 K, 110 = 0.01 °C, 83 = 0.01 m, 7 = 1 W, 107 = 0.01 %.",
+      "enum": {
+        "7": "1 W",
+        "51": "0.001 bar",
+        "83": "0.01 m",
+        "84": "0.01 K",
+        "95": "0.01 m³/h",
+        "107": "0.01 %",
+        "110": "0.01 °C"
+      }
+    },
+    {
+      "name": "Analog in 7 unit",
+      "group": "Status",
+      "area": "holding",
+      "address": 230,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn7Unit. Scaling of the matching analog input value (00376-00382), as an enumeration from the manual: 51 = 0.001 bar, 95 = 0.01 m3/h, 84 = 0.01 K, 110 = 0.01 °C, 83 = 0.01 m, 7 = 1 W, 107 = 0.01 %.",
+      "enum": {
+        "7": "1 W",
+        "51": "0.001 bar",
+        "83": "0.01 m",
+        "84": "0.01 K",
+        "95": "0.01 m³/h",
+        "107": "0.01 %",
+        "110": "0.01 °C"
+      }
+    },
+    {
+      "name": "Kp",
+      "group": "Status",
+      "area": "holding",
+      "address": 231,
+      "type": "uint16",
+      "access": "R",
+      "description": "Kp"
+    },
+    {
+      "name": "Ti",
+      "group": "Status",
+      "area": "holding",
+      "address": 232,
+      "type": "uint16",
+      "access": "R",
+      "description": "Ti"
+    },
+    {
+      "name": "Head",
+      "group": "Data",
+      "area": "holding",
+      "address": 301,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "Head. Actual system head/pressure"
+    },
+    {
+      "name": "Volume flow",
+      "group": "Data",
+      "area": "holding",
+      "address": 302,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "VolumeFlow. Actual system flow"
+    },
+    {
+      "name": "Relative performance",
+      "group": "Data",
+      "area": "holding",
+      "address": 303,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "RelativePerformance. Performance relative to maximum performance"
+    },
+    {
+      "name": "Digital input",
+      "group": "Data",
+      "area": "holding",
+      "address": 306,
+      "type": "uint16",
+      "access": "R",
+      "description": "DigitalInput. Logical value of external digital input signals"
+    },
+    {
+      "name": "Digital output",
+      "group": "Data",
+      "area": "holding",
+      "address": 307,
+      "type": "uint16",
+      "access": "R",
+      "description": "DigitalOutput. Logical value of external digital output signals"
+    },
+    {
+      "name": "Actual setpoint",
+      "group": "Data",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "ActualSetpoint. Actual setpoint, according to control mode See register 00104 for scaling description."
+    },
+    {
+      "name": "Motor current",
+      "group": "Data",
+      "area": "holding",
+      "address": 309,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "MotorCurrent. Actual motor current"
+    },
+    {
+      "name": "Power",
+      "group": "Data",
+      "area": "holding",
+      "address": 312,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W",
+      "description": "PowerHI. Total power consumption of the system"
+    },
+    {
+      "name": "Inlet pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 315,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "offset": -1.0,
+      "description": "InletPressure. System inlet pressure, relative to atmospheric pressure It has an offset of -1.000 bar."
+    },
+    {
+      "name": "Remote pressure 1",
+      "group": "Data",
+      "area": "holding",
+      "address": 316,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "RemotePressure1. Measured pressure 1 at external sensor, relative to atmospheric pressure"
+    },
+    {
+      "name": "Storage tank level",
+      "group": "Data",
+      "area": "holding",
+      "address": 317,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "m",
+      "offset": -100.0,
+      "description": "StorageTankLevel. Storage tank level It has an offset of -100.00 metres."
+    },
+    {
+      "name": "Remote temp 1",
+      "group": "Data",
+      "area": "holding",
+      "address": 320,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "RemoteTemp1. Temperature 1 at external sensor"
+    },
+    {
+      "name": "Aux sensor input",
+      "group": "Data",
+      "area": "holding",
+      "address": 325,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "AuxSensorInput. Auxiliary sensor input"
+    },
+    {
+      "name": "Operation time",
+      "group": "Data",
+      "area": "holding",
+      "address": 327,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h",
+      "description": "OperationTimeHI. Total operating time of the system"
+    },
+    {
+      "name": "Total powered time",
+      "group": "Data",
+      "area": "holding",
+      "address": 329,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h",
+      "description": "TotalPoweredTimeHI. Total power-on time of the system"
+    },
+    {
+      "name": "Energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 332,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "EnergyHI. Total energy consumption of the system"
+    },
+    {
+      "name": "Ambient temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 337,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "AmbientTemp. Ambient temperature"
+    },
+    {
+      "name": "Inlet temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 338,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "InletTemp. Inlet water temperature"
+    },
+    {
+      "name": "Outlet temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 339,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "OutletTemp. Outlet water temperature"
+    },
+    {
+      "name": "Temp difference",
+      "group": "Data",
+      "area": "holding",
+      "address": 340,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "TempDifference. Differential temperature"
+    },
+    {
+      "name": "Outlet pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 341,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "OutletPressure. System outlet pressure"
+    },
+    {
+      "name": "Feed tank level",
+      "group": "Data",
+      "area": "holding",
+      "address": 342,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "m",
+      "offset": -100.0,
+      "description": "FeedTankLevel. Tank feed level It has an offset of -100.00 metres."
+    },
+    {
+      "name": "User setpoint",
+      "group": "Data",
+      "area": "holding",
+      "address": 343,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "UserSetpoint. Setpoint before modifications See register 00104 for scaling description"
+    },
+    {
+      "name": "Analogue influence",
+      "group": "Data",
+      "area": "holding",
+      "address": 344,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "AnalogueInfluence. Setpoint attenuator"
+    },
+    {
+      "name": "Number of power ons",
+      "group": "Data",
+      "area": "holding",
+      "address": 345,
+      "type": "uint16",
+      "access": "R",
+      "description": "NumberOfPowerOns. Number of times the booster system has been powered on"
+    },
+    {
+      "name": "Specific energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 346,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "Wh/m³",
+      "description": "SpecificEnergy. Specific energy"
+    },
+    {
+      "name": "Specific energy average",
+      "group": "Data",
+      "area": "holding",
+      "address": 347,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "Wh/m³",
+      "description": "SpecificEnergyAverage. Average specific energy"
+    },
+    {
+      "name": "Flow measurement 1",
+      "group": "Data",
+      "area": "holding",
+      "address": 348,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "FlowMeasurement 1. Flow measurement 1"
+    },
+    {
+      "name": "Flow measurement 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 349,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "FlowMeasurement 2. Flow measurement 2"
+    },
+    {
+      "name": "Flow measurement 3",
+      "group": "Data",
+      "area": "holding",
+      "address": 350,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "FlowMeasurement 3. Flow measurement 3"
+    },
+    {
+      "name": "Prop control reduction",
+      "group": "Data",
+      "area": "holding",
+      "address": 351,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "PropControlReduction. Proportional control reduction"
+    },
+    {
+      "name": "Prop control flow max",
+      "group": "Data",
+      "area": "holding",
+      "address": 352,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "PropControlFlowMax. Proportional control maximum flowpoint"
+    },
+    {
+      "name": "Remote pressure 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 353,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "RemotePressure2. Measured pressure 2 at external sensor (relative to atmospheric pressure)"
+    },
+    {
+      "name": "Remote temp 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 354,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "RemoteTemp2. Temperature 2 at external sensor"
+    },
+    {
+      "name": "Medium temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 355,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "K",
+      "description": "MediumTemp. Medium temperature"
+    },
+    {
+      "name": "Differential pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 356,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "DifferentialPressure. Differential pressure"
+    },
+    {
+      "name": "Differential inlet pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 357,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "DifferentialInletPressure. Differential inlet pressure"
+    },
+    {
+      "name": "Differential outlet pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 358,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "DifferentialOutletPressure. Differential outlet pressure"
+    },
+    {
+      "name": "Differential remote pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 359,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "DifferentialRemotePressure. Differential remote pressure"
+    },
+    {
+      "name": "Remote flow",
+      "group": "Data",
+      "area": "holding",
+      "address": 360,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "RemoteFlow. Flow measurement from remote sensor"
+    },
+    {
+      "name": "Latest night flow average",
+      "group": "Data",
+      "area": "holding",
+      "address": 361,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³/h",
+      "description": "LatestNightFlowAverage. Average night flow for the latest night"
+    },
+    {
+      "name": "Latest night press average",
+      "group": "Data",
+      "area": "holding",
+      "address": 362,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "bar",
+      "description": "LatestNightPressAverage. Average night pressure for the latest night"
+    },
+    {
+      "name": "Volume",
+      "group": "Data",
+      "area": "holding",
+      "address": 363,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "m³",
+      "description": "VolumeHI. Pumped volume"
+    },
+    {
+      "name": "Heating energy counter",
+      "group": "Data",
+      "area": "holding",
+      "address": 365,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "HeatingEnergyCounterHI. Life time accumulated heat energy External temperature sensor required"
+    },
+    {
+      "name": "Heat power",
+      "group": "Data",
+      "area": "holding",
+      "address": 367,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W",
+      "description": "HeatPowerHI. Current heat power External temperature sensor required"
+    },
+    {
+      "name": "Heat diff temp",
+      "group": "Data",
+      "area": "holding",
+      "address": 369,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "°C",
+      "description": "HeatDiffTemp. Forward/Return differential temperature External temperature sensor required"
+    },
+    {
+      "name": "Heat energy counter 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 370,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "description": "HeatEnergyCounter2HI. Accumulated heat energy direction 2 External temperature sensor required"
+    },
+    {
+      "name": "Volume 1",
+      "group": "Data",
+      "area": "holding",
+      "address": 372,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "m³",
+      "description": "Volume1HI. Pumped volume direction 1 External flow sensor required"
+    },
+    {
+      "name": "Volume 2",
+      "group": "Data",
+      "area": "holding",
+      "address": 374,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "m³",
+      "description": "Volume2HI. Pumped volume direction 2 External flow sensor required"
+    },
+    {
+      "name": "Analog in 1 value",
+      "group": "Data",
+      "area": "holding",
+      "address": 376,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn1Value"
+    },
+    {
+      "name": "Analog in 2 value",
+      "group": "Data",
+      "area": "holding",
+      "address": 377,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn2Value"
+    },
+    {
+      "name": "Analog in 3 value",
+      "group": "Data",
+      "area": "holding",
+      "address": 378,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn3Value. Scaled value of analogue inputs 1-7, AI1-AI7"
+    },
+    {
+      "name": "Analog in 4 value",
+      "group": "Data",
+      "area": "holding",
+      "address": 379,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn4Value. Use associated scaling factor from registers 00224-00230."
+    },
+    {
+      "name": "Analog in 5 value",
+      "group": "Data",
+      "area": "holding",
+      "address": 380,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn5Value"
+    },
+    {
+      "name": "Analog in 6 value",
+      "group": "Data",
+      "area": "holding",
+      "address": 381,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn6Value"
+    },
+    {
+      "name": "Analog in 7 value",
+      "group": "Data",
+      "area": "holding",
+      "address": 382,
+      "type": "uint16",
+      "access": "R",
+      "description": "AnalogIn7Value"
+    },
+    {
+      "name": "Pump 1: access mode",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 401,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = Local, controlled by buttons on the pump; 1 = Remote, controlled by the booster system. Not available on Hydro Multi-E model G."
+    },
+    {
+      "name": "Pump 1: on/off",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 401,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = Off; 1 = On"
+    },
+    {
+      "name": "Pump 1: alarm",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 401,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "0 = No alarm; 1 = Alarm"
+    },
+    {
+      "name": "Pump 1: alarm code",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 402,
+      "type": "uint16",
+      "access": "R",
+      "description": "Grundfos-specific alarm code"
+    },
+    {
+      "name": "Pump 1: operation time",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 403,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Pump 1: speed",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 405,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Pump 1: line current",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 406,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Average of the line currents"
+    },
+    {
+      "name": "Pump 1: power",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 407,
+      "type": "uint16",
+      "scale": 10,
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Pump 1: motor temperature",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 408,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "K",
+      "access": "R"
+    },
+    {
+      "name": "Pump 1: control source",
+      "group": "Pump 1 data",
+      "area": "holding",
+      "address": 409,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Buttons on the pump",
+        "2": "GENIbus (booster controller)",
+        "3": "GENIlink/GENIair (handheld controller)",
+        "4": "External control"
+      }
+    },
+    {
+      "name": "Pump 2: access mode",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 411,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = Local, controlled by buttons on the pump; 1 = Remote, controlled by the booster system. Not available on Hydro Multi-E model G."
+    },
+    {
+      "name": "Pump 2: on/off",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 411,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = Off; 1 = On"
+    },
+    {
+      "name": "Pump 2: alarm",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 411,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "0 = No alarm; 1 = Alarm"
+    },
+    {
+      "name": "Pump 2: alarm code",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 412,
+      "type": "uint16",
+      "access": "R",
+      "description": "Grundfos-specific alarm code"
+    },
+    {
+      "name": "Pump 2: operation time",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 413,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Pump 2: speed",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 415,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Pump 2: line current",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 416,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Average of the line currents"
+    },
+    {
+      "name": "Pump 2: power",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 417,
+      "type": "uint16",
+      "scale": 10,
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Pump 2: motor temperature",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 418,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "K",
+      "access": "R"
+    },
+    {
+      "name": "Pump 2: control source",
+      "group": "Pump 2 data",
+      "area": "holding",
+      "address": 419,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Buttons on the pump",
+        "2": "GENIbus (booster controller)",
+        "3": "GENIlink/GENIair (handheld controller)",
+        "4": "External control"
+      }
+    },
+    {
+      "name": "Pump 3: access mode",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 421,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = Local, controlled by buttons on the pump; 1 = Remote, controlled by the booster system. Not available on Hydro Multi-E model G."
+    },
+    {
+      "name": "Pump 3: on/off",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 421,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = Off; 1 = On"
+    },
+    {
+      "name": "Pump 3: alarm",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 421,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "0 = No alarm; 1 = Alarm"
+    },
+    {
+      "name": "Pump 3: alarm code",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 422,
+      "type": "uint16",
+      "access": "R",
+      "description": "Grundfos-specific alarm code"
+    },
+    {
+      "name": "Pump 3: operation time",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 423,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Pump 3: speed",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 425,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Pump 3: line current",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 426,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Average of the line currents"
+    },
+    {
+      "name": "Pump 3: power",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 427,
+      "type": "uint16",
+      "scale": 10,
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Pump 3: motor temperature",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 428,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "K",
+      "access": "R"
+    },
+    {
+      "name": "Pump 3: control source",
+      "group": "Pump 3 data",
+      "area": "holding",
+      "address": 429,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Buttons on the pump",
+        "2": "GENIbus (booster controller)",
+        "3": "GENIlink/GENIair (handheld controller)",
+        "4": "External control"
+      }
+    },
+    {
+      "name": "Pump 4: access mode",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 431,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = Local, controlled by buttons on the pump; 1 = Remote, controlled by the booster system. Not available on Hydro Multi-E model G."
+    },
+    {
+      "name": "Pump 4: on/off",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 431,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = Off; 1 = On"
+    },
+    {
+      "name": "Pump 4: alarm",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 431,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "0 = No alarm; 1 = Alarm"
+    },
+    {
+      "name": "Pump 4: alarm code",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 432,
+      "type": "uint16",
+      "access": "R",
+      "description": "Grundfos-specific alarm code"
+    },
+    {
+      "name": "Pump 4: operation time",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 433,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Pump 4: speed",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 435,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Pump 4: line current",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 436,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Average of the line currents"
+    },
+    {
+      "name": "Pump 4: power",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 437,
+      "type": "uint16",
+      "scale": 10,
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Pump 4: motor temperature",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 438,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "K",
+      "access": "R"
+    },
+    {
+      "name": "Pump 4: control source",
+      "group": "Pump 4 data",
+      "area": "holding",
+      "address": 439,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Buttons on the pump",
+        "2": "GENIbus (booster controller)",
+        "3": "GENIlink/GENIair (handheld controller)",
+        "4": "External control"
+      }
+    },
+    {
+      "name": "Pump 5: access mode",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 441,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = Local, controlled by buttons on the pump; 1 = Remote, controlled by the booster system. Not available on Hydro Multi-E model G."
+    },
+    {
+      "name": "Pump 5: on/off",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 441,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = Off; 1 = On"
+    },
+    {
+      "name": "Pump 5: alarm",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 441,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "0 = No alarm; 1 = Alarm"
+    },
+    {
+      "name": "Pump 5: alarm code",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 442,
+      "type": "uint16",
+      "access": "R",
+      "description": "Grundfos-specific alarm code"
+    },
+    {
+      "name": "Pump 5: operation time",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 443,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Pump 5: speed",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 445,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Pump 5: line current",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 446,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Average of the line currents"
+    },
+    {
+      "name": "Pump 5: power",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 447,
+      "type": "uint16",
+      "scale": 10,
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Pump 5: motor temperature",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 448,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "K",
+      "access": "R"
+    },
+    {
+      "name": "Pump 5: control source",
+      "group": "Pump 5 data",
+      "area": "holding",
+      "address": 449,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Buttons on the pump",
+        "2": "GENIbus (booster controller)",
+        "3": "GENIlink/GENIair (handheld controller)",
+        "4": "External control"
+      }
+    },
+    {
+      "name": "Pump 6: access mode",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 451,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = Local, controlled by buttons on the pump; 1 = Remote, controlled by the booster system. Not available on Hydro Multi-E model G."
+    },
+    {
+      "name": "Pump 6: on/off",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 451,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = Off; 1 = On"
+    },
+    {
+      "name": "Pump 6: alarm",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 451,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "0 = No alarm; 1 = Alarm"
+    },
+    {
+      "name": "Pump 6: alarm code",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 452,
+      "type": "uint16",
+      "access": "R",
+      "description": "Grundfos-specific alarm code"
+    },
+    {
+      "name": "Pump 6: operation time",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 453,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Pump 6: speed",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 455,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Pump 6: line current",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 456,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Average of the line currents"
+    },
+    {
+      "name": "Pump 6: power",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 457,
+      "type": "uint16",
+      "scale": 10,
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Pump 6: motor temperature",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 458,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "K",
+      "access": "R"
+    },
+    {
+      "name": "Pump 6: control source",
+      "group": "Pump 6 data",
+      "area": "holding",
+      "address": 459,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Buttons on the pump",
+        "2": "GENIbus (booster controller)",
+        "3": "GENIlink/GENIair (handheld controller)",
+        "4": "External control"
+      }
+    },
+    {
+      "name": "Pilot pump: access mode",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 461,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = Local, controlled by buttons on the pump; 1 = Remote, controlled by the booster system. Not available on Hydro Multi-E model G."
+    },
+    {
+      "name": "Pilot pump: on/off",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 461,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = Off; 1 = On"
+    },
+    {
+      "name": "Pilot pump: alarm",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 461,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "0 = No alarm; 1 = Alarm"
+    },
+    {
+      "name": "Pilot pump: alarm code",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 462,
+      "type": "uint16",
+      "access": "R",
+      "description": "Grundfos-specific alarm code"
+    },
+    {
+      "name": "Pilot pump: operation time",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 463,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Pilot pump: speed",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 465,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Pilot pump: line current",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 466,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Average of the line currents"
+    },
+    {
+      "name": "Pilot pump: power",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 467,
+      "type": "uint16",
+      "scale": 10,
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Pilot pump: motor temperature",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 468,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "K",
+      "access": "R"
+    },
+    {
+      "name": "Pilot pump: control source",
+      "group": "Pilot pump data",
+      "area": "holding",
+      "address": 469,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Buttons on the pump",
+        "2": "GENIbus (booster controller)",
+        "3": "GENIlink/GENIair (handheld controller)",
+        "4": "External control"
+      }
+    },
+    {
+      "name": "Backup pump: access mode",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 471,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "0 = Local, controlled by buttons on the pump; 1 = Remote, controlled by the booster system. Not available on Hydro Multi-E model G."
+    },
+    {
+      "name": "Backup pump: on/off",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 471,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "0 = Off; 1 = On"
+    },
+    {
+      "name": "Backup pump: alarm",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 471,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "0 = No alarm; 1 = Alarm"
+    },
+    {
+      "name": "Backup pump: alarm code",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 472,
+      "type": "uint16",
+      "access": "R",
+      "description": "Grundfos-specific alarm code"
+    },
+    {
+      "name": "Backup pump: operation time",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 473,
+      "type": "uint32",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Backup pump: speed",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 475,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Backup pump: line current",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 476,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R",
+      "description": "Average of the line currents"
+    },
+    {
+      "name": "Backup pump: power",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 477,
+      "type": "uint16",
+      "scale": 10,
+      "unit": "W",
+      "access": "R"
+    },
+    {
+      "name": "Backup pump: motor temperature",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 478,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "K",
+      "access": "R"
+    },
+    {
+      "name": "Backup pump: control source",
+      "group": "Backup pump data",
+      "area": "holding",
+      "address": 479,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Unknown",
+        "1": "Buttons on the pump",
+        "2": "GENIbus (booster controller)",
+        "3": "GENIlink/GENIair (handheld controller)",
+        "4": "External control"
+      }
+    },
+    {
+      "name": "Pump 1 energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 481,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "Pump1.Energy. Energy consumption of pump 1"
+    },
+    {
+      "name": "Pump 2 energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 482,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "Pump2.Energy. Energy consumption of pump 2"
+    },
+    {
+      "name": "Pump 3 energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 483,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "Pump3.Energy. Energy consumption of pump 3"
+    },
+    {
+      "name": "Pump 4 energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 484,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "Pump4.Energy. Energy consumption of pump 4"
+    },
+    {
+      "name": "Pump 5 energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 485,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "Pump5.Energy. Energy consumption of pump 5"
+    },
+    {
+      "name": "Pump 6 energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 486,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "Pump6.Energy. Energy consumption of pump 6"
+    },
+    {
+      "name": "Pilot pump energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 487,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "PilotPump.Energy. Energy consumption of pilot pump"
+    },
+    {
+      "name": "Backup pump energy",
+      "group": "Data",
+      "area": "holding",
+      "address": 488,
+      "type": "uint16",
+      "access": "R",
+      "unit": "kWh",
+      "description": "BackupPump.Energy. Energy consumption of backup pump"
+    },
+    {
+      "name": "Simulation event code",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 703,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Simulation.EventCode. Code for the event (Alarm) to simulate See section Alarm simulation register block."
+    },
+    {
+      "name": "Simulation device type",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 704,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "CU 351/352 controller",
+        "1": "-",
+        "2": "Pump",
+        "3": "IO 351 pump module",
+        "4": "Primary sensor",
+        "5": "Redundant sensor",
+        "6": "Secondary sensor",
+        "7": "IO 351 I/O module",
+        "8": "System",
+        "9": "Analog input",
+        "10": "Pilot pump",
+        "11": "Limit exceeded function",
+        "12": "Backup pump"
+      },
+      "description": "Simulation.DeviceType. Code for the device"
+    },
+    {
+      "name": "Simulation device number",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 705,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Simulation.DeviceNumber. Code for the device number, according to device type For example, if Simulation.DeviceType is 2, then this register determines the pump number [1-8]."
+    },
+    {
+      "name": "Simulation action type",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 706,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Stop",
+        "1": "Stop with delay",
+        "2": "Minimum",
+        "3": "User-defined",
+        "4": "Maximum",
+        "5": "Set pumps to local",
+        "6": "No action, warning only",
+        "7": "Emergency run"
+      },
+      "description": "Simulation.ActionType. Type of action for simulated event"
+    },
+    {
+      "name": "Simulation reset type",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 707,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Manual",
+        "1": "Automatic"
+      },
+      "description": "Simulation.ResetType"
+    },
+    {
+      "name": "Simulation activate",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 708,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Deactivate simulation",
+        "1": "Activate simulation"
+      },
+      "description": "Simulation.Activate. It is used for activating alarm simulation with alarms and warnings."
+    },
+    {
+      "name": "Simulation active",
+      "group": "Alarm simulation",
+      "area": "holding",
+      "address": 709,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Alarm simulation not active",
+        "1": "Alarm simulation active"
+      },
+      "description": "Simulation.Active. Status of alarm simulation"
+    }
+  ]
+}
