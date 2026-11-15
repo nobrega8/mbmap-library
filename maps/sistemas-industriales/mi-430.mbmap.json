@@ -1,0 +1,764 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Sistemas Industriales",
+  "model": "MI-430",
+  "models": [
+    "MI-430",
+    "EM-530",
+    "MI-530"
+  ],
+  "vendor_website": "sistemasindustriales.com",
+  "description": "Electromagnetic flow meter: totalizer, instantaneous flow, pipe and output configuration, 4-20 mA and pulse outputs, clock, firmware and communication counters",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "Sistemas Industriales, Manual de usuario MI-430; EM-530, Rev. 30-04-2016",
+  "sources": [
+    {
+      "title": "Manual de usuario, MI-430; EM-530",
+      "version": "Rev. 30-04-2016",
+      "url": "https://sistemasindustriales.com/documentos/MI430-MI530-Q7.pdf",
+      "note": "Section 3.4, Modbus registers",
+      "accessed": "2026-11-15",
+      "sha256": "d32ea97386334977856c2a154cf68f3c7ac44de61976b104c8c4088b1e295bf5"
+    }
+  ],
+  "notes": [
+    "Addresses are those of the manual's tables (no 3xxxx or 4xxxx prefix), counted from 0. The manual lists the same address for registers, input registers and coils: they are different areas.",
+    "32-bit values take two registers, the low word first, then the high word, and both must be written one after the other. The manual's name for each is the first register (_LO).",
+    "Each register has a minimum access level: 'USUARIO' and 'ADMIN' registers need a session, opened by writing the system password in the active password register (600).",
+    "The alarm statistics registers (45000 onwards, 27 blocks of 8) and the HART protocol (6.0 over 4-20 mA) are not in this map.",
+    "The Modbus speed is 9600 or 19200 bps (configurable); 9600 8N1 is assumed here.",
+    "Written from the manufacturer's manual (Spanish); not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Zero adjust start",
+      "group": "Commands",
+      "area": "coil",
+      "address": 100,
+      "type": "bool",
+      "access": "RW"
+    },
+    {
+      "name": "Totalizer reset",
+      "group": "Commands",
+      "area": "coil",
+      "address": 200,
+      "type": "bool",
+      "access": "RW"
+    },
+    {
+      "name": "Totalizer disable",
+      "group": "Commands",
+      "area": "coil",
+      "address": 201,
+      "type": "bool",
+      "access": "RW",
+      "description": "Enables or disables the totalizer"
+    },
+    {
+      "name": "Restore factory defaults",
+      "group": "Commands",
+      "area": "coil",
+      "address": 300,
+      "type": "bool",
+      "access": "RW"
+    },
+    {
+      "name": "Simulate EXIT key",
+      "group": "Commands",
+      "area": "coil",
+      "address": 400,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Simulate ENTER key",
+      "group": "Commands",
+      "area": "coil",
+      "address": 401,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Simulate UP key",
+      "group": "Commands",
+      "area": "coil",
+      "address": 402,
+      "type": "bool",
+      "access": "W"
+    },
+    {
+      "name": "Simulate DOWN key",
+      "group": "Commands",
+      "area": "coil",
+      "address": 403,
+      "type": "bool",
+      "access": "W",
+      "description": "The manual calls it LEFT in the identifier, DOWN in the description"
+    },
+    {
+      "name": "Totalizer",
+      "group": "Measurement",
+      "area": "holding",
+      "address": 100,
+      "type": "int32",
+      "access": "RW",
+      "description": "Two's complement; writing needs a session",
+      "unit": "l",
+      "word_order": "little"
+    },
+    {
+      "name": "Flow display unit",
+      "group": "Display",
+      "area": "holding",
+      "address": 200,
+      "type": "uint32",
+      "access": "R",
+      "description": "Factory 4 (l/h)",
+      "enum": {
+        "1": "m3/d",
+        "2": "m3/h",
+        "3": "l/d",
+        "4": "l/h",
+        "5": "l/s",
+        "6": "bbl/d",
+        "7": "bbl/h",
+        "8": "bbl/m"
+      },
+      "word_order": "little"
+    },
+    {
+      "name": "Totalizer display unit",
+      "group": "Display",
+      "area": "holding",
+      "address": 202,
+      "type": "uint32",
+      "access": "R",
+      "description": "Factory 10 (l)",
+      "enum": {
+        "9": "m3",
+        "10": "l",
+        "11": "bbl"
+      },
+      "word_order": "little"
+    },
+    {
+      "name": "External transducer 1 unit",
+      "group": "Display",
+      "area": "holding",
+      "address": 204,
+      "type": "uint32",
+      "access": "R",
+      "description": "Factory 15",
+      "enum": {
+        "12": "BAR",
+        "13": "PSI",
+        "14": "°C",
+        "15": "RAW"
+      },
+      "word_order": "little"
+    },
+    {
+      "name": "External transducer 2 unit",
+      "group": "Display",
+      "area": "holding",
+      "address": 206,
+      "type": "uint32",
+      "access": "R",
+      "description": "Factory 15",
+      "enum": {
+        "12": "BAR",
+        "13": "PSI",
+        "14": "°C",
+        "15": "RAW"
+      },
+      "word_order": "little"
+    },
+    {
+      "name": "Display contrast",
+      "group": "Display",
+      "area": "holding",
+      "address": 220,
+      "type": "uint32",
+      "access": "R",
+      "description": "100 to 255, factory 200",
+      "word_order": "little"
+    },
+    {
+      "name": "Display flags",
+      "group": "Display",
+      "area": "holding",
+      "address": 222,
+      "type": "uint32",
+      "access": "R",
+      "description": "Bit 0: backlight on/off; bit 1: display inverted/normal. Factory 2",
+      "word_order": "little"
+    },
+    {
+      "name": "Interface language",
+      "group": "Display",
+      "area": "holding",
+      "address": 230,
+      "type": "uint32",
+      "access": "R",
+      "enum": {
+        "0": "Spanish",
+        "1": "English"
+      },
+      "word_order": "little"
+    },
+    {
+      "name": "Pipe diameter",
+      "group": "Measurement setup",
+      "area": "holding",
+      "address": 300,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Factory 5 (2\"); may differ on special-diameter or extended-range units",
+      "enum": {
+        "0": "Universal",
+        "1": "1/2\"",
+        "2": "3/4\"",
+        "3": "1\"",
+        "4": "1 1/2\"",
+        "5": "2\"",
+        "6": "2 1/2\"",
+        "7": "3\"",
+        "8": "4\"",
+        "9": "6\"",
+        "10": "8\"",
+        "11": "10\"",
+        "12": "12\"",
+        "13": "14\"",
+        "14": "18\"",
+        "15": "20\"",
+        "16": "24\""
+      },
+      "word_order": "little"
+    },
+    {
+      "name": "Low flow cutoff",
+      "group": "Measurement setup",
+      "area": "holding",
+      "address": 306,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Not implemented",
+      "word_order": "little"
+    },
+    {
+      "name": "Positive flow direction",
+      "group": "Measurement setup",
+      "area": "holding",
+      "address": 310,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Flow direction counted as positive for the totalizer; not implemented",
+      "word_order": "little"
+    },
+    {
+      "name": "4-20 mA output: flow at 4 mA",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 320,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Factory 0",
+      "unit": "l",
+      "word_order": "little"
+    },
+    {
+      "name": "4-20 mA output: flow at 20 mA",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 322,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Factory 10000",
+      "unit": "l",
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output function",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 350,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Frequency and Alarm are not implemented",
+      "enum": {
+        "0": "Disabled",
+        "1": "Pulses",
+        "2": "Frequency",
+        "3": "Alarm"
+      },
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output: litres per pulse",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 360,
+      "type": "uint32",
+      "access": "RW",
+      "description": "1 to 10000, factory 1000",
+      "unit": "l",
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output: pulse width",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 362,
+      "type": "uint32",
+      "access": "RW",
+      "description": "0 to 3",
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output: frequency at minimum flow",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 370,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Not implemented; factory 100",
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output: frequency at maximum flow",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 372,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Not implemented; factory 1000",
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output: minimum flow",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 374,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Not implemented; factory 0",
+      "unit": "l/h",
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output: maximum flow",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 376,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Not implemented; factory 10000",
+      "unit": "l/h",
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output: alarm minimum flow",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 380,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Not implemented",
+      "word_order": "little"
+    },
+    {
+      "name": "Digital output: alarm maximum flow",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 382,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Not implemented",
+      "word_order": "little"
+    },
+    {
+      "name": "Volumetric calibration constant (K)",
+      "group": "Measurement setup",
+      "area": "holding",
+      "address": 500,
+      "type": "uint32",
+      "access": "RW",
+      "description": "100 to 1000000, factory 30000",
+      "word_order": "little"
+    },
+    {
+      "name": "Active password",
+      "group": "Security",
+      "area": "holding",
+      "address": 600,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Write the system password here to open a session (closes after 60 s idle); 8 digits, each 1 to 4",
+      "word_order": "little"
+    },
+    {
+      "name": "Security type",
+      "group": "Security",
+      "area": "holding",
+      "address": 602,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Not implemented",
+      "word_order": "little"
+    },
+    {
+      "name": "System password",
+      "group": "Security",
+      "area": "holding",
+      "address": 604,
+      "type": "uint32",
+      "access": "RW",
+      "description": "8 digits, each 1 to 4; readable and writable by the ADMIN level",
+      "word_order": "little"
+    },
+    {
+      "name": "Event date and time",
+      "group": "Status",
+      "area": "holding",
+      "address": 804,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Packed: sec + 60 min + 3600 hour + 86400 (day-1) + 2678400 (month-1) + 32140800 (year-2000)",
+      "word_order": "little"
+    },
+    {
+      "name": "Clock day",
+      "group": "Clock",
+      "area": "holding",
+      "address": 900,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 31"
+    },
+    {
+      "name": "Clock month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 901,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 12"
+    },
+    {
+      "name": "Clock year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 902,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 99"
+    },
+    {
+      "name": "Clock hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 903,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 23"
+    },
+    {
+      "name": "Clock minute",
+      "group": "Clock",
+      "area": "holding",
+      "address": 904,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 59"
+    },
+    {
+      "name": "Clock second",
+      "group": "Clock",
+      "area": "holding",
+      "address": 905,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 59"
+    },
+    {
+      "name": "Electronics serial number",
+      "group": "Identification",
+      "area": "input",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of the electronics (ESN)"
+    },
+    {
+      "name": "Instantaneous flow",
+      "group": "Measurement",
+      "area": "input",
+      "address": 110,
+      "type": "int32",
+      "access": "R",
+      "unit": "l/h",
+      "word_order": "little"
+    },
+    {
+      "name": "External transducer 1 value",
+      "group": "Measurement",
+      "area": "input",
+      "address": 120,
+      "type": "int32",
+      "access": "R",
+      "description": "MI-530 model",
+      "unit": "raw",
+      "word_order": "little"
+    },
+    {
+      "name": "External transducer 2 value",
+      "group": "Measurement",
+      "area": "input",
+      "address": 122,
+      "type": "int32",
+      "access": "R",
+      "description": "MI-530 model",
+      "unit": "raw",
+      "word_order": "little"
+    },
+    {
+      "name": "Flow range minimum",
+      "group": "Measurement setup",
+      "area": "input",
+      "address": 302,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little"
+    },
+    {
+      "name": "Flow range maximum",
+      "group": "Measurement setup",
+      "area": "input",
+      "address": 304,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little"
+    },
+    {
+      "name": "Firmware version major",
+      "group": "Identification",
+      "area": "input",
+      "address": 700,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version minor",
+      "group": "Identification",
+      "area": "input",
+      "address": 701,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version build",
+      "group": "Identification",
+      "area": "input",
+      "address": 702,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware revision",
+      "group": "Identification",
+      "area": "input",
+      "address": 703,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little"
+    },
+    {
+      "name": "Firmware integrity check",
+      "group": "Identification",
+      "area": "input",
+      "address": 705,
+      "type": "uint16",
+      "access": "R",
+      "description": "CRC"
+    },
+    {
+      "name": "System status",
+      "group": "Status",
+      "area": "input",
+      "address": 800,
+      "type": "uint32",
+      "access": "R",
+      "description": "Sum of flags: 1 measurement event, 2 configuration fault, 4 hardware fault, 8 non-volatile memory fault, 16 low supply voltage",
+      "word_order": "little"
+    },
+    {
+      "name": "Power-up time",
+      "group": "Status",
+      "area": "input",
+      "address": 802,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s",
+      "word_order": "little"
+    },
+    {
+      "name": "Modbus: parity errors",
+      "group": "Communications",
+      "area": "input",
+      "address": 2000,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: framing errors",
+      "group": "Communications",
+      "area": "input",
+      "address": 2002,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: crc errors",
+      "group": "Communications",
+      "area": "input",
+      "address": 2004,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: frames received",
+      "group": "Communications",
+      "area": "input",
+      "address": 2006,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: interframe space",
+      "group": "Communications",
+      "area": "input",
+      "address": 2008,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: response timeout",
+      "group": "Communications",
+      "area": "input",
+      "address": 2010,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: response delay",
+      "group": "Communications",
+      "area": "input",
+      "address": 2012,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: baud rate",
+      "group": "Communications",
+      "area": "input",
+      "address": 2014,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: device address",
+      "group": "Communications",
+      "area": "input",
+      "address": 2016,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Modbus: stop bits",
+      "group": "Communications",
+      "area": "input",
+      "address": 2018,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Group 0: electronics serial number",
+      "group": "Group 0",
+      "area": "input",
+      "address": 10000,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Group 0: totalizer",
+      "group": "Group 0",
+      "area": "input",
+      "address": 10001,
+      "type": "int32",
+      "access": "R",
+      "unit": "l",
+      "word_order": "little"
+    },
+    {
+      "name": "Group 0: instantaneous flow",
+      "group": "Group 0",
+      "area": "input",
+      "address": 10003,
+      "type": "int32",
+      "access": "R",
+      "unit": "l/h",
+      "word_order": "little"
+    },
+    {
+      "name": "Group 0: external transducer 1 value",
+      "group": "Group 0",
+      "area": "input",
+      "address": 10005,
+      "type": "int32",
+      "access": "R",
+      "unit": "raw",
+      "word_order": "little"
+    },
+    {
+      "name": "Group 0: external transducer 2 value",
+      "group": "Group 0",
+      "area": "input",
+      "address": 10007,
+      "type": "int32",
+      "access": "R",
+      "unit": "raw",
+      "word_order": "little"
+    },
+    {
+      "name": "Group 0: system status",
+      "group": "Group 0",
+      "area": "input",
+      "address": 10009,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little"
+    },
+    {
+      "name": "Group 0: calibration constant (K)",
+      "group": "Group 0",
+      "area": "input",
+      "address": 10011,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "little"
+    }
+  ]
+}
