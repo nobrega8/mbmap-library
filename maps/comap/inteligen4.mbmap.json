@@ -1,0 +1,973 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "ComAp",
+  "model": "InteliGen4",
+  "models": [
+    "InteliGen4 200"
+  ],
+  "vendor_website": "comap-control.com",
+  "description": "Gen-set controller: the fixed Modbus registers (clock, command interface for engine start/stop, fault and horn reset and breakers, alarm list, remote control registers). Measured values and setpoints are mapped per configuration.",
+  "revision": 1,
+  "source": "ComAp, InteliGen4 200 Global Guide, SW version 2.2.0, chapter 6 (Modbus)",
+  "firmware": "SW version 2.2.0 (the version the guide applies to)",
+  "sources": [
+    {
+      "title": "InteliGen4 200 Global Guide",
+      "version": "SW version 2.2.0",
+      "url": "https://www.comap-control.com/productfile/4aa6341a-0ba7-4064-8404-3d048728c9bd",
+      "note": "chapter 6, Modbus: address space, data types, reserved registers, commands",
+      "accessed": "2026-11-15",
+      "sha256": "d2302e507333dc98a55909673a96e7ad2c1af8771d331591081daa8463c6ca2e"
+    }
+  ],
+  "notes": [
+    "Modbus RTU and Modbus/TCP. Addresses are register addresses, from 0 (the guide's 44208 is register 4207).",
+    "Binary objects (0-999), values (1000-2999) and setpoints (3000-3999) are mapped by the controller configuration: export the table of Modbus registers from InteliConfig for a given controller. Only the reserved registers, which have the same meaning in every controller, are in this map.",
+    "32-bit values are two registers, most significant byte first. Do not use setpoints for regulation; write the remote control registers instead.",
+    "Written from the manufacturer's guide; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "RTC time",
+      "group": "Reserved registers",
+      "area": "holding",
+      "address": 4200,
+      "type": "uint32",
+      "access": "RW",
+      "description": "BCD: high register = hh (high byte) and mm (low byte), low register = ss (high byte), low byte 0."
+    },
+    {
+      "name": "RTC date",
+      "group": "Reserved registers",
+      "area": "holding",
+      "address": 4202,
+      "type": "uint32",
+      "access": "RW",
+      "description": "BCD: high register = dd (high byte) and mm (low byte), low register = yy (high byte), low byte 0."
+    },
+    {
+      "name": "Language index",
+      "group": "Reserved registers",
+      "area": "holding",
+      "address": 4204,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Language of text data given over Modbus (for example alarm list messages)."
+    },
+    {
+      "name": "Last application error",
+      "group": "Reserved registers",
+      "area": "holding",
+      "address": 4205,
+      "type": "uint32",
+      "access": "R",
+      "description": "Read after the device answers with exception code 04; gives the reason."
+    },
+    {
+      "name": "Command argument / return value",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4207,
+      "type": "uint32",
+      "access": "RW",
+      "enum": {
+        "0x01FE0000": "Engine start (code 1)",
+        "0x02FD0000": "Engine stop (code 1)",
+        "0x08F70000": "Fault reset (code 1)",
+        "0x04FB0000": "Horn reset (code 1)",
+        "0x11EE0000": "GCB toggle (code 2)",
+        "0x11EF0000": "GCB on (code 2)",
+        "0x11F00000": "GCB off (code 2)",
+        "0x12ED0000": "MCB toggle (code 2)",
+        "0x12EE0000": "MCB on (code 2)",
+        "0x12EF0000": "MCB off (code 2)",
+        "0x00000001": "Error: invalid argument",
+        "0x00000002": "Error: command refused"
+      },
+      "description": "Write the argument with function 16, then the command code to 4209 with function 6, then read the return value here. A command that ran returns the value listed in the guide (engine start returns 0x000001FF, GCB on 0x000011F0); 1 and 2 are errors."
+    },
+    {
+      "name": "Command code",
+      "group": "Commands",
+      "area": "holding",
+      "address": 4209,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "1": "Engine and alarm commands",
+        "2": "Breaker commands"
+      }
+    },
+    {
+      "name": "Password",
+      "group": "Reserved registers",
+      "area": "holding",
+      "address": 4211,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Communication status",
+      "group": "Reserved registers",
+      "area": "holding",
+      "address": 4212,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Number of items in the alarm list",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4214,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Alarm 1: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4216,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 1: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4216,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 1: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4216,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 1: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4217,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 2: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4243,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 2: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4243,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 2: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4243,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 2: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4244,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 3: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4270,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 3: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4270,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 3: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4270,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 3: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4271,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 4: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4297,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 4: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4297,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 4: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4297,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 4: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4298,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 5: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4324,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 5: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4324,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 5: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4324,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 5: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4325,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 6: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4351,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 6: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4351,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 6: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4351,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 6: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4352,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 7: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4378,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 7: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4378,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 7: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4378,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 7: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4379,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 8: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4405,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 8: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4405,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 8: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4405,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 8: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4406,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 9: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4432,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 9: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4432,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 9: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4432,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 9: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4433,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 10: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4459,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 10: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4459,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 10: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4459,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 10: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4460,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 11: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4486,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 11: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4486,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 11: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4486,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 11: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4487,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 12: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4513,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 12: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4513,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 12: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4513,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 12: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4514,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 13: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4540,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 13: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4540,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 13: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4540,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 13: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4541,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 14: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4567,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 14: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4567,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 14: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4567,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 14: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4568,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 15: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4594,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 15: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4594,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 15: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4594,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 15: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4595,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "Alarm 16: level",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4621,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "enum": {
+        "1": "Level 1 (yellow)",
+        "2": "Level 2 (red)",
+        "3": "Sensor fail"
+      }
+    },
+    {
+      "name": "Alarm 16: active",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4621,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm 16: confirmed",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4621,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm 16: text",
+      "group": "Alarm list",
+      "area": "holding",
+      "address": 4622,
+      "type": "string",
+      "access": "R",
+      "length": 25,
+      "description": "UTF-8 alarm text."
+    },
+    {
+      "name": "RemoteControl2B 1",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5000,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControl2B 2",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5001,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5200,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Binary remote control 1-16, one bit each; also writable one at a time at 5210-5225."
+    },
+    {
+      "name": "RemoteControlBin_1",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5210,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_2",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5211,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_3",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5212,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_4",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5213,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_5",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5214,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_6",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5215,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_7",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5216,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_8",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5217,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_9",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5218,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_10",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5219,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_11",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5220,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_12",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5221,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_13",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5222,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_14",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5223,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_15",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5224,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "RemoteControlBin_16",
+      "group": "Remote control",
+      "area": "holding",
+      "address": 5225,
+      "type": "uint16",
+      "access": "RW"
+    }
+  ]
+}

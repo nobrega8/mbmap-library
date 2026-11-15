@@ -1,0 +1,6319 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Woodward",
+  "model": "easYgen-3000XT",
+  "models": [
+    "easYgen-3100XT-P1",
+    "easYgen-3200XT-P1",
+    "easYgen-3200XT-P1-LT"
+  ],
+  "vendor_website": "woodward.com",
+  "description": "Genset control: data protocol 5010 (basic visualization) over Modbus: generator, busbar and mains values, engine values, analog inputs and outputs, control bits, relay outputs and latched alarm bits",
+  "revision": 1,
+  "source": "Woodward, easYgen-3000XT Series manual B37574 revision U (release 2.17-0), appendix 9.2.4 Protocol 5010",
+  "firmware": "release 2.17-0 (the version the manual applies to)",
+  "sources": [
+    {
+      "title": "easYgen-3000XT Series Manual Genset Control",
+      "version": "B37574 Revision U, release 2.17-0",
+      "url": "https://www.woodward.com/products/wp-content/uploads/sites/3/2025/04/B37574_U.pdf",
+      "note": "appendix 9.2.4, Protocol 5010 (Basic Visualization); chapter 7.6 Modbus Protocol",
+      "accessed": "2026-11-15",
+      "sha256": "5a6d6826643d21d1830864d9e5924792d614b28bcc8fd291b73db82f8a11bec2"
+    }
+  ],
+  "notes": [
+    "Modbus RTU (RS-485) and Modbus TCP. Data protocol 5010 is the default visualization protocol (parameter 3184 Modbus protocol number = 5010).",
+    "Addresses are bus addresses: the manual's Modicon address 450001 is sent as 50000. Read with function 03, in blocks of up to 128 registers.",
+    "Power, voltage and current values use the exponent registers 50001-50003 (value x 10^exponent).",
+    "Registers and bits that the manual marks for the easYgen-3500XT only are left out; internal registers are left out.",
+    "Configuration parameters are read and written one at a time at Modicon address 40000 + (parameter ID + 1), or 400000 + (ID + 1) for IDs from 10000, and are not in this map.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Protocol ID",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 50000,
+      "type": "int16",
+      "access": "R",
+      "description": "Always 5010"
+    },
+    {
+      "name": "Power exponent",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 50001,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling Power (16 bits) Exponent 10* W (5;4;3;2)"
+    },
+    {
+      "name": "Voltage exponent",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 50002,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling Volts (16 bits) Exponent 10* V (2;1;0;-1)"
+    },
+    {
+      "name": "Current exponent",
+      "group": "Scaling",
+      "area": "holding",
+      "address": 50003,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling Amps (16 bits) Exponent 10* A (0;-1) "
+    },
+    {
+      "name": "Generator frequency",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50009,
+      "type": "int16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01,
+      "description": "Index 144."
+    },
+    {
+      "name": "Total generator power",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50010,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Power exponent",
+      "description": "Index 246."
+    },
+    {
+      "name": "Total generator reactive power",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50011,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Power exponent",
+      "description": "Index 247."
+    },
+    {
+      "name": "Generator power factor",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50012,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Index 160."
+    },
+    {
+      "name": "Generator voltage L1-L2",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50013,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 248."
+    },
+    {
+      "name": "Generator voltage L2-L3",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50014,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 249."
+    },
+    {
+      "name": "Generator voltage L3-L1",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50015,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 250."
+    },
+    {
+      "name": "Generator voltage L1-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50016,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 251."
+    },
+    {
+      "name": "Generator voltage L2-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50017,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 252."
+    },
+    {
+      "name": "Generator voltage L3-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50018,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 253."
+    },
+    {
+      "name": "Generator current 1",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50019,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Current exponent",
+      "description": "Index 255."
+    },
+    {
+      "name": "Generator current 2",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50020,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Current exponent",
+      "description": "Index 256."
+    },
+    {
+      "name": "Generator current 3",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50021,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Current exponent",
+      "description": "Index 257."
+    },
+    {
+      "name": "Busbar 1: Frequency",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50022,
+      "type": "int16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01,
+      "description": "Index 209."
+    },
+    {
+      "name": "Busbar 1: Voltage L1-L2",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50023,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 254."
+    },
+    {
+      "name": "Setpoint frequency",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50028,
+      "type": "int16",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Index 5541."
+    },
+    {
+      "name": "Setpoint power factor (cosphi)",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50029,
+      "type": "int16",
+      "access": "R",
+      "description": "Index 5641."
+    },
+    {
+      "name": "Mains frequency",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50030,
+      "type": "int16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01,
+      "description": "Index 147."
+    },
+    {
+      "name": "Total mains power",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50031,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "scale_factor": "Power exponent",
+      "description": "Index 258."
+    },
+    {
+      "name": "Total mains reactive power",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50032,
+      "type": "int16",
+      "access": "R",
+      "unit": "var",
+      "scale_factor": "Power exponent",
+      "description": "Index 259."
+    },
+    {
+      "name": "Mains power factor",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50033,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Index 208."
+    },
+    {
+      "name": "Mains voltage L1-L2",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50034,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 260."
+    },
+    {
+      "name": "Mains voltage L2-L3",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50035,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 261."
+    },
+    {
+      "name": "Mains voltage L3-L1",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50036,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 262."
+    },
+    {
+      "name": "Mains voltage L1-N",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50037,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 263."
+    },
+    {
+      "name": "Mains voltage L2-N",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50038,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 264."
+    },
+    {
+      "name": "Mains voltage L3-N",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50039,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "Voltage exponent",
+      "description": "Index 265."
+    },
+    {
+      "name": "Mains current L1",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50040,
+      "type": "int16",
+      "access": "R",
+      "unit": "A",
+      "scale_factor": "Current exponent",
+      "description": "Index 266."
+    },
+    {
+      "name": "Nominal real power in system",
+      "group": "AC System values",
+      "area": "holding",
+      "address": 50045,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01,
+      "description": "Index 239."
+    },
+    {
+      "name": "Real power in system",
+      "group": "AC System values",
+      "area": "holding",
+      "address": 50046,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01,
+      "description": "Index 240."
+    },
+    {
+      "name": "Reserve real power in system",
+      "group": "AC System values",
+      "area": "holding",
+      "address": 50047,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.01,
+      "description": "Index 241."
+    },
+    {
+      "name": "Engine Pickup speed",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50051,
+      "type": "int16",
+      "access": "R",
+      "unit": "rpm",
+      "description": "Index 10100."
+    },
+    {
+      "name": "Battery voltage",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50052,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 10110."
+    },
+    {
+      "name": "AI Auxiliary excitation D+",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50053,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 10159."
+    },
+    {
+      "name": "Engine, number of startrequests",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50054,
+      "type": "int16",
+      "access": "R",
+      "description": "Index 2540."
+    },
+    {
+      "name": "Hours until next maintenance",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50055,
+      "type": "int16",
+      "access": "R",
+      "unit": "h",
+      "description": "Index 2558."
+    },
+    {
+      "name": "Analog input 1",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50056,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10111."
+    },
+    {
+      "name": "Analog input 2",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50057,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10112."
+    },
+    {
+      "name": "Analog input 3",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50058,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10115."
+    },
+    {
+      "name": "Analog input 11",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50066,
+      "type": "int16",
+      "access": "R",
+      "description": "Index 10157."
+    },
+    {
+      "name": "Analog input 12",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50067,
+      "type": "int16",
+      "access": "R",
+      "description": "Index 10158."
+    },
+    {
+      "name": "Analog output 1",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50068,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Scaling as configured for this input or output. Index 10310."
+    },
+    {
+      "name": "Analog output 2",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50069,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Scaling as configured for this input or output. Index 10311."
+    },
+    {
+      "name": "External Analog input 1",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50074,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10170."
+    },
+    {
+      "name": "External Analog input 2",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50075,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10171."
+    },
+    {
+      "name": "External Analog input 3",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50076,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10172."
+    },
+    {
+      "name": "External Analog input 4",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50077,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10173."
+    },
+    {
+      "name": "External Analog input 5",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50078,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10174."
+    },
+    {
+      "name": "External Analog input 6",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50079,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10175."
+    },
+    {
+      "name": "External Analog input 7",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50080,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10176."
+    },
+    {
+      "name": "External Analog input 8",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50081,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10177."
+    },
+    {
+      "name": "External Analog input 9",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50082,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10178."
+    },
+    {
+      "name": "External Analog input 10",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50083,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10179."
+    },
+    {
+      "name": "External Analog input 11",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50084,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10180."
+    },
+    {
+      "name": "External Analog input 12",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50085,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10181."
+    },
+    {
+      "name": "External Analog input 13",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50086,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10182."
+    },
+    {
+      "name": "External Analog input 14",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50087,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10183."
+    },
+    {
+      "name": "External Analog input 15",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50088,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10184."
+    },
+    {
+      "name": "External Analog input 16",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50089,
+      "type": "int16",
+      "access": "R",
+      "description": "Scaling as configured for this input or output. Index 10185."
+    },
+    {
+      "name": "External Analog Output 1",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50090,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Scaling as configured for this input or output. Index 10245."
+    },
+    {
+      "name": "External Analog Output 2",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50091,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Scaling as configured for this input or output. Index 10255."
+    },
+    {
+      "name": "External Analog Output 3",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50092,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Scaling as configured for this input or output. Index 10265."
+    },
+    {
+      "name": "External Analog Output 4",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50093,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Scaling as configured for this input or output. Index 10275."
+    },
+    {
+      "name": "Days until next maintenance",
+      "group": "DC Analogue Values (Engine Values)",
+      "area": "holding",
+      "address": 50094,
+      "type": "int16",
+      "access": "R",
+      "unit": "d",
+      "description": "Index 2556."
+    },
+    {
+      "name": "Control mode",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50099,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "Control mode value",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50099,
+      "type": "uint16",
+      "bit": 0,
+      "access": "R",
+      "bits": 4,
+      "enum": {
+        "1": "AUTO",
+        "2": "STOP",
+        "4": "MANUAL",
+        "8": "TEST"
+      }
+    },
+    {
+      "name": "Status message. This is an index number",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50100,
+      "type": "int16",
+      "access": "R",
+      "description": "Refer to manual chapter Status messages for more information. Index 10202."
+    },
+    {
+      "name": "ControlBits1",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4153); the bits follow."
+    },
+    {
+      "name": "Idle mode OR Ramp to rated active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "04.15 Idle run is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "04.12 Start without closing GCB",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "04.64 Key activation",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "A manual START has been requested",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "A manual STOP has been requested",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "04.10 Cooldown is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "03.01 Auxiliary Services is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "03.07 Engine monitoring delay expired",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "03.08 Breaker delay timer has expired",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "03.25 Engine shall run",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "04.27 Critical mode is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "03.06 Engine release is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "03.30 Auxiliary services prerun is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "03.31 Auxiliary services postrun is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "04.61 Lamp test request",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50102,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "ControlBits2",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4154); the bits follow."
+    },
+    {
+      "name": "03.02 Starter / Crank is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "03.28 Operating Magnet / Gasrelay is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "03.04 Preglow or Ignition is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "04.11 Mains settling",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "04.09 Emergency mode is currently active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "03.40 Remote Shutdown (ID503, Bit9)",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "03.33 Free PID Controller 3: Lower Command",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "03.32 Free PID Controller 3: Raise Command",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "03.35 Free PID Controller 2: Lower Command",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "03.34 Free PID Controller 2: Raise Command",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "03.27 Stop solenoid is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "The genset runs mains parallel",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "03.37 Free PID Controller 1: Lower Command",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "03.36 Free PID Controller 1: Raise Command",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Increment Engine Start Counter",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50103,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "ControlBits3",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4155); the bits follow."
+    },
+    {
+      "name": "03.20 3-Pos. Controller Freq./Power raise",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "03.21 3-Pos. Controller Freq./Power lower",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "03.22 3-Pos. Controller Volt./ReactPow raise",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "03.23 3-Pos. Controller Volt./ReactPow lower",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "04.06 GCB is closed",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "04.07 MCB is closed",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "05.16 Derating active (J1939 or freely)",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "04.18 Synchronisation GCB procedure is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "04.19 Opening GCB relay is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "04.20 Close command GCB is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "04.21 Synchronisation MCB procedure is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "04.22 Open command MCB is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "04.23 Close command MCB is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "04.28 Unloading generator is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "04.29 Unloading mains is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "04.30 Power limited prerun",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50104,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "ControlBits4",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4156); the bits follow."
+    },
+    {
+      "name": "Dead busbar closure requ. for GCB,MCB or GGB",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "4.62 Active power load share is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "4.63 Reactive power load share is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Generator with a closed GCB is requested",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "LDSS: The Engine shall start",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "LDSS: The Engine shall stop",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "LDSS: The Engine shall stop, if possible",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "LDSS: Minimum Running Time is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "04.43 The LDSS function is active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "04.60 Critical mode postrun",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "AUTOMATIC Run: Switch to Operating Mode STOP",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50105,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "ControlBits5",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4150); the bits follow."
+    },
+    {
+      "name": "04.13 Remote Start request",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "04.14 Remote acknowledge",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "05.17 Uprating active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "86.25 LM Frequency Droop active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "86.26 LM Voltage Droop active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Synchronization mode Check active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Synchronization mode Permissive active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Synchronization mode Run active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "86.85 LM Enable MCB",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "86.41 LDSS IOP Reserve power 2 ready",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "86.42 LDSS MOP Reserve power 2 ready",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "02.39 Mains decoubling enabled",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "04.70 Opening GCB active",
+      "group": "Control and Status",
+      "area": "holding",
+      "address": 50106,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Relay Outputs 1",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10107); the bits follow."
+    },
+    {
+      "name": "13.01 Relay-Output 1 (Self-test-relay)",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "13.02 Relay-Output 2",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "13.03 Relay-Output 3",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "13.04 Relay-Output 4",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "13.05 Relay-Output 5",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "13.06 Relay-Output 6",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "13.07 Relay-Output 7",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "13.08 Relay-Output 8",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "13.09 Relay-Output 9",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "13.10 Relay-Output 10",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "13.11 Relay-Output 11",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "13.12 Relay-Output 12",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50108,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Relay Outputs 2",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50109,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10109); the bits follow."
+    },
+    {
+      "name": "Relay Outputs 3",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 8005); the bits follow."
+    },
+    {
+      "name": "98.16 LM External DO 16",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "98.15 LM External DO 15",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "98.14 LM External DO 14",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "98.13 LM External DO 13",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "98.12 LM External DO 12",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "98.11 LM External DO 11",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "98.10 LM External DO 10",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "98.09 LM External DO 9",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "98.08 LM External DO 8",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "98.07 LM External DO 7",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "98.06 LM External DO 6",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "98.05 LM External DO 5",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "98.04 LM External DO 4",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "98.03 LM External DO 3",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "98.02 LM External DO 2",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "98.01 LM External DO 1",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50110,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Relay Outputs 4",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 8009); the bits follow."
+    },
+    {
+      "name": "98.32 LM External DO 32",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "98.31 LM External DO 31",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "98.30 LM External DO 30",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "98.29 LM External DO 29",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "98.28 LM External DO 28",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "98.27 LM External DO 27",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "98.26 LM External DO 26",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "98.25 LM External DO 25",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "98.24 LM External DO 24",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "98.23 LM External DO 23",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "98.22 LM External DO 22",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "98.21 LM External DO 21",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "98.20 LM External DO 20",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "98.19 LM External DO 19",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "98.18 LM External DO 18",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "98.17 LM External DO 17",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50111,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "ControlBits6",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50112,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4157); the bits follow."
+    },
+    {
+      "name": "02.38 Gen excitation limit active",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50112,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "03.39 Neutral interlocking - Closed NC",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50112,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "05.17 Uprating active (50112)",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50112,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "03.38 Inhibit cranking",
+      "group": "Discrete Outputs",
+      "area": "holding",
+      "address": 50112,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarm General",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50114,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10131); the bits follow."
+    },
+    {
+      "name": "01.11 New Alarm triggered",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50114,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "01.06 Alarm class F latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50114,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "01.05 Alarm class E latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50114,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "01.04 Alarm class D latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50114,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "01.03 Alarm class C latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50114,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "01.02 Alarm class B latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50114,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "01.01 Alarm class A latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50114,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms 2 latched (unacknowledged)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10149); the bits follow."
+    },
+    {
+      "name": "08.30 Timeout Synchronisation GCB latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "08.31 Timeout Synchronisation MCB latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "05.11 Charge fail (D+ functionality) latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Operating range failure 12 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "08.45 CPU overload R1 trip latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "08.47 MCB failure 50BF",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "08.46 GCB failure 50BF",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "05.22 ECU Protect alarm",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "05.23 ECU Emission alarm",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "08.19 CANopen error at CAN Interface 2",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "08.16 Parameter Alignment LDSS",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "08.17 Missing members",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "08.48 MCB plausibility",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "05.13 ECU red lamp alarm latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "05.14 ECU yellow (amber) lamp alarm latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50115,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms 2 active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50116,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4169); the bits follow."
+    },
+    {
+      "name": "Alarms 3 latched (unacknowledged)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50117,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10190); the bits follow."
+    },
+    {
+      "name": "08.27 Missing easYgen",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50117,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "05.18 Cylinder temperature level 1",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50117,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "05.19 Cylinder temperature level 2",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50117,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "05.20 Cylinder temperature wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50117,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "6.35 Pole slip",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50117,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "08.43 Syst.update easYgen",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50117,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "06.32 Gen.AC Wiring",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50117,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Alarms 3 active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50118,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4193); the bits follow."
+    },
+    {
+      "name": "Alarms 1 latched (unacknowledged)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10133); the bits follow."
+    },
+    {
+      "name": "05.01 Engine Over speed 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "05.02 Engine Over speed 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "05.03 Engine under speed 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "05.04 Engine under speed 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "05.05 Unintended stop detected latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "05.07 Speed detection alarm latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "05.06 Shutdown malfunction detected latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "08.05 GCB fail to close latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "08.06 GCB fail to open latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "08.07 MCB fail to close latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "08.08 MCB fail to open latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "08.10 General CAN-J1939 fault latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "05.08 Start fail detected latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "05.09 Maintenance days exceeded latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "05.10 Maintenance hours exceeded latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "08.18 CANopen error at CAN Interface 1",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50120,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms 1 active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50121,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4167); the bits follow."
+    },
+    {
+      "name": "Alarms AI 1 latched (unacknowledged)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50122,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10136); the bits follow."
+    },
+    {
+      "name": "05.11 Failure Charging Alternator (D+)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50122,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "08.02 Battery over voltage 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50122,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "08.04 Battery under voltage 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50122,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "08.01 Battery over voltage 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50122,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "08.03 Battery under voltage 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50122,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Analog Inputs 1 active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50123,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4171); the bits follow."
+    },
+    {
+      "name": "Alarms Gen latched (unacknowledged)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10134); the bits follow."
+    },
+    {
+      "name": "06.01 Generator over frequency 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "06.02 Generator over frequency 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "06.03 Generator under frequency 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "06.04 Generator under frequency 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "06.05 Generator over voltage 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "06.06 Generator over voltage 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "06.07 Generator under voltage 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "06.08 Generator under voltage 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "06.09 Generator over current 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "06.10 Generator over current 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "06.11 Generator over current 3 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "06.12 Reverse / reduced power 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "06.13 Reverse / reduced power 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "06.14 Generator overload IOP 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "06.15 Generator overload IOP 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50126,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Generator active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50127,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4161); the bits follow."
+    },
+    {
+      "name": "Alarms Gen 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10138); the bits follow."
+    },
+    {
+      "name": "(unacknowledged) 06.16 Generator unbalanced load 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "06.17 Generator unbalanced load 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "06.18 Generator voltage asymmetry latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "06.19 Ground fault 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "06.20 Ground fault 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "06.21 Gen. Phase Rotation mismatch Latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "06.29 Gen. active power mismatch Latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "06.30 Generator unloading mismatch Latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "06.22 Inverse time over current Latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "06.31 Operating Range failed latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "06.23 Generator overload MOP 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "06.24 Generator overload MOP 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "06.25 Gen.Power Factor lagging 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "06.26 Gen.Power Factor lagging 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "06.27 Gen.Power Factor leading 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "06.28 Gen.Power Factor leading 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50128,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Generator 1 active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50129,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4163); the bits follow."
+    },
+    {
+      "name": "Alarms Mains latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10135); the bits follow."
+    },
+    {
+      "name": "(unacknowledged) 07.06 Mains over frequency 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "07.07 Mains over frequency 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "07.08 Mains under frequency 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "07.09 Mains under frequency 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "07.10 Mains over voltage 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "07.11 Mains over voltage 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "07.12 Mains under voltage 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "07.13 Mains under voltage 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "07.14 Mains Phase shift latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "07.25 Mains decoupling latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "07.32 Mains AC Wiring",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "07.05 Mains Phase rotation mismatch latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50132,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Mains active",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4188); the bits follow."
+    },
+    {
+      "name": "Mains over frequency 1",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Mains over frequency 2",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Mains under frequency 1",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Mains under frequency 2",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Mains over voltage 1",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Mains over voltage 2",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "Mains under voltage 1",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "Mains under voltage 2",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Mains Phase shift",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Mains decoupling",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Mains AC Wiring",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Mains Phase rotation mismatch",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50133,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Mains 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10278); the bits follow."
+    },
+    {
+      "name": "(unacknowledged) 07.21 Mains import power 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "07.22 Mains import power 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "07.23 Mains export power 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "07.24 Mains export power 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "07.17 Mains PF lagging 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "07.18 Mains PF lagging 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "07.19 Mains PF leading 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "07.20 Mains PF leading 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "07.15 Mains df/dt latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "07.16 Mains active power mismatch latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "07.28 Mains Time-dep. Voltage 1 (FRT) latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "07.33 Mains Time-dep. Voltage 3 (FRT) latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "07.27 Mains slow voltage increase (10 min)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "07.31 Mains Time-dep. Voltage 2 (FRT) latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "07.29 Mains QV Monitoring step 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "07.30 Mains QV Monitoring step 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50134,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Mains 1 active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50135,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4187); the bits follow."
+    },
+    {
+      "name": "Alarms DI 1 latched (unacknowledged)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10132); the bits follow."
+    },
+    {
+      "name": "(Not valid if alarm class is Control and 8854 AL-class control in protocol\") is configured to No.) 09.01 Discrete input 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "09.02 Discrete input 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "09.03 Discrete input 3 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "09.04 Discrete input 4 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "09.05 Discrete input 5 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "09.06 Discrete input 6 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "09.07 Discrete input 7 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "09.08 Discrete input 8 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "09.09 Discrete input 9 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "09.10 Discrete input 10 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "09.11 Discrete input 11 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "09.12 Discrete input 12 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50138,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Digital Inputs 1 active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50139,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4181); the bits follow."
+    },
+    {
+      "name": "Alarms Ext. DI 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 16377); the bits follow."
+    },
+    {
+      "name": "(unacknowledged) (Not valid if alarm class is Control and 8854 AL-class control in protocol\") is configured to No.) 12.16 External discrete input 16 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "12.15 External discrete input 15 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "12.14 External discrete input 14 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "12.13 External discrete input 13 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "12.12 External discrete input 12 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "12.11 External discrete input 11 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "12.10 External discrete input 10 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "12.09 External discrete input 9 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "12.08 External discrete input 8 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "12.07 External discrete input 7 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "12.06 External discrete input 6 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "12.05 External discrete input 5 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "12.04 External discrete input 4 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "12.03 External discrete input 3 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "12.02 External discrete input 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "12.01 External discrete input 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50140,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms External Digital Inputs active",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50141,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4185); the bits follow."
+    },
+    {
+      "name": "Alarm Ext. DI 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10284); the bits follow."
+    },
+    {
+      "name": "(unacknowledged) (Not valid if alarm class is Control and 8854 AL-class control in protocol\") is configured to No.) 12.32 External discrete input 32 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "12.31 External discrete input 31 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "12.30 External discrete input 30 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "12.29 External discrete input 29 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "12.28 External discrete input 28 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "12.27 External discrete input 27 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "12.26 External discrete input 26 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "12.25 External discrete input 25 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "12.24 External discrete input 24 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "12.23 External discrete input 23 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "12.22 External discrete input 22 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "12.21 External discrete input 21 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "12.20 External discrete input 20 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "12.19 External discrete input 19 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "12.18 External discrete input 18 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "12.17 External discrete input 17 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50142,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarm External Digital Inputs 1 active",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50143,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4195); the bits follow."
+    },
+    {
+      "name": "Alarms DI 2 latched (unacknowledged)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50144,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10283); the bits follow."
+    },
+    {
+      "name": "Alarms Digital Inputs 2 active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50145,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4183); the bits follow."
+    },
+    {
+      "name": "Alarms Flex.Thresholds 1-16 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10279); the bits follow."
+    },
+    {
+      "name": "(Not valid if alarm class is Control and 8854 AL-class control in protocol\") is configured to No.) 15.16 Flexible limit 16 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "15.15 Flexible limit 15 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "15.14 Flexible limit 14 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "15.13 Flexible limit 13 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "15.12 Flexible limit 12 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "15.11 Flexible limit 11 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "15.10 Flexible limit 10 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "15.09 Flexible limit 9 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "15.08 Flexible limit 8 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "15.07 Flexible limit 7 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "15.06 Flexible limit 6 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "15.05 Flexible limit 5 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "15.04 Flexible limit 4 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "15.03 Flexible limit 3 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "15.02 Flexible limit 2 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "15.01 Flexible limit 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50150,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Flexible thresholds 1-16 active",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50151,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4175); the bits follow."
+    },
+    {
+      "name": "Alarms Flex.Thresholds 17-32 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10280); the bits follow."
+    },
+    {
+      "name": "(Not valid if alarm class is Control and 8854 AL-class control in protocol\") is configured to No.) 15.32 Flexible limit 32 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "15.31 Flexible limit 31 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "15.30 Flexible limit 30 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "15.29 Flexible limit 29 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "15.28 Flexible limit 28 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "15.27 Flexible limit 27 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "15.26 Flexible limit 26 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "15.25 Flexible limit 25 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "15.24 Flexible limit 24 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "15.23 Flexible limit 23 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "15.22 Flexible limit 22 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "15.21 Flexible limit 21 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "15.20 Flexible limit 20 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "15.19 Flexible limit 19 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "15.18 Flexible limit 18 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "15.17 Flexible limit 17 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50152,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Flexible thresholds 17-32 active",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50153,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4177); the bits follow."
+    },
+    {
+      "name": "Alarms Flex.Thresholds 33-40 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10281); the bits follow."
+    },
+    {
+      "name": "(Not valid if alarm class is Control and 8854 AL-class control in protocol\") is configured to No.) Internal",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "15.40 Flexible limit 40 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "15.39 Flexible limit 39 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "15.38 Flexible limit 38 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "15.37 Flexible limit 37 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "15.36 Flexible limit 36 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "15.35 Flexible limit 35 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "15.34 Flexible limit 34 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "15.33 Flexible limit 33 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50154,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Flexible thresholds 33-40 active",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50155,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4179); the bits follow."
+    },
+    {
+      "name": "Alarms AI Wire Break latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50159,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10137); the bits follow."
+    },
+    {
+      "name": "10.01 Analog input 1 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50159,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "10.02 Analog input 2 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50159,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "10.03 Analog input 3 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50159,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Alarms Analog Inputs Wire Break active",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50160,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4173); the bits follow."
+    },
+    {
+      "name": "Alarms Ext.AI Wire Break latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10285); the bits follow."
+    },
+    {
+      "name": "25.01 Ext. analog input 1 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "25.02 Ext. analog input 2 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "25.03 Ext. analog input 3 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "25.04 Ext. analog input 4 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "25.05 Ext. analog input 5 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "25.06 Ext. analog input 6 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "25.07 Ext. analog input 7 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "25.08 Ext. analog input 8 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "25.09 Ext. analog input 9 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "25.10 Ext. analog input 10 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 9,
+      "access": "R"
+    },
+    {
+      "name": "25.11 Ext. analog input 11 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "25.12 Ext. analog input 12 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "25.13 Ext. analog input 13 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "25.14 Ext. analog input 14 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "25.15 Ext. analog input 15 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "25.16 Ext. analog input 16 wire break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50161,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "Alarms External Analog Inputs Wire Break",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50162,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 4196); the bits follow."
+    },
+    {
+      "name": "Other Alarms 1 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 10286); the bits follow."
+    },
+    {
+      "name": "Free alarm 4",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Free alarm 3",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Free alarm 2",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Free alarm 1",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 10,
+      "access": "R"
+    },
+    {
+      "name": "17.09 Neutral interl. reply mismatch latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "17.08 Decoupling GCB-MCB latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "17.07 Measurement difference 4105 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "17.06 Parameter alignment 4105 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "17.05 Missing member 4105 latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "08.22 Busbar v/f not ok latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "17.02 Reactive load share mismatch latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "17.01 Active load share mismatch latched",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50165,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarms GAP active (reserved)",
+      "group": "Alarm Management",
+      "area": "holding",
+      "address": 50166,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 5197); the bits follow."
+    },
+    {
+      "name": "SPN of 1. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50171,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15400."
+    },
+    {
+      "name": "Bit list None",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50172,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "SPN of 2. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50173,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15403."
+    },
+    {
+      "name": "Bit list None (50174)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50174,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "SPN of 3. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50175,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15406."
+    },
+    {
+      "name": "Bit list None (50176)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50176,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "SPN of 4. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50177,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15409."
+    },
+    {
+      "name": "Bit list None (50178)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50178,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "SPN of 5. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50179,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15412."
+    },
+    {
+      "name": "Bit list None (50180)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50180,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "SPN of 6. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50181,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15415."
+    },
+    {
+      "name": "Bit list None (50182)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50182,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "SPN of 7. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50183,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15419."
+    },
+    {
+      "name": "Bit list 15420",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50184,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 15420); the bits follow."
+    },
+    {
+      "name": "SPN of 8. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50185,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15422."
+    },
+    {
+      "name": "Bit list 15423",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50186,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 15423); the bits follow."
+    },
+    {
+      "name": "SPN of 9. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50187,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15425."
+    },
+    {
+      "name": "Bit list None (50188)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50188,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "SPN of 10. entry",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50189,
+      "type": "int16",
+      "access": "R",
+      "description": "19 bits of SPN Index 15428."
+    },
+    {
+      "name": "Bit list None (50190)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50190,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list; the bits follow."
+    },
+    {
+      "name": "J1939 Lamp Status DM1",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50191,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 15395); the bits follow."
+    },
+    {
+      "name": "J1939 Lamp Status DM2",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50192,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 15445); the bits follow."
+    },
+    {
+      "name": "J1939 MTU ADEC ECU Failure Codes",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50193,
+      "type": "int16",
+      "access": "R",
+      "description": "Index 15109."
+    },
+    {
+      "name": "J1939 EMR Engine Stop Information",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50195,
+      "type": "uint16",
+      "access": "R",
+      "description": "(refer to DEUTZ-specific J1939-Message) \"Missing\" Value=\"65535\" \"Error\" Value=\"65279\" \"Type 9\" Value=\"9\" \"Type 8\" Value=\"8\" \"Type 7\" Value=\"7\" \"Type 6\" Value=\"6\" \"Type 5\" Value=\"5\" \"Type 4\" Value=\"4\" \"Type 3\" Value=\"3\" \"Type 2\" Value=\"2\" \"Type 1\" Value=\"1\" \"Type 0\" Value=\"0\" Index 15304."
+    },
+    {
+      "name": "J1939 DLN2-Message Scania S6",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50197,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit list (index 15305); the bits follow."
+    },
+    {
+      "name": "Engine Speed (SPN 190)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50201,
+      "type": "int16",
+      "access": "R",
+      "unit": "rpm",
+      "description": "Index 15308."
+    },
+    {
+      "name": "Engine Coolant Temperature (SPN 110)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50202,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15202."
+    },
+    {
+      "name": "Fuel temperature (SPN 174)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50203,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15203."
+    },
+    {
+      "name": "Engine Oil Temperature 1 (SPN 175)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50204,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15309."
+    },
+    {
+      "name": "Engine Oil Pressure (SPN 100)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50205,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15205."
+    },
+    {
+      "name": "Fuel Rate (SPN 183)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50206,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Index 15307."
+    },
+    {
+      "name": "Coolant Level (SPN 111)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50207,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "Index 15206."
+    },
+    {
+      "name": "Throttle position (SPN 91)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50208,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "Index 15207."
+    },
+    {
+      "name": "Load at current Speed (SPN 92)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50209,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Index 15208."
+    },
+    {
+      "name": "Engine oil level (SPN 98)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50210,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "Index 15210."
+    },
+    {
+      "name": "Boost pressure (SPN 102)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50211,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15214."
+    },
+    {
+      "name": "Intake Manifold 1 Temp (SPN 105)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50212,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15215."
+    },
+    {
+      "name": "Barometric Pressure (SPN 108)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50213,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "scale": 0.1,
+      "description": "Index 15212."
+    },
+    {
+      "name": "Air inlet temperature (SPN 172)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50214,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15213."
+    },
+    {
+      "name": "Actual engine torque (SPN 513)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50215,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Index 15209."
+    },
+    {
+      "name": "Exhaust Gas Temp.(SPN 173)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50216,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15299."
+    },
+    {
+      "name": "Engine Intercooler Temp (SPN52)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50217,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15217."
+    },
+    {
+      "name": "Fuel Delivery Pressure (SPN94)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50218,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15218."
+    },
+    {
+      "name": "Fuel Filter Differential Pressure (SPN95)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50219,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15219."
+    },
+    {
+      "name": "Crankcase Pressure (SPN101)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50220,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15220."
+    },
+    {
+      "name": "Turbo Air Inlet Pressure (SPN106)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50221,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15221."
+    },
+    {
+      "name": "Air Filter 1 Differential Pressure (SPN107)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50222,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "scale": 0.01,
+      "description": "Index 15222."
+    },
+    {
+      "name": "Coolant Pressure (SPN109)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50223,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15223."
+    },
+    {
+      "name": "Transmission Oil Pressure (SPN127)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50224,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15224."
+    },
+    {
+      "name": "Fuel Rail Pressure (SPN157)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50225,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Index 15225."
+    },
+    {
+      "name": "Ambient Air Temperature (SPN171)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50226,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15226."
+    },
+    {
+      "name": "Turbo Oil Temperature (SPN176)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50227,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15227."
+    },
+    {
+      "name": "Transmission Oil Temperature (SPN177)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50228,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15228."
+    },
+    {
+      "name": "Auxiliary Temperature 1 (SPN441)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50229,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15229."
+    },
+    {
+      "name": "Auxiliary Temperature 2 (SPN442)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50230,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15230."
+    },
+    {
+      "name": "Actual engine torque (SPN 513) (50231)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50231,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "description": "Index 15209."
+    },
+    {
+      "name": "Alternator Bear. 1 Temperature (SPN1122)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50232,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15231."
+    },
+    {
+      "name": "Alternator Bear. 2 Temperature (SPN1123)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50233,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15232."
+    },
+    {
+      "name": "Alternator Wind. 1 Temperature (SPN1124)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50234,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15233."
+    },
+    {
+      "name": "Alternator Wind. 2 Temperature (SPN1125)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50235,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15234."
+    },
+    {
+      "name": "Alternator Wind. 3 Temperature (SPN1126)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50236,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15235."
+    },
+    {
+      "name": "Intake Manifold 2 Temperature (SPN1131)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50237,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15236."
+    },
+    {
+      "name": "Intake Manifold 3 Temperature (SPN1132)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50238,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15237."
+    },
+    {
+      "name": "Intake Manifold 4 Temperature (SPN1133)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50239,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15238."
+    },
+    {
+      "name": "Engine Intercooler Thermostat Opening",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50240,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "(SPN1134) Index 15239."
+    },
+    {
+      "name": "Engine Oil Temperature 2 (SPN1135)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50241,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15240."
+    },
+    {
+      "name": "Engine ECU Temperature (SPN1136)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50242,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15241."
+    },
+    {
+      "name": "Exhaust Gas Port 1 Temperatures (SPN1137)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50243,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15242."
+    },
+    {
+      "name": "Exhaust Gas Port 2 Temperatures (SPN1138)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50244,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15243."
+    },
+    {
+      "name": "Exhaust Gas Port 3 Temperatures (SPN1139)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50245,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15244."
+    },
+    {
+      "name": "Exhaust Gas Port 4 Temperatures (SPN1140)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50246,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15245."
+    },
+    {
+      "name": "Exhaust Gas Port 5 Temperatures (SPN1141)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50247,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15246."
+    },
+    {
+      "name": "Exhaust Gas Port 6 Temperatures (SPN1142)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50248,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15247."
+    },
+    {
+      "name": "Exhaust Gas Port 7 Temperatures (SPN1143)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50249,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15248."
+    },
+    {
+      "name": "Exhaust Gas Port 8 Temperatures (SPN1144)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50250,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15249."
+    },
+    {
+      "name": "Exhaust Gas Port 9 Temperatures (SPN1145)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50251,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15250."
+    },
+    {
+      "name": "Exhaust Gas Port 10 Temperatures (SPN1146)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50252,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15251."
+    },
+    {
+      "name": "Exhaust Gas Port 11 Temperatures (SPN1147)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50253,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15252."
+    },
+    {
+      "name": "Exhaust Gas Port 12 Temperatures (SPN1148)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50254,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15253."
+    },
+    {
+      "name": "Exhaust Gas Port 13 Temperatures (SPN1149)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50255,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15254."
+    },
+    {
+      "name": "Exhaust Gas Port 14 Temperatures (SPN1150)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50256,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15255."
+    },
+    {
+      "name": "Exhaust Gas Port 15 Temperatures (SPN1151)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50257,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15256."
+    },
+    {
+      "name": "Exhaust Gas Port 16 Temperatures (SPN1152)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50258,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15257."
+    },
+    {
+      "name": "Exhaust Gas Port 17 Temperatures (SPN1153)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50259,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15258."
+    },
+    {
+      "name": "Exhaust Gas Port 18 Temperatures (SPN1154)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50260,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15259."
+    },
+    {
+      "name": "Exhaust Gas Port 19 Temperatures (SPN1155)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50261,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15260."
+    },
+    {
+      "name": "Exhaust Gas Port 20 Temperatures (SPN1156)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50262,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15261."
+    },
+    {
+      "name": "Main Bearing 1 Temperatures (SPN1157)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50263,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15262."
+    },
+    {
+      "name": "Main Bearing 2 Temperatures (SPN1158)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50264,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15263."
+    },
+    {
+      "name": "Main Bearing 3 Temperatures (SPN1159)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50265,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15264."
+    },
+    {
+      "name": "Main Bearing 4 Temperatures (SPN1160)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50266,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15265."
+    },
+    {
+      "name": "Main Bearing 5 Temperatures (SPN1161)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50267,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15266."
+    },
+    {
+      "name": "Main Bearing 6 Temperatures (SPN1162)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50268,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15267."
+    },
+    {
+      "name": "Main Bearing 7 Temperatures (SPN1163)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50269,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15268."
+    },
+    {
+      "name": "Main Bearing 8 Temperatures (SPN1164)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50270,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15269."
+    },
+    {
+      "name": "Main Bearing 9 Temperatures (SPN1165)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50271,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15270."
+    },
+    {
+      "name": "Main Bearing 10 Temperatures (SPN1166)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50272,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15271."
+    },
+    {
+      "name": "Main Bearing 11 Temperatures (SPN1167)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50273,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15272."
+    },
+    {
+      "name": "Turbo 1 Compressor Inlet Temperatures",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50274,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "(SPN1172) Index 15273."
+    },
+    {
+      "name": "Turbo 2 Compressor Inlet Temperatures",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50275,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "(SPN1173) Index 15274."
+    },
+    {
+      "name": "Turbo 3 Compressor Inlet Temperatures",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50276,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "(SPN1174) Index 15275."
+    },
+    {
+      "name": "Turbo 4 Compressor Inlet Temperatures",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50277,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "(SPN1175) Index 15276."
+    },
+    {
+      "name": "Turbo 1 Compressor Inlet Pressure (SPN1176)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50278,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15277."
+    },
+    {
+      "name": "Turbo 2 Compressor Inlet Pressure (SPN1177)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50279,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15278."
+    },
+    {
+      "name": "Turbo 3 Compressor Inlet Pressure (SPN1178)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50280,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15279."
+    },
+    {
+      "name": "Turbo 4 Compressor Inlet Pressure (SPN1179)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50281,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15280."
+    },
+    {
+      "name": "Turbo 1 Turbine Inlet Temperature (SPN1180)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50282,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15281."
+    },
+    {
+      "name": "Turbo 2 Turbine Inlet Temperature (SPN 1181)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50283,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15282."
+    },
+    {
+      "name": "Turbo 3 Turbine Inlet Temperature (SPN 1182)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50284,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15283."
+    },
+    {
+      "name": "Turbo 4 Turbine Inlet Temperature (SPN1183)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50285,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15284."
+    },
+    {
+      "name": "Turbo 1 Turbine Outlet Temperature (SPN1184)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50286,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15285."
+    },
+    {
+      "name": "Turbo 2 Turbine Outlet Temperature (SPN1185)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50287,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15286."
+    },
+    {
+      "name": "Turbo 3 Turbine Outlet Temperature (SPN 1186)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50288,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15287."
+    },
+    {
+      "name": "Turbo 4 Turbine Outlet Temperature (SPN1187)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50289,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15288."
+    },
+    {
+      "name": "Engine Aux. Coolant Pressure (SPN1203)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50290,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15289."
+    },
+    {
+      "name": "Pre-filter Oil Pressure (SPN1208)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50291,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15290."
+    },
+    {
+      "name": "Engine Aux. Coolant Temperature (SPN1212)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50292,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15291."
+    },
+    {
+      "name": "Fuel Filter Differential Pressure (SPN1382)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50293,
+      "type": "int16",
+      "access": "R",
+      "unit": "kPa",
+      "description": "Index 15292."
+    },
+    {
+      "name": "Battery 1 Temperature (SPN1800)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50294,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15293."
+    },
+    {
+      "name": "Battery 2 Temperature (SPN1801)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50295,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15294."
+    },
+    {
+      "name": "Intake Manifold 5 Temperature (SPN1802)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50296,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15295."
+    },
+    {
+      "name": "Intake Manifold 6 Temperature (SPN1803)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50297,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Index 15296."
+    },
+    {
+      "name": "Right Exhaust Gas Temperature (SPN2433)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50298,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15297."
+    },
+    {
+      "name": "Left Exhaust Gas Temperature (SPN2434)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50299,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15298."
+    },
+    {
+      "name": "Turbo 1 Compr. Outlet Temperature (SPN2629)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50300,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 15310."
+    },
+    {
+      "name": "Engine derate request (SPN3644)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50301,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "Index 15311."
+    },
+    {
+      "name": "Batterie Potential (SPN0158)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50302,
+      "type": "int16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 15312."
+    },
+    {
+      "name": "Aftertreatment 1 Diesel Exhaust Fluid Tank 1",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50303,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "Level (SPN1761) Index 15313."
+    },
+    {
+      "name": "Aftertreatment 1 Diesel Exhaust Fluid Tank 1 (50304)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50304,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Temperature (SPN3031) Index 15314."
+    },
+    {
+      "name": "Aftertreatment 1 Diesel Exhaust Fluid Tank 2",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50305,
+      "type": "int16",
+      "access": "R",
+      "unit": "%",
+      "scale": 0.1,
+      "description": "Level (SPN4367) Index 15315."
+    },
+    {
+      "name": "Aftertreatment 1 Diesel Exhaust Fluid Tank 2 (50306)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50306,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Temperature (SPN4368) Index 15316."
+    },
+    {
+      "name": "Exhaust Gas Temperature Average(SPN 4151)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50307,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "Index 12807."
+    },
+    {
+      "name": "Exhaust Gas Temperature Average Bank 1",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50308,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "(SPN 4153) Index 12809."
+    },
+    {
+      "name": "Exhaust Gas Temperature Average Bank 2",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50309,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1,
+      "description": "(SPN 4152) Index 12812."
+    },
+    {
+      "name": "Total gen. power",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50322,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Index 135."
+    },
+    {
+      "name": "Total gen. reactive power",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50324,
+      "type": "int32",
+      "access": "R",
+      "unit": "var",
+      "description": "Index 136."
+    },
+    {
+      "name": "Total gen. apparent power",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50326,
+      "type": "int32",
+      "access": "R",
+      "description": "Index 137."
+    },
+    {
+      "name": "Av. Gen. Wye-Voltage",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50328,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 170."
+    },
+    {
+      "name": "Av. Gen. Delta-Voltage",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50330,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 171."
+    },
+    {
+      "name": "Av. Busbar 1 Delta-Voltage",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50332,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 216."
+    },
+    {
+      "name": "Av. Gen. Current",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50334,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001,
+      "description": "Index 185."
+    },
+    {
+      "name": "Gen. current 1",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50336,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001,
+      "description": "Index 111."
+    },
+    {
+      "name": "Gen. current 2",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50338,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001,
+      "description": "Index 112."
+    },
+    {
+      "name": "Gen. current 3",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50340,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001,
+      "description": "Index 113."
+    },
+    {
+      "name": "Meas. ground current",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50342,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001,
+      "description": "Index 161."
+    },
+    {
+      "name": "Calculated ground current",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50344,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001,
+      "description": "Index 159."
+    },
+    {
+      "name": "Gen. voltage L1-L2",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50346,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 108."
+    },
+    {
+      "name": "Gen. voltage L2-L3",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50348,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 109."
+    },
+    {
+      "name": "Gen. voltage L3-L1",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50350,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 110."
+    },
+    {
+      "name": "Gen. voltage L1-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50352,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 114."
+    },
+    {
+      "name": "Gen. voltage L2-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50354,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 115."
+    },
+    {
+      "name": "Gen. voltage L3-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50356,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 116."
+    },
+    {
+      "name": "Gen. active power 1-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50358,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Index 125."
+    },
+    {
+      "name": "Gen. active power 2-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50360,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Index 126."
+    },
+    {
+      "name": "Gen. active power 3-N",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50362,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Index 127."
+    },
+    {
+      "name": "Busbar 1: voltage L1-L2",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50364,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 182."
+    },
+    {
+      "name": "Gen. real energy",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50366,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Index 2520."
+    },
+    {
+      "name": "Gen. positive reactive energy",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50368,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Index 2522."
+    },
+    {
+      "name": "Gen. hours of operation",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50370,
+      "type": "int32",
+      "access": "R",
+      "unit": "h",
+      "scale": 0.01,
+      "description": "Index 2568."
+    },
+    {
+      "name": "Setpoint active power",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50372,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "description": "Index 5542."
+    },
+    {
+      "name": "Setpoint voltage",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50374,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "description": "Index 5640."
+    },
+    {
+      "name": "Average Busbar Wye-Voltage",
+      "group": "AC Generator and Busbar values",
+      "area": "holding",
+      "address": 50376,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 234."
+    },
+    {
+      "name": "Total mains power (50384)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50384,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Index 140."
+    },
+    {
+      "name": "Total mains reactive power (50386)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50386,
+      "type": "int32",
+      "access": "R",
+      "unit": "var",
+      "description": "Index 150."
+    },
+    {
+      "name": "Av. Mains Wye-Voltage",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50388,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 173."
+    },
+    {
+      "name": "Av. Mains Delta-Voltage",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50390,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 174."
+    },
+    {
+      "name": "Av. Mains Current",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50392,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001,
+      "description": "Index 207."
+    },
+    {
+      "name": "Mains current L1 (50394)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50394,
+      "type": "int32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001,
+      "description": "Index 134."
+    },
+    {
+      "name": "Mains voltage L1-L2 (50400)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50400,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 118."
+    },
+    {
+      "name": "Mains voltage L2-L3 (50402)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50402,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 119."
+    },
+    {
+      "name": "Mains voltage L3-L1 (50404)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50404,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 120."
+    },
+    {
+      "name": "Mains voltage L1-N (50406)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50406,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 121."
+    },
+    {
+      "name": "Mains voltage L2-N (50408)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50408,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 122."
+    },
+    {
+      "name": "Mains voltage L3-N (50410)",
+      "group": "AC Mains values",
+      "area": "holding",
+      "address": 50410,
+      "type": "int32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.1,
+      "description": "Index 123."
+    },
+    {
+      "name": "Reserve real power in system (valid if LDSS is on)",
+      "group": "AC System values",
+      "area": "holding",
+      "address": 50412,
+      "type": "int32",
+      "access": "R",
+      "description": "Index 217."
+    },
+    {
+      "name": "Real power in system (valid if LDSS is on)",
+      "group": "AC System values",
+      "area": "holding",
+      "address": 50414,
+      "type": "int32",
+      "access": "R",
+      "description": "Index 218."
+    },
+    {
+      "name": "Nominal real power in system (valid if LDSS is on)",
+      "group": "AC System values",
+      "area": "holding",
+      "address": 50416,
+      "type": "int32",
+      "access": "R",
+      "description": "Index 219."
+    },
+    {
+      "name": "SPN of 1. entry (50424)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50424,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15400."
+    },
+    {
+      "name": "SPN of 2. entry (50426)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50426,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15403."
+    },
+    {
+      "name": "SPN of 3. entry (50428)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50428,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15406."
+    },
+    {
+      "name": "SPN of 4. entry (50430)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50430,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15409."
+    },
+    {
+      "name": "SPN of 5. entry (50432)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50432,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15412."
+    },
+    {
+      "name": "SPN of 6. entry (50434)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50434,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15415."
+    },
+    {
+      "name": "SPN of 7. entry (50436)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50436,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15419."
+    },
+    {
+      "name": "SPN of 8. entry (50438)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50438,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15422."
+    },
+    {
+      "name": "SPN of 9. entry (50440)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50440,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15425."
+    },
+    {
+      "name": "SPN of 10. entry (50442)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50442,
+      "type": "int32",
+      "access": "R",
+      "description": "SPN Index 15428."
+    },
+    {
+      "name": "Total engine hours (j1939-HOURS)",
+      "group": "Engine Management",
+      "area": "holding",
+      "address": 50444,
+      "type": "uint32",
+      "access": "R",
+      "unit": "h",
+      "description": "Index 15201."
+    }
+  ]
+}
