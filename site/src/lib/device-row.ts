@@ -1,27 +1,32 @@
 // One row of a device list. Used by the pages at build time and by the
 // catalogue script in the browser, so both draw the same markup.
 
-import { PROTOCOL_NAME, STATUS_INFO } from "./mbmap.ts";
+import { localizeUrl } from "./base.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { translate } from "../i18n/index.ts";
+import { protocolName, statusLabel, statusShort } from "../i18n/labels.ts";
 import { icon } from "./icons.ts";
 import { escapeHtml, highlight, type DeviceEntry } from "../scripts/search-core.ts";
 
-export function deviceRow(e: DeviceEntry, opts: { query?: string; line?: string; vendor?: boolean } = {}): string {
+export function deviceRow(e: DeviceEntry, opts: { query?: string; line?: string; vendor?: boolean; locale?: Locale } = {}): string {
+  const locale = opts.locale ?? DEFAULT_LOCALE;
   const q = opts.query ?? "";
   const mark = (s: string) => (q ? highlight(s, q) : escapeHtml(s));
   const status = e.s
-    ? `<span class="status ${e.s}" title="${STATUS_INFO[e.s].short}">${icon(e.s, 15)}<span>${STATUS_INFO[e.s].label}</span></span>`
-    : `<span class="status faint">No status</span>`;
+    ? `<span class="status ${e.s}" title="${statusShort(locale, e.s)}">${icon(e.s, 15)}<span>${statusLabel(locale, e.s)}</span></span>`
+    : `<span class="status faint">${translate(locale, "status.none")}</span>`;
   const others = e.ms?.length ? `<span class="also" title="${escapeHtml(e.ms.join(", "))}">${mark(e.ms.join(", "))}</span>` : "";
-  const match = opts.line ? `<span class="match">Register: ${highlight(opts.line, q)}</span>` : "";
+  const match = opts.line ? `<span class="match">${translate(locale, "search.registerLine", { line: highlight(opts.line, q) })}</span>` : "";
   const vendor =
     opts.vendor === false
       ? ""
       : `<td class="c-vendor"><span class="vendor-cell">${vendorTile(e.v, e.i)}<span class="vendor-name">${mark(e.v)}</span></span></td>`;
-  return `<tr class="linked">${vendor}<td class="c-model"><a class="row-link" href="${registerLink(e.u, opts.line)}">${mark(e.m)}</a>${others}${match}</td><td class="desc-cell"${e.d ? ` title="${escapeHtml(e.d)}"` : ""}>${e.d ? mark(e.d) : ""}</td><td class="c-status">${status}</td><td class="c-proto faint">${e.p ? escapeHtml(PROTOCOL_NAME[e.p]?.replace("Modbus ", "") ?? e.p) : ""}</td><td class="c-regs num">${e.r.toLocaleString("en-US")}</td></tr>`;
+  return `<tr class="linked">${vendor}<td class="c-model"><a class="row-link" href="${registerLink(localizeUrl(e.u, locale), opts.line)}">${mark(e.m)}</a>${others}${match}</td><td class="desc-cell"${e.d ? ` title="${escapeHtml(e.d)}"` : ""}>${e.d ? mark(e.d) : ""}</td><td class="c-status">${status}</td><td class="c-proto faint">${e.p ? escapeHtml(protocolName(locale, e.p).replace("Modbus ", "")) : ""}</td><td class="c-regs num">${e.r.toLocaleString(locale === "pt" ? "pt-PT" : "en-US")}</td></tr>`;
 }
 
-export function deviceHead(vendor = true): string {
-  return `<tr>${vendor ? '<th scope="col">Manufacturer</th>' : ""}<th scope="col">Model</th><th scope="col">Description</th><th scope="col">Status</th><th scope="col" class="c-proto" title="As stated in the map">Protocol</th><th scope="col" class="r">Registers</th></tr>`;
+export function deviceHead(vendor = true, locale: Locale = DEFAULT_LOCALE): string {
+  const t = (k: Parameters<typeof translate>[1]) => translate(locale, k);
+  return `<tr>${vendor ? `<th scope="col">${t("list.manufacturer")}</th>` : ""}<th scope="col">${t("list.model")}</th><th scope="col">${t("list.description")}</th><th scope="col">${t("list.status")}</th><th scope="col" class="c-proto" title="${t("list.protocolTitle")}">${t("list.protocol")}</th><th scope="col" class="r">${t("list.registers")}</th></tr>`;
 }
 
 /** Rows per page of the catalogue */

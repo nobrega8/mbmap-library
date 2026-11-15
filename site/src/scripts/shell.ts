@@ -1,9 +1,10 @@
 // What every page does: the theme button, the menu on small screens, the
 // ⌘K / Ctrl+K search menu (as in Modbench) and copy confirmations.
 
-import { STATUS_INFO } from "../lib/mbmap.ts";
+import { statusLabel } from "../i18n/labels.ts";
+import { locale, t as tr } from "./i18n.ts";
+import { pageHref, localizeUrl } from "../lib/base.ts";
 import { icon } from "../lib/icons.ts";
-import { href } from "../lib/base.ts";
 import { registerLink, vendorTile } from "../lib/device-row.ts";
 import { slidePill } from "./motion.ts";
 import "./relative-time.ts";
@@ -34,7 +35,7 @@ function currentTheme(): Theme {
 }
 function showTheme(t: Theme) {
   themeBtn.innerHTML = icon(t === "system" ? "system" : t === "light" ? "sun" : "moon");
-  themeBtn.title = `Theme: ${t}`;
+  themeBtn.title = tr("theme.label", { theme: tr(`theme.${t}` as const) });
   themeBtn.setAttribute("aria-label", themeBtn.title);
 }
 themeBtn.addEventListener("click", () => {
@@ -67,12 +68,12 @@ export function toast(text: string) {
   toastTimer = window.setTimeout(() => toastEl.classList.remove("on"), 1600);
 }
 
-export async function copy(text: string, what = "Copied") {
+export async function copy(text: string, what = tr("toast.copied")) {
   try {
     await navigator.clipboard.writeText(text);
     toast(what);
   } catch {
-    toast("Could not copy: the browser refused access to the clipboard");
+    toast(tr("toast.copyFailed"));
   }
 }
 
@@ -88,15 +89,15 @@ const LIMIT = 30;
 function itemHtml(h: Hit, i: number, q: string): string {
   const e = h.entry;
   const status = e.s
-    ? `<span class="status ${e.s}" title="${STATUS_INFO[e.s].label}">${icon(e.s, 14)}</span>`
+    ? `<span class="status ${e.s}" title="${statusLabel(locale, e.s)}">${icon(e.s, 14)}</span>`
     : "";
   const sub = h.line
-    ? `Register: ${highlight(h.line, q)}`
+    ? tr("search.registerLine", { line: highlight(h.line, q) })
     : e.d
       ? highlight(e.d, q)
-      : `${e.r} registers`;
+      : tr("search.registerCount", { n: e.r });
   return `<li class="cmd-item" role="option" id="cmd-${i}" aria-selected="${i === selected}">
-    <a href="${registerLink(e.u, h.line)}" tabindex="-1">${vendorTile(e.v, e.i)}
+    <a href="${registerLink(localizeUrl(e.u, locale), h.line)}" tabindex="-1">${vendorTile(e.v, e.i)}
     <span class="cmd-text"><span class="cmd-title">${highlight(e.v, q)} <b>${highlight(e.m, q)}</b></span>
     <span class="cmd-sub">${sub}</span></span>${status}</a></li>`;
 }
@@ -104,8 +105,8 @@ function itemHtml(h: Hit, i: number, q: string): string {
 function render(q: string, note = "") {
   if (!hits.length) {
     list.innerHTML = q
-      ? `<li class="empty"><strong>No maps match “${escapeHtml(q)}”</strong>${note || `Try a model number, a manufacturer or a register name. Missing a device? <a href="${href("/contribute")}">Request or add it</a>.`}</li>`
-      : `<li class="empty">${note || "Type a manufacturer, a model or a register name."}</li>`;
+      ? `<li class="empty"><strong>${tr("search.noMatch", { q: escapeHtml(q) })}</strong>${note || `${tr("search.noMatchHint")} <a href="${pageHref("/contribute", locale)}">${tr("search.requestOrAdd")}</a>.`}</li>`
+      : `<li class="empty">${note || tr("search.type")}</li>`;
     input.removeAttribute("aria-activedescendant");
     return;
   }
@@ -123,7 +124,7 @@ async function update() {
     entries = await loadDevices();
   } catch {
     hits = [];
-    render(q, "The registry could not be loaded. Check your connection and try again.");
+    render(q, tr("search.loadFail"));
     return;
   }
   if (mine !== seq) return;
@@ -133,7 +134,7 @@ async function update() {
     return;
   }
   hits = search(entries, q);
-  render(q, q.length >= REGISTER_QUERY_MIN ? "Searching register names…" : "");
+  render(q, q.length >= REGISTER_QUERY_MIN ? tr("search.searchingRegisters") : "");
   if (q.length < REGISTER_QUERY_MIN) return;
   try {
     const regs = await loadRegisters();
@@ -141,7 +142,7 @@ async function update() {
     hits = search(entries, q, regs);
     render(q);
   } catch {
-    if (mine === seq) render(q, "Register names could not be loaded");
+    if (mine === seq) render(q, tr("search.registersFail"));
   }
 }
 
@@ -171,7 +172,7 @@ input.addEventListener("keydown", (e) => {
     move(e.key === "ArrowDown" ? 1 : -1);
   } else if (e.key === "Enter") {
     const h = hits[selected];
-    if (h) location.href = registerLink(h.entry.u, h.line);
+    if (h) location.href = registerLink(localizeUrl(h.entry.u, locale), h.line);
   }
 });
 list.addEventListener("mousemove", (e) => {

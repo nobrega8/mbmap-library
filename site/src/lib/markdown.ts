@@ -5,7 +5,8 @@
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import { BRANCH, REPO_URL, libraryFile, rawUrl } from "./registry.ts";
 import { highlightJson } from "./json-highlight.ts";
-import { href } from "./base.ts";
+import { href, pageHref } from "./base.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
 
 let processor: ReturnType<typeof createMarkdownProcessor> | null = null;
 
@@ -46,25 +47,34 @@ export async function renderLibraryMarkdown(name: string): Promise<{ html: strin
 }
 
 /** A guide from docs/guides/, with links to other guides and site pages kept on the site. */
-export async function renderGuide(slug: string): Promise<{ html: string; title: string; headings: Heading[] } | null> {
-  const src = libraryFile(`docs/guides/${slug}.md`);
-  if (src == null) return null;
+/** The source of a guide in a language, or the English one when it has not been translated. */
+export function guideSource(slug: string, locale: Locale = DEFAULT_LOCALE): { src: string; translated: boolean } | null {
+  const own = locale === DEFAULT_LOCALE ? null : libraryFile(`docs/guides/${locale}/${slug}.md`);
+  if (own != null) return { src: own, translated: true };
+  const en = libraryFile(`docs/guides/${slug}.md`);
+  return en == null ? null : { src: en, translated: locale === DEFAULT_LOCALE };
+}
+
+export async function renderGuide(slug: string, locale: Locale = DEFAULT_LOCALE): Promise<{ html: string; title: string; headings: Heading[]; translated: boolean } | null> {
+  const found = guideSource(slug, locale);
+  if (found == null) return null;
+  const { src, translated } = found;
   processor ??= createMarkdownProcessor({ syntaxHighlight: false, gfm: true, smartypants: false });
   const title = /^# (.*)\n/.exec(src)?.[1]?.replace(/`/g, "") ?? slug;
   const body = src.replace(/^# .*\n+/, "");
   const { code, metadata } = await (await processor).render(body);
   const html = code
     .replace(/href="(?!https?:|#|mailto:)([^"]+)"/g, (_, path: string) =>
-      path.startsWith("/") ? `href="${href(path)}"` : `href="${href(`/guides/${path.replace(/\.md$/, "")}`)}"`,
+      path.startsWith("/") ? `href="${pageHref(path, locale)}"` : `href="${pageHref(`/guides/${path.replace(/\.md$/, "")}`, locale)}"`,
     )
     .replace(/<table>/g, '<div class="table-wrap"><table class="table md">')
     .replace(/<\/table>/g, "</table></div>");
-  return { html, title, headings: metadata.headings as Heading[] };
+  return { html, title, headings: metadata.headings as Heading[], translated };
 }
 
 /** The first paragraph of a guide, for its description and the guide list. */
-export function guideSummary(slug: string): string {
-  const src = libraryFile(`docs/guides/${slug}.md`) ?? "";
+export function guideSummary(slug: string, locale: Locale = DEFAULT_LOCALE): string {
+  const src = guideSource(slug, locale)?.src ?? "";
   const para = src.replace(/^# .*\n+/, "").split(/\n\n/)[0] ?? "";
   return para.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/[*`]/g, "").replace(/\s+/g, " ").trim();
 }

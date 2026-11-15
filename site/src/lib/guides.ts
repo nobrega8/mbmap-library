@@ -1,3 +1,5 @@
+import { translate, type Key } from "../i18n/index.ts";
+import type { Locale } from "../i18n/locales.ts";
 // The guides in docs/guides/, in the order the guide list shows them.
 export interface Guide {
   slug: string;
@@ -19,3 +21,6 @@ export const GUIDES: Guide[] = [
   { slug: "how-to-find-a-modbus-register-map", short: "Finding a register map" },
   { slug: "is-it-safe-to-write-modbus", short: "Writing safely" },
 ];
+
+/** The short title of a guide in a language (key "guide.<slug>"). */
+export const guideShort = (slug: string, locale: Locale) => translate(locale, `guide.${slug}` as Key);

@@ -1,9 +1,10 @@
 // The home page: live results under the search field, the example map's
 // tabs, rolling numbers and sections that rise into view.
 
-import { STATUS_INFO } from "../lib/mbmap.ts";
+import { statusLabel } from "../i18n/labels.ts";
+import { locale, t as tr } from "./i18n.ts";
 import { icon } from "../lib/icons.ts";
-import { href } from "../lib/base.ts";
+import { localizeUrl, pageHref } from "../lib/base.ts";
 import { registerLink, vendorTile } from "../lib/device-row.ts";
 import { type Hit, REGISTER_QUERY_MIN, escapeHtml, highlight, loadDevices, loadRegisters, search } from "./search-core.ts";
 import { revealOnScroll, rollNumbers } from "./motion.ts";
@@ -26,11 +27,11 @@ function render(q: string) {
   if (!q) return close();
   const items = hits.slice(0, LIMIT).map((h, i) => {
     const e = h.entry;
-    const status = e.s ? `<span class="status ${e.s}" title="${STATUS_INFO[e.s].label}">${icon(e.s, 14)}</span>` : "";
-    const sub = h.line ? `Register: ${highlight(h.line, q)}` : e.d ? highlight(e.d, q) : `${e.r} registers`;
-    return `<li class="cmd-item" role="option" id="hr-${i}" aria-selected="${i === selected}"><a href="${registerLink(e.u, h.line)}" tabindex="-1">${vendorTile(e.v, e.i)}<span class="cmd-text"><span class="cmd-title">${highlight(e.v, q)} <b>${highlight(e.m, q)}</b></span><span class="cmd-sub">${sub}</span></span>${status}</a></li>`;
+    const status = e.s ? `<span class="status ${e.s}" title="${statusLabel(locale, e.s)}">${icon(e.s, 14)}</span>` : "";
+    const sub = h.line ? tr("search.registerLine", { line: highlight(h.line, q) }) : e.d ? highlight(e.d, q) : tr("search.registerCount", { n: e.r });
+    return `<li class="cmd-item" role="option" id="hr-${i}" aria-selected="${i === selected}"><a href="${registerLink(localizeUrl(e.u, locale), h.line)}" tabindex="-1">${vendorTile(e.v, e.i)}<span class="cmd-text"><span class="cmd-title">${highlight(e.v, q)} <b>${highlight(e.m, q)}</b></span><span class="cmd-sub">${sub}</span></span>${status}</a></li>`;
   });
-  const all = `<li class="cmd-group key"><a href="${href(`/devices?q=${encodeURIComponent(q)}`)}">${hits.length ? `See all ${hits.length} results` : `No devices match “${escapeHtml(q)}”`} →</a></li>`;
+  const all = `<li class="cmd-group key"><a href="${pageHref(`/devices?q=${encodeURIComponent(q)}`, locale)}">${hits.length ? tr("home.seeAll", { n: hits.length }) : tr("home.noDevices", { q: escapeHtml(q) })} →</a></li>`;
   list.innerHTML = items.join("") + all;
   list.hidden = false;
   input.setAttribute("aria-expanded", "true");
@@ -82,7 +83,7 @@ form.addEventListener("submit", (e) => {
   const h = hits[selected];
   if (h) {
     e.preventDefault();
-    location.href = registerLink(h.entry.u, h.line);
+    location.href = registerLink(localizeUrl(h.entry.u, locale), h.line);
   }
 });
 document.addEventListener("click", (e) => {

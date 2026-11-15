@@ -1,0 +1,127 @@
+---
+import { localizeUrl, pageHref } from "../../lib/base.ts";
+import { DEFAULT_LOCALE, type Locale } from "../../i18n/locales.ts";
+import { count, translate, useT } from "../../i18n/index.ts";
+import Base from "../../layouts/Base.astro";
+import StatusBar from "../../components/StatusBar.astro";
+import VendorTile from "../../components/VendorTile.astro";
+import { vendorIcons } from "../../lib/vendor-icons.ts";
+import { type Manufacturer, deviceEntry, registry } from "../../lib/registry.ts";
+import { deviceHead, deviceRow } from "../../lib/device-row.ts";
+import { LINKS } from "../../lib/site.ts";
+
+const { maker: m } = Astro.props as { maker: Manufacturer };
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+const total = m.devices.length;
+const models = m.devices.map((d) => d.info.model);
+const shownModels = models.length > 6 ? t("maker.andMore", { list: models.slice(0, 6).join(", "), n: models.length - 6 }) : models.join(", ");
+const description = t("maker.description", { count: translate(locale, total === 1 ? "maker.countMaps.one" : "maker.countMaps.many", { n: total.toLocaleString(locale === "pt" ? "pt-PT" : "en-US"), name: m.name }), models: shownModels });
+const site = m.website ? (/^https?:/.test(m.website) ? m.website : `https://${m.website}`) : null;
+const icons = await vendorIcons();
+const rows = m.devices.map((d) => deviceRow(deviceEntry(d, icons), { vendor: false, locale })).join("");
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Manufacturers", item: new URL(pageHref("/manufacturers", locale), Astro.site).href },
+      { "@type": "ListItem", position: 2, name: m.name, item: new URL(m.url, Astro.site).href },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${m.name} Modbus register maps`,
+    numberOfItems: total,
+    itemListElement: m.devices.map((d, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: `${m.name} ${d.info.model}`,
+      url: new URL(localizeUrl(d.url, locale), Astro.site).href,
+    })),
+  },
+];
+---
+
+<Base title={t("maker.title", { name: m.name })} description={description} nav="manufacturers" jsonLd={jsonLd}>
+  <ol class="crumbs">
+    <li><a href={pageHref("/manufacturers", locale)}>{t("makers.title")}</a></li>
+    <li aria-current="page">{m.name}</li>
+  </ol>
+
+  <div class="stack">
+    <header class="card pad maker-head">
+      <div class="maker-title">
+        <VendorTile name={m.name} slug={m.slug} large />
+        <div>
+          <h1>{m.name}</h1>
+          <p class="faint">
+            {count(locale, total, "deviceMap")} · {count(locale, m.registerCount, "register")}
+            {site && <> · <a href={site} rel="nofollow">{m.website!.replace(/^https?:\/\//, "")}</a></>}
+          </p>
+        </div>
+      </div>
+      <div class="maker-status">
+        <StatusBar counts={m.statusCounts} />
+      </div>
+    </header>
+
+    <section class="card pad" aria-labelledby="dev-title">
+      <h2 id="dev-title" class="key">{t("maker.devices")}</h2>
+      <div class="table-wrap">
+        <table class="table devices">
+          <thead set:html={deviceHead(false, locale)} />
+          <tbody set:html={rows} />
+        </table>
+      </div>
+      <p class="faint more">
+        {t("maker.missing", { name: m.name })} <a href={LINKS.mapRequest}>{t("maker.request")}</a> {t("maker.or")} <a href={pageHref("/contribute#add", locale)}>{t("maker.addMap")}</a>.
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .maker-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+  }
+
+  .maker-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .maker-title p {
+    margin: 2px 0 0;
+  }
+
+  .maker-status {
+    flex: 0 1 360px;
+  }
+
+  .maker-status :global(.legend) {
+    margin-top: 8px;
+  }
+
+  h2 {
+    margin-bottom: 4px;
+  }
+
+  .more {
+    margin: 14px 0 0;
+    font-size: 13px;
+  }
+
+  @media (max-width: 760px) {
+    .table.devices :global(.c-model) {
+      grid-column: 1;
+    }
+  }
+</style>

@@ -3,7 +3,13 @@
 // (monotone) curves through the daily points.
 import Icon from "./Icon.astro";
 import { statusHistory } from "../lib/history.ts";
-import { STATUS_INFO, type Status } from "../lib/mbmap.ts";
+import type { Status } from "../lib/mbmap.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { useT } from "../i18n/index.ts";
+import { statusLabel } from "../i18n/labels.ts";
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
 
 const points = statusHistory();
 // Bottom to top: the most trusted maps sit on the baseline.
@@ -99,16 +105,15 @@ const lastTotal = last ? sum(last, ORDER) : 0;
     <figure class="history card pad">
       <figcaption>
         <div>
-          <p class="key">Growth</p>
+          <p class="key">{t("history.growth")}</p>
           <p class="headline">
-            <span class="mono">{lastTotal}</span> maps, <span class="mono">{last.counts.verified + last.counts.official}</span> from
-            the manufacturer's documentation or tested on a device
+            <Fragment set:html={t("history.headline", { n: `<span class="mono">${lastTotal}</span>`, m: `<span class="mono">${last.counts.verified + last.counts.official}</span>` })} />
           </p>
         </div>
         <ul class="legend">
           {[...ORDER].reverse().map((s) => (
             <li class={`status ${s}`}>
-              <Icon name={s} size={14} /> {STATUS_INFO[s].label}
+              <Icon name={s} size={14} /> {statusLabel(locale, s)}
               <span class="mono n">{last.counts[s]}</span>
             </li>
           ))}
@@ -119,7 +124,7 @@ const lastTotal = last ? sum(last, ORDER) : 0;
           class={v.cls}
           viewBox={`0 0 ${v.W} ${v.H}`}
           role="img"
-          aria-label={`Maps by status from ${points[0].date} to ${last.date}: ${ORDER.map((s) => `${last.counts[s]} ${s}`).join(", ")} now.`}
+          aria-label={t("history.aria", { from: points[0].date, to: last.date, list: ORDER.map((s) => `${last.counts[s]} ${statusLabel(locale, s).toLowerCase()}`).join(", ") })}
         >
           <defs>
             {ORDER.map((s) => (
@@ -151,7 +156,7 @@ const lastTotal = last ? sum(last, ORDER) : 0;
         <summary>Data</summary>
         <table>
           <thead>
-            <tr><th>Date</th>{ORDER.map((s) => <th class="r">{STATUS_INFO[s].label}</th>)}</tr>
+            <tr><th>Date</th>{ORDER.map((s) => <th class="r">{statusLabel(locale, s)}</th>)}</tr>
           </thead>
           <tbody>
             {points.map((p) => (

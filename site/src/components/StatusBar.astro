@@ -1,6 +1,8 @@
 ---
 // How a set of maps divides by status: a thin bar and a legend with counts.
-import { type Status, STATUSES, STATUS_INFO } from "../lib/mbmap.ts";
+import { type Status, STATUSES } from "../lib/mbmap.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { statusLabel, statusShort } from "../i18n/labels.ts";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -9,21 +11,22 @@ interface Props {
 }
 
 const { counts, legend = true } = Astro.props;
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const total = STATUSES.reduce((n, s) => n + counts[s], 0);
 ---
 
-<div class="status-bar" role="img" aria-label={STATUSES.map((s) => `${counts[s]} ${STATUS_INFO[s].label.toLowerCase()}`).join(", ")}>
+<div class="status-bar" role="img" aria-label={STATUSES.map((s) => `${counts[s]} ${statusLabel(locale, s).toLowerCase()}`).join(", ")}>
   {STATUSES.filter((s) => counts[s]).map((s) => <span class={s} style={`flex: ${counts[s] / total}`} />)}
 </div>
 {
   legend && (
     <ul class="legend">
       {STATUSES.map((s) => (
-        <li title={STATUS_INFO[s].short}>
+        <li title={statusShort(locale, s)}>
           <span class={`dot ${s}`}>
             <Icon name={s} size={14} />
           </span>
-          {STATUS_INFO[s].label} <b>{counts[s]}</b>
+          {statusLabel(locale, s)} <b>{counts[s]}</b>
         </li>
       ))}
     </ul>
