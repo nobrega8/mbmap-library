@@ -1,0 +1,994 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Grundfos",
+  "vendor_website": "grundfos.com",
+  "protocol": "tcp+rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "sentinels": {
+    "uint16": {
+      "0xFFFF": "Not available"
+    },
+    "uint32": {
+      "0xFFFFFFFF": "Not available"
+    }
+  },
+  "model": "Smart Digital Dosing (DDA)",
+  "models": [
+    "DDA",
+    "DDA-C",
+    "DDA XL"
+  ],
+  "description": "Grundfos Smart Digital Dosing pumps (DDA, DDA-C, DDA XL) through the CIM 200 / CIM 500 or the built-in SoftCIM: control bits, operating mode, dosing settings, status, measured capacity, pressure, volumes, tank level and counters",
+  "revision": 1,
+  "source": "Grundfos, Modbus for Smart Digital Dosing, functional profile and user manual, 98473491 09.2026",
+  "sources": [
+    {
+      "title": "Modbus for Smart Digital Dosing, SoftCIM Modbus RTU, SoftCIM Modbus TCP, CIM 200 Modbus RTU, CIM 500 Ethernet for Modbus TCP: functional profile",
+      "version": "98473491 09.2026",
+      "url": "https://api.grundfos.com/literature/Grundfosliterature-6012959.pdf",
+      "note": "chapter 8, Modbus register addresses",
+      "accessed": "2026-11-15",
+      "sha256": "f8dcee1d72c2ec2c5e3927f23999d7564f18ef234c08f0e7358f792c7e20e4d7"
+    }
+  ],
+  "notes": [
+    "Modbus RTU through the CIM 200 module or the built-in SoftCIM (DDA-C), Modbus TCP through the CIM 500. CIM 200 defaults: 19200 bit/s, even parity, 1 stop bit.",
+    "Register numbers are those of the manual, counted from 1: register 00104 is sent as 103 (address_base 1). Read with function 03 or 04; the control and settings blocks are written with 06 or 16.",
+    "32-bit values are two registers, high word first (the names end in HI and LO in the manual). A value of 0xFFFF means not available.",
+    "Control bits only act when RemoteAccessReq (register 101 bit 0) is set and the pump is started from the pump or the GO app. Value-change bits act when changed; action commands act on a rising edge and are acknowledged in register 203.",
+    "The bit meanings of the status registers 201-206 are in section 8.8 of the manual and are not broken down here; the alarm simulation block (701 and up) is not in this map.",
+    "Written from the manufacturer's functional profile; not tested on a device."
+  ],
+  "registers": [
+    {
+      "name": "Slave minimum reply delay",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Software defined modbus address",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Software defined bit rate",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1200 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "1": "2400 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "2": "4800 bit/s (Not supported by the SoftCIM Modbus RTU)",
+        "3": "9600 bit/s",
+        "4": "19200 bit/s",
+        "5": "38400 bit/s"
+      }
+    },
+    {
+      "name": "Auto ack control bits",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      }
+    },
+    {
+      "name": "Software defined parity",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No parity (default)",
+        "1": "Even parity",
+        "2": "Odd parity"
+      }
+    },
+    {
+      "name": "Software defined stop bit",
+      "group": "CIM configuration",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "No stop bit",
+        "1": "1 stop bit (default)",
+        "2": "2 stop bits"
+      }
+    },
+    {
+      "name": "Genibus CRC error count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Genibus data error count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Version number",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Actual modbus address",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Genibus TX count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 25,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Genibus RX count",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 27,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Unit family",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Unit type",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Unit version",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 32,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Product software version",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 34,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Product software day month",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Product software year",
+      "group": "CIM status",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Control: RemoteAccessReq",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "RW",
+      "bit": 0
+    },
+    {
+      "name": "Control: De-aerating (100 %)",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "RW",
+      "bit": 1
+    },
+    {
+      "name": "Control: AnalogMode",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "RW",
+      "bit": 2,
+      "description": "0 = 0-20 mA, 1 = 4-20 mA"
+    },
+    {
+      "name": "Control: TimerMode",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "RW",
+      "bit": 3,
+      "description": "0 = cycle timer, 1 = week timer"
+    },
+    {
+      "name": "Control: SlowMode",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "RW",
+      "bit": 4
+    },
+    {
+      "name": "Control: Velocity",
+      "group": "Control",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "RW",
+      "bit": 5,
+      "description": "0 = 25 %, 1 = 50 %"
+    },
+    {
+      "name": "Control: AutoDeaeratingEnable",
+      "group": "Control",
+      "area": "holding",
+      "address": 102,
+      "type": "bool",
+      "access": "RW",
+      "bit": 0
+    },
+    {
+      "name": "Control: FlowControlEnable",
+      "group": "Control",
+      "area": "holding",
+      "address": 102,
+      "type": "bool",
+      "access": "RW",
+      "bit": 1
+    },
+    {
+      "name": "Control: ModbusWatchdogEnable",
+      "group": "Control",
+      "area": "holding",
+      "address": 102,
+      "type": "bool",
+      "access": "RW",
+      "bit": 2
+    },
+    {
+      "name": "Control: AutoFlowAdaptEnable",
+      "group": "Control",
+      "area": "holding",
+      "address": 102,
+      "type": "bool",
+      "access": "RW",
+      "bit": 3
+    },
+    {
+      "name": "Control: PulseMemoryEnable",
+      "group": "Control",
+      "area": "holding",
+      "address": 102,
+      "type": "bool",
+      "access": "RW",
+      "bit": 4
+    },
+    {
+      "name": "Action command: ResetFault",
+      "group": "Control",
+      "area": "holding",
+      "address": 103,
+      "type": "bool",
+      "access": "RW",
+      "bit": 0,
+      "description": "Rising edge executes the command; the acknowledge bit is in register 203."
+    },
+    {
+      "name": "Action command: Pulse",
+      "group": "Control",
+      "area": "holding",
+      "address": 103,
+      "type": "bool",
+      "access": "RW",
+      "bit": 1,
+      "description": "Rising edge executes the command; the acknowledge bit is in register 203."
+    },
+    {
+      "name": "Action command: ResetVolumeCounter",
+      "group": "Control",
+      "area": "holding",
+      "address": 103,
+      "type": "bool",
+      "access": "RW",
+      "bit": 2,
+      "description": "Rising edge executes the command; the acknowledge bit is in register 203."
+    },
+    {
+      "name": "Action command: SetRTC",
+      "group": "Control",
+      "area": "holding",
+      "address": 103,
+      "type": "bool",
+      "access": "RW",
+      "bit": 3,
+      "description": "Rising edge executes the command; the acknowledge bit is in register 203."
+    },
+    {
+      "name": "Requested start/stop",
+      "group": "Control",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "ReqStart",
+        "1": "ReqStop"
+      }
+    },
+    {
+      "name": "Operating mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Manual",
+        "1": "Pulse",
+        "2": "Analog",
+        "3": "Timer",
+        "4": "Batch",
+        "5": "HMI Batch",
+        "7": "Proportional dosing by pulse flow sensor",
+        "8": "Proportional dosing by 0-20 mA flow sensor",
+        "9": "Proportional dosing by 4-20 mA flow sensor"
+      }
+    },
+    {
+      "name": "Setpoint, manual",
+      "group": "Control",
+      "area": "holding",
+      "address": 106,
+      "type": "uint32",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "ml/h"
+    },
+    {
+      "name": "Pulse volume",
+      "group": "Control",
+      "area": "holding",
+      "address": 108,
+      "type": "uint32",
+      "access": "RW",
+      "scale": 1,
+      "unit": "nl"
+    },
+    {
+      "name": "Batch dosing volume",
+      "group": "Control",
+      "area": "holding",
+      "address": 110,
+      "type": "uint32",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "ml"
+    },
+    {
+      "name": "Batch dosing time",
+      "group": "Control",
+      "area": "holding",
+      "address": 112,
+      "type": "uint32",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s"
+    },
+    {
+      "name": "Pressure max",
+      "group": "Control",
+      "area": "holding",
+      "address": 114,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "bar"
+    },
+    {
+      "name": "Output relays control",
+      "group": "Settings",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit 0 relay 1, bit 1 relay 2; the relay must be set to bus control on the pump."
+    },
+    {
+      "name": "Analog output",
+      "group": "Settings",
+      "area": "holding",
+      "address": 116,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.001,
+      "unit": "mA"
+    },
+    {
+      "name": "Set date and time: Year",
+      "group": "Settings",
+      "area": "holding",
+      "address": 117,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Set date and time: Month",
+      "group": "Settings",
+      "area": "holding",
+      "address": 118,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Set date and time: Day",
+      "group": "Settings",
+      "area": "holding",
+      "address": 119,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Set date and time: Hour",
+      "group": "Settings",
+      "area": "holding",
+      "address": 120,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Set date and time: Minute",
+      "group": "Settings",
+      "area": "holding",
+      "address": 121,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Set date and time: Second",
+      "group": "Settings",
+      "area": "holding",
+      "address": 122,
+      "type": "uint16",
+      "access": "RW",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Target concentration",
+      "group": "Settings",
+      "area": "holding",
+      "address": 123,
+      "type": "uint32",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "ppm"
+    },
+    {
+      "name": "Status: RemoteAccess and dosing status bits",
+      "group": "Status",
+      "area": "holding",
+      "address": 201,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits and enumerations as described in section 8.8 of the manual."
+    },
+    {
+      "name": "Status: Operating state bits",
+      "group": "Status",
+      "area": "holding",
+      "address": 202,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits and enumerations as described in section 8.8 of the manual."
+    },
+    {
+      "name": "Status: Command acknowledge bits",
+      "group": "Status",
+      "area": "holding",
+      "address": 203,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits and enumerations as described in section 8.8 of the manual."
+    },
+    {
+      "name": "Status: Control state bits",
+      "group": "Status",
+      "area": "holding",
+      "address": 204,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits and enumerations as described in section 8.8 of the manual."
+    },
+    {
+      "name": "Status: Start/stop state",
+      "group": "Status",
+      "area": "holding",
+      "address": 205,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits and enumerations as described in section 8.8 of the manual."
+    },
+    {
+      "name": "Status: Operating mode (actual)",
+      "group": "Status",
+      "area": "holding",
+      "address": 206,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits and enumerations as described in section 8.8 of the manual."
+    },
+    {
+      "name": "Setpoint, manual (actual)",
+      "group": "Data",
+      "area": "holding",
+      "address": 207,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ml/h"
+    },
+    {
+      "name": "Pulse volume (actual)",
+      "group": "Data",
+      "area": "holding",
+      "address": 209,
+      "type": "uint32",
+      "access": "R",
+      "scale": 1,
+      "unit": "nl"
+    },
+    {
+      "name": "Batch dosing volume (actual)",
+      "group": "Data",
+      "area": "holding",
+      "address": 211,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "ml"
+    },
+    {
+      "name": "Batch dosing time (actual)",
+      "group": "Data",
+      "area": "holding",
+      "address": 213,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "s"
+    },
+    {
+      "name": "Pressure max (actual)",
+      "group": "Data",
+      "area": "holding",
+      "address": 215,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "bar"
+    },
+    {
+      "name": "Control source states",
+      "group": "Data",
+      "area": "holding",
+      "address": 216,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 stop via pump HMI or GO app, bit 1 external stop, bit 2 stop from bus."
+    },
+    {
+      "name": "Fault code",
+      "group": "Data",
+      "area": "holding",
+      "address": 217,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Warning code",
+      "group": "Data",
+      "area": "holding",
+      "address": 218,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Warning bits",
+      "group": "Data",
+      "area": "holding",
+      "address": 219,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Date and time: Year",
+      "group": "Data",
+      "area": "holding",
+      "address": 220,
+      "type": "uint16",
+      "access": "R",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Date and time: Month",
+      "group": "Data",
+      "area": "holding",
+      "address": 221,
+      "type": "uint16",
+      "access": "R",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Date and time: Day",
+      "group": "Data",
+      "area": "holding",
+      "address": 222,
+      "type": "uint16",
+      "access": "R",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Date and time: Hour",
+      "group": "Data",
+      "area": "holding",
+      "address": 223,
+      "type": "uint16",
+      "access": "R",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Date and time: Minute",
+      "group": "Data",
+      "area": "holding",
+      "address": 224,
+      "type": "uint16",
+      "access": "R",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Date and time: Second",
+      "group": "Data",
+      "area": "holding",
+      "address": 225,
+      "type": "uint16",
+      "access": "R",
+      "description": "BCD, year counted from 2000."
+    },
+    {
+      "name": "Tank level monitoring",
+      "group": "Data",
+      "area": "holding",
+      "address": 226,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Float switch",
+        "1": "Calculated (sensorless with float switch)",
+        "2": "Analog sensor"
+      }
+    },
+    {
+      "name": "Dosing pressure max",
+      "group": "Data",
+      "area": "holding",
+      "address": 301,
+      "type": "uint16",
+      "access": "R",
+      "unit": "bar"
+    },
+    {
+      "name": "Dosing capacity max",
+      "group": "Data",
+      "area": "holding",
+      "address": 302,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ml/h"
+    },
+    {
+      "name": "Dosing capacity reference",
+      "group": "Data",
+      "area": "holding",
+      "address": 304,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ml/h"
+    },
+    {
+      "name": "Measured dosing capacity",
+      "group": "Data",
+      "area": "holding",
+      "address": 306,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ml/h"
+    },
+    {
+      "name": "Measured pressure",
+      "group": "Data",
+      "area": "holding",
+      "address": 308,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "bar"
+    },
+    {
+      "name": "Pulse input frequency",
+      "group": "Data",
+      "area": "holding",
+      "address": 309,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz/min"
+    },
+    {
+      "name": "Remaining dosing volume",
+      "group": "Data",
+      "area": "holding",
+      "address": 310,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "ml"
+    },
+    {
+      "name": "Volume total",
+      "group": "Data",
+      "area": "holding",
+      "address": 312,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "l"
+    },
+    {
+      "name": "Volume trip counter",
+      "group": "Data",
+      "area": "holding",
+      "address": 314,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "l"
+    },
+    {
+      "name": "Analog input",
+      "group": "Data",
+      "area": "holding",
+      "address": 316,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "mA"
+    },
+    {
+      "name": "Analog output (317)",
+      "group": "Data",
+      "area": "holding",
+      "address": 317,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "mA"
+    },
+    {
+      "name": "Digital inputs",
+      "group": "Data",
+      "area": "holding",
+      "address": 318,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits."
+    },
+    {
+      "name": "Output relays",
+      "group": "Data",
+      "area": "holding",
+      "address": 319,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bits; bit 2 signals automatic de-aeration."
+    },
+    {
+      "name": "Number of power-ons",
+      "group": "Data",
+      "area": "holding",
+      "address": 320,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Run time",
+      "group": "Data",
+      "area": "holding",
+      "address": 321,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Operating hours",
+      "group": "Data",
+      "area": "holding",
+      "address": 323,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Stroke counter",
+      "group": "Data",
+      "area": "holding",
+      "address": 325,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Time to next dosing",
+      "group": "Data",
+      "area": "holding",
+      "address": 327,
+      "type": "uint32",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Tank volume",
+      "group": "Data",
+      "area": "holding",
+      "address": 329,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "l"
+    },
+    {
+      "name": "Tank volume remaining",
+      "group": "Data",
+      "area": "holding",
+      "address": 331,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "l"
+    },
+    {
+      "name": "Tank level remaining",
+      "group": "Data",
+      "area": "holding",
+      "address": 333,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Proportional dosing process flow",
+      "group": "Data",
+      "area": "holding",
+      "address": 334,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "l/h"
+    },
+    {
+      "name": "Proportional dosing target concentration",
+      "group": "Data",
+      "area": "holding",
+      "address": 336,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ppm"
+    },
+    {
+      "name": "Proportional dosing actual concentration",
+      "group": "Data",
+      "area": "holding",
+      "address": 338,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ppm"
+    },
+    {
+      "name": "Tank volume low limit",
+      "group": "Data",
+      "area": "holding",
+      "address": 340,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "l"
+    },
+    {
+      "name": "Tank level low limit",
+      "group": "Data",
+      "area": "holding",
+      "address": 342,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Process flow sensor max",
+      "group": "Data",
+      "area": "holding",
+      "address": 343,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "l/h"
+    },
+    {
+      "name": "Process flow pulse volume",
+      "group": "Data",
+      "area": "holding",
+      "address": 345,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "ml/pulse"
+    }
+  ]
+}
