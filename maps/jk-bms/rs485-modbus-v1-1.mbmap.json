@@ -1,0 +1,2304 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "JK BMS",
+  "model": "RS485 Modbus V1.1",
+  "models": [
+    "RS485 Modbus V1.1"
+  ],
+  "vendor_website": "jk-bms.com",
+  "description": "Chengdu Jikong (JK) battery management systems: protection settings, cell voltages, alarms, state of charge, identification and commands over RS485 Modbus",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "JK BMS RS485 Modbus general protocol V1.1 (2024-02)",
+  "sources": [
+    {
+      "title": "BMS RS485 Modbus general protocol V1.1",
+      "version": "V1.1 (2024-02)",
+      "url": "https://www.jk-bms.com/Upload/2023-11-28/1721459145.pdf",
+      "note": "Register map and examples",
+      "accessed": "2026-11-15",
+      "sha256": "b9b3f1e417017cff32ec112b6238663204133bb551a1a4a88c9d139c16d22739"
+    }
+  ],
+  "notes": [
+    "Modbus RTU over RS-485, 115200 bps 8N1, address 1 to 247; functions 03 (read) and 10 (write multiple) only.",
+    "The map is in four blocks: settings at 0x1000, live data at 0x1200, identification at 0x1400 and commands at 0x1600. The manual lists an 'index' in bytes for each item, and the register address is the block address plus that index (the examples show writing the second 32-bit setting at 0x1004 with a count of 2). A 32-bit value takes two registers, so the next item is four addresses further on.",
+    "Where the manual lists two one-byte items in one two-byte entry, the first byte is taken as the high byte of the register.",
+    "The alarm word is 32 bits with the high word first, so alarm bits 0 to 15 are in the second register and bits 16 to 21 in the first.",
+    "Settings are in millivolts, milliamps, seconds or 0.1 °C as given; the manual's examples show 2.83 V written as 2830.",
+    "Left out: the protocol-selection and trigger-source bytes of the identification block (0x00B2 and later) and the single-byte smart sleep time and data-enable bytes at 0x1118.",
+    "Written from the manufacturer's manual (Chinese); not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 115200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Smart sleep voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4096,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell undervoltage protection",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4100,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell undervoltage recovery",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4104,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell overvoltage protection",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4108,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell overvoltage recovery",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4112,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Balance trigger voltage difference",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4116,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "SOC 100% voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4120,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "SOC 0% voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4124,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Recommended charge voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4128,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Float voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4132,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Auto shutdown voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4136,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Continuous charge current",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4140,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mA"
+    },
+    {
+      "name": "Charge overcurrent protection delay",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4144,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Charge overcurrent protection release time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4148,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Continuous discharge current",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4152,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mA"
+    },
+    {
+      "name": "Discharge overcurrent protection delay",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4156,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Discharge overcurrent protection release time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4160,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Short-circuit protection release time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4164,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Maximum balance current",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4168,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mA"
+    },
+    {
+      "name": "Charge over-temperature protection",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4172,
+      "type": "int32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Charge over-temperature recovery",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4176,
+      "type": "int32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Discharge over-temperature protection",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4180,
+      "type": "int32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Discharge over-temperature recovery",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4184,
+      "type": "int32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Charge low-temperature protection",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4188,
+      "type": "int32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Charge low-temperature recovery",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4192,
+      "type": "int32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "MOS over-temperature protection",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4196,
+      "type": "int32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "MOS over-temperature recovery",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4200,
+      "type": "int32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Cell count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4204,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big"
+    },
+    {
+      "name": "Charge switch",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4208,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Discharge switch",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4212,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Balance switch",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4216,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Battery design capacity",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4220,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mAh"
+    },
+    {
+      "name": "Short-circuit protection delay",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4224,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µs"
+    },
+    {
+      "name": "Balance start voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4228,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Connection wire resistance 0",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4232,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4236,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4240,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 3",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4244,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 4",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4248,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 5",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4252,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 6",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4256,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 7",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4260,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 8",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4264,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 9",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4268,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 10",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4272,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 11",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4276,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 12",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4280,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 13",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4284,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 14",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4288,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 15",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4292,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 16",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4296,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 17",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4300,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 18",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4304,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 19",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4308,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 20",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4312,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 21",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4316,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 22",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4320,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 23",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4324,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 24",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4328,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 25",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4332,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 26",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4336,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 27",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4340,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 28",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4344,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 29",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4348,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 30",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4352,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Connection wire resistance 31",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4356,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "µΩ"
+    },
+    {
+      "name": "Device address",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4360,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "description": "Modbus slave address (the manual's unit column says H)"
+    },
+    {
+      "name": "Discharge pre-charge time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4364,
+      "type": "uint32",
+      "access": "RW",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Setting flags",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit field: see the individual bits"
+    },
+    {
+      "name": "Setting: heating enable",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 0
+    },
+    {
+      "name": "Setting: temperature sensor disable",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 1
+    },
+    {
+      "name": "Setting: gPS heartbeat",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 2
+    },
+    {
+      "name": "Setting: port function (1 RS485, 0 CAN)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 3
+    },
+    {
+      "name": "Setting: lCD always on",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 4
+    },
+    {
+      "name": "Setting: special charger recognition",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 5
+    },
+    {
+      "name": "Setting: smart sleep",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 6
+    },
+    {
+      "name": "Setting: disable parallel current limiting",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 7
+    },
+    {
+      "name": "Setting: timed data storage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 8
+    },
+    {
+      "name": "Setting: charging float mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4372,
+      "type": "bool",
+      "access": "RW",
+      "bit": 9
+    },
+    {
+      "name": "Cell voltage 0",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4608,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4610,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4612,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4614,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 4",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4616,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 5",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4618,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 6",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4620,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 7",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4622,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 8",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4624,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 9",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4626,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 10",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4628,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 11",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4630,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 12",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4632,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 13",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4634,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 14",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4636,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 15",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4638,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 16",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4640,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 17",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4642,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 18",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4644,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 19",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4646,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 20",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4648,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 21",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4650,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 22",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4652,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 23",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4654,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 24",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4656,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 25",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4658,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 26",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4660,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 27",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4662,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 28",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4664,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 29",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4666,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 30",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4668,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell voltage 31",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4670,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell present",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4672,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "description": "Bit n set means cell n is present"
+    },
+    {
+      "name": "Average cell voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4676,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Maximum cell voltage difference",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4678,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Cell with the lowest voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4680,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of the cell; second byte of the register",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "Cell with the highest voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4680,
+      "type": "uint16",
+      "access": "R",
+      "description": "Number of the cell; first byte of the register",
+      "bit": 8,
+      "bits": 8
+    },
+    {
+      "name": "Balance wire resistance 0",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4682,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4684,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4686,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4688,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 4",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4690,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 5",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4692,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 6",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4694,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 7",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4696,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 8",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4698,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 9",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4700,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 10",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4702,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 11",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4704,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 12",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4706,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 13",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4708,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 14",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4710,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 15",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4712,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 16",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4714,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 17",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4716,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 18",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4718,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 19",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4720,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 20",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4722,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 21",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4724,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 22",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4726,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 23",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4728,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 24",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4730,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 25",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4732,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 26",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4734,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 27",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4736,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 28",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4738,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 29",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4740,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 30",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4742,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Balance wire resistance 31",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4744,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mΩ"
+    },
+    {
+      "name": "Power board temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4746,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Balance wire resistance alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4748,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "description": "Bit n set means balance wire n is in alarm"
+    },
+    {
+      "name": "Battery voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4752,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Battery power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4756,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "mW"
+    },
+    {
+      "name": "Battery current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4760,
+      "type": "int32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "mA"
+    },
+    {
+      "name": "Battery temperature 1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4764,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Battery temperature 2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4766,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Alarms",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4768,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "description": "Bit field (1 = fault): see the individual bits"
+    },
+    {
+      "name": "Alarm: charge MOSFET fault",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4768,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm: discharge MOSFET fault",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4768,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm: gPS disconnected",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4768,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Alarm: change the authorisation password",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4768,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Alarm: discharge on failed",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4768,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Alarm: battery over-temperature alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4768,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Alarm: balance wire resistance too high",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Alarm: mOS over-temperature protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Alarm: cell count differs from setting",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Alarm: current sensor fault",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Alarm: cell overvoltage protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Alarm: battery overvoltage protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Alarm: charge overcurrent protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Alarm: charge short-circuit protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Alarm: charge over-temperature protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Alarm: charge low-temperature protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Alarm: internal communication fault",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Alarm: cell undervoltage protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 11
+    },
+    {
+      "name": "Alarm: battery undervoltage protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 12
+    },
+    {
+      "name": "Alarm: discharge overcurrent protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 13
+    },
+    {
+      "name": "Alarm: discharge short-circuit protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 14
+    },
+    {
+      "name": "Alarm: discharge over-temperature protection",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4769,
+      "type": "bool",
+      "access": "R",
+      "bit": 15
+    },
+    {
+      "name": "Balance current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4772,
+      "type": "int16",
+      "access": "R",
+      "unit": "mA"
+    },
+    {
+      "name": "State of charge",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4774,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "Second byte of the register",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "Balance state",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4774,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "Charging",
+        "2": "Discharging"
+      },
+      "description": "First byte of the register",
+      "bit": 8,
+      "bits": 8
+    },
+    {
+      "name": "Remaining capacity",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4776,
+      "type": "int32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "mAh"
+    },
+    {
+      "name": "Actual battery capacity",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4780,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "mAh"
+    },
+    {
+      "name": "Cycle count",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4784,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big"
+    },
+    {
+      "name": "Total cycle capacity",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4788,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "mAh"
+    },
+    {
+      "name": "Pre-charge state",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4792,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "Second byte of the register",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "State of health",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4792,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "First byte of the register",
+      "bit": 8,
+      "bits": 8
+    },
+    {
+      "name": "User alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4794,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Run time",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4796,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Discharge state",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4800,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "Second byte of the register",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "Charge state",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4800,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "First byte of the register",
+      "bit": 8,
+      "bits": 8
+    },
+    {
+      "name": "User alarm 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 4802,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Discharge overcurrent protection release timer",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4804,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Discharge short-circuit protection release timer",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4806,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Charge overcurrent protection release timer",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4808,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Charge short-circuit protection release timer",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4810,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Cell undervoltage protection release timer",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4812,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Cell overvoltage protection release timer",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4814,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Heating state",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4816,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "Second byte of the register",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "MOS temperature sensor present",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4816,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = present, 0 = missing; first byte of the register",
+      "bit": 8
+    },
+    {
+      "name": "Battery temperature sensor 1 present",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4816,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = present, 0 = missing; first byte of the register",
+      "bit": 9
+    },
+    {
+      "name": "Battery temperature sensor 2 present",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4816,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = present, 0 = missing; first byte of the register",
+      "bit": 10
+    },
+    {
+      "name": "Battery temperature sensor 3 present",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4816,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = present, 0 = missing; first byte of the register",
+      "bit": 11
+    },
+    {
+      "name": "Battery temperature sensor 4 present",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4816,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = present, 0 = missing; first byte of the register",
+      "bit": 12
+    },
+    {
+      "name": "Battery temperature sensor 5 present",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4816,
+      "type": "bool",
+      "access": "R",
+      "description": "1 = present, 0 = missing; first byte of the register",
+      "bit": 13
+    },
+    {
+      "name": "Emergency switch time",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4820,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Discharge current correction factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4822,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Charge current sensor voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4824,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Discharge current sensor voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4826,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Battery voltage correction factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4828,
+      "type": "float32",
+      "access": "R",
+      "word_order": "big"
+    },
+    {
+      "name": "Battery voltage (0.01 V)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4836,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Heating current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4838,
+      "type": "int16",
+      "access": "R",
+      "unit": "mA"
+    },
+    {
+      "name": "Charger plugged",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4846,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Not plugged",
+        "1": "Plugged"
+      },
+      "description": "Second byte of the register",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "System run ticks",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4848,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "s",
+      "scale": 0.1
+    },
+    {
+      "name": "Battery temperature 3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4856,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Battery temperature 4",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4858,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "Battery temperature 5",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4860,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "scale": 0.1
+    },
+    {
+      "name": "RTC counter",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4864,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "s",
+      "description": "Seconds since 2020-01-01"
+    },
+    {
+      "name": "Time to enter sleep",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4872,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Parallel current-limiting module state",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4876,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      },
+      "description": "First byte of the register",
+      "bit": 8,
+      "bits": 8
+    },
+    {
+      "name": "Manufacturer device ID",
+      "group": "Identification",
+      "area": "holding",
+      "address": 5120,
+      "type": "string",
+      "access": "R",
+      "length": 8,
+      "role": "model"
+    },
+    {
+      "name": "Hardware version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 5136,
+      "type": "string",
+      "access": "R",
+      "length": 4
+    },
+    {
+      "name": "Software version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 5144,
+      "type": "string",
+      "access": "R",
+      "length": 4,
+      "role": "firmware"
+    },
+    {
+      "name": "Total running time",
+      "group": "Identification",
+      "area": "holding",
+      "address": 5152,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big",
+      "unit": "s"
+    },
+    {
+      "name": "Power-on count",
+      "group": "Identification",
+      "area": "holding",
+      "address": 5156,
+      "type": "uint32",
+      "access": "R",
+      "word_order": "big"
+    },
+    {
+      "name": "Voltage calibration",
+      "group": "Commands",
+      "area": "holding",
+      "address": 5632,
+      "type": "uint32",
+      "access": "W",
+      "word_order": "big",
+      "unit": "mV"
+    },
+    {
+      "name": "Shutdown",
+      "group": "Commands",
+      "area": "holding",
+      "address": 5636,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Current calibration",
+      "group": "Commands",
+      "area": "holding",
+      "address": 5638,
+      "type": "uint32",
+      "access": "W",
+      "word_order": "big",
+      "unit": "mA"
+    },
+    {
+      "name": "One-key setup: NMC (LI-ION)",
+      "group": "Commands",
+      "area": "holding",
+      "address": 5642,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "One-key setup: LiFePO4",
+      "group": "Commands",
+      "area": "holding",
+      "address": 5644,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "One-key setup: LTO",
+      "group": "Commands",
+      "area": "holding",
+      "address": 5646,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Emergency start",
+      "group": "Commands",
+      "area": "holding",
+      "address": 5648,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Time calibration",
+      "group": "Commands",
+      "area": "holding",
+      "address": 5650,
+      "type": "uint32",
+      "access": "W",
+      "word_order": "big"
+    }
+  ]
+}
