@@ -3,71 +3,1301 @@
   "mbmap": 2,
   "vendor": "Masibus",
   "model": "PM2160 3P3W",
-  "models": ["PM2160 3P3W"],
+  "models": [
+    "PM2160 3P3W"
+  ],
   "vendor_website": "masibus.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table masibus/pm2160-3p3w; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/masibus-pm2160-3p3w.htm. Not verified against the manufacturer's documentation",
+  "revision": 3,
+  "source": "Masibus PM2160-A User's Manual, doc. ref. m20Aom201, issue 02",
   "notes": [
-    "Masibus PM2160 3P3W.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Modbus RTU on RS-485, 9600/19200/38400 baud (selectable), 1 start bit, 1 stop bit; slave address 1-247 set on the meter. Function 04 reads the measurements, 03 reads and 06 writes the configuration. Master time-out: 4 s or more.",
+    "Addresses are the manual's 3xxxx/4xxxx references minus 30001/40001, i.e. wire addresses starting at 0. Measurements are two registers each; read an even number of registers.",
+    "Data type is selected by configuration register 40121: 1 = Long (integer, multiply by the factor in the \"scale\" column), 0 = Real (IEEE float, the value is then already in the shown unit). This map describes the Long format. The manual says to use \"swapped long\" / \"swapped float\" in the master, taken here as the low word first. Real mode uses the same addresses.",
+    "Energy and demand are in kilo units after the factor (kWh, kvarh, kVAh). Signedness of the Long values is not stated: unsigned is assumed.",
+    "Addresses not in the map, and registers marked Reserved, must be ignored; those not listed are used in 3P4W mode only.",
+    "The compact block at 32001 repeats the main totals in one contiguous read. The manual leaves the names of 32029 and 32031 blank: they are taken to be total Varh import and export, following the order of the main table.",
+    "Written from the manufacturer's manual; not tested on a device."
   ],
   "byte_order": "big",
-  "word_order": "big",
+  "word_order": "little",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "1 2. Pf", "area": "holding", "address": 2, "type": "uint32", "access": "R"},
-    {"name": "3 2. Pf", "area": "holding", "address": 6, "type": "uint32", "access": "R"},
-    {"name": "A. Pf", "area": "holding", "address": 8, "type": "uint32", "access": "R"},
-    {"name": "Vrms 12", "area": "holding", "address": 10, "type": "uint32", "access": "R"},
-    {"name": "Vrms 3*1", "area": "holding", "address": 12, "type": "uint32", "access": "R"},
-    {"name": "Vrms 2*3", "area": "holding", "address": 14, "type": "uint32", "access": "R"},
-    {"name": "A vrms", "area": "holding", "address": 16, "type": "uint32", "access": "R"},
-    {"name": "1. Irms (24)", "area": "holding", "address": 24, "type": "uint32", "access": "R"},
-    {"name": "3. Irms", "area": "holding", "address": 28, "type": "uint32", "access": "R"},
-    {"name": "A. Irms", "area": "holding", "address": 30, "type": "uint32", "access": "R"},
-    {"name": "1 2. Watt", "area": "holding", "address": 34, "type": "uint32", "access": "R"},
-    {"name": "3 2. Watt", "area": "holding", "address": 38, "type": "uint32", "access": "R"},
-    {"name": "S. Watt", "area": "holding", "address": 40, "type": "uint32", "access": "R"},
-    {"name": "1 2. Var", "area": "holding", "address": 42, "type": "uint32", "access": "R"},
-    {"name": "3 2. Var", "area": "holding", "address": 46, "type": "uint32", "access": "R"},
-    {"name": "S. Var", "area": "holding", "address": 48, "type": "uint32", "access": "R"},
-    {"name": "1 2. Va", "area": "holding", "address": 50, "type": "uint32", "access": "R"},
-    {"name": "3 2. Va", "area": "holding", "address": 54, "type": "uint32", "access": "R"},
-    {"name": "S. Va", "area": "holding", "address": 56, "type": "uint32", "access": "R"},
-    {"name": "1 2. Wh import", "area": "holding", "address": 58, "type": "uint32", "access": "R"},
-    {"name": "3 2. Wh import", "area": "holding", "address": 62, "type": "uint32", "access": "R"},
-    {"name": "T. Wh import", "area": "holding", "address": 64, "type": "uint32", "access": "R"},
-    {"name": "1 2. Wh export", "area": "holding", "address": 66, "type": "uint32", "access": "R"},
-    {"name": "3 2. Wh export", "area": "holding", "address": 70, "type": "uint32", "access": "R"},
-    {"name": "T. Wh export", "area": "holding", "address": 72, "type": "uint32", "access": "R"},
-    {"name": "1 2. Varh import", "area": "holding", "address": 74, "type": "uint32", "access": "R"},
-    {"name": "3 2. Varh import", "area": "holding", "address": 78, "type": "uint32", "access": "R"},
-    {"name": "T. Varh import", "area": "holding", "address": 80, "type": "uint32", "access": "R"},
-    {"name": "1 2. Varh export", "area": "holding", "address": 82, "type": "uint32", "access": "R"},
-    {"name": "3 2. Varh export", "area": "holding", "address": 86, "type": "uint32", "access": "R"},
-    {"name": "T. Varh export", "area": "holding", "address": 88, "type": "uint32", "access": "R"},
-    {"name": "1 2. Vah", "area": "holding", "address": 90, "type": "uint32", "access": "R"},
-    {"name": "3 2. Vah", "area": "holding", "address": 94, "type": "uint32", "access": "R"},
-    {"name": "T. Vah", "area": "holding", "address": 96, "type": "uint32", "access": "R"},
-    {"name": "Rising demand", "area": "holding", "address": 98, "type": "uint32", "access": "R"},
-    {"name": "Real date", "area": "holding", "address": 100, "type": "uint32", "access": "R"},
-    {"name": "Real time", "area": "holding", "address": 102, "type": "uint32", "access": "R"},
-    {"name": "Maximum demand", "area": "holding", "address": 104, "type": "uint32", "access": "R"},
-    {"name": "Md date", "area": "holding", "address": 106, "type": "uint32", "access": "R"},
-    {"name": "Md time", "area": "holding", "address": 108, "type": "uint32", "access": "R"},
-    {"name": "1 2. Phase angle", "area": "holding", "address": 110, "type": "uint32", "access": "R"},
-    {"name": "3 2. Phase angle", "area": "holding", "address": 114, "type": "uint32", "access": "R"},
-    {"name": "V. Unbalance", "area": "holding", "address": 116, "type": "uint32", "access": "R"},
-    {"name": "1. Unbalance", "area": "holding", "address": 118, "type": "uint32", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 2000, "type": "uint32", "access": "R"},
-    {"name": "1. Vrms", "area": "holding", "address": 2002, "type": "uint32", "access": "R"},
-    {"name": "2. Vrms", "area": "holding", "address": 2004, "type": "uint32", "access": "R"},
-    {"name": "3. Vrms", "area": "holding", "address": 2006, "type": "uint32", "access": "R"},
-    {"name": "A. Vrms", "area": "holding", "address": 2008, "type": "uint32", "access": "R"},
-    {"name": "1. Irms (2010)", "area": "holding", "address": 2010, "type": "uint32", "access": "R"}
-  ]
+    {
+      "name": "Frequency",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 0,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "L1-L2 PF",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 2,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.001
+    },
+    {
+      "name": "L3-L2 PF",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 6,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.001
+    },
+    {
+      "name": "Average PF",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 8,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.001
+    },
+    {
+      "name": "Vrms L1-L2",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 10,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Vrms L3-L1",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 12,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Vrms L2-L3",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 14,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Average Vrms",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 16,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "L1 Irms",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 24,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A"
+    },
+    {
+      "name": "L3 Irms",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 28,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A"
+    },
+    {
+      "name": "Average Irms",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 30,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.001,
+      "unit": "A"
+    },
+    {
+      "name": "L1-L2 Watt",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 34,
+      "access": "R",
+      "type": "uint32",
+      "unit": "W"
+    },
+    {
+      "name": "L3-L2 Watt",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 38,
+      "access": "R",
+      "type": "uint32",
+      "unit": "W"
+    },
+    {
+      "name": "Total Watt",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 40,
+      "access": "R",
+      "type": "uint32",
+      "unit": "W"
+    },
+    {
+      "name": "L1-L2 Var",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 42,
+      "access": "R",
+      "type": "uint32",
+      "unit": "var"
+    },
+    {
+      "name": "L3-L2 Var",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 46,
+      "access": "R",
+      "type": "uint32",
+      "unit": "var"
+    },
+    {
+      "name": "Total Var",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 48,
+      "access": "R",
+      "type": "uint32",
+      "unit": "var"
+    },
+    {
+      "name": "L1-L2 VA",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 50,
+      "access": "R",
+      "type": "uint32",
+      "unit": "VA"
+    },
+    {
+      "name": "L3-L2 VA",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 54,
+      "access": "R",
+      "type": "uint32",
+      "unit": "VA"
+    },
+    {
+      "name": "Total VA",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 56,
+      "access": "R",
+      "type": "uint32",
+      "unit": "VA"
+    },
+    {
+      "name": "L1-L2 Wh-Import",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 58,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "L3-L2 Wh-Import",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 62,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Total Wh-Import",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 64,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "L1-L2 Wh-Export",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 66,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "L3-L2 Wh-Export",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 70,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Total Wh-Export",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 72,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "L1-L2 Varh-Import",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 74,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh"
+    },
+    {
+      "name": "L3-L2 Varh-Import",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 78,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh"
+    },
+    {
+      "name": "Total Varh-Import",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 80,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh"
+    },
+    {
+      "name": "L1-L2 Varh-Export",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 82,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh"
+    },
+    {
+      "name": "L3-L2 Varh-Export",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 86,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh"
+    },
+    {
+      "name": "Total Varh-Export",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 88,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kvarh"
+    },
+    {
+      "name": "L1-L2 Vah",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 90,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVAh"
+    },
+    {
+      "name": "L3-L2 Vah",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 94,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVAh"
+    },
+    {
+      "name": "Total Vah",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 96,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1,
+      "unit": "kVAh"
+    },
+    {
+      "name": "Rising Demand",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 98,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1
+    },
+    {
+      "name": "Maximum Demand",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 104,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.1
+    },
+    {
+      "name": "L1-L2 Phase Angle",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 110,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "°"
+    },
+    {
+      "name": "L3-L2 Phase Angle",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 114,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "°"
+    },
+    {
+      "name": "V.Unbalance",
+      "group": "Instantaneous",
+      "area": "input",
+      "address": 116,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Wh I -ovcnt",
+      "group": "Energy overflow counters",
+      "area": "input",
+      "address": 149,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "Wh E-ovcnt",
+      "group": "Energy overflow counters",
+      "area": "input",
+      "address": 150,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "VARh I-ovcnt",
+      "group": "Energy overflow counters",
+      "area": "input",
+      "address": 151,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "VARh E-ovcnt",
+      "group": "Energy overflow counters",
+      "area": "input",
+      "address": 152,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "VAh -ovcnt",
+      "group": "Energy overflow counters",
+      "area": "input",
+      "address": 153,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "3rd VrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 199,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "5th VrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 201,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "7th VrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 203,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "9th VrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 205,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "11th VrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 207,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "13th VrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 209,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "15th VrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 211,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Total Vrthd",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 213,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "3rd VbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 231,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "5th VbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 233,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "7th VbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 235,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "9th VbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 237,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "11th VbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 239,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "13th VbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 241,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "15th VbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 243,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Total Vbthd",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 245,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "3rd IrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 247,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "5th IrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 249,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "7th IrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 251,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "9th IrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 253,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "11th IrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 255,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "13th IrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 257,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "15th IrHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 259,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Total Irthd",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 261,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "3rd IbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 279,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "5th IbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 281,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "7th IbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 283,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "9th IbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 285,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "11th IbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 287,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "13th IbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 289,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "15th IbHar",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 291,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "Total Ibthd",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 293,
+      "access": "R",
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "ON HOUR",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 300,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "ON MIN",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 301,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "LOAD HOUR",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 302,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "LOAD MIN",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 303,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "IDLE HOUR",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 304,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "IDLE MIN",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 305,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "PWR INTR.COUNT",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 306,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "IMPORT RUN HOUR",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 307,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "IMPORT RUN MIN",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 308,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "EXPORT RUN HOUR",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 309,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "EXPORT RUN MIN",
+      "group": "Run hours and interruptions",
+      "area": "input",
+      "address": 310,
+      "access": "R",
+      "type": "uint16"
+    },
+    {
+      "name": "Power Off Date",
+      "group": "Power on/off log",
+      "area": "input",
+      "address": 349,
+      "access": "R",
+      "type": "uint32",
+      "description": "Date as DDMMYY, e.g. 250112 = 25/01/12."
+    },
+    {
+      "name": "Power Off Time",
+      "group": "Power on/off log",
+      "area": "input",
+      "address": 351,
+      "access": "R",
+      "type": "uint32",
+      "description": "Time as HHMMSS, e.g. 135015 = 13:50:15."
+    },
+    {
+      "name": "Power On Date",
+      "group": "Power on/off log",
+      "area": "input",
+      "address": 353,
+      "access": "R",
+      "type": "uint32",
+      "description": "Date as DDMMYY, e.g. 250112 = 25/01/12."
+    },
+    {
+      "name": "Power On Time",
+      "group": "Power on/off log",
+      "area": "input",
+      "address": 355,
+      "access": "R",
+      "type": "uint32",
+      "description": "Time as HHMMSS, e.g. 135015 = 13:50:15."
+    },
+    {
+      "name": "Frequency (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2000,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Vrms L1-L2 (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2002,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Vrms L3-L1 (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2004,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Vrms L2-L3 (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2006,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Average Vrms (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2008,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "L1 Irms (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2010,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "A"
+    },
+    {
+      "name": "L3 Irms (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2014,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "A"
+    },
+    {
+      "name": "Average Irms (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2016,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "A"
+    },
+    {
+      "name": "Total Watt (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2018,
+      "type": "uint32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Total Var (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2020,
+      "type": "uint32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Total VA (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2022,
+      "type": "uint32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Total Wh-Import (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2024,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Total Wh-Export (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2026,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Total Varh-Import (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2028,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kvarh"
+    },
+    {
+      "name": "Total Varh-Export (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2030,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kvarh"
+    },
+    {
+      "name": "Total Vah (compact block)",
+      "group": "Compact block",
+      "area": "input",
+      "address": 2032,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kVAh"
+    },
+    {
+      "name": "Password",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 100,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Password 1-9999."
+    },
+    {
+      "name": "Slave address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 102,
+      "type": "uint16",
+      "access": "RW",
+      "description": "9600, 19200 or 38400."
+    },
+    {
+      "name": "Energy type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 103,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Energy shown on the pulse output: 0 kWh import, 1 kWh export, 2 kvarh import, 3 kvarh export, 4 kVAh, 5 MWh import, 6 MWh export, 7 Mvarh import, 8 Mvarh export, 9 MVAh."
+    },
+    {
+      "name": "System type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 104,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = 3P4W, 1 = 3P3W."
+    },
+    {
+      "name": "PF1 type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 105,
+      "type": "uint16",
+      "access": "R",
+      "description": "Read only. 0 unity, 1 lag, 2 lead."
+    },
+    {
+      "name": "PF2 type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 106,
+      "type": "uint16",
+      "access": "R",
+      "description": "Read only (3P4W only). 0 unity, 1 lag, 2 lead."
+    },
+    {
+      "name": "PF3 type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 107,
+      "type": "uint16",
+      "access": "R",
+      "description": "Read only. 0 unity, 1 lag, 2 lead."
+    },
+    {
+      "name": "Total PF type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "R",
+      "description": "Read only. 0 unity, 1 lag, 2 lead."
+    },
+    {
+      "name": "CT ratio high word",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 109,
+      "type": "uint16",
+      "access": "RW",
+      "description": "CT ratio x1000 (1.000-9999.999) split in two registers; for 1234.567 write 1234567 = 0x12D687: 0x0012 here and 0xD687 in the low register."
+    },
+    {
+      "name": "CT ratio low word",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 110,
+      "type": "uint16",
+      "access": "RW",
+      "description": "See CT ratio high word."
+    },
+    {
+      "name": "PT ratio high word",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 111,
+      "type": "uint16",
+      "access": "RW",
+      "description": "PT ratio x1000 (1.000-9999.999), split like the CT ratio."
+    },
+    {
+      "name": "PT ratio low word",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 112,
+      "type": "uint16",
+      "access": "RW",
+      "description": "See PT ratio high word."
+    },
+    {
+      "name": "Rated voltage",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 113,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Rated current",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 114,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 or 5 A.",
+      "unit": "A"
+    },
+    {
+      "name": "Pulse constant",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 115,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pulses per kWh, multiples of 100."
+    },
+    {
+      "name": "Data type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 120,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = Real (float), 1 = Long (integer with the multiplication factor)."
+    },
+    {
+      "name": "Demand type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 121,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 or 1 (not described further in the manual)."
+    },
+    {
+      "name": "Demand method",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 122,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 or 1 (not described further in the manual)."
+    },
+    {
+      "name": "Demand interval time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 123,
+      "type": "uint16",
+      "access": "RW",
+      "description": "15 or 30 minutes."
+    },
+    {
+      "name": "Demand sub-interval time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 124,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Sliding window only: 1, 3 or 5 for 15 minutes; 1, 2, 3, 5, 6 or 10 for 30 minutes."
+    },
+    {
+      "name": "Real time seconds and minutes",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 125,
+      "type": "uint16",
+      "access": "RW",
+      "description": "SSMM."
+    },
+    {
+      "name": "Real time hour and date",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 126,
+      "type": "uint16",
+      "access": "RW",
+      "description": "HHDD."
+    },
+    {
+      "name": "Real time month and year",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 127,
+      "type": "uint16",
+      "access": "RW",
+      "description": "MMYY."
+    },
+    {
+      "name": "Reset individual register",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 128,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write only: 77 Wh import, 78 Wh export, 79 varh import, 80 varh export, 81 all energy, 82 hours (on, load, idle), 83 power interruption count, 84 maximum demand."
+    },
+    {
+      "name": "Reset all",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 129,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 85 to reset all parameters."
+    }
+  ],
+  "revised": "2026-11-15",
+  "description": "Multifunction power meter: phase and total voltages, currents, powers, energy, harmonics, demand and configuration",
+  "sources": [
+    {
+      "title": "PM2160-A Multifunction Meter User's Manual",
+      "version": "Doc. ref. m20Aom201, issue 02",
+      "url": "https://www.manualslib.com/manual/1735110/Masibus-Pm2160-A.html",
+      "note": "Section 7, Modbus details: 7.1 (3P4W map), 7.2 (3P3W map), 7.3 (configuration); attached to issues #301 and #302",
+      "accessed": "2026-11-15",
+      "sha256": "96c46d89928f39132bc531b5dc1ab7d5c006f6abb58eae3c451354339bb9a84e"
+    }
+  ],
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "stopbits": 1
 }
