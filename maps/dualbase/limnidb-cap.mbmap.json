@@ -1,0 +1,172 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Dualbase",
+  "model": "LimniDB-CAP",
+  "models": [
+    "LimniDB-CAP"
+  ],
+  "vendor_website": "dualbase.com.br",
+  "description": "Ceramic capacitive submersible level sensor (absolute or differential pressure) with RS-485 Modbus RTU and optional SDI-12: pressure, temperature, unit and calibration coefficients",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "Dualbase LimniDB-CAP Manual de Instruções, v1.0 (10/09/2026)",
+  "sources": [
+    {
+      "title": "LimniDB-CAP Manual de Instruções",
+      "version": "1.0 (hardware 7.x, firmware R22)",
+      "url": "https://dualbase.com.br/manuais/limnidb-cap/manual.html",
+      "note": "Section 11, Modbus reference",
+      "accessed": "2026-11-15",
+      "sha256": "5d4c5132ee3079bca8fbafcb91789bd288fed8aac9e4b64a354d4f24b81c22ab"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS-485, half duplex, 9600 8N1, slave address 1 at the factory. Functions 03, 06 and 16 only; supply 8 to 28 V DC.",
+    "Addresses are in decimal, base 0, as in the protocol. Floats take two registers (IEEE 754); strings take one register per two ASCII characters.",
+    "Reading the pressure or temperature registers (addresses below 10) triggers a new measurement before the reply.",
+    "The identification registers (256 to 335) can only be written with the manufacturer's write-unlock procedure.",
+    "The manual does not state the byte or word order of the floats; big-endian is assumed here.",
+    "Written from the manufacturer's manual (Portuguese); not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Pressure (level)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set in the Unit register (default mH₂O); reading starts a new measurement"
+    },
+    {
+      "name": "Temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "access": "R",
+      "description": "Reading starts a new measurement",
+      "unit": "°C"
+    },
+    {
+      "name": "Slave address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 255,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Factory 1"
+    },
+    {
+      "name": "Model",
+      "group": "Identification",
+      "area": "holding",
+      "address": 256,
+      "type": "string",
+      "access": "R",
+      "description": "16 characters; writable only with the manufacturer unlock",
+      "length": 8,
+      "role": "model"
+    },
+    {
+      "name": "Measuring range",
+      "group": "Identification",
+      "area": "holding",
+      "address": 272,
+      "type": "string",
+      "access": "R",
+      "description": "16 characters",
+      "length": 8
+    },
+    {
+      "name": "Serial number",
+      "group": "Identification",
+      "area": "holding",
+      "address": 288,
+      "type": "string",
+      "access": "R",
+      "description": "8 characters",
+      "length": 4,
+      "role": "serial"
+    },
+    {
+      "name": "Hardware version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 304,
+      "type": "string",
+      "access": "R",
+      "description": "8 characters",
+      "length": 4
+    },
+    {
+      "name": "Firmware version",
+      "group": "Identification",
+      "area": "holding",
+      "address": 320,
+      "type": "string",
+      "access": "R",
+      "description": "8 characters",
+      "length": 4,
+      "role": "firmware"
+    },
+    {
+      "name": "Unit",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 336,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Factory 7 (mH₂O). Not the same as the SDI-12 XU codes",
+      "enum": {
+        "0": "bar",
+        "1": "mbar",
+        "2": "kPa",
+        "3": "inHg",
+        "4": "mmHg",
+        "5": "atm",
+        "6": "psi",
+        "7": "mH₂O",
+        "8": "cmH₂O",
+        "9": "inH₂O",
+        "10": "ftH₂O"
+      }
+    },
+    {
+      "name": "Coefficient A (multiplier)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 352,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Coefficient B (offset)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 368,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Measuring range code",
+      "group": "Identification",
+      "area": "holding",
+      "address": 400,
+      "type": "uint16",
+      "access": "R",
+      "description": "Internal code"
+    }
+  ]
+}
