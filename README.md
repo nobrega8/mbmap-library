@@ -53,7 +53,7 @@ The maps in this library say how far they can be trusted in `x_status`. It is no
 pie showData
     title Maps by status
     "Verified" : 22
-    "Official" : 564
+    "Official" : 565
     "Unofficial" : 114
 ```
 <!-- status-chart:end -->
