@@ -1,0 +1,2891 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Endress+Hauser",
+  "model": "Proline Promass 100",
+  "models": [
+    "Promass 100"
+  ],
+  "vendor_website": "endress.com",
+  "description": "Coriolis mass flowmeter, Modbus RS485: mass, volume and corrected volume flow, density, temperature, viscosity and concentration, totalizers, units, process and calibration parameters, diagnostics and Modbus configuration",
+  "revision": 1,
+  "source": "Endress+Hauser, Proline Promass 100 Register information Modbus RS485, SD00154D/06/EN/02.13",
+  "firmware": "01.02.zz (the version the document applies to)",
+  "sources": [
+    {
+      "title": "Proline Promass 100, Register information Modbus RS485",
+      "version": "SD00154D/06/EN/02.13",
+      "url": "https://bdih-download.endress.com/file/a29fb7e82f020d36e0f20351e3df764a/SD00154DEN_0213.pdf",
+      "note": "chapter 3, Modbus RS485 parameter information",
+      "accessed": "2026-11-15",
+      "sha256": "a8b37f7edd50126cad8eac8551ace79775cb69044e2118c41286348664659b30"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS485. Defaults: 19200 bit/s, even parity, RTU (registers 4910-4914).",
+    "Register numbers are those of the document (Modbus Application Protocol numbering, mass flow = 2007, Modicon 32007), sent one lower (address_base 1). Read with function 03, 04 or 23; write with 06, 16 or 23.",
+    "Floats are two registers. Register 4915 sets the byte order (0-1-2-3, 3-2-1-0, 2-3-0-1 or 1-0-3-2, default 1-0-3-2); the document does not define the notation. This map assumes byte 3 is the most significant, so the default is low word first; check one value on the device.",
+    "Measured values use the units set in the System units registers (2101-2150).",
+    "String parameters (device tag, unit texts, timestamps) are left out: the document gives their start register but not their length.",
+    "Do not write non-volatile parameters cyclically: they are stored in the HistoROM, limited to about 1 million writes.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "parity": "E",
+  "stopbits": 1,
+  "baudrate": 19200,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Locking status",
+      "group": "Expert",
+      "area": "holding",
+      "address": 4918,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "256": "Hardware locked",
+        "512": "Temporarily locked"
+      }
+    },
+    {
+      "name": "Access status tooling",
+      "group": "Expert",
+      "area": "holding",
+      "address": 2178,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Operator",
+        "1": "Maintenance",
+        "2": "Service",
+        "3": "Production",
+        "4": "Development"
+      }
+    },
+    {
+      "name": "Enter access code",
+      "group": "Expert",
+      "area": "holding",
+      "address": 2177,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 9999."
+    },
+    {
+      "name": "Alarm delay",
+      "group": "Diagnostic handling",
+      "area": "holding",
+      "address": 6808,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 60."
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 044",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2757,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 046",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2756,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 144",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2081,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 192",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2022,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 274",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2755,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 392",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2023,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 592",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2024,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 832",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2759,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 833",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2762,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 834",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2761,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 835",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2760,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 912",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2758,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 913",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2754,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 944",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2082,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Assign behavior of diagnostic no. 992",
+      "group": "Diagnostic behavior",
+      "area": "holding",
+      "address": 2021,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Logbook entry only",
+        "2": "Warning",
+        "3": "Alarm"
+      }
+    },
+    {
+      "name": "Device reset",
+      "group": "Management",
+      "area": "holding",
+      "address": 6817,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Cancel",
+        "1": "Restart device",
+        "2": "To delivery settings"
+      }
+    },
+    {
+      "name": "Activate SW option",
+      "group": "Management",
+      "area": "holding",
+      "address": 2795,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Software option overview",
+      "group": "Management",
+      "area": "holding",
+      "address": 2902,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "16384": "Heartbeat Monitoring",
+        "4": "Concentration",
+        "32768": "Heartbeat Verification",
+        "64": "Viscosity"
+      }
+    },
+    {
+      "name": "Permanent storage",
+      "group": "Management",
+      "area": "holding",
+      "address": 6907,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Mass flow",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2007,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by register 2101."
+    },
+    {
+      "name": "Volume flow",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2009,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by register 2103."
+    },
+    {
+      "name": "Corrected volume flow",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2011,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by register 2105."
+    },
+    {
+      "name": "Density",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2013,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by register 2107."
+    },
+    {
+      "name": "Reference density",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2015,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by register 2108."
+    },
+    {
+      "name": "Temperature",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2017,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by register 2109."
+    },
+    {
+      "name": "Pressure value",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2089,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by register 2130."
+    },
+    {
+      "name": "Dynamic viscosity",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2019,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Kinematic viscosity",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2083,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Temp. compensated dynamic viscosity",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2093,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Temp. compensated kinematic viscosity",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2095,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Concentration",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2598,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Target mass flow",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2797,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Carrier mass flow",
+      "group": "Process variables",
+      "area": "holding",
+      "address": 2799,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Totalizer value 1",
+      "group": "Totalizer",
+      "area": "holding",
+      "address": 2610,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by the totalizer unit parameter."
+    },
+    {
+      "name": "Totalizer overflow 1",
+      "group": "Totalizer",
+      "area": "holding",
+      "address": 2612,
+      "type": "float32",
+      "access": "R",
+      "description": "Range -32000.0 to 32000.0. Unit set by the totalizer unit parameter."
+    },
+    {
+      "name": "Totalizer value 2",
+      "group": "Totalizer",
+      "area": "holding",
+      "address": 2810,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by the totalizer unit parameter."
+    },
+    {
+      "name": "Totalizer overflow 2",
+      "group": "Totalizer",
+      "area": "holding",
+      "address": 2812,
+      "type": "float32",
+      "access": "R",
+      "description": "Range -32000.0 to 32000.0. Unit set by the totalizer unit parameter."
+    },
+    {
+      "name": "Totalizer value 3",
+      "group": "Totalizer",
+      "area": "holding",
+      "address": 3010,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit set by the totalizer unit parameter."
+    },
+    {
+      "name": "Totalizer overflow 3",
+      "group": "Totalizer",
+      "area": "holding",
+      "address": 3012,
+      "type": "float32",
+      "access": "R",
+      "description": "Range -32000.0 to 32000.0. Unit set by the totalizer unit parameter."
+    },
+    {
+      "name": "Mass flow unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2101,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "g/s",
+        "1": "g/min",
+        "2": "g/h",
+        "3": "g/d",
+        "4": "kg/s",
+        "5": "kg/min",
+        "6": "kg/h",
+        "7": "kg/d",
+        "8": "t/s",
+        "9": "t/min",
+        "10": "t/h",
+        "11": "t/d",
+        "12": "oz/s",
+        "13": "oz/min",
+        "14": "oz/h",
+        "15": "oz/d",
+        "16": "lb/s",
+        "17": "lb/min",
+        "18": "lb/h",
+        "19": "lb/d",
+        "20": "STon/s",
+        "21": "STon/min",
+        "22": "STon/h",
+        "23": "STon/d",
+        "24": "User mass/s",
+        "25": "User mass/min",
+        "26": "User mass/h",
+        "27": "User mass/d"
+      }
+    },
+    {
+      "name": "Mass unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2102,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "g",
+        "1": "kg",
+        "2": "t",
+        "3": "oz",
+        "4": "lb",
+        "5": "STon",
+        "6": "User mass"
+      }
+    },
+    {
+      "name": "Volume flow unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2103,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "cm³/s",
+        "1": "cm³/min",
+        "2": "cm³/h",
+        "3": "cm³/d",
+        "4": "dm³/s",
+        "5": "dm³/min",
+        "6": "dm³/h",
+        "7": "dm³/d",
+        "8": "m³/s",
+        "9": "m³/min",
+        "10": "m³/h",
+        "11": "m³/d",
+        "12": "ml/s",
+        "13": "ml/min",
+        "14": "ml/h",
+        "15": "ml/d",
+        "16": "l/s",
+        "17": "l/min",
+        "18": "l/h",
+        "19": "l/d",
+        "20": "hl/s",
+        "21": "hl/min",
+        "22": "hl/h",
+        "23": "hl/d",
+        "24": "Ml/s",
+        "25": "Ml/min",
+        "26": "Ml/h",
+        "27": "Ml/d",
+        "32": "af/s",
+        "33": "af/min",
+        "34": "af/h",
+        "35": "af/d",
+        "36": "cf/s",
+        "37": "cf/min",
+        "38": "cf/h",
+        "39": "cf/d",
+        "40": "fl oz/s (us)",
+        "41": "fl oz/min (us)",
+        "42": "fl oz/h (us)",
+        "43": "fl oz/d (us)",
+        "44": "gal/s (us)",
+        "45": "gal/min (us)",
+        "46": "gal/h (us)",
+        "47": "gal/d (us)",
+        "48": "Mgal/s (us)",
+        "49": "Mgal/min (us)",
+        "50": "Mgal/h (us)",
+        "51": "Mgal/d (us)",
+        "52": "bbl/s (us;liq.)",
+        "53": "bbl/min (us;liq.)",
+        "54": "bbl/h (us;liq.)",
+        "55": "bbl/d (us;liq.)",
+        "56": "bbl/s (us;beer)",
+        "57": "bbl/min (us;beer)",
+        "58": "bbl/h (us;beer)",
+        "59": "bbl/d (us;beer)",
+        "60": "bbl/s (us;oil)",
+        "61": "bbl/min (us;oil)",
+        "62": "bbl/h (us;oil)",
+        "63": "bbl/d (us;oil)",
+        "64": "bbl/s (us;tank)",
+        "65": "bbl/min (us;tank)",
+        "66": "bbl/h (us;tank)",
+        "67": "bbl/d (us;tank)",
+        "68": "gal/s (imp)",
+        "69": "gal/min (imp)",
+        "70": "gal/h (imp)",
+        "71": "gal/d (imp)",
+        "72": "Mgal/s (imp)",
+        "73": "Mgal/min (imp)",
+        "74": "Mgal/h (imp)",
+        "75": "Mgal/d (imp)",
+        "80": "bbl/s (imp;oil)",
+        "81": "bbl/min (imp;oil)",
+        "82": "bbl/h (imp;oil)",
+        "83": "bbl/d (imp;oil)",
+        "84": "User vol./s",
+        "85": "User vol./min",
+        "86": "User vol./h",
+        "87": "User vol./d",
+        "88": "kgal/s (us)",
+        "89": "kgal/min (us)",
+        "90": "kgal/h (us)",
+        "91": "kgal/d (us)"
+      }
+    },
+    {
+      "name": "Volume unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2104,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "cm³",
+        "1": "dm³",
+        "2": "m³",
+        "3": "ml",
+        "4": "l",
+        "5": "hl",
+        "6": "Ml Mega",
+        "8": "af",
+        "9": "cf",
+        "10": "fl oz (us)",
+        "11": "gal (us)",
+        "12": "Mgal (us)",
+        "13": "bbl (us;liq.)",
+        "14": "bbl (us;beer)",
+        "15": "bbl (us;oil)",
+        "16": "bbl (us;tank)",
+        "17": "gal (imp)",
+        "18": "Mgal (imp)",
+        "20": "bbl (imp;oil)",
+        "21": "User vol.",
+        "22": "kgal"
+      }
+    },
+    {
+      "name": "Corrected volume flow unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2105,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Nl/s",
+        "1": "Nl/min",
+        "2": "Nl/h",
+        "3": "Nl/d",
+        "4": "Nm³/s",
+        "5": "Nm³/min",
+        "6": "Nm³/h",
+        "7": "Nm³/d",
+        "8": "Sm³/s",
+        "9": "Sm³/min",
+        "10": "Sm³/h",
+        "11": "Sm³/d",
+        "12": "Scf/s",
+        "13": "Scf/min",
+        "14": "Scf/h",
+        "15": "Scf/d",
+        "16": "Sgal/s (us)",
+        "17": "Sgal/min (us)",
+        "18": "Sgal/h (us)",
+        "19": "Sgal/d (us)",
+        "20": "Sbbl/s (us;liq.)",
+        "21": "Sbbl/min (us;liq.)",
+        "22": "Sbbl/h (us;liq.)",
+        "23": "Sbbl/d (us;liq.)",
+        "24": "Sgal/s (imp)",
+        "25": "Sgal/min (imp)",
+        "26": "Sgal/h (imp)",
+        "27": "Sgal/d (imp)",
+        "28": "User vol./s",
+        "29": "User vol/min",
+        "30": "User vol/h",
+        "31": "User vol/d"
+      }
+    },
+    {
+      "name": "Corrected volume unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2106,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Nl",
+        "1": "Nm³",
+        "2": "Sm³",
+        "3": "Scf",
+        "4": "Sl",
+        "5": "Sgal (us)",
+        "6": "Sbbl (us;liq.)",
+        "7": "Sgal (imp)",
+        "8": "UserCrVol."
+      }
+    },
+    {
+      "name": "Density unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2107,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "g/cm³",
+        "2": "kg/dm³",
+        "3": "kg/l",
+        "4": "kg/m³",
+        "5": "SD4°C",
+        "6": "SD15°C",
+        "7": "SD20°C",
+        "8": "SG4°C",
+        "9": "SG15°C",
+        "10": "SG20°C",
+        "11": "lb/cf",
+        "12": "lb/gal (us)",
+        "13": "lb/bbl (us;liq.)",
+        "14": "lb/bbl (us;beer)",
+        "15": "lb/bbl (us;oil)",
+        "16": "lb/bbl (us;tank)",
+        "17": "lb/gal (imp)",
+        "18": "lb/bbl (imp;beer)",
+        "19": "lb/bbl (imp;oil)",
+        "20": "User dens.",
+        "21": "g/m³",
+        "22": "g/ml"
+      }
+    },
+    {
+      "name": "Reference density unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2108,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "g/Scm³",
+        "1": "kg/Nl",
+        "2": "kg/Nm³",
+        "3": "kg/Sm³",
+        "4": "lb/Scf"
+      }
+    },
+    {
+      "name": "Temperature unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2109,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "°C",
+        "1": "K",
+        "2": "°F",
+        "3": "°R"
+      }
+    },
+    {
+      "name": "Pressure unit",
+      "group": "System units",
+      "area": "holding",
+      "address": 2130,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "bar a",
+        "1": "psi a",
+        "2": "bar g",
+        "3": "psi g",
+        "4": "Pa a",
+        "5": "kPa a",
+        "6": "MPa a",
+        "7": "Pa g",
+        "8": "kPa g",
+        "9": "MPa g",
+        "10": "User pres."
+      }
+    },
+    {
+      "name": "Date/time format",
+      "group": "System units",
+      "area": "holding",
+      "address": 2150,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "dd.mm.yy hh:mm",
+        "1": "mm/dd/yy hh:mm am/pm",
+        "2": "dd.mm.yy hh:mm am/pm",
+        "3": "mm/dd/yy hh:mm"
+      }
+    },
+    {
+      "name": "User mass factor",
+      "group": "User-specific units",
+      "area": "holding",
+      "address": 2115,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User volume factor",
+      "group": "User-specific units",
+      "area": "holding",
+      "address": 2119,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User corrected volume factor",
+      "group": "User-specific units",
+      "area": "holding",
+      "address": 2573,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User density offset",
+      "group": "User-specific units",
+      "area": "holding",
+      "address": 2556,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User density factor",
+      "group": "User-specific units",
+      "area": "holding",
+      "address": 2123,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User pressure offset",
+      "group": "User-specific units",
+      "area": "holding",
+      "address": 2566,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User pressure factor",
+      "group": "User-specific units",
+      "area": "holding",
+      "address": 2564,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Flow damping",
+      "group": "Process parameters",
+      "area": "holding",
+      "address": 5510,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 100.0."
+    },
+    {
+      "name": "Density damping",
+      "group": "Process parameters",
+      "area": "holding",
+      "address": 5508,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 999.9."
+    },
+    {
+      "name": "Temperature damping",
+      "group": "Process parameters",
+      "area": "holding",
+      "address": 5127,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 999.9."
+    },
+    {
+      "name": "Flow override",
+      "group": "Process parameters",
+      "area": "holding",
+      "address": 5503,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Assign process variable",
+      "group": "Low flow cut off",
+      "area": "holding",
+      "address": 5101,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Mass flow",
+        "2": "Volume flow",
+        "3": "Corrected volume flow"
+      }
+    },
+    {
+      "name": "On value low flow cutoff",
+      "group": "Low flow cut off",
+      "area": "holding",
+      "address": 5138,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Off value low flow cutoff",
+      "group": "Low flow cut off",
+      "area": "holding",
+      "address": 5104,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 100.0."
+    },
+    {
+      "name": "Pressure shock suppression",
+      "group": "Low flow cut off",
+      "area": "holding",
+      "address": 5140,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 100."
+    },
+    {
+      "name": "Assign process variable (partially filled pipe detection)",
+      "group": "Partially filled pipe detection",
+      "area": "holding",
+      "address": 5106,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "4": "Density",
+        "5": "Reference density"
+      }
+    },
+    {
+      "name": "Low value partial filled pipe detection",
+      "group": "Partially filled pipe detection",
+      "area": "holding",
+      "address": 5110,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "High value partial filled pipe detection",
+      "group": "Partially filled pipe detection",
+      "area": "holding",
+      "address": 5112,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Response time part. filled pipe detect.",
+      "group": "Partially filled pipe detection",
+      "area": "holding",
+      "address": 5108,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 100."
+    },
+    {
+      "name": "Maximum damping partial filled pipe det.",
+      "group": "Partially filled pipe detection",
+      "area": "holding",
+      "address": 2414,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Select medium",
+      "group": "Measurement mode",
+      "area": "holding",
+      "address": 2442,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Liquid",
+        "1": "Gas"
+      }
+    },
+    {
+      "name": "Select gas type",
+      "group": "Measurement mode",
+      "area": "holding",
+      "address": 5229,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Air",
+        "1": "Nitrogen N2",
+        "2": "Argon Ar",
+        "3": "Helium He",
+        "4": "Carbon dioxide CO2",
+        "5": "Oxygen O2",
+        "6": "Methane CH4",
+        "7": "Ammonia NH3",
+        "9": "Hydrogen H2",
+        "10": "Ethane C2H6",
+        "11": "Propane C3H8",
+        "12": "Butane C4H10",
+        "13": "Chlorine Cl2",
+        "14": "Hydrogen chloride HCl",
+        "15": "Carbon monoxide CO",
+        "16": "Nitrous oxide N2O",
+        "17": "Nitrogen oxide NOx",
+        "18": "Hydrogen sulfide H2S",
+        "19": "Sulfur hexafluoride SF6",
+        "20": "Propylene C3H6",
+        "21": "Ozone O3",
+        "22": "Others",
+        "23": "Ethylene C2H4"
+      }
+    },
+    {
+      "name": "Reference sound velocity",
+      "group": "Measurement mode",
+      "area": "holding",
+      "address": 7413,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 1 to 99999.9999."
+    },
+    {
+      "name": "Pressure compensation",
+      "group": "External compensation",
+      "area": "holding",
+      "address": 5184,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Fixed value",
+        "2": "External value"
+      }
+    },
+    {
+      "name": "Pressure value (external compensation)",
+      "group": "External compensation",
+      "area": "holding",
+      "address": 5185,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "External pressure",
+      "group": "External compensation",
+      "area": "holding",
+      "address": 2440,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Temperature mode",
+      "group": "External compensation",
+      "area": "holding",
+      "address": 5515,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Internal measured value",
+        "1": "External value"
+      }
+    },
+    {
+      "name": "External temperature",
+      "group": "External compensation",
+      "area": "holding",
+      "address": 2507,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range -273.15 to 99999."
+    },
+    {
+      "name": "Corrected volume flow calculation",
+      "group": "Corrected volume flow calculation",
+      "area": "holding",
+      "address": 5129,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Calculated reference density",
+        "1": "Fixed reference density",
+        "2": "External reference density",
+        "3": "Reference density by API table"
+      }
+    },
+    {
+      "name": "External reference density",
+      "group": "Corrected volume flow calculation",
+      "area": "holding",
+      "address": 2509,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Fixed reference density",
+      "group": "Corrected volume flow calculation",
+      "area": "holding",
+      "address": 5130,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Reference temperature",
+      "group": "Corrected volume flow calculation",
+      "area": "holding",
+      "address": 5136,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range -273.15 to 99999."
+    },
+    {
+      "name": "Linear expansion coefficient",
+      "group": "Corrected volume flow calculation",
+      "area": "holding",
+      "address": 5132,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Square expansion coefficient",
+      "group": "Corrected volume flow calculation",
+      "area": "holding",
+      "address": 5134,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Installation direction",
+      "group": "Sensor adjustment",
+      "area": "holding",
+      "address": 5501,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Flow in arrow direction",
+        "1": "Flow against arrow direction"
+      }
+    },
+    {
+      "name": "Zero point adjustment control",
+      "group": "Zero point adjustment",
+      "area": "holding",
+      "address": 5121,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Cancel",
+        "1": "Start",
+        "2": "Zero point adjust failure",
+        "8": "Busy"
+      }
+    },
+    {
+      "name": "Progress",
+      "group": "Zero point adjustment",
+      "area": "holding",
+      "address": 6797,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Mass flow offset",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 5521,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Mass flow factor",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 5519,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Volume flow offset",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 5525,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Volume flow factor",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 5523,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Density offset",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 5529,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Density factor",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 5527,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Corrected volume flow offset",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 2044,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Corrected volume flow factor",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 2076,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Reference density offset",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 2046,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Reference density factor",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 2042,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Temperature offset",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 5533,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Temperature factor",
+      "group": "Process variable adjustment",
+      "area": "holding",
+      "address": 5531,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Calibration factor",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 7513,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Zero point",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 7527,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "C0",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 7501,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "C1",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 7503,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "C2",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 7505,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "C3",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 7507,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "C4",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 7509,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "C5",
+      "group": "Calibration",
+      "area": "holding",
+      "address": 7511,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Oscillation frequency 0",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 9501,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Oscillation frequency 1",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 9503,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency fluctuation 0",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 2498,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency fluctuation 1",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 2500,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Oscillation amplitude 0",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 2449,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Oscillation amplitude 1",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 2451,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Oscillation damping 0",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 9505,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Oscillation damping 1",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 9507,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Tube damping fluctuation 0",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 2502,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Tube damping fluctuation 1",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 2504,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Signal asymmetry",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 2443,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Electronic temperature",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 2457,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Carrier pipe temperature",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 9513,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Exciter current 0",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 9509,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Exciter current 1",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 9511,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "RawMassFlow",
+      "group": "Testpoints",
+      "area": "holding",
+      "address": 10232,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Bus address",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4910,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1 to 247."
+    },
+    {
+      "name": "Baudrate",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4912,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1200 BAUD",
+        "1": "2400 BAUD",
+        "2": "4800 BAUD",
+        "3": "9600 BAUD",
+        "4": "19200 BAUD",
+        "5": "38400 BAUD",
+        "6": "57600 BAUD",
+        "7": "115200 BAUD"
+      }
+    },
+    {
+      "name": "Data transfer mode",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4913,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "RTU",
+        "1": "ASCII"
+      }
+    },
+    {
+      "name": "Parity",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4914,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Even",
+        "1": "Odd",
+        "2": "None / 2 stop bits",
+        "3": "None / 1 stop bit"
+      }
+    },
+    {
+      "name": "Byte order",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4915,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "0-1-2-3",
+        "1": "3-2-1-0",
+        "2": "2-3-0-1",
+        "3": "1-0-3-2"
+      }
+    },
+    {
+      "name": "Telegram delay",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4916,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 100."
+    },
+    {
+      "name": "Assign diagnostic behavior",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4921,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Warning",
+        "2": "Alarm",
+        "3": "Alarm or warning"
+      }
+    },
+    {
+      "name": "Failure mode",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4920,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "NaN value",
+        "1": "Last valid value"
+      }
+    },
+    {
+      "name": "Interpreter mode",
+      "group": "Modbus configuration",
+      "area": "holding",
+      "address": 4925,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Standard",
+        "1": "Ignore surplus bytes"
+      }
+    },
+    {
+      "name": "Scan list register 0",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5001,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 1",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5002,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 2",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5003,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 3",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5004,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 4",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5005,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 5",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5006,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 6",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5007,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 7",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5008,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 8",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5009,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 9",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5010,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 10",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5011,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 11",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5012,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 12 20",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5013,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 13",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5014,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 14",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5015,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Scan list register 15",
+      "group": "Modbus data map",
+      "area": "holding",
+      "address": 5016,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 65535."
+    },
+    {
+      "name": "Reset all totalizers",
+      "group": "Application",
+      "area": "holding",
+      "address": 2609,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Cancel",
+        "1": "Reset + totalize"
+      }
+    },
+    {
+      "name": "Assign process variable (totalizer 1)",
+      "group": "Totalizer 1",
+      "area": "holding",
+      "address": 2601,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Mass flow",
+        "2": "Volume flow",
+        "3": "Corrected volume flow",
+        "74": "Target mass flow",
+        "75": "Carrier mass flow"
+      }
+    },
+    {
+      "name": "Mass unit (totalizer 1)",
+      "group": "Totalizer 1",
+      "area": "holding",
+      "address": 2602,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "g",
+        "1": "kg",
+        "2": "t",
+        "3": "oz",
+        "4": "lb",
+        "5": "STon",
+        "6": "User mass"
+      }
+    },
+    {
+      "name": "Volume unit (totalizer 1)",
+      "group": "Totalizer 1",
+      "area": "holding",
+      "address": 2603,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "cm³",
+        "1": "dm³",
+        "2": "m³",
+        "3": "ml",
+        "4": "l",
+        "5": "hl",
+        "6": "Ml Mega",
+        "8": "af",
+        "9": "cf",
+        "10": "fl oz (us)",
+        "11": "gal (us)",
+        "12": "Mgal (us)",
+        "13": "bbl (us;liq.)",
+        "14": "bbl (us;beer)",
+        "15": "bbl (us;oil)",
+        "16": "bbl (us;tank)",
+        "17": "gal (imp)",
+        "18": "Mgal (imp)",
+        "20": "bbl (imp;oil)",
+        "21": "User vol.",
+        "22": "kgal"
+      }
+    },
+    {
+      "name": "Corrected volume unit (totalizer 1)",
+      "group": "Totalizer 1",
+      "area": "holding",
+      "address": 2604,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Nl",
+        "1": "Nm³",
+        "2": "Sm³",
+        "3": "Scf",
+        "4": "Sl",
+        "5": "Sgal (us)",
+        "6": "Sbbl (us;liq.)",
+        "7": "Sgal (imp)",
+        "8": "UserCrVol."
+      }
+    },
+    {
+      "name": "Totalizer operation mode",
+      "group": "Totalizer 1",
+      "area": "holding",
+      "address": 2605,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Net flow total",
+        "1": "Forward flow total",
+        "2": "Reverse flow total"
+      }
+    },
+    {
+      "name": "Control Totalizer 1",
+      "group": "Totalizer 1",
+      "area": "holding",
+      "address": 2608,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Totalize",
+        "1": "Reset + totalize",
+        "2": "Preset + hold",
+        "3": "Reset + hold",
+        "4": "Preset + totalize"
+      }
+    },
+    {
+      "name": "Preset value 1",
+      "group": "Totalizer 1",
+      "area": "holding",
+      "address": 2590,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Failure mode (totalizer 1)",
+      "group": "Totalizer 1",
+      "area": "holding",
+      "address": 2606,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Stop",
+        "1": "Actual value",
+        "2": "Last valid value"
+      }
+    },
+    {
+      "name": "Assign process variable (totalizer 2)",
+      "group": "Totalizer 2",
+      "area": "holding",
+      "address": 2801,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Mass flow",
+        "2": "Volume flow",
+        "3": "Corrected volume flow",
+        "74": "Target mass flow",
+        "75": "Carrier mass flow"
+      }
+    },
+    {
+      "name": "Mass unit (totalizer 2)",
+      "group": "Totalizer 2",
+      "area": "holding",
+      "address": 2802,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "g",
+        "1": "kg",
+        "2": "t",
+        "3": "oz",
+        "4": "lb",
+        "5": "STon",
+        "6": "User mass"
+      }
+    },
+    {
+      "name": "Volume unit (totalizer 2)",
+      "group": "Totalizer 2",
+      "area": "holding",
+      "address": 2803,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "cm³",
+        "1": "dm³",
+        "2": "m³",
+        "3": "ml",
+        "4": "l",
+        "5": "hl",
+        "6": "Ml Mega",
+        "8": "af",
+        "9": "cf",
+        "10": "fl oz (us)",
+        "11": "gal (us)",
+        "12": "Mgal (us)",
+        "13": "bbl (us;liq.)",
+        "14": "bbl (us;beer)",
+        "15": "bbl (us;oil)",
+        "16": "bbl (us;tank)",
+        "17": "gal (imp)",
+        "18": "Mgal (imp)",
+        "20": "bbl (imp;oil)",
+        "21": "User vol.",
+        "22": "kgal"
+      }
+    },
+    {
+      "name": "Corrected volume unit (totalizer 2)",
+      "group": "Totalizer 2",
+      "area": "holding",
+      "address": 2804,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Nl",
+        "1": "Nm³",
+        "2": "Sm³",
+        "3": "Scf",
+        "4": "Sl",
+        "5": "Sgal (us)",
+        "6": "Sbbl (us;liq.)",
+        "7": "Sgal (imp)",
+        "8": "UserCrVol."
+      }
+    },
+    {
+      "name": "Totalizer operation mode (totalizer 2)",
+      "group": "Totalizer 2",
+      "area": "holding",
+      "address": 2805,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Net flow total",
+        "1": "Forward flow total",
+        "2": "Reverse flow total"
+      }
+    },
+    {
+      "name": "Control Totalizer 2",
+      "group": "Totalizer 2",
+      "area": "holding",
+      "address": 2808,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Totalize",
+        "1": "Reset + totalize",
+        "2": "Preset + hold",
+        "3": "Reset + hold",
+        "4": "Preset + totalize"
+      }
+    },
+    {
+      "name": "Preset value 2",
+      "group": "Totalizer 2",
+      "area": "holding",
+      "address": 2592,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Failure mode (totalizer 2)",
+      "group": "Totalizer 2",
+      "area": "holding",
+      "address": 2806,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Stop",
+        "1": "Actual value",
+        "2": "Last valid value"
+      }
+    },
+    {
+      "name": "Assign process variable (totalizer 3)",
+      "group": "Totalizer 3",
+      "area": "holding",
+      "address": 3001,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Mass flow",
+        "2": "Volume flow",
+        "3": "Corrected volume flow",
+        "74": "Target mass flow",
+        "75": "Carrier mass flow"
+      }
+    },
+    {
+      "name": "Mass unit (totalizer 3)",
+      "group": "Totalizer 3",
+      "area": "holding",
+      "address": 3002,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "g",
+        "1": "kg",
+        "2": "t",
+        "3": "oz",
+        "4": "lb",
+        "5": "STon",
+        "6": "User mass"
+      }
+    },
+    {
+      "name": "Volume unit (totalizer 3)",
+      "group": "Totalizer 3",
+      "area": "holding",
+      "address": 3003,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "cm³",
+        "1": "dm³",
+        "2": "m³",
+        "3": "ml",
+        "4": "l",
+        "5": "hl",
+        "6": "Ml Mega",
+        "8": "af",
+        "9": "cf",
+        "10": "fl oz (us)",
+        "11": "gal (us)",
+        "12": "Mgal (us)",
+        "13": "bbl (us;liq.)",
+        "14": "bbl (us;beer)",
+        "15": "bbl (us;oil)",
+        "16": "bbl (us;tank)",
+        "17": "gal (imp)",
+        "18": "Mgal (imp)",
+        "20": "bbl (imp;oil)",
+        "21": "User vol.",
+        "22": "kgal"
+      }
+    },
+    {
+      "name": "Corrected volume unit (totalizer 3)",
+      "group": "Totalizer 3",
+      "area": "holding",
+      "address": 3004,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Nl",
+        "1": "Nm³",
+        "2": "Sm³",
+        "3": "Scf",
+        "4": "Sl",
+        "5": "Sgal (us)",
+        "6": "Sbbl (us;liq.)",
+        "7": "Sgal (imp)",
+        "8": "UserCrVol."
+      }
+    },
+    {
+      "name": "Totalizer operation mode (totalizer 3)",
+      "group": "Totalizer 3",
+      "area": "holding",
+      "address": 3005,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Net flow total",
+        "1": "Forward flow total",
+        "2": "Reverse flow total"
+      }
+    },
+    {
+      "name": "Control Totalizer 3",
+      "group": "Totalizer 3",
+      "area": "holding",
+      "address": 3008,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Totalize",
+        "1": "Reset + totalize",
+        "2": "Preset + hold",
+        "3": "Reset + hold",
+        "4": "Preset + totalize"
+      }
+    },
+    {
+      "name": "Preset value 3",
+      "group": "Totalizer 3",
+      "area": "holding",
+      "address": 2594,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Failure mode (totalizer 3)",
+      "group": "Totalizer 3",
+      "area": "holding",
+      "address": 3006,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Stop",
+        "1": "Actual value",
+        "2": "Last valid value"
+      }
+    },
+    {
+      "name": "Viscosity damping",
+      "group": "Viscosity",
+      "area": "holding",
+      "address": 2091,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 999.9."
+    },
+    {
+      "name": "Calculation model",
+      "group": "Temperature compensation",
+      "area": "holding",
+      "address": 9401,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Polynomial",
+        "1": "Power law",
+        "2": "Exponential"
+      }
+    },
+    {
+      "name": "Reference temperature (temperature compensation)",
+      "group": "Temperature compensation",
+      "area": "holding",
+      "address": 9402,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range -273.15 to 99999."
+    },
+    {
+      "name": "Compensation coefficient X1",
+      "group": "Temperature compensation",
+      "area": "holding",
+      "address": 9404,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Compensation coefficient X2",
+      "group": "Temperature compensation",
+      "area": "holding",
+      "address": 9406,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Dynamic viscosity unit",
+      "group": "Dynamic viscosity",
+      "area": "holding",
+      "address": 2111,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "cP",
+        "1": "P",
+        "2": "Pa s",
+        "3": "mPa s",
+        "4": "UserDynVis"
+      }
+    },
+    {
+      "name": "User dynamic viscosity factor",
+      "group": "Dynamic viscosity",
+      "area": "holding",
+      "address": 2137,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User dynamic viscosity offset",
+      "group": "Dynamic viscosity",
+      "area": "holding",
+      "address": 2139,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Kinematic viscosity unit",
+      "group": "Kinematic viscosity",
+      "area": "holding",
+      "address": 2112,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "m²/s",
+        "1": "mm²/s",
+        "2": "cSt",
+        "3": "St",
+        "4": "UserKinVis"
+      }
+    },
+    {
+      "name": "User kinematic viscosity factor",
+      "group": "Kinematic viscosity",
+      "area": "holding",
+      "address": 2143,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User kinematic viscosity offset",
+      "group": "Kinematic viscosity",
+      "area": "holding",
+      "address": 2145,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Concentration damping",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2526,
+      "type": "float32",
+      "access": "RW",
+      "description": "Range 0 to 999.9."
+    },
+    {
+      "name": "Concentration unit",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2439,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "WT-%",
+        "2": "°API",
+        "3": "°Balling",
+        "4": "°Baum (hv)",
+        "5": "°Baum (lt)",
+        "6": "°Brix",
+        "7": "°Plato",
+        "8": "User conc."
+      }
+    },
+    {
+      "name": "User concentration factor",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2554,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "User concentration offset",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2490,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "A0",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2099,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "A1",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2730,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "A2",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2972,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "A3",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2618,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "A4",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2670,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "B1",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2616,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "B2",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2656,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "B3",
+      "group": "Concentration",
+      "area": "holding",
+      "address": 2672,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Actual diagnostics",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 2732,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Previous diagnostics",
+      "group": "Diagnostics",
+      "area": "holding",
+      "address": 2734,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Diagnostics 1",
+      "group": "Diagnostic list",
+      "area": "holding",
+      "address": 2736,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Diagnostics 2",
+      "group": "Diagnostic list",
+      "area": "holding",
+      "address": 2738,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Diagnostics 3",
+      "group": "Diagnostic list",
+      "area": "holding",
+      "address": 2740,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Diagnostics 4",
+      "group": "Diagnostic list",
+      "area": "holding",
+      "address": 2742,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Diagnostics 5",
+      "group": "Diagnostic list",
+      "area": "holding",
+      "address": 2744,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Filter options",
+      "group": "Event logbook",
+      "area": "holding",
+      "address": 2639,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Failure (F)",
+        "4": "Maintenance required (M)",
+        "8": "Function check (C)",
+        "12": "Out of specification (S)",
+        "16": "Information (I)",
+        "255": "All"
+      }
+    },
+    {
+      "name": "Configuration counter",
+      "group": "Device information",
+      "area": "holding",
+      "address": 3101,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value",
+      "group": "Electronic temperature",
+      "area": "holding",
+      "address": 2421,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value",
+      "group": "Electronic temperature",
+      "area": "holding",
+      "address": 2419,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (medium temperature)",
+      "group": "Medium temperature",
+      "area": "holding",
+      "address": 7529,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (medium temperature)",
+      "group": "Medium temperature",
+      "area": "holding",
+      "address": 7531,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (carrier pipe temperature)",
+      "group": "Carrier pipe temperature",
+      "area": "holding",
+      "address": 7533,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (carrier pipe temperature)",
+      "group": "Carrier pipe temperature",
+      "area": "holding",
+      "address": 7535,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (oscillation frequency)",
+      "group": "Oscillation frequency",
+      "area": "holding",
+      "address": 2459,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (oscillation frequency)",
+      "group": "Oscillation frequency",
+      "area": "holding",
+      "address": 2468,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (torsion oscillation frequency)",
+      "group": "Torsion oscillation frequency",
+      "area": "holding",
+      "address": 2519,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (torsion oscillation frequency)",
+      "group": "Torsion oscillation frequency",
+      "area": "holding",
+      "address": 2517,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (oscillation amplitude)",
+      "group": "Oscillation amplitude",
+      "area": "holding",
+      "address": 2472,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (oscillation amplitude)",
+      "group": "Oscillation amplitude",
+      "area": "holding",
+      "address": 2470,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (torsion oscillation amplitude)",
+      "group": "Torsion oscillation amplitude",
+      "area": "holding",
+      "address": 2515,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (torsion oscillation amplitude)",
+      "group": "Torsion oscillation amplitude",
+      "area": "holding",
+      "address": 2480,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (oscillation damping)",
+      "group": "Oscillation damping",
+      "area": "holding",
+      "address": 2478,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (oscillation damping)",
+      "group": "Oscillation damping",
+      "area": "holding",
+      "address": 2423,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (torsion oscillation damping)",
+      "group": "Torsion oscillation damping",
+      "area": "holding",
+      "address": 2523,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (torsion oscillation damping)",
+      "group": "Torsion oscillation damping",
+      "area": "holding",
+      "address": 2521,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum value (signal asymmetry)",
+      "group": "Signal asymmetry",
+      "area": "holding",
+      "address": 2474,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum value (signal asymmetry)",
+      "group": "Signal asymmetry",
+      "area": "holding",
+      "address": 2476,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Year",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 2495,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 9 to 99."
+    },
+    {
+      "name": "Month",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 2494,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "January",
+        "1": "February",
+        "2": "March",
+        "3": "April",
+        "4": "May",
+        "5": "June",
+        "6": "July",
+        "7": "August",
+        "8": "September",
+        "9": "October",
+        "10": "November",
+        "11": "December"
+      }
+    },
+    {
+      "name": "Day",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 2493,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Hour",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 2492,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "AM/PM",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 2496,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "AM",
+        "1": "PM"
+      }
+    },
+    {
+      "name": "Minute",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 2467,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0 to 59."
+    },
+    {
+      "name": "Start verification",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 2270,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Cancel",
+        "1": "Start"
+      }
+    },
+    {
+      "name": "Progress (performing verification)",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 6797,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Status",
+      "group": "Performing verification",
+      "area": "holding",
+      "address": 2079,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Failed",
+        "1": "Ready",
+        "3": "Check not done",
+        "8": "Busy"
+      }
+    },
+    {
+      "name": "Verification ID",
+      "group": "Verification results",
+      "area": "holding",
+      "address": 2315,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Overall result",
+      "group": "Verification results",
+      "area": "holding",
+      "address": 2355,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Failed",
+        "1": "Not used",
+        "2": "Passed",
+        "3": "Check not done"
+      }
+    },
+    {
+      "name": "Sensor",
+      "group": "Verification results",
+      "area": "holding",
+      "address": 2384,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Failed",
+        "1": "Not used",
+        "2": "Passed",
+        "3": "Check not done"
+      }
+    },
+    {
+      "name": "Sensor integrity",
+      "group": "Verification results",
+      "area": "holding",
+      "address": 2129,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Failed",
+        "1": "Not used",
+        "2": "Passed",
+        "3": "Check not done"
+      }
+    },
+    {
+      "name": "Sensor electronic module",
+      "group": "Verification results",
+      "area": "holding",
+      "address": 2385,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Failed",
+        "1": "Not used",
+        "2": "Passed",
+        "3": "Check not done"
+      }
+    },
+    {
+      "name": "I/O module",
+      "group": "Verification results",
+      "area": "holding",
+      "address": 2386,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Failed",
+        "1": "Not used",
+        "2": "Passed",
+        "3": "Check not done"
+      }
+    },
+    {
+      "name": "Activate monitoring",
+      "group": "Heartbeat Monitoring",
+      "area": "holding",
+      "address": 2088,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Sensor integrity (monitoring results)",
+      "group": "Monitoring results",
+      "area": "holding",
+      "address": 2358,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Assign simulation process variable",
+      "group": "Simulation",
+      "area": "holding",
+      "address": 6813,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "Mass flow",
+        "2": "Volume flow",
+        "3": "Corrected volume flow",
+        "4": "Density",
+        "5": "Reference density",
+        "7": "Temperature",
+        "45": "Kinematic viscosity",
+        "46": "Dynamic viscosity",
+        "73": "Concentration",
+        "74": "Target mass flow",
+        "75": "Carrier mass flow",
+        "76": "Temp. compensated dynamic",
+        "77": "Temp. compensated kinematic"
+      }
+    },
+    {
+      "name": "Value process variable",
+      "group": "Simulation",
+      "area": "holding",
+      "address": 6814,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Simulation device alarm",
+      "group": "Simulation",
+      "area": "holding",
+      "address": 6812,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Temperature coefficient sound velocity",
+      "group": "Measurement mode",
+      "area": "holding",
+      "address": 7411,
+      "type": "float32",
+      "access": "RW"
+    }
+  ]
+}

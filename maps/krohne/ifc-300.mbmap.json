@@ -1,0 +1,894 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "KROHNE",
+  "model": "IFC 300",
+  "models": [
+    "IFC 300"
+  ],
+  "vendor_website": "krohne.com",
+  "description": "Signal converter for electromagnetic flowmeters (OPTIFLUX), Modbus RS485 option: flow speed, volume and mass flow, coil temperature, conductivity, diagnosis, counters, status, filter and counter parameters, calibration",
+  "revision": 1,
+  "source": "KROHNE, IFC 300 Supplementary instructions, Description of Modbus interface (4000410703, R03, 07/2010)",
+  "sources": [
+    {
+      "title": "IFC 300 Supplementary instructions: Description of Modbus interface",
+      "version": "4000410703 R03, 07/2010",
+      "url": "https://cdn.krohne.com/pick2/tagged_docs/AD_IFC300_Modbus_en_100709_4000410703_R03.pdf",
+      "note": "chapter 6, Modbus protocol",
+      "accessed": "2026-11-15",
+      "sha256": "9a71a5e2b6abe8abd8809f90a84748b8ea981ef9ef17108332a54804fdcf55df"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS485. Defaults: address 1, 19200 bit/s, even parity, 1 stop bit, big-endian data (C5.8.1-C5.8.6).",
+    "The listed addresses are protocol addresses and are sent as listed (input register 30006 is address 30006). Each block is also reachable without its leading digit (input registers 0-37, holding registers 0-3036) and the calibration result at 9000 instead of 20000.",
+    "Floats are IEEE 754, big endian by default; holding register 50004 switches the device to little endian.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "parity": "E",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Cold start",
+      "group": "Controls",
+      "area": "coil",
+      "address": 1000,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 to restart the converter (cold start)."
+    },
+    {
+      "name": "Warm start",
+      "group": "Controls",
+      "area": "coil",
+      "address": 1001,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 for a warm start; activates new calibration values."
+    },
+    {
+      "name": "Error reset",
+      "group": "Controls",
+      "area": "coil",
+      "address": 1002,
+      "type": "bool",
+      "access": "W",
+      "description": "Write 1 to reset errors."
+    },
+    {
+      "name": "Zero calibration",
+      "group": "Controls",
+      "area": "coil",
+      "address": 2000,
+      "type": "bool",
+      "access": "RW",
+      "description": "Write 1 to start (C1.1.1); reads 1 while running, 0 when complete."
+    },
+    {
+      "name": "Coil temperature calibration",
+      "group": "Controls",
+      "area": "coil",
+      "address": 2001,
+      "type": "bool",
+      "access": "RW",
+      "description": "Write 1 to start (C1.1.8); reads 1 while running."
+    },
+    {
+      "name": "Electrode factor calibration",
+      "group": "Controls",
+      "area": "coil",
+      "address": 2002,
+      "type": "bool",
+      "access": "RW",
+      "description": "Write 1 to start (C1.1.11); reads 1 while running."
+    },
+    {
+      "name": "Counter 1 run",
+      "group": "Controls",
+      "area": "coil",
+      "address": 3000,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = start / running, 0 = stop / stopped (C3.1.8, C3.1.9)."
+    },
+    {
+      "name": "Counter 2 run",
+      "group": "Controls",
+      "area": "coil",
+      "address": 3001,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = start / running, 0 = stop / stopped (C3.2.8, C3.2.9)."
+    },
+    {
+      "name": "Counter 3 run",
+      "group": "Controls",
+      "area": "coil",
+      "address": 3002,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = start / running, 0 = stop / stopped; converters with IO 2 only."
+    },
+    {
+      "name": "Reset counter 1",
+      "group": "Controls",
+      "area": "coil",
+      "address": 3003,
+      "type": "bool",
+      "access": "RW",
+      "description": "Write 1 to reset (C3.1.6)."
+    },
+    {
+      "name": "Reset counter 2",
+      "group": "Controls",
+      "area": "coil",
+      "address": 3004,
+      "type": "bool",
+      "access": "RW",
+      "description": "Write 1 to reset (C3.2.6)."
+    },
+    {
+      "name": "Reset counter 3",
+      "group": "Controls",
+      "area": "coil",
+      "address": 3005,
+      "type": "bool",
+      "access": "RW",
+      "description": "Write 1 to reset (C3.3.6); converters with IO 2 only."
+    },
+    {
+      "name": "Calibration result",
+      "group": "Measurements",
+      "area": "input",
+      "address": 20000,
+      "type": "float32",
+      "access": "R",
+      "description": "Result of the last calibration function (zero point in m/s, coil resistance in Ω or electrode factor in m). Also at 9000."
+    },
+    {
+      "name": "Flow speed",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30000,
+      "type": "float32",
+      "access": "R",
+      "unit": "m/s"
+    },
+    {
+      "name": "Volume flow",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30002,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³/s"
+    },
+    {
+      "name": "Mass flow / level",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30004,
+      "type": "float32",
+      "access": "R",
+      "description": "Mass flow [kg/s], or level [%] with sensor option PF (partly filled)."
+    },
+    {
+      "name": "Coil temperature",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30006,
+      "type": "float32",
+      "access": "R",
+      "unit": "K"
+    },
+    {
+      "name": "Conductivity",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30008,
+      "type": "float32",
+      "access": "R",
+      "unit": "S/m",
+      "description": "Depends on the selection register: 0 = off (not measured); 1 = conductivity [S/m]; 2 = cond. + empty pipe (S) [S/m]; 3 = cond. + empty pipe (F) [S/m]; 4 = cond. + empty pipe (I) [S/m]."
+    },
+    {
+      "name": "Diagnosis value",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30010,
+      "type": "float32",
+      "access": "R",
+      "description": "Depends on the selection register: 25 = off (not measured); 31 = electrode noise [m/s]; 28 = flow profile [no unit] (1, 2); 21 = linearity [no unit] (1, 2); 8 = terminal 2 DC [Volt] (2); 9 = terminal 3 DC [Volt] (2)."
+    },
+    {
+      "name": "Display Channel 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30012,
+      "type": "float32",
+      "access": "R",
+      "description": "Represents the value on the first line of the first measurement screen in SI units"
+    },
+    {
+      "name": "Display Channel 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30014,
+      "type": "float32",
+      "access": "R",
+      "description": "Represents the value on the first line of the second measurement screen in SI units"
+    },
+    {
+      "name": "Operating time",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30016,
+      "type": "float32",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Counter 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30020,
+      "type": "float64",
+      "access": "R",
+      "description": "Unit: m3 or kg (as configured)."
+    },
+    {
+      "name": "Counter 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30024,
+      "type": "float64",
+      "access": "R",
+      "description": "Unit: m3 or kg (as configured)."
+    },
+    {
+      "name": "Counter 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30028,
+      "type": "float64",
+      "access": "R",
+      "description": "Unit: m3 or kg (as configured). Note: this counter is only available for converter with IO 2!"
+    },
+    {
+      "name": "Long status sensor",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30032,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Long status device",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30034,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Long status sensor option PF",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30036,
+      "type": "uint32",
+      "access": "R",
+      "description": "Only with sensor option PF (partly filled)."
+    },
+    {
+      "name": "Counter 1 function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 40000,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "sum counter",
+        "2": "+ counter",
+        "3": "- counter",
+        "0": "off"
+      },
+      "description": "Converter function C3.1.1."
+    },
+    {
+      "name": "Measurement Cnt1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 40001,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "21": "volume flow",
+        "22": "mass flow"
+      },
+      "description": "Converter function C3.1.2. Not with sensor option PF (partly filled). With sensor option PF: 27 = volume flow."
+    },
+    {
+      "name": "Counter 2 function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 40002,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "sum counter",
+        "2": "+ counter",
+        "3": "- counter",
+        "0": "off"
+      },
+      "description": "Converter function C3.2.1."
+    },
+    {
+      "name": "Measurement Cnt2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 40003,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "21": "volume flow",
+        "22": "mass flow"
+      },
+      "description": "Converter function C3.2.2. Not with sensor option PF (partly filled). With sensor option PF: 27 = volume flow."
+    },
+    {
+      "name": "Counter 3 function",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 40004,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "sum counter",
+        "2": "+ counter",
+        "3": "- counter",
+        "0": "off"
+      },
+      "description": "Converter function C3.3.1."
+    },
+    {
+      "name": "Measurement Cnt3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 40005,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "21": "volume flow",
+        "22": "mass flow"
+      },
+      "description": "Converter function C3.3.2. Not with sensor option PF (partly filled). With sensor option PF: 27 = volume flow."
+    },
+    {
+      "name": "Low flow cutoff value Cnt1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41000,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3/s or kg/s (as configured). Converter function C3.1.3."
+    },
+    {
+      "name": "Time constant Cnt1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41002,
+      "type": "float32",
+      "access": "RW",
+      "unit": "s",
+      "description": "Converter function C3.1.4."
+    },
+    {
+      "name": "Counter 1 (set or read)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41004,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3 or kg (as configured). Converter function C3.1.7."
+    },
+    {
+      "name": "Low flow cutoff value Cnt2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41006,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3/s or kg/s (as configured). Converter function C3.2.3."
+    },
+    {
+      "name": "Time constant Cnt2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41008,
+      "type": "float32",
+      "access": "RW",
+      "unit": "s",
+      "description": "Converter function C3.2.4."
+    },
+    {
+      "name": "Counter 2 (set or read)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41010,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3 or kg (as configured). Converter function C3.2.7."
+    },
+    {
+      "name": "Low flow cutoff value Cnt3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41012,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3/s or kg/s (as configured). Converter function C3.3.3."
+    },
+    {
+      "name": "Time constant Cnt3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41014,
+      "type": "float32",
+      "access": "RW",
+      "unit": "s",
+      "description": "Converter function C3.3.4. set counter Cnt3 or read Cnt3                    C3.3.7        float   2"
+    },
+    {
+      "name": "Counter 3 (set or read)",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41016,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3 or kg (as configured). Converter function C3.3.7."
+    },
+    {
+      "name": "Preset counter 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41018,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3 or kg (as configured). Converter function C3.1.5."
+    },
+    {
+      "name": "Preset counter 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41020,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3 or kg (as configured). Converter function C3.2.5."
+    },
+    {
+      "name": "Preset counter 3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 41022,
+      "type": "float32",
+      "access": "RW",
+      "description": "Unit: m3 or kg (as configured). Converter function C3.3.5."
+    },
+    {
+      "name": "Flow direction",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42000,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "normal direction",
+        "1": "reverse direction"
+      },
+      "description": "Converter function C1.2.2."
+    },
+    {
+      "name": "Pulse filter",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42001,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on",
+        "2": "automatic"
+      },
+      "description": "Converter function C1.2.4."
+    },
+    {
+      "name": "Noise filter",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42002,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on"
+      },
+      "description": "Converter function C1.2.7."
+    },
+    {
+      "name": "Empty pipe detection",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42003,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "conductivity",
+        "2": "cond. + empty pipe (S)",
+        "3": "cond. + empty pipe (F)",
+        "4": "cond. + empty pipe (I)"
+      },
+      "description": "Converter function C1.3.1. Not with sensor options PF or CAP. With sensor option PF: 0 = off; 1 = conductivity; 2 = empty pipe (S); 3 = empty pipe (F); 4 = empty pipe (I)."
+    },
+    {
+      "name": "Full pipe",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42004,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on"
+      },
+      "description": "Converter function C1.3.4. Not with sensor options PF or CAP."
+    },
+    {
+      "name": "Linearity",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42005,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on"
+      },
+      "description": "Converter function C1.3.6. Not with sensor options PF or CAP."
+    },
+    {
+      "name": "Gain",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42006,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on"
+      },
+      "description": "Converter function C1.3.8."
+    },
+    {
+      "name": "Coil current",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42007,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on"
+      },
+      "description": "Converter function C1.3.9."
+    },
+    {
+      "name": "Flow profile",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42008,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on"
+      },
+      "description": "Converter function C1.3.10. Not with sensor options PF or CAP."
+    },
+    {
+      "name": "Electrode noise",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42009,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on"
+      },
+      "description": "Converter function C1.3.13."
+    },
+    {
+      "name": "Settling of field",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42010,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "off",
+        "1": "on"
+      },
+      "description": "Converter function C1.3.16."
+    },
+    {
+      "name": "Diagnosis value selection",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 42011,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "25": "off",
+        "31": "electrode noise",
+        "28": "flow profile (1, 2)",
+        "21": "linearity (1, 2)",
+        "8": "terminal 2 DC (2)",
+        "9": "terminal 3 DC (2)"
+      },
+      "description": "Converter function C1.3.17."
+    },
+    {
+      "name": "Limitation low",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43000,
+      "type": "float32",
+      "access": "RW",
+      "unit": "m/s",
+      "description": "Converter function C1.2.1."
+    },
+    {
+      "name": "Limitation high",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43002,
+      "type": "float32",
+      "access": "RW",
+      "unit": "m/s",
+      "description": "Converter function C1.2.1."
+    },
+    {
+      "name": "Time constant",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43004,
+      "type": "float32",
+      "access": "RW",
+      "unit": "s",
+      "description": "Converter function C1.2.3."
+    },
+    {
+      "name": "Pulse width",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43006,
+      "type": "float32",
+      "access": "RW",
+      "unit": "s",
+      "description": "Converter function C1.2.5."
+    },
+    {
+      "name": "Pulse limitation",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43008,
+      "type": "float32",
+      "access": "RW",
+      "unit": "m/s",
+      "description": "Converter function C1.2.6."
+    },
+    {
+      "name": "Noise level",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43010,
+      "type": "float32",
+      "access": "RW",
+      "unit": "m/s",
+      "description": "Converter function C1.2.8."
+    },
+    {
+      "name": "Noise suppression",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43012,
+      "type": "float32",
+      "access": "RW",
+      "description": "Converter function C1.2.9."
+    },
+    {
+      "name": "Low flow cutoff value",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43014,
+      "type": "float32",
+      "access": "RW",
+      "unit": "m/s",
+      "description": "Converter function C1.2.10."
+    },
+    {
+      "name": "Limit empty pipe",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43016,
+      "type": "float32",
+      "access": "RW",
+      "unit": "S/m",
+      "description": "Converter function C1.3.3."
+    },
+    {
+      "name": "Limit full pipe",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43018,
+      "type": "float32",
+      "access": "RW",
+      "unit": "S/m",
+      "description": "Converter function C1.3.5. Not with sensor options PF or CAP."
+    },
+    {
+      "name": "Limit flow profile",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43020,
+      "type": "float32",
+      "access": "RW",
+      "description": "Converter function C1.3.11. Not with sensor options PF or CAP."
+    },
+    {
+      "name": "Limit electrode noise",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43022,
+      "type": "float32",
+      "access": "RW",
+      "unit": "m/s",
+      "description": "Converter function C1.3.14."
+    },
+    {
+      "name": "Zero point",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43024,
+      "type": "float32",
+      "access": "RW",
+      "unit": "m/s",
+      "description": "Converter function C1.1.1."
+    },
+    {
+      "name": "Coil Resistance Rsp, 20",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43026,
+      "type": "float32",
+      "access": "RW",
+      "unit": "Ω",
+      "description": "Converter function C1.1.7."
+    },
+    {
+      "name": "Coil Temperature Calpoint",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43028,
+      "type": "float32",
+      "access": "RW",
+      "unit": "K",
+      "description": "Converter function C1.1.8."
+    },
+    {
+      "name": "Coil Resistance Calpoint",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43030,
+      "type": "float32",
+      "access": "RW",
+      "unit": "Ω",
+      "description": "Converter function C1.1.8."
+    },
+    {
+      "name": "Electrode Factor EF",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43032,
+      "type": "float32",
+      "access": "RW",
+      "unit": "m",
+      "description": "Converter function C1.1.11."
+    },
+    {
+      "name": "Conductivity calpoint 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43034,
+      "type": "float32",
+      "access": "RW",
+      "unit": "S/m",
+      "description": "Converter function C1.1.11. Write the target to both 43034 and 43036."
+    },
+    {
+      "name": "Conductivity calpoint 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 43036,
+      "type": "float32",
+      "access": "RW",
+      "unit": "S/m",
+      "description": "Converter function C1.1.11."
+    },
+    {
+      "name": "Baud rate",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 50000,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Converter function C5.8.2; 19200 by default.",
+      "enum": {
+        "1200": "1200",
+        "2400": "2400",
+        "3600": "3600",
+        "4800": "4800",
+        "9600": "9600",
+        "19200": "19200",
+        "38400": "38400",
+        "57600": "57600",
+        "115200": "115200"
+      }
+    },
+    {
+      "name": "Slave address",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 50002,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Converter function C5.8.1."
+    },
+    {
+      "name": "Parity",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 50003,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "even parity (default)",
+        "1": "odd parity",
+        "3": "no parity"
+      },
+      "description": "Converter function C5.8.3."
+    },
+    {
+      "name": "Data format",
+      "group": "Parameters",
+      "area": "holding",
+      "address": 50004,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Big Endian",
+        "2": "Little Endian"
+      },
+      "description": "Converter function C5.8.4."
+    }
+  ]
+}
