@@ -1,0 +1,197 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "WEG",
+  "model": "THOR WORLD",
+  "models": [
+    "THOR WORLD"
+  ],
+  "vendor_website": "weg.net",
+  "description": "UPS (nobreak) with built-in Modbus RTU RS485: electrical readings and battery status",
+  "revision": 1,
+  "revised": "2026-11-14",
+  "source": "WEG, Thor World user manual (nobreak), 10008458280, section 10.3",
+  "sources": [
+    {
+      "title": "WEG THOR WORLD user manual (nobreak, pt)",
+      "version": "10008458280",
+      "url": "https://static.weg.net/medias/downloadcenter/h94/h4c/WEG-nobreak-thor-world-manual-do-usuario-10008458280-pt.pdf",
+      "accessed": "2026-11-14",
+      "sha256": "234c713f7cc836b6e520f8a0f3b33a1234aa4bed46c0db2a4d5a808fe8c18bcd",
+      "note": "section 10.3, Modbus RTU (table 10.2 to 10.4)"
+    }
+  ],
+  "notes": [
+    "Modbus RTU through the optional FlexSlot Modbus RTU accessory, RS-232 or RS-485 (selected with a switch on the module). Serial settings from the manual: 9600 bit/s, 8 data bits, no parity.",
+    "Input voltage, output voltage, output current, battery voltage and battery current are sent multiplied by 10 (scale 0.1); the frequencies, clock fields and output load are sent as they are.",
+    "The manual does not state the slave address or the stop bits; unit ID 1 and 1 stop bit are assumptions. Registers are read with function 03.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "operating_mode": {
+      "0": "Line mode",
+      "1": "Discharge mode",
+      "2": "Low battery mode",
+      "3": "Bypass mode",
+      "4": "Synchronized mode"
+    },
+    "charging_mode": {
+      "0": "Automatic - Float",
+      "1": "Automatic - Equalization",
+      "2": "Forced Float",
+      "3": "Forced Equalization"
+    }
+  },
+  "registers": [
+    {
+      "name": "Input voltage",
+      "group": "Input",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Input frequency",
+      "group": "Input",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Output voltage",
+      "group": "Output",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Output frequency",
+      "group": "Output",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Output current",
+      "group": "Output",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Battery voltage",
+      "group": "Battery",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Battery current",
+      "group": "Battery",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Operating mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "enum": "operating_mode"
+    },
+    {
+      "name": "Battery charging mode",
+      "group": "Battery",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "enum": "charging_mode"
+    },
+    {
+      "name": "Internal clock - Day",
+      "group": "Clock",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "unit": "day",
+      "access": "R"
+    },
+    {
+      "name": "Internal clock - Month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "unit": "month",
+      "access": "R"
+    },
+    {
+      "name": "Internal clock - Year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "unit": "year",
+      "access": "R"
+    },
+    {
+      "name": "Internal clock - Hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "unit": "h",
+      "access": "R"
+    },
+    {
+      "name": "Internal clock - Minute",
+      "group": "Clock",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "unit": "min",
+      "access": "R"
+    },
+    {
+      "name": "Output load percentage",
+      "group": "Output",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "unit": "%",
+      "access": "R"
+    }
+  ]
+}
