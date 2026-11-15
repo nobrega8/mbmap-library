@@ -1,0 +1,742 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "INVT",
+  "model": "Goodrive20",
+  "models": [
+    "GD20"
+  ],
+  "vendor_website": "invt.com",
+  "description": "Goodrive20 (GD20) vector VFD over RS485 Modbus: control command, set values, status words, fault code, running values and communication parameters",
+  "revision": 1,
+  "source": "INVT, Goodrive20 Series VFD Manual V1.9, chapter 7 (Communication protocol)",
+  "sources": [
+    {
+      "title": "Goodrive20 Series VFD Manual",
+      "version": "V1.9",
+      "url": "https://www.invt.com/uploads/file1/20230629/GD20%20Series%20VFD%20Manual_V1.9.pdf",
+      "note": "section 7.4, data address definition; P07 and P14 parameter lists",
+      "accessed": "2026-11-15",
+      "sha256": "9e12f6721c37ea7fea8159d3c39cc7aab407b281c2eb85b05d92b137fc9a3f15"
+    }
+  ],
+  "notes": [
+    "A function code Pxx.yy is the holding register 0xXXYY with both parts in hex (P05.05 is 0x0505, P10.01 is 0x0A01). Setting the high bit (0x8000 + address) writes to RAM only, without saving to EEPROM; that address cannot be read.",
+    "Defaults: address 1, 19200 bit/s, RTU 8E1 (P14.00-P14.02).",
+    "Values are integers scaled by the decimals of the parameter's setting range (50.12 Hz is 5012).",
+    "Running and stopping over Modbus need P00.01 = communication running command channel; PID reference over Modbus needs P09.00 = Modbus communication.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "databits": 8,
+  "parity": "E",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "fault": {
+      "0": "No fault",
+      "1": "Inverter unit U phase protection (OUt1)",
+      "2": "Inverter unit V phase protection (OUt2)",
+      "3": "Inverter unit W phase protection (OUt3)",
+      "4": "Overcurrent during acceleration (OC1)",
+      "5": "Overcurrent during deceleration (OC2)",
+      "6": "Overcurrent during constant speed running (OC3)",
+      "7": "Overvoltage during acceleration (OV1)",
+      "8": "Overvoltage during deceleration (OV2)",
+      "9": "Overvoltage during constant speed running (OV3)",
+      "10": "Bus undervoltage (UV)",
+      "11": "Motor overload (OL1)",
+      "12": "VFD overload (OL2)",
+      "13": "Phase loss on input side(SPI)",
+      "14": "Phase loss on output side (SPO)",
+      "15": "Rectifier module overheat(OH1)",
+      "16": "Inverter module overheat (OH2)",
+      "17": "External fault (EF)",
+      "18": "485 communication fault (CE)",
+      "19": "Current detection fault (ItE)",
+      "20": "Motor autotuning fault (tE)",
+      "21": "EEPROM operation fault (EEP)",
+      "22": "PID feedback offline fault (PIDE)",
+      "23": "Braking unit fault (bCE)",
+      "24": "Running time reached (END)",
+      "25": "Electronic overload (OL3)",
+      "26": "Keypad communication error (PCE)",
+      "27": "Parameter upload error (UPE)",
+      "28": "Parameter download error (DNE)",
+      "32": "To-ground short-circuit fault 1 (ETH1)",
+      "33": "To-ground short-circuit fault 2 (ETH2)",
+      "34": "Speed deviation fault (dEu)",
+      "35": "Mal-adjustment fault (STo)",
+      "36": "Underload fault (LL)"
+    }
+  },
+  "registers": [
+    {
+      "name": "Communication control command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "Forward running",
+        "2": "Reverse running",
+        "3": "Forward jogging",
+        "4": "Reverse jogging",
+        "5": "Stop",
+        "6": "Coast to stop",
+        "7": "Fault reset",
+        "8": "Jogging to stop"
+      },
+      "description": "Needs P00.01 = communication running command channel."
+    },
+    {
+      "name": "Communication frequency setting",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2001",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "0 to Fmax"
+    },
+    {
+      "name": "PID reference",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0-1000 = 0.0-100.0 %; needs P09.00 = Modbus communication."
+    },
+    {
+      "name": "PID feedback",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2003",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0-1000 = 0.0-100.0 %"
+    },
+    {
+      "name": "Torque setting",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2004",
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "-3000 to 3000; 1000 = 100.0 % of motor rated current"
+    },
+    {
+      "name": "Forward upper limit frequency",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2005",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Reverse upper limit frequency",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2006",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Electromotive torque upper limit",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2007",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0-3000; 1000 = 100.0 % of motor rated current"
+    },
+    {
+      "name": "Braking torque upper limit",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2008",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0-3000; 1000 = 100.0 % of motor rated current"
+    },
+    {
+      "name": "Special control: motor select",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2009",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Motor 1",
+        "1": "Motor 2",
+        "2": "Motor 3",
+        "3": "Motor 4"
+      },
+      "bit": 0,
+      "bits": 2
+    },
+    {
+      "name": "Special control: torque control prohibit",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2009",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 2,
+      "bits": 1
+    },
+    {
+      "name": "Special control: power consumption clear",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2009",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 3,
+      "bits": 1
+    },
+    {
+      "name": "Special control: pre-exciting",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2009",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 4,
+      "bits": 1
+    },
+    {
+      "name": "Special control: DC braking",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2009",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 5,
+      "bits": 1
+    },
+    {
+      "name": "Virtual input terminal command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x200A",
+      "type": "uint16",
+      "access": "RW",
+      "description": "0x000 to 0x1FF"
+    },
+    {
+      "name": "Virtual output terminal command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x200B",
+      "type": "uint16",
+      "access": "RW",
+      "description": "0x00 to 0x0F"
+    },
+    {
+      "name": "Voltage setting (V/F separation)",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x200C",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "0-1000 = 0.0-100.0 % of motor rated voltage"
+    },
+    {
+      "name": "AO output setting 1",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x200D",
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "-1000 to 1000 = -100.0 to 100.0 %"
+    },
+    {
+      "name": "AO output setting 2",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x200E",
+      "type": "int16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "%",
+      "description": "-1000 to 1000 = -100.0 to 100.0 %"
+    },
+    {
+      "name": "Status word 1",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2100",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "1": "Forward running",
+        "2": "Reverse running",
+        "3": "Stop",
+        "4": "Fault",
+        "5": "POFF state",
+        "6": "Pre-exciting state"
+      },
+      "description": "The manual lists 0002H as forward running twice; 0002H is taken here as reverse running, as in the control command."
+    },
+    {
+      "name": "Status word 2: bus voltage established",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 1
+    },
+    {
+      "name": "Status word 2: motor",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Motor 1",
+        "1": "Motor 2",
+        "2": "Motor 3",
+        "3": "Motor 4"
+      },
+      "bit": 1,
+      "bits": 2
+    },
+    {
+      "name": "Status word 2: motor type",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Asynchronous",
+        "1": "Synchronous"
+      },
+      "bit": 3,
+      "bits": 1
+    },
+    {
+      "name": "Status word 2: overload pre-alarm",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 4,
+      "bits": 1
+    },
+    {
+      "name": "Status word 2: control channel",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Keypad",
+        "1": "Terminal",
+        "2": "Communication"
+      },
+      "bit": 5,
+      "bits": 2
+    },
+    {
+      "name": "Fault code",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2102",
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "VFD identifying code",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2103",
+      "type": "uint16",
+      "access": "R",
+      "description": "0x0106 for the GD20 (high byte 01 Goodrive, low byte 06 Goodrive20).",
+      "role": "model"
+    },
+    {
+      "name": "Running frequency",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3000",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Set frequency",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3001",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Bus voltage",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3002",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Output voltage",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3003",
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Output current",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3004",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Rotating speed",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3005",
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "Output power",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3006",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Output torque",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3007",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "PID setting",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3008",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "PID feedback (readback)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3009",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Input state",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x300A",
+      "type": "uint16",
+      "access": "R",
+      "description": "0x000 to 0x1FF, one bit per input"
+    },
+    {
+      "name": "Output state",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x300B",
+      "type": "uint16",
+      "access": "R",
+      "description": "0x000 to 0x1FF, one bit per output"
+    },
+    {
+      "name": "AI1",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x300C",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "V",
+      "description": "0.00 to 10.00 V"
+    },
+    {
+      "name": "AI2",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x300D",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "V",
+      "description": "0.00 to 10.00 V"
+    },
+    {
+      "name": "AI3",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x300E",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "V",
+      "description": "-10.00 to 10.00 V"
+    },
+    {
+      "name": "High-speed pulse input 1",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3010",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kHz",
+      "description": "0.00 to 50.00 kHz"
+    },
+    {
+      "name": "PLC and multi-step speed current step",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3012",
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 15"
+    },
+    {
+      "name": "External length",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3013",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "External count value",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3014",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Torque setting (readback)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3015",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "VFD identification code",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x3016",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault code (5000H)",
+      "group": "Monitoring",
+      "area": "holding",
+      "address": "0x5000",
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault"
+    },
+    {
+      "name": "Local communication address",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0E00",
+      "type": "uint16",
+      "access": "RW",
+      "description": "P14.00: 1 to 247; 0 is the broadcast address."
+    },
+    {
+      "name": "Communication baud rate",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0E01",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1200",
+        "1": "2400",
+        "2": "4800",
+        "3": "9600",
+        "4": "19200",
+        "5": "38400",
+        "6": "57600"
+      },
+      "description": "P14.01"
+    },
+    {
+      "name": "Data bit check",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0E02",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "RTU N,8,1",
+        "1": "RTU E,8,1",
+        "2": "RTU O,8,1",
+        "3": "RTU N,8,2",
+        "4": "RTU E,8,2",
+        "5": "RTU O,8,2",
+        "6": "ASCII N,7,1",
+        "7": "ASCII E,7,1",
+        "8": "ASCII O,7,1",
+        "9": "ASCII N,7,2",
+        "10": "ASCII E,7,2",
+        "11": "ASCII O,7,2",
+        "12": "ASCII N,8,1",
+        "13": "ASCII E,8,1",
+        "14": "ASCII O,8,1",
+        "15": "ASCII N,8,2",
+        "16": "ASCII E,8,2",
+        "17": "ASCII O,8,2"
+      },
+      "description": "P14.02"
+    },
+    {
+      "name": "Communication response delay",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0E03",
+      "type": "uint16",
+      "access": "RW",
+      "unit": "ms",
+      "description": "P14.03: 0 to 200 ms"
+    },
+    {
+      "name": "Communication timeout fault time",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0E04",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "P14.04: 0.0 disables the check."
+    },
+    {
+      "name": "Present fault type",
+      "group": "Fault history",
+      "area": "holding",
+      "address": "0x071B",
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault",
+      "description": "P07.27"
+    },
+    {
+      "name": "Last fault type",
+      "group": "Fault history",
+      "area": "holding",
+      "address": "0x071C",
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault",
+      "description": "P07.28"
+    },
+    {
+      "name": "Last but one fault type",
+      "group": "Fault history",
+      "area": "holding",
+      "address": "0x071D",
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault",
+      "description": "P07.29"
+    },
+    {
+      "name": "Last but two fault type",
+      "group": "Fault history",
+      "area": "holding",
+      "address": "0x071E",
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault",
+      "description": "P07.30"
+    },
+    {
+      "name": "Last but three fault type",
+      "group": "Fault history",
+      "area": "holding",
+      "address": "0x071F",
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault",
+      "description": "P07.31"
+    },
+    {
+      "name": "Last but four fault type",
+      "group": "Fault history",
+      "area": "holding",
+      "address": "0x07110",
+      "type": "uint16",
+      "access": "R",
+      "enum": "fault",
+      "description": "P07.32"
+    }
+  ]
+}
