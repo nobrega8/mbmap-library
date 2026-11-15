@@ -1,0 +1,407 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Samsung",
+  "model": "MIM-B19N",
+  "models": [
+    "MIM-B19N",
+    "MIM-B19NT"
+  ],
+  "vendor_website": "samsung.com",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "description": "Modbus RTU interface module for Samsung DVM air conditioning (up to 48 indoor units and 1 outdoor unit): on/off, mode, fan, set and room temperature, error codes, hot water and ventilation",
+  "source": "Samsung Modbus Interface Module MIM-B19N / MIM-B19NT Installation manual",
+  "sources": [
+    {
+      "title": "Modbus Interface Module MIM-B19N / MIM-B19NT Installation manual",
+      "version": "Table 2 (Modbus register table) and Adding New Modbus Register",
+      "note": "PDF supplied by the repository owner; no public URL recorded",
+      "accessed": "2026-11-15",
+      "sha256": "8f7de7356de43c8905747de707c8c208313f06bc949bb749cc02564e50aa421d"
+    }
+  ],
+  "notes": [
+    "Modbus RTU slave on RS-485 (2 wires, max 1000 m), 9600 baud, 8 data bits, even parity, 1 stop bit; big endian. Address 1 to 247 set with the DIP switches (SW4-1 = 128, SW4-2 = 64, SW5-1 = 32, SW5-2 = 16) plus the rotary switch SW1 (0 to 15); reset the module after changing it.",
+    "Functions 03 and 04 read, 06 and 16 write. At start-up all registers are 0; wait until communication bit 0 of the status register is set. Wait at least 10 ms between consecutive requests. Writing any holding register sends a control command to the unit, so only write when a change is intended.",
+    "Registers 0 to 3 belong to the module and outdoor unit. Each indoor unit (address 0 to 47) has 32 registers at 50 + N*50 + offset; only indoor unit 0 (addresses 50 to 81) is listed here, add N*50 for the others. Which registers apply depends on the unit type (indoor, HE/HT/EHS, AHU kit, ERV, ERV+, chiller, FCU, FCU kit); the manual's table marks them per type.",
+    "Further functions can be added by writing MessageSet IDs with function 16: outdoor functions from address 6000 (they appear at address 4 onward), indoor functions from address 7000 (they appear at 50 + N*50 + 32 onward). Those are not described here.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "protocol": "rtu",
+  "baudrate": 9600,
+  "parity": "E",
+  "databits": 8,
+  "stopbits": 1,
+  "x_status": "official",
+  "enums": {
+    "mode": {
+      "0": "Auto",
+      "1": "Cool",
+      "2": "Dry",
+      "3": "Fan",
+      "4": "Heat",
+      "21": "Cool storage",
+      "24": "Heat storage"
+    },
+    "fan_speed": {
+      "0": "Auto",
+      "1": "Low",
+      "2": "Middle",
+      "3": "High"
+    }
+  },
+  "registers": [
+    {
+      "name": "Modbus interface module error status",
+      "group": "Outdoor unit / module",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 address error, bit 1 communication error on R1/R2, bit 2 tracking error."
+    },
+    {
+      "name": "Integrated outdoor unit error code",
+      "group": "Outdoor unit / module",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 no error; 100 to 999 error code."
+    },
+    {
+      "name": "Outdoor defrost operation",
+      "group": "Outdoor unit / module",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 or 0xFF defrost off; other values defrost on."
+    },
+    {
+      "name": "Buzzer on/off",
+      "group": "Outdoor unit / module",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "W",
+      "description": "0 turns the buzzer on, 1 turns it off."
+    },
+    {
+      "name": "Communication status (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 0 exist (0 = unit not connected), bit 1 type OK, bit 2 ready, bit 3 communication error. Address of indoor unit N = 50 + N*50 + 0."
+    },
+    {
+      "name": "Unit type (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 51,
+      "type": "uint16",
+      "access": "R",
+      "description": "Low byte: model code (AHU 90-99, ERV 100-102, ERV+ 108, HE 110, HT 120, EHS 115-117, chiller module 140-149, FCU kit 160-169, others IU); high byte: model group (FCU 10, others ignored). Unit type examples (hex): not defined 0xFFFF, HE xx6E, HT xx78, EHS xx73 to xx75, AHU xx5A to xx63, ERV xx64 to xx65, ERV+ xx6C, chiller xx8C to xx95, FCU 0Axx, FCU kit xxA0 to xxA9. Address of indoor unit N = 50 + N*50 + 1."
+    },
+    {
+      "name": "Air conditioner on/off (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 52,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 off, 1 on; others ignored. Address of indoor unit N = 50 + N*50 + 2."
+    },
+    {
+      "name": "Air conditioner mode (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 53,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Others ignored. 21 and 24 are for DVM CHILLER only. Address of indoor unit N = 50 + N*50 + 3.",
+      "enum": "mode"
+    },
+    {
+      "name": "Indoor fan speed (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 54,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Others ignored. Address of indoor unit N = 50 + N*50 + 4.",
+      "enum": "fan_speed"
+    },
+    {
+      "name": "Vertical air flow direction (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 55,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 off, 1 on (use of vertical air flow direction). Address of indoor unit N = 50 + N*50 + 5."
+    },
+    {
+      "name": "Filter-cleaning reminder (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 56,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 filter alarm not present, 1 filter alarm present. Address of indoor unit N = 50 + N*50 + 6."
+    },
+    {
+      "name": "Cancel filter-cleaning reminder (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 57,
+      "type": "uint16",
+      "access": "W",
+      "description": "0 no clear, 1 clear the filter alarm. Address of indoor unit N = 50 + N*50 + 7."
+    },
+    {
+      "name": "Set temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 58,
+      "type": "int16",
+      "access": "RW",
+      "description": "Celsius x10 (-41 to 100 °C). Cooling 18 to 30 °C, heating 16 to 30 °C; Nordic models can be controlled at 8 to 30 °C for heating. Address of indoor unit N = 50 + N*50 + 8.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Room temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 59,
+      "type": "int16",
+      "access": "R",
+      "description": "Celsius x10 (-41 to 100 °C). Address of indoor unit N = 50 + N*50 + 9.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Discharge temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 60,
+      "type": "int16",
+      "access": "R",
+      "description": "Celsius x10. Address of indoor unit N = 50 + N*50 + 10.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Cooling discharge set temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 61,
+      "type": "int16",
+      "access": "RW",
+      "description": "Celsius x10; 8 to 18 °C (AHU: 8 to 25 °C). Address of indoor unit N = 50 + N*50 + 11.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Heating discharge set temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 62,
+      "type": "int16",
+      "access": "RW",
+      "description": "Celsius x10; 30 to 43 °C (AHU: 18 to 43 °C). Address of indoor unit N = 50 + N*50 + 12.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Integrated indoor unit error code (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 63,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 no error; 100 to 999 error code. Address of indoor unit N = 50 + N*50 + 13."
+    },
+    {
+      "name": "Restrictions on the remote control (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Read: 0x0000 no restriction, others restriction. Write: 0x0000 no restriction, 0x6363 restriction. Address of indoor unit N = 50 + N*50 + 14."
+    },
+    {
+      "name": "Water-in temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 65,
+      "type": "int16",
+      "access": "R",
+      "description": "Celsius x10 (HE/HT/EHS and chiller). Address of indoor unit N = 50 + N*50 + 15.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Water-out temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 66,
+      "type": "int16",
+      "access": "R",
+      "description": "Celsius x10 (HE/HT/EHS and chiller). Address of indoor unit N = 50 + N*50 + 16.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "MCC water-out temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 67,
+      "type": "int16",
+      "access": "R",
+      "description": "Celsius x10 (chiller). Address of indoor unit N = 50 + N*50 + 17.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Water-out set temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "access": "RW",
+      "description": "Celsius x10. HE: cool 5 to 25 °C, heat 15 to 50 °C. HT: heat 25 to 80 °C (no cooling mode in Hydro HT). EHS: cool 5 to 25 °C, heat 15 to 65 °C. Chiller: heat/heat storage 25 to 55 °C, cool/cool storage -10 to 25 °C. Address of indoor unit N = 50 + N*50 + 18.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Ventilation on/off (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 69,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 off, 1 on; others ignored. Address of indoor unit N = 50 + N*50 + 19."
+    },
+    {
+      "name": "Ventilation mode (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 bypass, 1 HeatEx, 2 auto, 6 sleep; others ignored. Address of indoor unit N = 50 + N*50 + 20."
+    },
+    {
+      "name": "Ventilation fan speed (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 71,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 auto, 2 low, 3 high, 4 turbo; others ignored. Address of indoor unit N = 50 + N*50 + 21."
+    },
+    {
+      "name": "Hot water operation on/off (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 72,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 hot water off, 1 hot water on; others ignored. Address of indoor unit N = 50 + N*50 + 22."
+    },
+    {
+      "name": "Hot water mode (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 eco, 1 standard, 2 power, 3 force (EHS only); others ignored. Address of indoor unit N = 50 + N*50 + 23."
+    },
+    {
+      "name": "Hot water set temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 74,
+      "type": "int16",
+      "access": "RW",
+      "description": "Celsius x10. HE 30 to 75 °C, HT 35 to 75 °C, EHS 30 to 70 °C. Address of indoor unit N = 50 + N*50 + 24.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Hot water temperature (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 75,
+      "type": "int16",
+      "access": "R",
+      "description": "Celsius x10. Address of indoor unit N = 50 + N*50 + 25.",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Error information collected by MCC (bits) (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "description": "Error information of slave chiller units: each bit indicates the unit number where an error occurred (byte 0: units 0 to 7, byte 1: units 8 to 15). Address of indoor unit N = 50 + N*50 + 26."
+    },
+    {
+      "name": "Error information collected by MCC (code) (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 77,
+      "type": "uint16",
+      "access": "R",
+      "description": "Error code of the lowest-numbered unit with an error (same range as error code index 0202). E.g. unit #2 with error code 201: 00 05 00 C9 hex. Address of indoor unit N = 50 + N*50 + 27."
+    },
+    {
+      "name": "Quiet control (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 78,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 silence off, 1 silence on; others ignored. Address of indoor unit N = 50 + N*50 + 28."
+    },
+    {
+      "name": "Away function (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 79,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 outing off, 1 outing on; others ignored. Address of indoor unit N = 50 + N*50 + 29."
+    },
+    {
+      "name": "Wind-Free function (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 80,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 none, 9 WindFree; others ignored. Address of indoor unit N = 50 + N*50 + 30."
+    },
+    {
+      "name": "360 air flow direction (indoor unit 0)",
+      "group": "Indoor unit 0",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Spot 106, mid 85, wide 64, swing 15; others individual control. Address of indoor unit N = 50 + N*50 + 31."
+    }
+  ]
+}
