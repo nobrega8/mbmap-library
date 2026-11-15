@@ -1,0 +1,1181 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Delta",
+  "model": "C2000",
+  "models": [
+    "VFD-C2000",
+    "C2000"
+  ],
+  "vendor_website": "deltaww.com",
+  "description": "Delta C2000 vector control drive (built-in RS-485 Modbus): control and status words, output and display values, remote I/O and the communication parameters",
+  "revision": 1,
+  "source": "Delta, C2000 Series User Manual (DELTA_IA-MDS_VFD-C2000_UM_EN_20190213), chapter 12, Pr.09 address list",
+  "sources": [
+    {
+      "title": "Delta Vector Control Drive C2000 Series User Manual",
+      "version": "DELTA_IA-MDS_VFD-C2000_UM_EN_20190213",
+      "url": "https://vfds.com/content/manuals/delta/delta-c2000-manual.pdf",
+      "note": "chapter 12, Pr.09, section 4 Address list (copy hosted by a distributor, VFDs.com)",
+      "accessed": "2026-11-15",
+      "sha256": "4c5e47da4c31461093bd3b3c3f8a5cdc74cff14bba0c30982274dafb9b39e89f"
+    }
+  ],
+  "notes": [
+    "A parameter GG-nn is the holding register 0xGGnn (Pr.04-10 is 0x040A). Functions 03, 06 and 10 are supported.",
+    "Factory serial format is ASCII 7N2 at 9.6 kbit/s, station 1 (Pr.09-04 = 1). This map assumes RTU 8N2 (Pr.09-04 = 13), so set that parameter first.",
+    "The control word (0x2000) and the fault word (0x2002) are listed as bit fields. To start the drive, write run and direction in one 0x2000 write.",
+    "To control the drive over the link set the frequency source (Pr.00-20) and the operation source (Pr.00-21) to RS-485, then write 0x2001 or Pr.09-10.",
+    "Pr.09-01 (baud rate) is not listed because its raw scale is not stated in the manual.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "run_cmd": {
+      "0": "No function",
+      "1": "Stop",
+      "2": "Run",
+      "3": "Jog + run"
+    },
+    "dir_cmd": {
+      "0": "No function",
+      "1": "Forward",
+      "2": "Reverse",
+      "3": "Change direction"
+    },
+    "accdec_cmd": {
+      "0": "1st accel/decel",
+      "1": "2nd accel/decel",
+      "2": "3rd accel/decel",
+      "3": "4th accel/decel"
+    },
+    "run_state": {
+      "0": "Stopped",
+      "1": "Decelerating",
+      "2": "Standby",
+      "3": "Running"
+    },
+    "dir_state": {
+      "0": "Forward",
+      "1": "Reverse to forward",
+      "2": "Reverse",
+      "3": "Forward to reverse"
+    },
+    "protocol": {
+      "1": "ASCII 7N2",
+      "2": "ASCII 7E1",
+      "3": "ASCII 7O1",
+      "4": "ASCII 7E2",
+      "5": "ASCII 7O2",
+      "6": "ASCII 8N1",
+      "7": "ASCII 8N2",
+      "8": "ASCII 8E1",
+      "9": "ASCII 8O1",
+      "10": "ASCII 8E2",
+      "11": "ASCII 8O2",
+      "12": "RTU 8N1",
+      "13": "RTU 8N2",
+      "14": "RTU 8E1",
+      "15": "RTU 8O1",
+      "16": "RTU 8E2",
+      "17": "RTU 8O2"
+    }
+  },
+  "registers": [
+    {
+      "name": "Run command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 0,
+      "bits": 2,
+      "enum": "run_cmd",
+      "description": "Bits 1-0 of the command word: stop or run."
+    },
+    {
+      "name": "Direction command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 4,
+      "bits": 2,
+      "enum": "dir_cmd",
+      "description": "Bits 5-4 of the command word."
+    },
+    {
+      "name": "Accel/decel selection",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 6,
+      "bits": 2,
+      "enum": "accdec_cmd",
+      "description": "Bits 7-6 of the command word: acceleration and deceleration set to use."
+    },
+    {
+      "name": "Use bits 6-11 of command word",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 12,
+      "bits": 1,
+      "description": "Bit 12: 1 enables the accel/decel selection and the multi-speed step in bits 6-11 of the command word."
+    },
+    {
+      "name": "Speed step command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2000",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 8,
+      "bits": 4,
+      "description": "Bits 11-8 of the command word: 0 = master speed, 1 to 15 = multi-step speed 1 to 15. Takes effect when bit 12 is set."
+    },
+    {
+      "name": "Frequency command",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2001",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Frequency set point in 0.01 Hz (5000 = 50.00 Hz)."
+    },
+    {
+      "name": "External fault",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 0,
+      "bits": 1,
+      "description": "Bit 0: 1 raises an external fault (EF)."
+    },
+    {
+      "name": "Fault reset",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 1,
+      "bits": 1,
+      "description": "Bit 1: 1 resets the drive after a fault."
+    },
+    {
+      "name": "Base block",
+      "group": "Control",
+      "area": "holding",
+      "address": "0x2002",
+      "type": "uint16",
+      "access": "RW",
+      "bit": 2,
+      "bits": 1,
+      "description": "Bit 2: 1 turns B.B. on (outputs blocked)."
+    },
+    {
+      "name": "Error code",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2100",
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 8,
+      "description": "Low byte of the register: fault code, 0 when there is no fault (codes as in the manual's fault table)."
+    },
+    {
+      "name": "Warning code",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2100",
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "description": "High byte of the register: warning code, 0 when there is no warning."
+    },
+    {
+      "name": "Run state",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 2,
+      "enum": "run_state",
+      "description": "Bits 1-0 of the status word."
+    },
+    {
+      "name": "Jog active",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 2,
+      "bits": 1,
+      "description": "Bit 2: 1 while a jog command is active."
+    },
+    {
+      "name": "Direction state",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 3,
+      "bits": 2,
+      "enum": "dir_state",
+      "description": "Bits 4-3 of the status word."
+    },
+    {
+      "name": "Frequency from communication",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 1,
+      "description": "Bit 8: 1 when the master frequency comes from the serial interface."
+    },
+    {
+      "name": "Frequency from analog",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 9,
+      "bits": 1,
+      "description": "Bit 9: 1 when the master frequency comes from an analog signal."
+    },
+    {
+      "name": "Run command from communication",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 10,
+      "bits": 1,
+      "description": "Bit 10: 1 when the operation command comes from the serial interface."
+    },
+    {
+      "name": "Parameters locked",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 11,
+      "bits": 1,
+      "description": "Bit 11: 1 when the parameters are locked."
+    },
+    {
+      "name": "Parameter copy from keypad enabled",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2101",
+      "type": "uint16",
+      "access": "R",
+      "bit": 12,
+      "bits": 1,
+      "description": "Bit 12: 1 when copying parameters from the keypad is enabled."
+    },
+    {
+      "name": "Frequency command (readback)",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2102",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Output frequency",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2103",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Output current",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2104",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "A",
+      "description": "Two decimals. Above 655.35 A the decimal point shifts to one decimal; the high byte of 0x211F says which."
+    },
+    {
+      "name": "DC bus voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2105",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Output voltage",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2106",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Multi-speed step",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2107",
+      "type": "uint16",
+      "access": "R",
+      "description": "Step number of the multi-step speed operation now running."
+    },
+    {
+      "name": "Counter value",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2109",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Power factor angle",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210A",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Output torque",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210B",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Motor speed",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210C",
+      "type": "uint16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "PG feedback pulses",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210D",
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 65535"
+    },
+    {
+      "name": "PG2 pulse commands",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210E",
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 65535"
+    },
+    {
+      "name": "Output power",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x210F",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "kW"
+    },
+    {
+      "name": "Multi-function display (Pr.00-04)",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2116",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Maximum operation frequency or user-defined maximum",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x211B",
+      "type": "uint16",
+      "access": "R",
+      "description": "Pr.01-00, or the user-defined value of Pr.00-26 when that is not 0 (see the manual)."
+    },
+    {
+      "name": "Output current decimals",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x211F",
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: decimal places of the output current (see 0x2104).",
+      "bit": 8,
+      "bits": 8
+    },
+    {
+      "name": "Display output current",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2200",
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "description": "Decimal places as given by the high byte of 0x211F."
+    },
+    {
+      "name": "Display counter value",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2201",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Actual output frequency",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2202",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "DC bus voltage (display)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2203",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Output voltage (display)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2204",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Power angle",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2205",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°"
+    },
+    {
+      "name": "Output power (display)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2206",
+      "type": "uint16",
+      "access": "R",
+      "unit": "kW",
+      "description": "Manual: XXXXX kW."
+    },
+    {
+      "name": "Motor speed (estimated or encoder)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2207",
+      "type": "int16",
+      "access": "R",
+      "unit": "rpm"
+    },
+    {
+      "name": "Output torque (display)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2208",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "PG feedback",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2209",
+      "type": "uint16",
+      "access": "R",
+      "description": "See note 1 of Pr.00-04."
+    },
+    {
+      "name": "PID feedback",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x220A",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "AVI analog input",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x220B",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "0-10 V = 0.00-100.00 %"
+    },
+    {
+      "name": "ACI analog input",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x220C",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "4-20 mA / 0-10 V = 0.00-100.00 %"
+    },
+    {
+      "name": "AUI analog input",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x220D",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%",
+      "description": "-10 to 10 V = -100.00 to 100.00 %"
+    },
+    {
+      "name": "IGBT temperature",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x220E",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Capacitor temperature",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x220F",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Digital input status",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2210",
+      "type": "uint16",
+      "access": "R",
+      "description": "ON/OFF per terminal, as Pr.02-12."
+    },
+    {
+      "name": "Digital output status",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2211",
+      "type": "uint16",
+      "access": "R",
+      "description": "ON/OFF per terminal, as Pr.02-18."
+    },
+    {
+      "name": "Multi-step speed executing",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2212",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Digital input CPU pin status",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2213",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Digital output CPU pin status",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2214",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Motor revolutions (PG1)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2215",
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 65535"
+    },
+    {
+      "name": "Pulse input frequency (PG2)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2216",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Pulse input position (PG2)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2217",
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 65535"
+    },
+    {
+      "name": "Position command tracking error",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2218",
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Counter overload",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2219",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "GFF",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x221A",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "DC bus voltage ripple",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x221B",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "PLC register D1043",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x221C",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "PM motor poles",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x221D",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "User page value",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x221E",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Pr.00-05 output value",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x221F",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Motor turns while running",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2220",
+      "type": "uint16",
+      "access": "R",
+      "description": "Saved when the drive stops; reset when it runs."
+    },
+    {
+      "name": "Motor operating position",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2221",
+      "type": "uint16",
+      "access": "R",
+      "description": "Saved when the drive stops; reset when it runs."
+    },
+    {
+      "name": "Fan speed",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2222",
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Control mode",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2223",
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Speed mode",
+        "1": "Torque mode"
+      }
+    },
+    {
+      "name": "Carrier frequency",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2224",
+      "type": "uint16",
+      "access": "R",
+      "unit": "kHz"
+    },
+    {
+      "name": "Estimated output torque",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2227",
+      "type": "int16",
+      "access": "R",
+      "unit": "N·m"
+    },
+    {
+      "name": "Torque command",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2228",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "%"
+    },
+    {
+      "name": "Energy (kWh display)",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2229",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "PID reference",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x222E",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "PID offset",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x222F",
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "%"
+    },
+    {
+      "name": "PID output frequency",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2230",
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Hardware ID",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2231",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Drive status: direction",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2226",
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 2,
+      "enum": {
+        "0": "No direction",
+        "1": "Forward",
+        "2": "Reverse"
+      }
+    },
+    {
+      "name": "Drive status: ready / error",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2226",
+      "type": "uint16",
+      "access": "R",
+      "bit": 2,
+      "bits": 2,
+      "enum": {
+        "1": "Drive ready",
+        "2": "Error"
+      }
+    },
+    {
+      "name": "Drive status: output",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2226",
+      "type": "uint16",
+      "access": "R",
+      "bit": 4,
+      "bits": 1,
+      "enum": {
+        "0": "No output",
+        "1": "Output"
+      }
+    },
+    {
+      "name": "Drive status: alarm",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x2226",
+      "type": "uint16",
+      "access": "R",
+      "bit": 5,
+      "bits": 1,
+      "enum": {
+        "0": "No alarm",
+        "1": "Alarm"
+      }
+    },
+    {
+      "name": "PG2 pulse input",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x222A",
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Low word at 0x222A, high word at 0x222B."
+    },
+    {
+      "name": "Motor actual position",
+      "group": "Display",
+      "area": "holding",
+      "address": "0x222C",
+      "type": "int32",
+      "access": "R",
+      "word_order": "little",
+      "description": "Low word at 0x222C, high word at 0x222D."
+    },
+    {
+      "name": "Terminal inputs 1",
+      "group": "Remote IO",
+      "area": "holding",
+      "address": "0x2601",
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per terminal input contact."
+    },
+    {
+      "name": "Terminal inputs 2",
+      "group": "Remote IO",
+      "area": "holding",
+      "address": "0x2602",
+      "type": "uint16",
+      "access": "R",
+      "description": "One bit per terminal input contact."
+    },
+    {
+      "name": "Terminal outputs",
+      "group": "Remote IO",
+      "area": "holding",
+      "address": "0x2641",
+      "type": "uint16",
+      "access": "RW",
+      "description": "One bit per terminal output contact."
+    },
+    {
+      "name": "AVI proportional value",
+      "group": "Remote IO",
+      "area": "holding",
+      "address": "0x2661",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "ACI proportional value",
+      "group": "Remote IO",
+      "area": "holding",
+      "address": "0x2662",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "AUI proportional value",
+      "group": "Remote IO",
+      "area": "holding",
+      "address": "0x2663",
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Communication address",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0900",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-00: 1 to 254."
+    },
+    {
+      "name": "COM1 transmission fault treatment",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0902",
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Warn and continue",
+        "1": "Warn and ramp to stop",
+        "2": "Warn and coast to stop",
+        "3": "No warning, continue"
+      },
+      "description": "Pr.09-02"
+    },
+    {
+      "name": "COM1 time-out detection",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0903",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "s",
+      "description": "Pr.09-03: 0.0 (off) to 100.0 s."
+    },
+    {
+      "name": "COM1 communication protocol",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0904",
+      "type": "uint16",
+      "access": "RW",
+      "enum": "protocol",
+      "description": "Pr.09-04"
+    },
+    {
+      "name": "Communication response delay",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0909",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.1,
+      "unit": "ms",
+      "description": "Pr.09-09: 0.0 to 200.0 ms."
+    },
+    {
+      "name": "Communication main frequency",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x090A",
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Pr.09-10: master frequency when the source is RS-485."
+    },
+    {
+      "name": "Block transfer 1",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x090B",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-11: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 2",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x090C",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-12: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 3",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x090D",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-13: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 4",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x090E",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-14: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 5",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x090F",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-15: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 6",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0910",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-16: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 7",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0911",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-17: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 8",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0912",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-18: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 9",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0913",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-19: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 10",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0914",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-20: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 11",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0915",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-21: address of the parameter mapped to this block slot."
+    },
+    {
+      "name": "Block transfer 12",
+      "group": "Parameters",
+      "area": "holding",
+      "address": "0x0916",
+      "type": "uint16",
+      "access": "RW",
+      "description": "Pr.09-22: address of the parameter mapped to this block slot."
+    }
+  ]
+}
