@@ -1,0 +1,866 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "AERCO",
+  "model": "C-More",
+  "models": [
+    "C-More"
+  ],
+  "vendor_website": "aerco.com",
+  "description": "C-More boiler and water heater controller, Modbus: unit status, temperatures, fire rate, O2 and CO, flame strength, run cycles and hours, fault, sensor and time logs, setpoints and control settings",
+  "revision": 1,
+  "source": "AERCO, Modbus Communication User Manual OMM-0035 (GF-114), section 2.2 and appendix A",
+  "sources": [
+    {
+      "title": "Modbus Communications User Manual (C-More, BMS/BMS II, ACS)",
+      "version": "OMM-0035_D (GF-114), 2026-04-07",
+      "url": "https://www.aerco.com/dfsmedia/0533dbba17714b1ab581ab07a4cbb521/58215-source/639112726810000000/omm-0035-0b-gf-114-modbus-communications-manual-05-18-12-0.pdf",
+      "note": "section 2.2 (C-More standard registers) and appendix A (conversions)",
+      "accessed": "2026-11-15",
+      "sha256": "a1d5b7367e96ed64f90f0b1e98d6be7ed4a48cede97a731058000f0407444405"
+    }
+  ],
+  "notes": [
+    "Modbus RTU; the controllers are usually reached through the AERCO BMS/ACS or an XPC gateway. Comm address 0 (input register 19) disables Modbus.",
+    "Addresses are the manual's generic data addresses, from 0 (Modicon 30001/40001 + address).",
+    "Temperatures are raw counts 0-1000 converted with the integer formulas of appendix A, table A-3; the scale and offset here give °F (the result is rounded in the controller). The same counts give °C with other factors (appendix A).",
+    "32-bit counters are a low word followed by a high word (0-15).",
+    "Registers for the BMS/BMS II and ACS controllers in the same manual are not in this map.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Display code",
+      "group": "Status",
+      "area": "input",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status and fault message code; see appendix A, table A-2."
+    },
+    {
+      "name": "Unit status",
+      "group": "Status",
+      "area": "input",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Disabled",
+        "1": "Standby",
+        "2": "Manual",
+        "3": "Remote",
+        "4": "Auto",
+        "5": "Fault"
+      }
+    },
+    {
+      "name": "Outlet temperature",
+      "group": "Status",
+      "area": "input",
+      "address": 2,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Inlet temperature",
+      "group": "Status",
+      "area": "input",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Aux temperature",
+      "group": "Status",
+      "area": "input",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Outdoor temperature",
+      "group": "Status",
+      "area": "input",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.33,
+      "offset": -80,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_2 conversion of appendix A (°F = raw x 0.33 - 80, rounded)."
+    },
+    {
+      "name": "Exhaust temperature",
+      "group": "Status",
+      "area": "input",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.33,
+      "offset": -80,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_2 conversion of appendix A (°F = raw x 0.33 - 80, rounded)."
+    },
+    {
+      "name": "FFWD temperature",
+      "group": "Status",
+      "area": "input",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Fire rate out",
+      "group": "Status",
+      "area": "input",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "O2 level",
+      "group": "Status",
+      "area": "input",
+      "address": 9,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "CO level",
+      "group": "Status",
+      "area": "input",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "unit": "ppm"
+    },
+    {
+      "name": "Run cycles",
+      "group": "Status",
+      "area": "input",
+      "address": 11,
+      "type": "uint32",
+      "access": "R",
+      "description": "Low word at 11, high word (0-15) at 12; 0 to 999,999.",
+      "word_order": "little"
+    },
+    {
+      "name": "Run hours",
+      "group": "Status",
+      "area": "input",
+      "address": 13,
+      "type": "uint32",
+      "access": "R",
+      "description": "Low word at 13, high word (0-15) at 14; 0 to 999,999.",
+      "unit": "h",
+      "word_order": "little"
+    },
+    {
+      "name": "Flame strength",
+      "group": "Status",
+      "area": "input",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Active setpoint",
+      "group": "Status",
+      "area": "input",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Fire rate in",
+      "group": "Status",
+      "area": "input",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Manual fire rate",
+      "group": "Status",
+      "area": "input",
+      "address": 18,
+      "type": "uint16",
+      "access": "R",
+      "description": "Only in manual mode from the front panel.",
+      "unit": "%"
+    },
+    {
+      "name": "Comm address",
+      "group": "Status",
+      "area": "input",
+      "address": 19,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 127; 0 disables Modbus communication."
+    },
+    {
+      "name": "Software version",
+      "group": "Status",
+      "area": "input",
+      "address": 20,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault log code",
+      "group": "Fault log",
+      "area": "input",
+      "address": 23,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fault log cycle",
+      "group": "Fault log",
+      "area": "input",
+      "address": 24,
+      "type": "uint32",
+      "access": "R",
+      "description": "Low word at 24, high word at 25.",
+      "word_order": "little"
+    },
+    {
+      "name": "Fault log date",
+      "group": "Fault log",
+      "area": "input",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "description": "Days since 1 Jan 2000."
+    },
+    {
+      "name": "Fault log time",
+      "group": "Fault log",
+      "area": "input",
+      "address": 27,
+      "type": "uint16",
+      "access": "R",
+      "description": "Minutes since midnight (0-1439).",
+      "unit": "min"
+    },
+    {
+      "name": "Sensor log active setpoint",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 28,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Sensor log outlet temperature",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 29,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Sensor log inlet temperature",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 30,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Sensor log FFWD temperature",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 31,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Sensor log exhaust temperature",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 32,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.52,
+      "offset": 40,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_3 conversion of appendix A (°F = raw x 0.52 + 40, rounded)."
+    },
+    {
+      "name": "Sensor log outdoor temperature",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 33,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.33,
+      "offset": -80,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_2 conversion of appendix A (°F = raw x 0.33 - 80, rounded)."
+    },
+    {
+      "name": "Sensor log aux temperature",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 34,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Sensor log CO transmitter",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 35,
+      "type": "uint16",
+      "access": "R",
+      "unit": "ppm"
+    },
+    {
+      "name": "Sensor log O2 transmitter",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Sensor log flow meter",
+      "group": "Sensor log",
+      "area": "input",
+      "address": 37,
+      "type": "uint16",
+      "access": "R",
+      "unit": "gal/min"
+    },
+    {
+      "name": "Time log status",
+      "group": "Time log",
+      "area": "input",
+      "address": 38,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "73": "Ignition (I)",
+        "74": "Off (O)",
+        "80": "Power up (P)",
+        "82": "Run (R)"
+      }
+    },
+    {
+      "name": "Time log fire rate",
+      "group": "Time log",
+      "area": "input",
+      "address": 39,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Time log flame strength",
+      "group": "Time log",
+      "area": "input",
+      "address": 40,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Time log run length",
+      "group": "Time log",
+      "area": "input",
+      "address": 41,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Time log date",
+      "group": "Time log",
+      "area": "input",
+      "address": 42,
+      "type": "uint16",
+      "access": "R",
+      "description": "Days since 1 Jan 2000."
+    },
+    {
+      "name": "Time log time",
+      "group": "Time log",
+      "area": "input",
+      "address": 43,
+      "type": "uint16",
+      "access": "R",
+      "description": "Minutes since midnight.",
+      "unit": "min"
+    },
+    {
+      "name": "Net remote setpoint",
+      "group": "Settings",
+      "area": "holding",
+      "address": 0,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded). Writable only in remote setpoint mode."
+    },
+    {
+      "name": "Net direct drive",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Writable only in direct drive mode.",
+      "unit": "%"
+    },
+    {
+      "name": "Modbus password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Internal setpoint",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded). Default 130 °F."
+    },
+    {
+      "name": "Time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Minutes since midnight (0-1439).",
+      "unit": "min"
+    },
+    {
+      "name": "Date",
+      "group": "Settings",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Days since 1 Jan 2000 (1 Jan 2001 = 365)."
+    },
+    {
+      "name": "Unit of temperature",
+      "group": "Settings",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "°F",
+        "1": "°C"
+      }
+    },
+    {
+      "name": "Baud rate",
+      "group": "Settings",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "description": "C-More RS232 port only.",
+      "enum": {
+        "0": "2400",
+        "1": "4800",
+        "2": "9600",
+        "3": "19200"
+      }
+    },
+    {
+      "name": "Unit type",
+      "group": "Settings",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Boiler",
+        "1": "Water heater"
+      }
+    },
+    {
+      "name": "Unit size",
+      "group": "Settings",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "0.5 MBTU",
+        "1": "1 MBTU",
+        "2": "1.5 MBTU",
+        "3": "2 MBTU",
+        "4": "2.5 MBTU",
+        "5": "3 MBTU"
+      }
+    },
+    {
+      "name": "Boiler mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Constant setpoint",
+        "1": "Remote setpoint",
+        "2": "Direct drive",
+        "3": "Combo unit",
+        "4": "Outdoor reset"
+      }
+    },
+    {
+      "name": "Remote signal",
+      "group": "Settings",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "4-20 mA / 1-5 V",
+        "1": "0-20 mA / 0-5 V",
+        "2": "PWM input",
+        "3": "Network"
+      }
+    },
+    {
+      "name": "Building reference temperature",
+      "group": "Settings",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Reset ratio",
+      "group": "Settings",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.1 to 9.9 (counts = ratio x 10).",
+      "scale": 0.1
+    },
+    {
+      "name": "Outdoor sensor enable",
+      "group": "Settings",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "False",
+        "1": "True"
+      }
+    },
+    {
+      "name": "System start temperature",
+      "group": "Settings",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.33,
+      "offset": -80,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_2 conversion of appendix A (°F = raw x 0.33 - 80, rounded). Default 60 °F."
+    },
+    {
+      "name": "Setpoint low limit",
+      "group": "Settings",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Setpoint high limit",
+      "group": "Settings",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Temperature high limit",
+      "group": "Settings",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "offset": 20,
+      "unit": "°F",
+      "description": "Raw 0-1000; DEGREES_1 conversion of appendix A (°F = raw x 0.23 + 20, rounded)."
+    },
+    {
+      "name": "Max fire rate",
+      "group": "Settings",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "RW",
+      "description": "40 to 100 %.",
+      "unit": "%"
+    },
+    {
+      "name": "Pump delay timer",
+      "group": "Settings",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "Aux start on delay",
+      "group": "Settings",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s"
+    },
+    {
+      "name": "Failsafe mode",
+      "group": "Settings",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Shutdown",
+        "1": "Constant setpoint"
+      }
+    },
+    {
+      "name": "Low fire timer",
+      "group": "Settings",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s"
+    },
+    {
+      "name": "Proportional band",
+      "group": "Settings",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "unit": "°F",
+      "description": "Raw 0-1000; ABS_DEG_1 conversion of appendix A (°F difference = raw x 0.23, rounded)."
+    },
+    {
+      "name": "Integral gain",
+      "group": "Settings",
+      "area": "holding",
+      "address": 27,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0.00 to 2.00.",
+      "scale": 0.01
+    },
+    {
+      "name": "Derivative time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "scale": 0.01
+    },
+    {
+      "name": "Min load adjust",
+      "group": "Settings",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "unit": "°F",
+      "description": "Raw 0-1000; ABS_DEG_1 conversion of appendix A (°F difference = raw x 0.23, rounded). Water heater only."
+    },
+    {
+      "name": "Max load adjust",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "unit": "°F",
+      "description": "Raw 0-1000; ABS_DEG_1 conversion of appendix A (°F difference = raw x 0.23, rounded). Water heater only."
+    },
+    {
+      "name": "Outlet feedback",
+      "group": "Settings",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Water heater only.",
+      "enum": {
+        "0": "Off",
+        "1": "On"
+      }
+    },
+    {
+      "name": "Setpoint limiting",
+      "group": "Settings",
+      "area": "holding",
+      "address": 60,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      }
+    },
+    {
+      "name": "Setpoint limit band",
+      "group": "Settings",
+      "area": "holding",
+      "address": 61,
+      "type": "uint16",
+      "access": "RW",
+      "scale": 0.23,
+      "unit": "°F",
+      "description": "Raw 0-1000; ABS_DEG_1 conversion of appendix A (°F difference = raw x 0.23, rounded)."
+    },
+    {
+      "name": "Sensor log interval",
+      "group": "Settings",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Off",
+        "1": "1 min",
+        "2": "5 min",
+        "3": "15 min",
+        "4": "30 min",
+        "5": "1 h",
+        "6": "6 h",
+        "7": "12 h",
+        "8": "24 h"
+      }
+    },
+    {
+      "name": "Fault log pointer",
+      "group": "Settings",
+      "area": "holding",
+      "address": 68,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0-9"
+    },
+    {
+      "name": "Sensor log pointer",
+      "group": "Settings",
+      "area": "holding",
+      "address": 69,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0-1199"
+    },
+    {
+      "name": "Time log pointer",
+      "group": "Settings",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0-10239"
+    }
+  ]
+}
