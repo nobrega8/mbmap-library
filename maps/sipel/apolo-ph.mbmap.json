@@ -1,0 +1,366 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "SIPEL",
+  "model": "Apolo-PH",
+  "models": [
+    "Apolo-PH"
+  ],
+  "vendor_website": "sipel.com.ar",
+  "description": "Weighing and dual-cut filling module: gross, tare and net weight, status and task, key and command registers, cut settings",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "SIPEL Apolo-PH, Manual v16b",
+  "sources": [
+    {
+      "title": "Manual Apolo-PH",
+      "version": "v16b",
+      "url": "https://www.sipel.com.ar/uploads/Apolo%20PH/Manual_Apolo_PH_v16b.pdf",
+      "note": "Section 4, Modbus memory map",
+      "accessed": "2026-11-15",
+      "sha256": "71900c618b95abcca7adcd33e281ef5babf5a280f1078406f6438c941c2e6898"
+    }
+  ],
+  "notes": [
+    "Modbus RTU on RS-485, 19200 8N1, functions 03 (read) and 06 (write one register); write with length 1 only. The module also answers slave address 0.",
+    "Reading and writing a register can mean different things: address 6 reads Status and Task, and is written with the Key; address 7 reads the last Command and the Result, and is written with the Command. Entries for both are listed.",
+    "The manual's PLC example writes the key at address 7; the memory map writes it at 6 and the map is followed.",
+    "Weights are 32-bit integers in two registers with no decimal point; the word order is not stated, high word first is assumed.",
+    "Written from the manual (Spanish), not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Gross weight",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 0,
+      "type": "int32",
+      "access": "R",
+      "description": "Long integer, two's complement, no decimal point"
+    },
+    {
+      "name": "Tare",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 2,
+      "type": "int32",
+      "access": "R",
+      "description": "Set when changing from gross to net mode; zero in gross mode"
+    },
+    {
+      "name": "Net weight",
+      "group": "Weighing",
+      "area": "holding",
+      "address": 4,
+      "type": "int32",
+      "access": "R",
+      "description": "Gross minus tare; in packaging mode the last net weight until read"
+    },
+    {
+      "name": "Status: negative weight",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Status: centre of zero",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Status: unstable weight",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Status: net mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "Status: negative gross weight",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Status: new data in net weight",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Status: ready output active",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Status: error (code in the task byte)",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Task",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "description": "Current task; on error (status bit 7) it holds the error code",
+      "enum": {
+        "0": "Weight mode",
+        "1": "Coarse cut",
+        "2": "Fine cut",
+        "3": "Totalising",
+        "4": "Discharge",
+        "5": "Bypass",
+        "6": "Menu mode"
+      }
+    },
+    {
+      "name": "Error code",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "description": "Valid when status bit 7 (error) is set",
+      "enum": {
+        "1": "Zero out of range",
+        "2": "Zero band fault",
+        "3": "- CAP",
+        "4": "F CAP",
+        "5": "S CAP",
+        "6": "Initialising"
+      }
+    },
+    {
+      "name": "Key",
+      "group": "Commands",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "W",
+      "bit": 0,
+      "bits": 8,
+      "description": "Activates a function in weight mode; the high byte must be 0",
+      "enum": {
+        "83": "Mode (S)",
+        "90": "Zero (Z)",
+        "77": "Tare (M)",
+        "80": "Print (P)",
+        "70": "Function (F)"
+      }
+    },
+    {
+      "name": "Last command",
+      "group": "Commands",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 8,
+      "description": "Goes back to 0 when the command has finished",
+      "enum": {
+        "1": "Read zero band",
+        "2": "Read coarse cut",
+        "3": "Read fine cut",
+        "4": "Read inputs/outputs",
+        "5": "Read theoretical cut",
+        "6": "Read correction percentage",
+        "11": "Write zero band",
+        "12": "Write coarse cut",
+        "13": "Write fine cut",
+        "15": "Write theoretical cut",
+        "16": "Write correction percentage",
+        "21": "Cancel",
+        "22": "Start",
+        "23": "Bypass",
+        "24": "Net read",
+        "25": "Save to EEPROM (zero band, cuts, correction)",
+        "26": "Reset",
+        "27": "Enter configuration",
+        "28": "Enter calibration",
+        "31": "Read PR, CA, AF, DE",
+        "32": "Read RA, BR, ID, A1",
+        "41": "Write PR, CA, AF, DE",
+        "42": "Write RA, BR, ID, A1",
+        "71": "Save configuration and restart",
+        "51": "Read IN, PD, DD",
+        "61": "Write IN, PD, DD",
+        "81": "Save calibration and restart",
+        "82": "Take zero",
+        "83": "Take span"
+      }
+    },
+    {
+      "name": "Result",
+      "group": "Commands",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "description": "Result of the command sent",
+      "enum": {
+        "0": "OK",
+        "1": "Invalid command",
+        "2": "Zero band fault (after Zero key)",
+        "3": "Taking ZERO",
+        "4": "Taking SPAN",
+        "5": "Zero out of range",
+        "6": "Recal",
+        "7": "Weight low (span)",
+        "8": "SPAN high",
+        "9": "F CAP (span)"
+      }
+    },
+    {
+      "name": "Command",
+      "group": "Commands",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "W",
+      "bit": 0,
+      "bits": 8,
+      "description": "Command to run; the high byte must be 0. Commands from another mode return Invalid command",
+      "enum": {
+        "1": "Read zero band",
+        "2": "Read coarse cut",
+        "3": "Read fine cut",
+        "4": "Read inputs/outputs",
+        "5": "Read theoretical cut",
+        "6": "Read correction percentage",
+        "11": "Write zero band",
+        "12": "Write coarse cut",
+        "13": "Write fine cut",
+        "15": "Write theoretical cut",
+        "16": "Write correction percentage",
+        "21": "Cancel",
+        "22": "Start",
+        "23": "Bypass",
+        "24": "Net read",
+        "25": "Save to EEPROM (zero band, cuts, correction)",
+        "26": "Reset",
+        "27": "Enter configuration",
+        "28": "Enter calibration",
+        "31": "Read PR, CA, AF, DE",
+        "32": "Read RA, BR, ID, A1",
+        "41": "Write PR, CA, AF, DE",
+        "42": "Write RA, BR, ID, A1",
+        "71": "Save configuration and restart",
+        "51": "Read IN, PD, DD",
+        "61": "Write IN, PD, DD",
+        "81": "Save calibration and restart",
+        "82": "Take zero",
+        "83": "Take span"
+      }
+    },
+    {
+      "name": "Data",
+      "group": "Commands",
+      "area": "holding",
+      "address": 8,
+      "type": "int32",
+      "access": "RW",
+      "description": "Value to write before a write command, or the value read after a read command"
+    },
+    {
+      "name": "Display",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "string",
+      "access": "R",
+      "description": "Text shown on the display, 8 characters",
+      "length": 4
+    },
+    {
+      "name": "Zero band",
+      "group": "Cuts",
+      "area": "holding",
+      "address": 14,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Coarse cut",
+      "group": "Cuts",
+      "area": "holding",
+      "address": 16,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Fine cut",
+      "group": "Cuts",
+      "area": "holding",
+      "address": 18,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Theoretical cut",
+      "group": "Cuts",
+      "area": "holding",
+      "address": 20,
+      "type": "int32",
+      "access": "RW"
+    },
+    {
+      "name": "Correction percentage",
+      "group": "Cuts",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "RW",
+      "description": "1 to 99 %, 20 recommended; 0 turns off the automatic fine-cut adjustment"
+    }
+  ]
+}
