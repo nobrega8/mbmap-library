@@ -1,0 +1,1219 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "PROSER",
+  "model": "UCV-117",
+  "models": [
+    "UCV-117"
+  ],
+  "vendor_website": "proser.com.ar",
+  "description": "Gas volume corrector: pressure, temperature, corrected and uncorrected flow and volumes, gas composition, alarm limits and alarm states, with remote writing of clock, chromatography and alarm settings",
+  "revision": 1,
+  "revised": "2026-11-15",
+  "source": "PROSER UCV-117 Manual de usuario",
+  "sources": [
+    {
+      "title": "UCV-117 Manual de usuario",
+      "url": "https://www.proser.com.ar/assets/downloads/manuales/Manual%20UCV-117-REV%20F.pdf",
+      "note": "Section 4.1, Modbus memory map",
+      "accessed": "2026-11-15",
+      "sha256": "b44446340711113fd2146575f503e8a954fbef995b1a630c0371b403dfe25a95"
+    }
+  ],
+  "notes": [
+    "The device has two floating-point layouts: Modicon (16-bit registers, each float over two registers from 7001) and Enron (one numbered 32-bit register per value, 7001 to 7121). This map follows the Modicon layout, the factory type; in the Enron layout the same variables are at the manual's 32-bit numbers.",
+    "Coils start at address 0 (function 01).",
+    "Writing: put the new values in the writable table, write the security code (the sum of the ASCII codes of the 8-character access key, for example 420 for 12345678) in 7157, then the write code in 7155, and check 7157 for the result. Needs firmware 2.08 or later, which also adds the extended map (gas composition, alarm limits, serial number).",
+    "The hourly and daily history (up to 120 days) is stored in flash and is not described here.",
+    "RS-232 only, Modbus ASCII or RTU, 300 to 9600 bps, address 1 to 244; factory RTU 9600 8N1 address 18, and the port is switched off at the factory to save battery. Word order of the floats is not stated; big-endian assumed.",
+    "Written from the manufacturer's manual (Spanish); not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 18,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Temperature high alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Temperature low alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Pressure high alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Pressure low alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Uncorrected flow high alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 4,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Uncorrected flow low alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 5,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Corrected flow high alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 6,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Corrected flow low alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 7,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Daily volume high alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 8,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Daily volume low alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 9,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Hourly volume high alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 10,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Hourly volume low alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 11,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Battery low alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 12,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary pressure high alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 13,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary pressure low alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 14,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary input alarm",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 15,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary input state",
+      "group": "Alarms",
+      "area": "coil",
+      "address": 16,
+      "type": "bool",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7001,
+      "type": "float32",
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Day",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7003,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Month",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7005,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Year",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7007,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Hour",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7009,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minute",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7011,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Battery voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7013,
+      "type": "float32",
+      "access": "R",
+      "unit": "mV"
+    },
+    {
+      "name": "Auxiliary pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7015,
+      "type": "float32",
+      "access": "R",
+      "unit": "bar"
+    },
+    {
+      "name": "Static pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7017,
+      "type": "float32",
+      "access": "R",
+      "unit": "bar"
+    },
+    {
+      "name": "Uncorrected flow",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7019,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³/h"
+    },
+    {
+      "name": "Temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7021,
+      "type": "float32",
+      "access": "R",
+      "unit": "°C"
+    },
+    {
+      "name": "Corrected flow",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7023,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³/h"
+    },
+    {
+      "name": "Corrected volume, previous hour",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7025,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Corrected volume, current day",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7027,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Corrected volume, yesterday",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7029,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Flow minutes",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7031,
+      "type": "float32",
+      "access": "R",
+      "unit": "min"
+    },
+    {
+      "name": "Projected daily corrected volume",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7033,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Minutes since contract hour",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7035,
+      "type": "float32",
+      "access": "R",
+      "unit": "min"
+    },
+    {
+      "name": "Turbine mechanical counter",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7037,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm code",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7039,
+      "type": "float32",
+      "access": "R",
+      "description": "Sum of the active alarm codes: 1 temperature high, 2 low, 4 pressure high, 8 low, 16 uncorrected flow high, 32 low, 64 corrected flow high, 128 low, 256 auxiliary input volume high, 512 low, 1024 hourly volume high, 2048 low, 4096 battery low, 8192 auxiliary pressure high, 16384 low, 32768 auxiliary input alarm"
+    },
+    {
+      "name": "Total corrected volume",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7041,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Total uncorrected volume",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7043,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Monthly total corrected volume",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7045,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Monthly total uncorrected volume",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7047,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Projected daily uncorrected volume",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7049,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Total correction factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7051,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pressure factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7053,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Temperature factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7055,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Fpv2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7057,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Base pressure",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7059,
+      "type": "float32",
+      "access": "R",
+      "unit": "bar"
+    },
+    {
+      "name": "Base temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7061,
+      "type": "float32",
+      "access": "R",
+      "unit": "°C"
+    },
+    {
+      "name": "Turbine K factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7063,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Calorific value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7065,
+      "type": "float32",
+      "access": "R",
+      "unit": "MJ/m³"
+    },
+    {
+      "name": "Specific gravity",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7067,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pointer to last hourly history record",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7069,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pointer to last daily history record",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7071,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Corrected total, previous month",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7073,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Uncorrected total, previous month",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7075,
+      "type": "float32",
+      "access": "R",
+      "unit": "m³"
+    },
+    {
+      "name": "Nitrogen N2",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7077,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Carbon dioxide CO2",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7079,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Hydrogen sulphide H2S",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7081,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Water H2O",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7083,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Helium He",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7085,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Methane CH4",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7087,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Ethane C2H6",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7089,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Propane C3H8",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7091,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Isobutane iC4H10",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7093,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "n-Butane nC4H10",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7095,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Isopentane iC5H12",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7097,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "n-Pentane nC5H12",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7099,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Hexane C6H14",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7101,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Heptane C7H16",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7103,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Octane C8H18",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7105,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Nonane C9H20",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7107,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Decane C10H22",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7109,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Oxygen O2",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7111,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Carbon monoxide CO",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7113,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Hydrogen H2",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7115,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Argon Ar",
+      "group": "Gas composition",
+      "area": "holding",
+      "address": 7117,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Alarm limit, pressure minimum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7119,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, pressure maximum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7121,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, temperature minimum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7123,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, temperature maximum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7125,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, corrected flow minimum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7127,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, corrected flow maximum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7129,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, uncorrected flow minimum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7131,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, uncorrected flow maximum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7133,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, daily corrected volume minimum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7135,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, daily corrected volume maximum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7137,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, hourly corrected volume minimum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7139,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, hourly corrected volume maximum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7141,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, auxiliary pressure minimum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7143,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Alarm limit, auxiliary pressure maximum",
+      "group": "Alarm limits",
+      "area": "holding",
+      "address": 7145,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Auxiliary input alarm contact",
+      "group": "Status",
+      "area": "holding",
+      "address": 7147,
+      "type": "float32",
+      "access": "R",
+      "unit": "0"
+    },
+    {
+      "name": "Last restart time",
+      "group": "Status",
+      "area": "holding",
+      "address": 7149,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Last restart date",
+      "group": "Status",
+      "area": "holding",
+      "address": 7151,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Unit serial number",
+      "group": "Status",
+      "area": "holding",
+      "address": 7153,
+      "type": "float32",
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "Write code",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7155,
+      "type": "float32",
+      "access": "RW",
+      "description": "Write after the security code: 1 date and time (7159-7167), 2 Nx19 table (7169-7173), 3 detailed AGA8 chromatography (7171-7211), 4 alarm table (7213-7241)"
+    },
+    {
+      "name": "Validation / error code",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7157,
+      "type": "float32",
+      "access": "RW",
+      "description": "Write the security code here before writing; afterwards reads 0 = done, 1 = out of range, 2 = chromatography does not add up to 100"
+    },
+    {
+      "name": "Set day",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7159,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Set month",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7161,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Set year",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7163,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Set hour",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7165,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Set minute",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7167,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "SPRG (Nx19) (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7169,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Nitrogen N2 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7171,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Carbon dioxide CO2 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7173,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Hydrogen sulphide H2S (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7175,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Water H2O (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7177,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Helium He (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7179,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Methane CH4 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7181,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Ethane C2H6 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7183,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Propane C3H8 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7185,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Isobutane iC4H10 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7187,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "n-Butane nC4H10 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7189,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Isopentane iC5H12 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7191,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "n-Pentane nC5H12 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7193,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Hexane C6H14 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7195,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Heptane C7H16 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7197,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Octane C8H18 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7199,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Nonane C9H20 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7201,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Decane C10H22 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7203,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Oxygen O2 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7205,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Carbon monoxide CO (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7207,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Hydrogen H2 (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7209,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Argon Ar (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7211,
+      "type": "float32",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "Alarm limit, pressure minimum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7213,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, pressure maximum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7215,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, temperature minimum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7217,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, temperature maximum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7219,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, corrected flow minimum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7221,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, corrected flow maximum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7223,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, uncorrected flow minimum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7225,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, uncorrected flow maximum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7227,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, daily corrected volume minimum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7229,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, daily corrected volume maximum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7231,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, hourly corrected volume minimum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7233,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, hourly corrected volume maximum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7235,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, auxiliary pressure minimum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7237,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Alarm limit, auxiliary pressure maximum (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7239,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Auxiliary input alarm contact (writable)",
+      "group": "Writable settings",
+      "area": "holding",
+      "address": 7241,
+      "type": "float32",
+      "access": "RW",
+      "unit": "0"
+    }
+  ]
+}
