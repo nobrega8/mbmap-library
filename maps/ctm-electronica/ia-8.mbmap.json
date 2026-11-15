@@ -1,0 +1,295 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "CTM Electrónica",
+  "model": "IA-8",
+  "models": [
+    "IA-8"
+  ],
+  "vendor_website": "ctmelectronica.ar",
+  "description": "8 analog input module, Modbus RTU: 10-bit input values, sync values, watchdog and serial settings",
+  "revision": 1,
+  "source": "CTM Electrónica, IA-8 Manual del usuario (V3.5), V3.5",
+  "sources": [
+    {
+      "title": "IA-8 Manual del usuario (V3.5)",
+      "version": "V3.5",
+      "url": "https://ctmelectronica.ar/wp-content/uploads/2025/04/Manual-IA8-v3.pdf",
+      "note": "Register, coil and function tables",
+      "accessed": "2026-11-15",
+      "sha256": "272532d87a7c7c4cf49cdf3e009f13f68c31427424e2aae8463c0b04bfbe5500"
+    }
+  ],
+  "notes": [
+    "Inputs are digitised with 10 bits; the engineering value depends on the sensor wired to each input.",
+    "Functions 1/2 (coils) and 3/4 (registers) are accepted, 0xxxx mirrors 1xxxx and 3xxxx mirrors 4xxxx; functions 5, 6, 15, 16 and 8 (diagnostics) also work.",
+    "Register numbers are those of the manual (40001 is the first holding register), counted from 1 (address_base 1).",
+    "Serial settings are configurable; the baudrate shown is the factory default. Modbus RTU speeds 1200 to 115200 bps.",
+    "Written from the manufacturer's manual (in Spanish); not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 5,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Watchdog alarm enable",
+      "group": "Coils",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 enables the watchdog alarm"
+    },
+    {
+      "name": "Watchdog alarm event",
+      "group": "Coils",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = no message within the watchdog time; write 0 to clear"
+    },
+    {
+      "name": "Power-up event",
+      "group": "Coils",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "RW",
+      "description": "1 = the device was powered up since the flag was cleared"
+    },
+    {
+      "name": "Sync",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 16 to store the state in the sync registers"
+    },
+    {
+      "name": "Firmware version (high)",
+      "group": "Identification",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "R",
+      "description": "Hexadecimal; factory value 12",
+      "role": "firmware"
+    },
+    {
+      "name": "Firmware version (low)",
+      "group": "Identification",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "description": "Hexadecimal; factory value 34",
+      "role": "firmware"
+    },
+    {
+      "name": "Device name",
+      "group": "Identification",
+      "area": "holding",
+      "address": 4,
+      "type": "string",
+      "access": "RW",
+      "description": "4 ASCII characters, user-editable; factory \"CTM1\"",
+      "length": 2
+    },
+    {
+      "name": "Communication",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Serial speed (bits B2..B0); factory value 2",
+      "enum": {
+        "0": "1200 bps",
+        "1": "2400 bps",
+        "2": "9600 bps",
+        "3": "19200 bps",
+        "4": "115200 bps"
+      }
+    },
+    {
+      "name": "Address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Modbus address, 1 to 254 (255 is broadcast)"
+    },
+    {
+      "name": "Watchdog timer",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "description": "In 0.1 s steps; 100 = 10 s",
+      "unit": "0.1 s"
+    },
+    {
+      "name": "Coils (mirror)",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Analog value, input #0",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "description": "10-bit conversion (0 to 1023) of the 4-20 mA or 0-10 V input"
+    },
+    {
+      "name": "Analog value, input #1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "description": "10-bit conversion (0 to 1023) of the 4-20 mA or 0-10 V input"
+    },
+    {
+      "name": "Analog value, input #2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "description": "10-bit conversion (0 to 1023) of the 4-20 mA or 0-10 V input"
+    },
+    {
+      "name": "Analog value, input #3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "R",
+      "description": "10-bit conversion (0 to 1023) of the 4-20 mA or 0-10 V input"
+    },
+    {
+      "name": "Analog value, input #4",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "access": "R",
+      "description": "10-bit conversion (0 to 1023) of the 4-20 mA or 0-10 V input"
+    },
+    {
+      "name": "Analog value, input #5",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "access": "R",
+      "description": "10-bit conversion (0 to 1023) of the 4-20 mA or 0-10 V input"
+    },
+    {
+      "name": "Analog value, input #6",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 21,
+      "type": "uint16",
+      "access": "R",
+      "description": "10-bit conversion (0 to 1023) of the 4-20 mA or 0-10 V input"
+    },
+    {
+      "name": "Analog value, input #7",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "R",
+      "description": "10-bit conversion (0 to 1023) of the 4-20 mA or 0-10 V input"
+    },
+    {
+      "name": "Analog value at sync, input #0",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value taken when the Sync command was received"
+    },
+    {
+      "name": "Analog value at sync, input #1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value taken when the Sync command was received"
+    },
+    {
+      "name": "Analog value at sync, input #2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value taken when the Sync command was received"
+    },
+    {
+      "name": "Analog value at sync, input #3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value taken when the Sync command was received"
+    },
+    {
+      "name": "Analog value at sync, input #4",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 27,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value taken when the Sync command was received"
+    },
+    {
+      "name": "Analog value at sync, input #5",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value taken when the Sync command was received"
+    },
+    {
+      "name": "Analog value at sync, input #6",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 29,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value taken when the Sync command was received"
+    },
+    {
+      "name": "Analog value at sync, input #7",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "R",
+      "description": "Value taken when the Sync command was received"
+    }
+  ]
+}

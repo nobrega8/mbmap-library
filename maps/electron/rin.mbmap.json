@@ -1,0 +1,202 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Electron do Brasil",
+  "model": "RIN",
+  "models": [
+    "RIN"
+  ],
+  "vendor_website": "electron.com.br",
+  "description": "Level indicator relay: liquid detection, relay logic, sensor fault, serial settings and identity",
+  "revision": 1,
+  "source": "Electron Mapa de Registradores - MODBUS RTU, Relé Indicador de Nível RIN",
+  "sources": [
+    {
+      "title": "Mapa de Registradores - MODBUS RTU, Relé Indicador de Nível - RIN",
+      "url": "https://electron.com.br/download/542/mapa-registrador/20131/mapa_de_registradores_modbus_rtu_rin.pdf",
+      "note": "Register map",
+      "accessed": "2026-11-15",
+      "sha256": "b05cd9cbd2da975defe2fcfc62d92dae21b9b5e4eb15ea27e4c432e3ef6d9775"
+    }
+  ],
+  "notes": [
+    "Modbus RTU; every value is a holding register, read only. The document numbers the registers from 1 relative to 40.000 and does not say whether that number is sent as is; it is used here as the address on the wire. If every value looks shifted by one register, use address base 1.",
+    "Serial speed 1200 to 57600 bit/s (or automatic detection), 8 data bits, 1 stop bit; parity none, even or odd. 9600 8N1 is assumed here.",
+    "The serial number is 24 bits: the low 16 bits in register 12 and the high 8 bits in register 13.",
+    "Written from the register map; this map has not been tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Liquid detected",
+      "group": "Registers",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Liquid not detected",
+        "1": "Liquid detected"
+      }
+    },
+    {
+      "name": "Relay 1 logic",
+      "group": "Registers",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Normal",
+        "1": "Inverse"
+      },
+      "description": "Logic indication of relay 1 (NAF)"
+    },
+    {
+      "name": "Serial address",
+      "group": "Registers",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 256"
+    },
+    {
+      "name": "Sensor status",
+      "group": "Registers",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "No fault",
+        "1": "Sensor fault"
+      }
+    },
+    {
+      "name": "Serial speed",
+      "group": "Registers",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "Automatic detection",
+        "1": "1200 bps",
+        "2": "2400 bps",
+        "3": "4800 bps",
+        "4": "9600 bps",
+        "5": "19200 bps",
+        "6": "38400 bps",
+        "7": "57600 bps"
+      }
+    },
+    {
+      "name": "Protocol",
+      "group": "Registers",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "DNP3 level 1",
+        "1": "Modbus RTU"
+      }
+    },
+    {
+      "name": "Parity",
+      "group": "Registers",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "None",
+        "1": "Even",
+        "2": "Odd"
+      }
+    },
+    {
+      "name": "Parameter protection",
+      "group": "Registers",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 1"
+    },
+    {
+      "name": "Manufacture day",
+      "group": "Registers",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "R",
+      "description": "1 to 31"
+    },
+    {
+      "name": "Manufacture month",
+      "group": "Registers",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "description": "1 to 12"
+    },
+    {
+      "name": "Manufacture year",
+      "group": "Registers",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "description": "15 to 100 (two-digit year)"
+    },
+    {
+      "name": "Serial number (low 16 bits)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "Serial number (high 8 bits)",
+      "group": "Registers",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Equipment version",
+      "group": "Registers",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "role": "model"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Registers",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "role": "firmware"
+    }
+  ],
+  "revised": "2026-11-15"
+}
