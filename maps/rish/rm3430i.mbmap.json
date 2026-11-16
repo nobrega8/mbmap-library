@@ -3,71 +3,1073 @@
   "mbmap": 2,
   "vendor": "Rish",
   "model": "RM3430I",
-  "models": ["RM3430I"],
+  "models": [
+    "RM3430I"
+  ],
+  "revision": 3,
   "vendor_website": "rishabh.co.in",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table rish/rm3430i; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/rish-rm3430i.htm. Not verified against the manufacturer's documentation",
+  "source": "Rishabh Instruments, RISH Master 3430i Operating Manual, DMAN-00IM-0648 Rev D (06/2018)",
   "notes": [
-    "Rish RM3430I.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Modbus RTU on RS-485, 2400 to 19200 baud selectable on the meter (setup code at holding 18); the manual gives no factory default, so none is set here. Node address 1 to 247.",
+    "Measured values are read with function 04 (input area) and settings with function 03 (holding, written with function 16). Each parameter is two registers holding an IEEE 754 float; a read is limited to 20 parameters.",
+    "Addresses are the manual's hexadecimal start addresses (30001 is address 0, 40005 is address 4), address base 0.",
+    "Normal word order is most significant register first; the meter can be switched to reversed order through the Word order setting (holding 40), which this map does not assume.",
+    "Settings marked R/Wp or Wp in the manual are taken to be writable only after the password, if one is set, has been sent; the manual does not define Wp. Setting values are also sent as floats.",
+    "The earlier unofficial map listed the measured values as holding registers; the manual says they are 3X registers read with function 04, so they are input registers here.",
+    "Written from the manufacturer's manual; not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
+  "revised": "2026-11-16",
+  "description": "Touch-screen multifunction meter: phase and average voltages, currents, powers, power factors, angles, frequency, energies, THD, min and max values, plus the setting registers",
+  "sources": [
+    {
+      "title": "RISH Master 3430i Operating Manual",
+      "version": "DMAN-00IM-0648 Rev D (06/2018)",
+      "url": "https://nareshelectrical.com/assets/pdf/rishabh/Rish_Master_3430i_Manual.pdf",
+      "note": "Section 7 RS 485 (ModBus) output, tables 4 to 7; copy of the Rishabh manual hosted by a distributor, the manufacturer site did not offer a direct link",
+      "accessed": "2026-11-16",
+      "sha256": "87c249172b46a797d80941710d507b4cfad1b3d5f00194cfe983331aa597f759"
+    }
+  ],
+  "protocol": "rtu",
   "registers": [
-    {"name": "Volts 2", "area": "holding", "address": 2, "type": "float32", "access": "R"},
-    {"name": "Volts 3", "area": "holding", "address": 4, "type": "float32", "access": "R"},
-    {"name": "Current 1", "area": "holding", "address": 6, "type": "float32", "access": "R"},
-    {"name": "Current 2", "area": "holding", "address": 8, "type": "float32", "access": "R"},
-    {"name": "Current 3", "area": "holding", "address": 10, "type": "float32", "access": "R"},
-    {"name": "W1", "area": "holding", "address": 12, "type": "float32", "access": "R"},
-    {"name": "W2", "area": "holding", "address": 14, "type": "float32", "access": "R"},
-    {"name": "W3", "area": "holding", "address": 16, "type": "float32", "access": "R"},
-    {"name": "VA1", "area": "holding", "address": 18, "type": "float32", "access": "R"},
-    {"name": "VA2", "area": "holding", "address": 20, "type": "float32", "access": "R"},
-    {"name": "VA3", "area": "holding", "address": 22, "type": "float32", "access": "R"},
-    {"name": "Var1", "area": "holding", "address": 24, "type": "float32", "access": "R"},
-    {"name": "Var2", "area": "holding", "address": 26, "type": "float32", "access": "R"},
-    {"name": "Var3", "area": "holding", "address": 28, "type": "float32", "access": "R"},
-    {"name": "PF1", "area": "holding", "address": 30, "type": "float32", "access": "R"},
-    {"name": "PF2", "area": "holding", "address": 32, "type": "float32", "access": "R"},
-    {"name": "PF3", "area": "holding", "address": 34, "type": "float32", "access": "R"},
-    {"name": "Phase angle 1", "area": "holding", "address": 36, "type": "float32", "access": "R"},
-    {"name": "Phase angle 2", "area": "holding", "address": 38, "type": "float32", "access": "R"},
-    {"name": "Phase angle 3", "area": "holding", "address": 40, "type": "float32", "access": "R"},
-    {"name": "Volts ave", "area": "holding", "address": 42, "type": "float32", "access": "R"},
-    {"name": "Volts sum", "area": "holding", "address": 44, "type": "float32", "access": "R"},
-    {"name": "Current ave", "area": "holding", "address": 46, "type": "float32", "access": "R"},
-    {"name": "Current sum", "area": "holding", "address": 48, "type": "float32", "access": "R"},
-    {"name": "Watts ave", "area": "holding", "address": 50, "type": "float32", "access": "R"},
-    {"name": "Watts sum", "area": "holding", "address": 52, "type": "float32", "access": "R"},
-    {"name": "Va ave", "area": "holding", "address": 54, "type": "float32", "access": "R"},
-    {"name": "Va sum", "area": "holding", "address": 56, "type": "float32", "access": "R"},
-    {"name": "Var ave", "area": "holding", "address": 58, "type": "float32", "access": "R"},
-    {"name": "Var sum", "area": "holding", "address": 60, "type": "float32", "access": "R"},
-    {"name": "Pf ave", "area": "holding", "address": 62, "type": "float32", "access": "R"},
-    {"name": "Pf sum", "area": "holding", "address": 64, "type": "float32", "access": "R"},
-    {"name": "Phase angle ave", "area": "holding", "address": 66, "type": "float32", "access": "R"},
-    {"name": "Phase angle sum", "area": "holding", "address": 68, "type": "float32", "access": "R"},
-    {"name": "Freq", "area": "holding", "address": 70, "type": "float32", "access": "R"},
-    {"name": "Wh import", "area": "holding", "address": 72, "type": "float32", "access": "R"},
-    {"name": "Wh export", "area": "holding", "address": 74, "type": "float32", "access": "R"},
-    {"name": "Varh import", "area": "holding", "address": 76, "type": "float32", "access": "R"},
-    {"name": "Varh export", "area": "holding", "address": 78, "type": "float32", "access": "R"},
-    {"name": "Vah", "area": "holding", "address": 80, "type": "float32", "access": "R"},
-    {"name": "Volts ave max", "area": "holding", "address": 132, "type": "float32", "access": "R"},
-    {"name": "Volts ave min", "area": "holding", "address": 134, "type": "float32", "access": "R"},
-    {"name": "Current ave max", "area": "holding", "address": 140, "type": "float32", "access": "R"},
-    {"name": "Current ave min", "area": "holding", "address": 142, "type": "float32", "access": "R"},
-    {"name": "Active import energy(wh)", "area": "holding", "address": 144, "type": "float32", "access": "R"},
-    {"name": "Active export energy (wh)", "area": "holding", "address": 146, "type": "float32", "access": "R"},
-    {"name": "Reactive import energy (varh)", "area": "holding", "address": 148, "type": "float32", "access": "R"},
-    {"name": "Reactive export energy (varh)", "area": "holding", "address": 150, "type": "float32", "access": "R"},
-    {"name": "Apparent energy (vah)", "area": "holding", "address": 152, "type": "float32", "access": "R"},
-    {"name": "Vl 1 2 ( calculated )", "area": "holding", "address": 200, "type": "float32", "access": "R"}
+    {
+      "name": "Voltage L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 0,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Line-to-neutral voltage on 3-phase 4-wire, line-to-line voltage on 3-phase 3-wire"
+    },
+    {
+      "name": "Voltage L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Line-to-neutral voltage on 3-phase 4-wire, line-to-line voltage on 3-phase 3-wire"
+    },
+    {
+      "name": "Voltage L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 4,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Line-to-neutral voltage on 3-phase 4-wire, line-to-line voltage on 3-phase 3-wire"
+    },
+    {
+      "name": "Current L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 6,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 8,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 10,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Active power L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 12,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Active power L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 14,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Active power L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 16,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Apparent power L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 18,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Apparent power L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 20,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Apparent power L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 22,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Reactive power L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 24,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Reactive power L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 26,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Reactive power L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 28,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Power factor L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 32,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 34,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 36,
+      "type": "float32",
+      "access": "R",
+      "unit": "deg"
+    },
+    {
+      "name": "Phase angle L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 38,
+      "type": "float32",
+      "access": "R",
+      "unit": "deg"
+    },
+    {
+      "name": "Phase angle L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 40,
+      "type": "float32",
+      "access": "R",
+      "unit": "deg"
+    },
+    {
+      "name": "Voltage average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 42,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 44,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Current average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 46,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 48,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Active power average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 50,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Active power total",
+      "group": "Measurements",
+      "area": "input",
+      "address": 52,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Apparent power average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 54,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Apparent power total",
+      "group": "Measurements",
+      "area": "input",
+      "address": 56,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Reactive power average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 58,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Reactive power total",
+      "group": "Measurements",
+      "area": "input",
+      "address": 60,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Power factor average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 62,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor total",
+      "group": "Measurements",
+      "area": "input",
+      "address": 64,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle average",
+      "group": "Measurements",
+      "area": "input",
+      "address": 66,
+      "type": "float32",
+      "access": "R",
+      "unit": "deg"
+    },
+    {
+      "name": "Phase angle sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 68,
+      "type": "float32",
+      "access": "R",
+      "unit": "deg"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "input",
+      "address": 70,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Active energy import",
+      "group": "Energy",
+      "area": "input",
+      "address": 72,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit follows the Energy unit on RS485 setting (holding 4)"
+    },
+    {
+      "name": "Active energy export",
+      "group": "Energy",
+      "area": "input",
+      "address": 74,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit follows the Energy unit on RS485 setting (holding 4)"
+    },
+    {
+      "name": "Reactive energy import",
+      "group": "Energy",
+      "area": "input",
+      "address": 76,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit follows the Energy unit on RS485 setting (holding 4)"
+    },
+    {
+      "name": "Reactive energy export",
+      "group": "Energy",
+      "area": "input",
+      "address": 78,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit follows the Energy unit on RS485 setting (holding 4)"
+    },
+    {
+      "name": "Apparent energy",
+      "group": "Energy",
+      "area": "input",
+      "address": 80,
+      "type": "float32",
+      "access": "R",
+      "description": "Unit follows the Energy unit on RS485 setting (holding 4)"
+    },
+    {
+      "name": "Active energy import overflow count",
+      "group": "Energy",
+      "area": "input",
+      "address": 108,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Active energy export overflow count",
+      "group": "Energy",
+      "area": "input",
+      "address": 110,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy import overflow count",
+      "group": "Energy",
+      "area": "input",
+      "address": 112,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy export overflow count",
+      "group": "Energy",
+      "area": "input",
+      "address": 114,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Apparent energy overflow count",
+      "group": "Energy",
+      "area": "input",
+      "address": 116,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Voltage average maximum",
+      "group": "Min and max",
+      "area": "input",
+      "address": 132,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage average minimum",
+      "group": "Min and max",
+      "area": "input",
+      "address": 134,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Current average maximum",
+      "group": "Min and max",
+      "area": "input",
+      "address": 140,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current average minimum",
+      "group": "Min and max",
+      "area": "input",
+      "address": 142,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Active energy import (on update rate)",
+      "group": "Energy",
+      "area": "input",
+      "address": 144,
+      "type": "float32",
+      "access": "R",
+      "description": "Updated only at the energy update rate (setting at holding 80)"
+    },
+    {
+      "name": "Active energy export (on update rate)",
+      "group": "Energy",
+      "area": "input",
+      "address": 146,
+      "type": "float32",
+      "access": "R",
+      "description": "Updated only at the energy update rate (setting at holding 80)"
+    },
+    {
+      "name": "Reactive energy import (on update rate)",
+      "group": "Energy",
+      "area": "input",
+      "address": 148,
+      "type": "float32",
+      "access": "R",
+      "description": "Updated only at the energy update rate (setting at holding 80)"
+    },
+    {
+      "name": "Reactive energy export (on update rate)",
+      "group": "Energy",
+      "area": "input",
+      "address": 150,
+      "type": "float32",
+      "access": "R",
+      "description": "Updated only at the energy update rate (setting at holding 80)"
+    },
+    {
+      "name": "Apparent energy (on update rate)",
+      "group": "Energy",
+      "area": "input",
+      "address": 152,
+      "type": "float32",
+      "access": "R",
+      "description": "Updated only at the energy update rate (setting at holding 80)"
+    },
+    {
+      "name": "Model number",
+      "group": "Identification",
+      "area": "input",
+      "address": 196,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Version number",
+      "group": "Identification",
+      "area": "input",
+      "address": 198,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Voltage L1-L2 (calculated)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 200,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage L2-L3 (calculated)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 202,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage L3-L1 (calculated)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 204,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage L1 THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 206,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage L2 THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 208,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage L3 THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 210,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Current L1 THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 212,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Current L2 THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 214,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Current L3 THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 216,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "System voltage THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 218,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "System current THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 220,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Neutral current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 224,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Energy unit on RS485",
+      "group": "Settings",
+      "area": "holding",
+      "address": 4,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 = Wh, 2 = kWh, 3 = MWh"
+    },
+    {
+      "name": "System voltage",
+      "group": "Settings",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "access": "R",
+      "description": "Nominal system voltage, read only"
+    },
+    {
+      "name": "System current",
+      "group": "Settings",
+      "area": "holding",
+      "address": 8,
+      "type": "float32",
+      "access": "R",
+      "description": "Nominal system current, read only"
+    },
+    {
+      "name": "System type",
+      "group": "Settings",
+      "area": "holding",
+      "address": 10,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 = 1-phase 2-wire, 2 = 3-phase 3-wire, 3 = 3-phase 4-wire"
+    },
+    {
+      "name": "Pulse width",
+      "group": "Settings",
+      "area": "holding",
+      "address": 12,
+      "type": "float32",
+      "access": "RW",
+      "description": "60, 100 or 200 ms"
+    },
+    {
+      "name": "Reset parameters",
+      "group": "Settings",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "access": "W",
+      "description": "0 = energy reset, 2 = system minimum reset, 3 = system maximum reset, 6 = reset all"
+    },
+    {
+      "name": "RS485 setup code",
+      "group": "Settings",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "access": "RW",
+      "description": "Baud rate, parity and stop bits as one code (table 6 of the manual, e.g. 8 = 9600 baud no parity 1 stop bit)"
+    },
+    {
+      "name": "Node address",
+      "group": "Settings",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 to 247"
+    },
+    {
+      "name": "Pulse divisor",
+      "group": "Settings",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "access": "RW",
+      "description": "1, 10, 100 or 1000 when energy is in Wh"
+    },
+    {
+      "name": "Minimum reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "access": "W",
+      "description": "Write 0 to reset the minimum values"
+    },
+    {
+      "name": "Maximum reset",
+      "group": "Settings",
+      "area": "holding",
+      "address": 26,
+      "type": "float32",
+      "access": "W",
+      "description": "Write 0 to reset the maximum values"
+    },
+    {
+      "name": "Analog output 1 parameter",
+      "group": "Settings",
+      "area": "holding",
+      "address": 28,
+      "type": "float32",
+      "access": "RW",
+      "description": "Parameter number from table 2 of the manual"
+    },
+    {
+      "name": "Analog output 2 parameter",
+      "group": "Settings",
+      "area": "holding",
+      "address": 30,
+      "type": "float32",
+      "access": "RW",
+      "description": "Parameter number from table 2 of the manual"
+    },
+    {
+      "name": "PT primary",
+      "group": "Settings",
+      "area": "holding",
+      "address": 32,
+      "type": "float32",
+      "access": "RW",
+      "description": "Maximum 692.8 kV line-to-line"
+    },
+    {
+      "name": "CT primary",
+      "group": "Settings",
+      "area": "holding",
+      "address": 34,
+      "type": "float32",
+      "access": "RW",
+      "description": "Maximum 9999"
+    },
+    {
+      "name": "System power",
+      "group": "Settings",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "access": "R",
+      "description": "Nominal system power, read only"
+    },
+    {
+      "name": "Energy digit reset count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 38,
+      "type": "float32",
+      "access": "RW",
+      "description": "Rollover digit count: 7 to 14 for Wh, 7 to 12 for kWh, 7 to 9 for MWh"
+    },
+    {
+      "name": "Word order",
+      "group": "Settings",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "access": "RW",
+      "description": "Write 2141.0 to set the word order of floating-point values; the meter detects the order used to send it"
+    },
+    {
+      "name": "CT secondary",
+      "group": "Settings",
+      "area": "holding",
+      "address": 42,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 = 1 A, 5 = 5 A"
+    },
+    {
+      "name": "PT secondary",
+      "group": "Settings",
+      "area": "holding",
+      "address": 44,
+      "type": "float32",
+      "access": "RW",
+      "description": "100 to 600 V line-to-line"
+    },
+    {
+      "name": "Pulse 1 parameter",
+      "group": "Settings",
+      "area": "holding",
+      "address": 48,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 = active import, 1 = active export, 2 = reactive import, 3 = reactive export, 4 = apparent"
+    },
+    {
+      "name": "Pulse 2 parameter",
+      "group": "Settings",
+      "area": "holding",
+      "address": 60,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 = active import, 1 = active export, 2 = reactive import, 3 = reactive export, 4 = apparent"
+    },
+    {
+      "name": "Password",
+      "group": "Settings",
+      "area": "holding",
+      "address": 70,
+      "type": "float32",
+      "access": "RW",
+      "description": "Read returns 0 if a password lock is set, 1 if not; send the valid password before changing other settings"
+    },
+    {
+      "name": "30 mA noise current elimination",
+      "group": "Settings",
+      "area": "holding",
+      "address": 78,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 = off, 30 = on"
+    },
+    {
+      "name": "Energy update rate",
+      "group": "Settings",
+      "area": "holding",
+      "address": 80,
+      "type": "float32",
+      "access": "RW",
+      "description": "1 to 60 minutes"
+    },
+    {
+      "name": "Model number (setting table)",
+      "group": "Settings",
+      "area": "holding",
+      "address": 82,
+      "type": "float32",
+      "access": "R",
+      "description": "Model number of the meter, read only"
+    },
+    {
+      "name": "Brightness",
+      "group": "Settings",
+      "area": "holding",
+      "address": 84,
+      "type": "float32",
+      "access": "RW",
+      "description": "2 to 85, default 42"
+    },
+    {
+      "name": "Contrast",
+      "group": "Settings",
+      "area": "holding",
+      "address": 86,
+      "type": "float32",
+      "access": "RW",
+      "description": "6 to 23, default 9"
+    },
+    {
+      "name": "Display colour red L1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 88,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Display colour green L1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 90,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Display colour blue L1",
+      "group": "Settings",
+      "area": "holding",
+      "address": 92,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Display colour red L2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 94,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Display colour green L2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 96,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Display colour blue L2",
+      "group": "Settings",
+      "area": "holding",
+      "address": 98,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Display colour red L3",
+      "group": "Settings",
+      "area": "holding",
+      "address": 100,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Display colour green L3",
+      "group": "Settings",
+      "area": "holding",
+      "address": 102,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Display colour blue L3",
+      "group": "Settings",
+      "area": "holding",
+      "address": 104,
+      "type": "float32",
+      "access": "RW",
+      "description": "0 to 255"
+    },
+    {
+      "name": "Active energy import start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 106,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the energy counter, 0 to 9999999"
+    },
+    {
+      "name": "Active energy export start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 108,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the energy counter, 0 to 9999999"
+    },
+    {
+      "name": "Reactive energy import start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 110,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the energy counter, 0 to 9999999"
+    },
+    {
+      "name": "Reactive energy export start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 112,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the energy counter, 0 to 9999999"
+    },
+    {
+      "name": "Apparent energy start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 114,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the energy counter, 0 to 9999999"
+    },
+    {
+      "name": "Active energy import overflow start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 118,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the overflow counter, 0 to 999999"
+    },
+    {
+      "name": "Active energy export overflow start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 120,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the overflow counter, 0 to 999999"
+    },
+    {
+      "name": "Reactive energy import overflow start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 122,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the overflow counter, 0 to 999999"
+    },
+    {
+      "name": "Reactive energy export overflow start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 124,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the overflow counter, 0 to 999999"
+    },
+    {
+      "name": "Apparent energy overflow start count",
+      "group": "Settings",
+      "area": "holding",
+      "address": 126,
+      "type": "float32",
+      "access": "RW",
+      "description": "Starting value for the overflow counter, 0 to 999999"
+    }
   ]
 }
