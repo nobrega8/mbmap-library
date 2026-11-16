@@ -2,73 +2,2997 @@
   "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
   "mbmap": 2,
   "vendor": "Heyuan",
-  "model": "DZ series",
-  "models": ["DZ81", "DZS310"],
+  "model": "DZ81 series",
+  "models": [
+    "DZ81-MS3UI7C",
+    "DZ81-MS3UI7E3"
+  ],
+  "revision": 4,
   "vendor_website": "heyuanintel.com",
-  "revision": 3,
-  "revised": "2026-11-14",
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table heyuan/dz81-dzs310; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/heyuan-dz81-dzs310.htm. Not verified against the manufacturer's documentation",
+  "source": "Heyuan Intelligence Technology, DZ81-MS3UI7C / MS3UI7E3 Modbus register list (xlsx from the manufacturer download page)",
   "notes": [
-    "Heyuan DZ81 / DZS310.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Modbus RTU on RS-485. The manual lists defaults of address 1, 9600 baud (baud code 3) and 8N1 (serial code 0); baud 1200 to 9600 selectable (code 4 = 19200 is not listed for this model), 8N1, 8O1 or 8E1.",
+    "Measured values are read with function 04 (input registers) and settings and the clock with function 03 / 16 (holding). Secondary-side values are 16-bit; primary-side values (secondary x PT or CT) are 32-bit with the high word first.",
+    "Addresses are the decimal addresses of the manual (the hexadecimal column has typing errors in places), address base 0. The manual gives scales as magnifying factors (100 for voltage, 1000 for current and power), units from its formula sheet (V, A, kW, kvar, kVA, Hz, kWh).",
+    "The register file names the models DZ81-MS3UI7C and MS3UI7E3. The addresses and names of the 50 registers of the earlier unofficial map match this file, so the DZ81 family is mapped from it; the name DZS310 appears in no Heyuan document found, so it is not listed as a model.",
+    "Not mapped: the monthly and settlement-day energy blocks of the 0x4000 zone (including the primary-side energy block, whose three-register stride the manual does not explain) and the duplicate relay write zone at 0x5000.",
+    "Written from the manufacturer's register list; not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
+  "revised": "2026-11-16",
+  "description": "Three-phase multifunction power meter: secondary and primary voltages, currents, powers, power factors, frequency, unbalance, harmonics, real-time energy, configuration, clock, digital inputs and relays",
+  "sources": [
+    {
+      "title": "DZ81-MS3UI7C / MS3UI7E3 Modbus register list",
+      "version": "undated spreadsheet (sheets 0x1000, 0x2000, 0x3000, 0x4000, Formula)",
+      "url": "https://images.yybcdn.com/sites/93000/93003/20250424155305853.xlsx",
+      "note": "Linked from https://www.heyuanintel.com/Download.html as the MS3UI7C/MS3UI7E3 register file",
+      "accessed": "2026-11-16",
+      "sha256": "6a6f18a43fdea44cef0737dbbb5f6d66c12477d847025261604b9a12d4024613"
+    }
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
   "registers": [
-    {"name": "A phase voltage (4096)", "area": "holding", "address": 4096, "type": "uint16", "access": "R"},
-    {"name": "B phase voltage (4097)", "area": "holding", "address": 4097, "type": "uint16", "access": "R"},
-    {"name": "C phase voltage (4098)", "area": "holding", "address": 4098, "type": "uint16", "access": "R"},
-    {"name": "Phase voltage mean value (4099)", "area": "holding", "address": 4099, "type": "uint16", "access": "R"},
-    {"name": "Zero phase voltage (4100)", "area": "holding", "address": 4100, "type": "uint16", "access": "R"},
-    {"name": "Line voltage (A b) (4101)", "area": "holding", "address": 4101, "type": "uint16", "access": "R"},
-    {"name": "Line voltage (B c) (4102)", "area": "holding", "address": 4102, "type": "uint16", "access": "R"},
-    {"name": "Line voltage (C a) (4103)", "area": "holding", "address": 4103, "type": "uint16", "access": "R"},
-    {"name": "Line voltage mean value (4104)", "area": "holding", "address": 4104, "type": "uint16", "access": "R"},
-    {"name": "A phase current (4105)", "area": "holding", "address": 4105, "type": "uint16", "access": "R"},
-    {"name": "B phase current (4106)", "area": "holding", "address": 4106, "type": "uint16", "access": "R"},
-    {"name": "C phase current (4107)", "area": "holding", "address": 4107, "type": "uint16", "access": "R"},
-    {"name": "Current mean value (4108)", "area": "holding", "address": 4108, "type": "uint16", "access": "R"},
-    {"name": "Zero phase current (4109)", "area": "holding", "address": 4109, "type": "uint16", "access": "R"},
-    {"name": "A phase active power (4110)", "area": "holding", "address": 4110, "type": "int16", "access": "R"},
-    {"name": "B phase active power (4111)", "area": "holding", "address": 4111, "type": "int16", "access": "R"},
-    {"name": "C phase active power (4112)", "area": "holding", "address": 4112, "type": "int16", "access": "R"},
-    {"name": "Total active power", "area": "holding", "address": 4113, "type": "int16", "access": "R"},
-    {"name": "A phase reactive power", "area": "holding", "address": 4114, "type": "int16", "access": "R"},
-    {"name": "B phase reactive power", "area": "holding", "address": 4115, "type": "int16", "access": "R"},
-    {"name": "C phase reactive power", "area": "holding", "address": 4116, "type": "int16", "access": "R"},
-    {"name": "Total reactive power", "area": "holding", "address": 4117, "type": "int16", "access": "R"},
-    {"name": "A phase apparent power", "area": "holding", "address": 4118, "type": "int16", "access": "R"},
-    {"name": "B phase apparent power", "area": "holding", "address": 4119, "type": "int16", "access": "R"},
-    {"name": "C phase apparent power", "area": "holding", "address": 4120, "type": "int16", "access": "R"},
-    {"name": "Total apparent power", "area": "holding", "address": 4121, "type": "int16", "access": "R"},
-    {"name": "A phase power factor", "area": "holding", "address": 4122, "type": "int16", "access": "R"},
-    {"name": "B phase power factor", "area": "holding", "address": 4123, "type": "int16", "access": "R"},
-    {"name": "C phase power factor", "area": "holding", "address": 4124, "type": "int16", "access": "R"},
-    {"name": "Total power factor", "area": "holding", "address": 4125, "type": "int16", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 4126, "type": "uint16", "access": "R"},
-    {"name": "Voltage unbalance", "area": "holding", "address": 4127, "type": "uint16", "access": "R"},
-    {"name": "Current unbalance", "area": "holding", "address": 4128, "type": "uint16", "access": "R"},
-    {"name": "A phase voltage (5376)", "area": "holding", "address": 5376, "type": "uint32", "access": "R"},
-    {"name": "B phase voltage (5378)", "area": "holding", "address": 5378, "type": "uint32", "access": "R"},
-    {"name": "C phase voltage (5380)", "area": "holding", "address": 5380, "type": "uint32", "access": "R"},
-    {"name": "Phase voltage mean value (5382)", "area": "holding", "address": 5382, "type": "uint32", "access": "R"},
-    {"name": "Zero phase voltage (5384)", "area": "holding", "address": 5384, "type": "uint32", "access": "R"},
-    {"name": "Line voltage (A b) (5386)", "area": "holding", "address": 5386, "type": "uint32", "access": "R"},
-    {"name": "Line voltage (B c) (5388)", "area": "holding", "address": 5388, "type": "uint32", "access": "R"},
-    {"name": "Line voltage (C a) (5390)", "area": "holding", "address": 5390, "type": "uint32", "access": "R"},
-    {"name": "Line voltage mean value (5392)", "area": "holding", "address": 5392, "type": "uint32", "access": "R"},
-    {"name": "A phase current (5394)", "area": "holding", "address": 5394, "type": "uint32", "access": "R"},
-    {"name": "B phase current (5396)", "area": "holding", "address": 5396, "type": "uint32", "access": "R"},
-    {"name": "C phase current (5398)", "area": "holding", "address": 5398, "type": "uint32", "access": "R"},
-    {"name": "Current mean value (5400)", "area": "holding", "address": 5400, "type": "uint32", "access": "R"},
-    {"name": "Zero phase current (5402)", "area": "holding", "address": 5402, "type": "uint32", "access": "R"},
-    {"name": "A phase active power (5404)", "area": "holding", "address": 5404, "type": "int32", "access": "R"},
-    {"name": "B phase active power (5406)", "area": "holding", "address": 5406, "type": "int32", "access": "R"},
-    {"name": "C phase active power (5408)", "area": "holding", "address": 5408, "type": "int32", "access": "R"}
+    {
+      "name": "Phase A voltage (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4096,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase B voltage (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4097,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase C voltage (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4098,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase voltage mean value (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4099,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Zero sequence voltage (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4100,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Line voltage(A-B) (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4101,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Line voltage(B-C) (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4102,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Line voltage(C-A) (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4103,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Line voltage mean value (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4104,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase/line Current of phase A (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4105,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Phase/line Current of phase B (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4106,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Phase/line Current of phase C (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4107,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Phase/line Current mean value (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4108,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Zero sequence current (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4109,
+      "type": "uint16",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Active power of phase A (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4110,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "Active power of phase B (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4111,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "Active power of phase C (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4112,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "Total three-phase active power (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4113,
+      "type": "int16",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "Reactive power of phase A (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4114,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "Reactive power of phase B (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4115,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "Reactive power of phase C (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4116,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "Total three-phase reactive power (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4117,
+      "type": "int16",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "Apparent power of phase A (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4118,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "Apparent power of phase B (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4119,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "Apparent power of phase C (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4120,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "Total three-phase apparent power (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4121,
+      "type": "int16",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "Power factor of phase A (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4122,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Power factor of phase B (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4123,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Power factor of phase C (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4124,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Total three-phase power factor (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4125,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Frequency (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4126,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Voltage Unbalance Factor (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4127,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Manual formula sheet gives Rx/100, then x100 %"
+    },
+    {
+      "name": "Current Unbalance Factor (secondary)",
+      "group": "Measurements (secondary side)",
+      "area": "input",
+      "address": 4128,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "description": "Manual formula sheet gives Rx/100, then x100 %"
+    },
+    {
+      "name": "Phase A voltage (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5376,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase B voltage (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5378,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase C voltage (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5380,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase voltage mean value (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5382,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Zero sequence voltage (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5384,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Line voltage(A-B) (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5386,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Line voltage(B-C) (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5388,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Line voltage(C-A) (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5390,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Line voltage mean value (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5392,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.01
+    },
+    {
+      "name": "Phase A Current (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5394,
+      "type": "uint32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Phase B Current (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5396,
+      "type": "uint32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Phase C Current (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5398,
+      "type": "uint32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Phase Current mean value (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5400,
+      "type": "uint32",
+      "access": "R",
+      "unit": "A",
+      "scale": 0.001
+    },
+    {
+      "name": "Zero sequence voltage (primary) (5402)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5402,
+      "type": "uint32",
+      "access": "R",
+      "unit": "V",
+      "scale": 0.001
+    },
+    {
+      "name": "Active power of phase A (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5404,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "Active power of phase B (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5406,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "Active power of phase C (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5408,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "Total three-phase active power (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5410,
+      "type": "int32",
+      "access": "R",
+      "unit": "kW",
+      "scale": 0.001
+    },
+    {
+      "name": "Reactive power of phase A (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5412,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "Reactive power of phase B (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5414,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "Reactive power of phase C (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5416,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "Total three-phase reactive power (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5418,
+      "type": "int32",
+      "access": "R",
+      "unit": "kvar",
+      "scale": 0.001
+    },
+    {
+      "name": "Apparent power of phase A (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5420,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "Apparent power of phase B (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5422,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "Apparent power of phase C (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5424,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "Total three-phase apparent power (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5426,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kVA",
+      "scale": 0.001
+    },
+    {
+      "name": "Power factor of phase A (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5428,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Power factor of phase B (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5429,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Power factor of phase C (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5430,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Total three-phase power factor (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5431,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.001
+    },
+    {
+      "name": "Frequency (primary)",
+      "group": "Measurements (primary side)",
+      "area": "input",
+      "address": 5432,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Hz",
+      "scale": 0.01
+    },
+    {
+      "name": "Line/phase voltage THD of phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4352,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Line/phase voltage THD of phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4353,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Line/phase voltage THD of phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4354,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Line/phase voltage mean value THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4355,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Current THD of phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4356,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Current THD of phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4357,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Current THD of phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4358,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Current mean value THD",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4359,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "3rd line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4360,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "5th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4361,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "7th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4362,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "9th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4363,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "11th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4364,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "13th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4365,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "15th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4366,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "17th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4367,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "19th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4368,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "21st line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4369,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "23rd line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4370,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "25th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4371,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "27th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4372,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "29th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4373,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "31st line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4374,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "2nd line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4375,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "4th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4376,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "6th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4377,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "8th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4378,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "10th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4379,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "12th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4380,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "14th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4381,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "16th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4382,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "18th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4383,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "20th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4384,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "22nd line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4385,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "24th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4386,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "26th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4387,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "28th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4388,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "30th line/phase voltage harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4389,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Odd line/phase voltage harmonic distortion rate of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4390,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Even line/phase voltage harmonic distortion rate of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4391,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Line/phase voltage crest factor of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4392,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "3rd line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4394,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "5th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4395,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "7th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4396,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "9th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4397,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "11th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4398,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "13th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4399,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "15th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4400,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "17th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4401,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "19th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4402,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "21st line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4403,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "23rd line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4404,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "25th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4405,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "27th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4406,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "29th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4407,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "31st line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4408,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "2nd line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4409,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "4th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4410,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "6th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4411,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "8th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4412,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "10th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4413,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "12th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4414,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "14th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4415,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "16th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4416,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "18th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4417,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "20th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4418,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "22nd line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4419,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "24th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4420,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "26th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4421,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "28th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4422,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "30th line/phase voltage harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4423,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Odd line/phase voltage harmonic distortion rate of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4424,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Even line/phase voltage harmonic distortion rate of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4425,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Line/phase voltage crest factor of Phase A (4426)",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4426,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "3rd line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4428,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "5th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4429,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "7th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4430,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "9th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4431,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "11th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4432,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "13th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4433,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "15th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4434,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "17th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4435,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "19th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4436,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "21st line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4437,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "23rd line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4438,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "25th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4439,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "27th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4440,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "29th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4441,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "31st line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4442,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "2nd line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4443,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "4th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4444,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "6th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4445,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "8th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4446,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "10th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4447,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "12th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4448,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "14th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4449,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "16th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4450,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "18th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4451,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "20th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4452,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "22nd line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4453,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "24th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4454,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "26th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4455,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "28th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4456,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "30th line/phase voltage harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4457,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Odd line/phase voltage harmonic distortion rate of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4458,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Even line/phase voltage harmonic distortion rate of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4459,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Line/phase voltage crest factor of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4460,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "3rd current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4462,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "5th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4463,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "7th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4464,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "9th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4465,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "11th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4466,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "13th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4467,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "15th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4468,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "17th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4469,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "19th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4470,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "21st current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4471,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "23rd current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4472,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "25th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4473,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "27th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4474,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "29th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4475,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "31st current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4476,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "2nd current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4477,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "4th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4478,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "6th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4479,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "8th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4480,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "10th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4481,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "12th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4482,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "14th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4483,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "16th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4484,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "18th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4485,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "20th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4486,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "22nd current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4487,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "24th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4488,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "26th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4489,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "28th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4490,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "30th current harmonic content of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4491,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Odd current harmonic distortion rate of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4492,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Even current harmonic distortion rate of Phase A",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4493,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "3rd current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4495,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "5th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4496,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "7th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4497,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "9th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4498,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "11th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4499,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "13th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4500,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "15th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4501,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "17th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4502,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "19th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4503,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "21st current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4504,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "23rd current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4505,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "25th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4506,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "27th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4507,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "29th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4508,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "31st current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4509,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "2nd current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4510,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "4th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4511,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "6th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4512,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "8th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4513,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "10th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4514,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "12th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4515,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "14th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4516,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "16th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4517,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "18th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4518,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "20th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4519,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "22nd current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4520,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "24th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4521,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "26th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4522,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "28th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4523,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "30th current harmonic content of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4524,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Odd current harmonic distortion rate of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4525,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Even current harmonic distortion rate of Phase B",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4526,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "3rd current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4528,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "5th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4529,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "7th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4530,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "9th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4531,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "11th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4532,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "13th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4533,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "15th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4534,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "17th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4535,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "19th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4536,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "21st current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4537,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "23rd current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4538,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "25th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4539,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "27th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4540,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "29th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4541,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "31st current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4542,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "2nd current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4543,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "4th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4544,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "6th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4545,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "8th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4546,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "10th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4547,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "12th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4548,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "14th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4549,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "16th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4550,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "18th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4551,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "20th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4552,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "22nd current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4553,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "24th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4554,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "26th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4555,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "28th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4556,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "30th current harmonic content of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4557,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Odd current harmonic distortion rate of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4558,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Even current harmonic distortion rate of Phase C",
+      "group": "Harmonics",
+      "area": "input",
+      "address": 4559,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "description": "Table says magnifying 1,000 times with range 0 to 10000; the formula sheet gives Rx/100 as percent, so the manual is not consistent"
+    },
+    {
+      "name": "Total Active Energy (secondary, real time)",
+      "group": "Energy",
+      "area": "input",
+      "address": 16384,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1,
+      "description": "E = (65536 x high word + low word) / 10; the manual states the 0x4000 zone is read with function 04"
+    },
+    {
+      "name": "Import Active Energy (secondary, real time)",
+      "group": "Energy",
+      "area": "input",
+      "address": 16386,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1,
+      "description": "E = (65536 x high word + low word) / 10; the manual states the 0x4000 zone is read with function 04"
+    },
+    {
+      "name": "Export Active Energy (secondary, real time)",
+      "group": "Energy",
+      "area": "input",
+      "address": 16388,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kWh",
+      "scale": 0.1,
+      "description": "E = (65536 x high word + low word) / 10; the manual states the 0x4000 zone is read with function 04"
+    },
+    {
+      "name": "Total Reactive Energy (secondary, real time)",
+      "group": "Energy",
+      "area": "input",
+      "address": 16390,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1,
+      "description": "E = (65536 x high word + low word) / 10; the manual states the 0x4000 zone is read with function 04"
+    },
+    {
+      "name": "Import Reactive Energy (secondary, real time)",
+      "group": "Energy",
+      "area": "input",
+      "address": 16392,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1,
+      "description": "E = (65536 x high word + low word) / 10; the manual states the 0x4000 zone is read with function 04"
+    },
+    {
+      "name": "Export Reactive Energy (secondary, real time)",
+      "group": "Energy",
+      "area": "input",
+      "address": 16394,
+      "type": "uint32",
+      "access": "R",
+      "unit": "kvarh",
+      "scale": 0.1,
+      "description": "E = (65536 x high word + low word) / 10; the manual states the 0x4000 zone is read with function 04"
+    },
+    {
+      "name": "Password protection (protection of basic parameters)",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8192,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 0. 0000~9999"
+    },
+    {
+      "name": "Meter communication address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8193,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 1. 1~253"
+    },
+    {
+      "name": "Baud Rate",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8194,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 3. 0:1200,1:2400,2:4800,3:9600,"
+    },
+    {
+      "name": "Serial port parameter",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8195,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 0. 0:(8n1),1:(8o1),2:(8e1)"
+    },
+    {
+      "name": "Voltage wiring mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8196,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 0. 0：3LN(3P4W)"
+    },
+    {
+      "name": "Current wiring mode",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8197,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 1. 0：3CT，1：2CT"
+    },
+    {
+      "name": "PT",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8198,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 1. 1~1100"
+    },
+    {
+      "name": "CT",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8199,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 1. 1~2000"
+    },
+    {
+      "name": "Backlight time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8200,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 30. 0~999（0：Always ON）"
+    },
+    {
+      "name": "DO1 Setting",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8201,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 0. 0：Electrical Level，1：pulse；"
+    },
+    {
+      "name": "DO2 Setting",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8202,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 0. 0：Electrical Level，1：pulse；"
+    },
+    {
+      "name": "Energy ratio switch",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8204,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 0. 0：closed(secondary energy)， 1：open(primary energy)"
+    },
+    {
+      "name": "Number of decimal places for energy",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8205,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Default 1. 1~3"
+    },
+    {
+      "name": "Clock year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 12800,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 2000~2099; written with function 16"
+    },
+    {
+      "name": "Clock month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 12801,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1~12; written with function 16"
+    },
+    {
+      "name": "Clock date",
+      "group": "Clock",
+      "area": "holding",
+      "address": 12802,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 1~31; written with function 16"
+    },
+    {
+      "name": "Clock hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 12803,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0~23; written with function 16"
+    },
+    {
+      "name": "Clock minute",
+      "group": "Clock",
+      "area": "holding",
+      "address": 12804,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0~59; written with function 16"
+    },
+    {
+      "name": "Clock second",
+      "group": "Clock",
+      "area": "holding",
+      "address": 12805,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Range 0~59; written with function 16"
+    },
+    {
+      "name": "Digital input 1",
+      "group": "Digital I/O",
+      "area": "discrete",
+      "address": 0,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = open, 1 = closed (function 02)"
+    },
+    {
+      "name": "Digital input 2",
+      "group": "Digital I/O",
+      "area": "discrete",
+      "address": 1,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = open, 1 = closed (function 02)"
+    },
+    {
+      "name": "Digital input 3",
+      "group": "Digital I/O",
+      "area": "discrete",
+      "address": 2,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = open, 1 = closed (function 02)"
+    },
+    {
+      "name": "Digital input 4",
+      "group": "Digital I/O",
+      "area": "discrete",
+      "address": 3,
+      "type": "bool",
+      "access": "R",
+      "description": "0 = open, 1 = closed (function 02)"
+    },
+    {
+      "name": "Relay 1",
+      "group": "Digital I/O",
+      "area": "coil",
+      "address": 2048,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = open, 1 = closed (functions 01 and 05)"
+    },
+    {
+      "name": "Relay 2",
+      "group": "Digital I/O",
+      "area": "coil",
+      "address": 2049,
+      "type": "bool",
+      "access": "RW",
+      "description": "0 = open, 1 = closed (functions 01 and 05)"
+    }
   ]
 }
