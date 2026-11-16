@@ -3,71 +3,3068 @@
   "mbmap": 2,
   "vendor": "Delta",
   "model": "DPM 520",
-  "models": ["DPM 520"],
-  "vendor_website": "deltaww.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table delta/dpm-520; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/delta-dpm-520.htm. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Delta DPM 520.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+  "models": [
+    "DPM 520",
+    "DPM-C520"
   ],
+  "vendor_website": "deltaww.com",
+  "revision": 3,
+  "revised": "2026-11-15",
+  "source": "Delta Electronics, DPM-C520 User Manual (English, 2015)",
+  "sources": [
+    {
+      "title": "Multi-functional Power Meter DPM-C520 User Manual",
+      "version": "DPM_C520_manual_EN_20150708 (PDF created 2015-09)",
+      "url": "https://www.dicomp.com.br/downloads/materiais_apoio/datasheet/18934-2.pdf",
+      "note": "Delta manual as mirrored by the Brazilian distributor Dicomp; section 7.1 Overview of Parameters and 9.3 MODBUS Communication. Delta current download-center copy was not reachable without accepting its terms-of-use page",
+      "accessed": "2026-11-15",
+      "sha256": "95ddc647cdb75e29be1db27d04eeafc2dc4c17e4e38e62cca0d1c575d9a63315"
+    }
+  ],
+  "notes": [
+    "Modbus RTU slave on RS-485. The manual gives baud rates 9600, 19200 and 38400, 8 data bits, parity none/even/odd, 1 stop bit, and a device address of 1 to 255 with a factory default of 1 (broadcast 255 is mentioned); the factory baud rate is not stated.",
+    "Function 03 reads, 06 and 16 (0x10) write; at most 50 registers per read and 48 per multiple write. Addresses are the hexadecimal addresses of the manual's table 7.1 (0x100 is the first meter value, shown as 40257 in Modicon format), address base 0.",
+    "32-bit values (float32 for measurements, uint32 for the energies) use two registers. The manual's figure for the IEEE 754 packet lists the low word before the high word, so the word order is taken as low word first; the byte order inside a word is big endian. This is read from a diagram and should be confirmed on a device.",
+    "The manual's parameter table has gaps (for example the alarm blocks between 0x25 and 0x33 and the harmonic registers between 0x168 and 0x173 are not printed); only registers that are printed are mapped.",
+    "Date and time are packed two bytes per register (year and month, day and week, hour and minute) with the second or day in the next register; the manual does not say which byte is which.",
+    "The registers 0x600 to 0x609 return the values selected in the parameter grouping registers (0x50C to 0x515); their type depends on the selected value, so they are not mapped.",
+    "The manual's preface names the DPM-C530A while its title and tables are for the DPM-C520 (model code 2); the tables are taken as the DPM-C520's.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "description": "Delta DPM-C520 multifunction power meter: voltages, currents, powers, energies, THD, maximum and minimum values with time stamps, alarms and settings",
+  "protocol": "rtu",
+  "unit_id": 1,
+  "databits": 8,
   "byte_order": "big",
-  "word_order": "big",
+  "word_order": "little",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Voltage A N", "area": "holding", "address": 256, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage B N", "area": "holding", "address": 258, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage C N", "area": "holding", "address": 260, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage L N avg", "area": "holding", "address": 262, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage A B", "area": "holding", "address": 264, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage B C", "area": "holding", "address": 266, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage C A", "area": "holding", "address": 268, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage L L avg", "area": "holding", "address": 270, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Voltage unbalance A N", "area": "holding", "address": 272, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance B N", "area": "holding", "address": 274, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance C N", "area": "holding", "address": 276, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance L N avg", "area": "holding", "address": 278, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance A B", "area": "holding", "address": 280, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance B C", "area": "holding", "address": 282, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance C A", "area": "holding", "address": 284, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Voltage unbalance L L avg", "area": "holding", "address": 286, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Current A", "area": "holding", "address": 288, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current B", "area": "holding", "address": 290, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current C", "area": "holding", "address": 292, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current avg", "area": "holding", "address": 294, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current N", "area": "holding", "address": 296, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Current unbalance A", "area": "holding", "address": 298, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Current unbalance B", "area": "holding", "address": 300, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Current unbalance C", "area": "holding", "address": 302, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Current unbalance avg", "area": "holding", "address": 304, "type": "float32", "unit": "%", "access": "R"},
-    {"name": "Power factor total", "area": "holding", "address": 306, "type": "float32", "access": "R"},
-    {"name": "Power factor A", "area": "holding", "address": 308, "type": "float32", "access": "R"},
-    {"name": "Power factor B", "area": "holding", "address": 310, "type": "float32", "access": "R"},
-    {"name": "Power factor C", "area": "holding", "address": 312, "type": "float32", "access": "R"},
-    {"name": "Displacement power factor total", "area": "holding", "address": 314, "type": "float32", "access": "R"},
-    {"name": "Displacement power factor A", "area": "holding", "address": 316, "type": "float32", "access": "R"},
-    {"name": "Displacement power factor B", "area": "holding", "address": 318, "type": "float32", "access": "R"},
-    {"name": "Displacement power factor C", "area": "holding", "address": 320, "type": "float32", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 322, "type": "float32", "unit": "Hz", "access": "R"},
-    {"name": "Active power total", "area": "holding", "address": 324, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Active power A", "area": "holding", "address": 326, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Active power B", "area": "holding", "address": 328, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Active power C", "area": "holding", "address": 330, "type": "float32", "unit": "kW", "access": "R"},
-    {"name": "Reactive power total", "area": "holding", "address": 332, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power A", "area": "holding", "address": 334, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power B", "area": "holding", "address": 336, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Reactive power C", "area": "holding", "address": 338, "type": "float32", "unit": "kvar", "access": "R"},
-    {"name": "Apparent power total", "area": "holding", "address": 340, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power A", "area": "holding", "address": 342, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power B", "area": "holding", "address": 344, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Apparent power C", "area": "holding", "address": 346, "type": "float32", "unit": "kVA", "access": "R"},
-    {"name": "Active energy delivered", "area": "holding", "address": 348, "type": "uint32", "unit": "Wh", "access": "R"},
-    {"name": "Active energy received", "area": "holding", "address": 350, "type": "uint32", "unit": "Wh", "access": "R"},
-    {"name": "Reactive energy delivered", "area": "holding", "address": 352, "type": "uint32", "unit": "varh", "access": "R"},
-    {"name": "Reactive energy received", "area": "holding", "address": 354, "type": "uint32", "unit": "varh", "access": "R"}
+    {
+      "name": "Date year and month",
+      "group": "System",
+      "area": "holding",
+      "address": 1,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes: year (00 to 99) and month (1 to 12); which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Date day and week",
+      "group": "System",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes: day (1 to 31) and day of the week; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Time hour and minute",
+      "group": "System",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Two bytes: hour (00 to 23) and minute (00 to 59); which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Time second",
+      "group": "System",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s"
+    },
+    {
+      "name": "Meter constant",
+      "group": "System",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "unit": "P/kWh"
+    },
+    {
+      "name": "Meter model",
+      "group": "System",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "enum": {
+        "0": "None",
+        "2": "DPM-C520"
+      }
+    },
+    {
+      "name": "Total time on power days",
+      "group": "System",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "unit": "d"
+    },
+    {
+      "name": "Total time on power hour and minute",
+      "group": "System",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes: hour (00 to 23) and minute (00 to 59); which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Firmware version",
+      "group": "System",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "R",
+      "description": "Range printed as 0.0000 to 9.9999; the scaling of the integer is not stated"
+    },
+    {
+      "name": "Last firmware download year and month",
+      "group": "System",
+      "area": "holding",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes: year (00 to 99) and month (1 to 12); which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Last firmware download day",
+      "group": "System",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "unit": "d"
+    },
+    {
+      "name": "Power system configuration",
+      "group": "System",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "3P4W",
+        "1": "3P3W",
+        "2": "1P2W",
+        "3": "1P3W"
+      }
+    },
+    {
+      "name": "CT primary",
+      "group": "System",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "A"
+    },
+    {
+      "name": "CT secondary",
+      "group": "System",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1 A",
+        "1": "5 A"
+      }
+    },
+    {
+      "name": "PT primary",
+      "group": "System",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "PT secondary",
+      "group": "System",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Quantity of transformers",
+      "group": "System",
+      "area": "holding",
+      "address": 18,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "3CT3PT",
+        "1": "3CT2PT",
+        "2": "3CT0PT",
+        "3": "2CT3PT",
+        "4": "2CT2PT",
+        "5": "2CT0PT",
+        "6": "1CT3PT",
+        "7": "1CT2PT",
+        "8": "1CT0PT"
+      }
+    },
+    {
+      "name": "Baud rate",
+      "group": "System",
+      "area": "holding",
+      "address": 22,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "9600",
+        "1": "19200",
+        "2": "38400"
+      }
+    },
+    {
+      "name": "Communication mode",
+      "group": "System",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "1": "RTU"
+      }
+    },
+    {
+      "name": "Data bit",
+      "group": "System",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "8"
+      }
+    },
+    {
+      "name": "Parity",
+      "group": "System",
+      "area": "holding",
+      "address": 25,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "None",
+        "1": "Even",
+        "2": "Odd"
+      }
+    },
+    {
+      "name": "Stop bit",
+      "group": "System",
+      "area": "holding",
+      "address": 26,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "1"
+      }
+    },
+    {
+      "name": "MODBUS address",
+      "group": "System",
+      "area": "holding",
+      "address": 27,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 to 255 as printed; the factory default is 1"
+    },
+    {
+      "name": "Meter reset",
+      "group": "System",
+      "area": "holding",
+      "address": 28,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "0": "None",
+        "1": "Reset factory default",
+        "2": "Reset value of energy",
+        "3": "Clear alarm logs and times",
+        "4": "Reset maximum and minimum values"
+      }
+    },
+    {
+      "name": "Over current alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 31,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Over current alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 32,
+      "type": "float32",
+      "access": "RW",
+      "unit": "A"
+    },
+    {
+      "name": "Over current alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 35,
+      "type": "float32",
+      "access": "RW",
+      "unit": "A"
+    },
+    {
+      "name": "Over voltage L-L alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 52,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Over voltage L-L alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 53,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Over voltage L-L alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 56,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Under voltage L-L alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 59,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Under voltage L-L alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 60,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Under voltage L-L alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 63,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Over voltage L-N alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Over voltage L-N alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 67,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Over voltage L-N alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 70,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Under voltage L-N alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Under voltage L-N alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 74,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Under voltage L-N alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 77,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Over active power alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 94,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Over active power alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 95,
+      "type": "float32",
+      "access": "RW",
+      "unit": "kW"
+    },
+    {
+      "name": "Over active power alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 98,
+      "type": "float32",
+      "access": "RW",
+      "unit": "kW"
+    },
+    {
+      "name": "Over reactive power alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 101,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Over reactive power alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 102,
+      "type": "float32",
+      "access": "RW",
+      "unit": "kvar"
+    },
+    {
+      "name": "Over reactive power alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 105,
+      "type": "float32",
+      "access": "RW",
+      "unit": "kvar"
+    },
+    {
+      "name": "Over apparent power alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 108,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Over apparent power alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 109,
+      "type": "float32",
+      "access": "RW",
+      "unit": "kVA"
+    },
+    {
+      "name": "Over apparent power alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 112,
+      "type": "float32",
+      "access": "RW",
+      "unit": "kVA"
+    },
+    {
+      "name": "Over frequency alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 171,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Over frequency alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 172,
+      "type": "float32",
+      "access": "RW",
+      "unit": "Hz"
+    },
+    {
+      "name": "Over frequency alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 175,
+      "type": "float32",
+      "access": "RW",
+      "unit": "Hz"
+    },
+    {
+      "name": "Under frequency alarm enable",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 178,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Disable",
+        "1": "Enable"
+      }
+    },
+    {
+      "name": "Under frequency alarm pickup setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 179,
+      "type": "float32",
+      "access": "RW",
+      "unit": "Hz"
+    },
+    {
+      "name": "Under frequency alarm dropout setpoint",
+      "group": "Alarm settings",
+      "area": "holding",
+      "address": 182,
+      "type": "float32",
+      "access": "RW",
+      "unit": "Hz"
+    },
+    {
+      "name": "Voltage A - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 256,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage B - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 258,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage C - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 260,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage L - N Avg",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 262,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage A - B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 264,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage B - C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 266,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage C - A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 268,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage L - L Avg",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 270,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage unbalance A - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 272,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage unbalance B - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 274,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage unbalance C - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 276,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage unbalance L - N Avg",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 278,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage unbalance A - B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 280,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage unbalance B - C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 282,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage unbalance C - A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 284,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Voltage unbalance L - L Avg",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 286,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Current A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 288,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 290,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 292,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current Avg",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 294,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 296,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current unbalance A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 298,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Current unbalance B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 300,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Current unbalance C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 302,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Current unbalance Avg",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 304,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Power factor total",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 306,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 308,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 310,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 312,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Displacement power factor total",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 314,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Displacement power factor A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 316,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Displacement power factor B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 318,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Displacement power factor C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 320,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 322,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Active power total",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 324,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW"
+    },
+    {
+      "name": "Active power A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 326,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW"
+    },
+    {
+      "name": "Active power B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 328,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW"
+    },
+    {
+      "name": "Active power C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 330,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW"
+    },
+    {
+      "name": "Reactive power total",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 332,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar"
+    },
+    {
+      "name": "Reactive power A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 334,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar"
+    },
+    {
+      "name": "Reactive power B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 336,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar"
+    },
+    {
+      "name": "Reactive power C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 338,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar"
+    },
+    {
+      "name": "Apparent power total",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 340,
+      "type": "float32",
+      "access": "R",
+      "unit": "kVA"
+    },
+    {
+      "name": "Apparent power A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 342,
+      "type": "float32",
+      "access": "R",
+      "unit": "kVA"
+    },
+    {
+      "name": "Apparent power B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 344,
+      "type": "float32",
+      "access": "R",
+      "unit": "kVA"
+    },
+    {
+      "name": "Apparent power C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 346,
+      "type": "float32",
+      "access": "R",
+      "unit": "kVA"
+    },
+    {
+      "name": "Active energy delivered",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 348,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh"
+    },
+    {
+      "name": "Active energy received",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 350,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh"
+    },
+    {
+      "name": "Reactive energy delivered",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 352,
+      "type": "uint32",
+      "access": "R",
+      "unit": "varh"
+    },
+    {
+      "name": "Reactive energy received",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 354,
+      "type": "uint32",
+      "access": "R",
+      "unit": "varh"
+    },
+    {
+      "name": "Apparent energy delivered",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 356,
+      "type": "uint32",
+      "access": "R",
+      "unit": "VAh"
+    },
+    {
+      "name": "Apparent energy received",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 358,
+      "type": "uint32",
+      "access": "R",
+      "unit": "VAh"
+    },
+    {
+      "name": "THD current A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 372,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD current B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 374,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD current C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 376,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD voltage A - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 380,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD voltage B - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 382,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD voltage C - N",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 384,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD voltage A - B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 386,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD voltage B - C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 388,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD voltage C - A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 390,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD current - Avg",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 392,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD voltage - Avg",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 394,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Max voltage A - B",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 512,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Max voltage A - B date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 514,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage A - B date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 515,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max voltage A - B time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 516,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage A - B time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 517,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max voltage B - C",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 518,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Max voltage B - C date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 520,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage B - C date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 521,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max voltage B - C time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 522,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage B - C time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 523,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max voltage C - A",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 524,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Max voltage C - A date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 526,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage C - A date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 527,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max voltage C - A time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 528,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage C - A time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 529,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max voltage A - N",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 530,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Max voltage A - N date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 532,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage A - N date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 533,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max voltage A - N time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 534,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage A - N time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 535,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max voltage B - N",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 536,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Max voltage B - N date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 538,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage B - N date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 539,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max voltage B - N time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 540,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage B - N time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 541,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max voltage C - N",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 542,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Max voltage C - N date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 544,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage C - N date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 545,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max voltage C - N time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 546,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max voltage C - N time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 547,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max current A",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 548,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Max current A date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 550,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max current A date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 551,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max current A time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 552,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max current A time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 553,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max current B",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 554,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Max current B date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 556,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max current B date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 557,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max current B time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 558,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max current B time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 559,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max current C",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 560,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Max current C date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 562,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max current C date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 563,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max current C time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 564,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max current C time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 565,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max current N",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 566,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Max current N date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 568,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max current N date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 569,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max current N time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 570,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max current N time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 571,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max frequency",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 572,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Max frequency date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 574,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max frequency date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 575,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max frequency time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 576,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max frequency time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 577,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max power factor",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 578,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Max power factor date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 580,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max power factor date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 581,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max power factor time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 582,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max power factor time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 583,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max active power total",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 584,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW"
+    },
+    {
+      "name": "Max active power total date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 586,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max active power total date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 587,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max active power total time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 588,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max active power total time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 589,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max reactive power total",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 590,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar"
+    },
+    {
+      "name": "Max reactive power total date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 592,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max reactive power total date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 593,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max reactive power total time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 594,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max reactive power total time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 595,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Max apparent power total",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 596,
+      "type": "float32",
+      "access": "R",
+      "unit": "kVA"
+    },
+    {
+      "name": "Max apparent power total date year and month",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 598,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max apparent power total date day",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 599,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Max apparent power total time hour and minute",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 600,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Max apparent power total time second",
+      "group": "Maximum values",
+      "area": "holding",
+      "address": 601,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min voltage A - B",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 768,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Min voltage A - B date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 770,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage A - B date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 771,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min voltage A - B time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 772,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage A - B time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 773,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min voltage B - C",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 774,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Min voltage B - C date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 776,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage B - C date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 777,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min voltage B - C time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 778,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage B - C time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 779,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min voltage C - A",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 780,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Min voltage C - A date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 782,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage C - A date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 783,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min voltage C - A time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 784,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage C - A time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 785,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min voltage A - N",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 786,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Min voltage A - N date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 788,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage A - N date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 789,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min voltage A - N time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 790,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage A - N time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 791,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min voltage B - N",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 792,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Min voltage B - N date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 794,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage B - N date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 795,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min voltage B - N time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 796,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage B - N time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 797,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min voltage C - N",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 798,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Min voltage C - N date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 800,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage C - N date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 801,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min voltage C - N time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 802,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min voltage C - N time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 803,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min current A",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 804,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Min current A date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 806,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min current A date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 807,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min current A time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 808,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min current A time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 809,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min current B",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 810,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Min current B date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 812,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min current B date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 813,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min current B time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 814,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min current B time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 815,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min current C",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 816,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Min current C date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 818,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min current C date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 819,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min current C time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 820,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min current C time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 821,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min current N",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 822,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Min current N date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 824,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min current N date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 825,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min current N time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 826,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min current N time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 827,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min frequency",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 828,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Min frequency date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 830,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min frequency date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 831,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min frequency time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 832,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min frequency time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 833,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min power factor",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 834,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Min power factor date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 836,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min power factor date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 837,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min power factor time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 838,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min power factor time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 839,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min total active power",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 840,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW"
+    },
+    {
+      "name": "Min total active power date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 842,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min total active power date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 843,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min total active power time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 844,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min total active power time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 845,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min total reactive power",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 846,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar"
+    },
+    {
+      "name": "Min total reactive power date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 848,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min total reactive power date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 849,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min total reactive power time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 850,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min total reactive power time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 851,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Min total apparent power",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 852,
+      "type": "float32",
+      "access": "R",
+      "unit": "kVA"
+    },
+    {
+      "name": "Min total apparent power date year and month",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 854,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min total apparent power date day",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 855,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Min total apparent power time hour and minute",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 856,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Min total apparent power time second",
+      "group": "Minimum values",
+      "area": "holding",
+      "address": 857,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Over current alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1024,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over current alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1025,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Over current alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1026,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over current alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1027,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over current alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1028,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over current alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1029,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Over voltage L - L alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1042,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over voltage L - L alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1043,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Over voltage L - L alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1044,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over voltage L - L alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1045,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over voltage L - L alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1046,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over voltage L - L alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1047,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Under voltage L - L alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1048,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Under voltage L - L alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1049,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Under voltage L - L alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1050,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Under voltage L - L alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1051,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Under voltage L - L alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1052,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Under voltage L - L alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1053,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Over voltage L - N alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1054,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over voltage L - N alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1055,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Over voltage L - N alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1056,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over voltage L - N alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1057,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over voltage L - N alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1058,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over voltage L - N alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1059,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Under voltage L - N alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1060,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Under voltage L - N alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1061,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Under voltage L - N alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1062,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Under voltage L - N alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1063,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Under voltage L - N alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1064,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Under voltage L - N alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1065,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Over active power alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1078,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over active power alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1079,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Over active power alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1080,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over active power alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1081,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over active power alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1082,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over active power alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1083,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Over reactive power alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1084,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over reactive power alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1085,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Over reactive power alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1086,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over reactive power alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1087,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over reactive power alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1088,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over reactive power alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1089,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Over apparent power alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1090,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over apparent power alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1091,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Over apparent power alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1092,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over apparent power alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1093,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over apparent power alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1094,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over apparent power alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1095,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Over frequency alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1144,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over frequency alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1145,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Over frequency alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1146,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over frequency alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1147,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Over frequency alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1148,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Over frequency alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1149,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Under frequency alarm status",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1150,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Under frequency alarm counter",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1151,
+      "type": "uint16",
+      "access": "R",
+      "unit": "times",
+      "description": "Number of times the alarm has triggered, 1 to 255"
+    },
+    {
+      "name": "Under frequency alarm date year and month",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1152,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Under frequency alarm date day",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1153,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Under frequency alarm time hour and minute",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1154,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Under frequency alarm time second",
+      "group": "Alarm status",
+      "area": "holding",
+      "address": 1155,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Parameter grouping #1 setting",
+      "group": "Parameter grouping",
+      "area": "holding",
+      "address": 1292,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Holds the address of a meter value (0x100 to 0x18B) to be mirrored into the matching register at 0x600 to 0x609"
+    },
+    {
+      "name": "Parameter grouping #2 setting",
+      "group": "Parameter grouping",
+      "area": "holding",
+      "address": 1293,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Holds the address of a meter value (0x100 to 0x18B) to be mirrored into the matching register at 0x600 to 0x609"
+    },
+    {
+      "name": "Parameter grouping #10 setting",
+      "group": "Parameter grouping",
+      "area": "holding",
+      "address": 1301,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Holds the address of a meter value (0x100 to 0x18B) to be mirrored into the matching register at 0x600 to 0x609"
+    },
+    {
+      "name": "Reset energy date year and month",
+      "group": "Advanced",
+      "area": "holding",
+      "address": 1362,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Reset energy date day",
+      "group": "Advanced",
+      "area": "holding",
+      "address": 1363,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Reset energy time hour and minute",
+      "group": "Advanced",
+      "area": "holding",
+      "address": 1364,
+      "type": "uint16",
+      "access": "R",
+      "description": "Two bytes; which byte holds which is not stated in the manual"
+    },
+    {
+      "name": "Reset energy time second",
+      "group": "Advanced",
+      "area": "holding",
+      "address": 1365,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    }
   ]
 }
