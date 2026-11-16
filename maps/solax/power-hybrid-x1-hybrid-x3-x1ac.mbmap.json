@@ -3,72 +3,1539 @@
   "mbmap": 2,
   "vendor": "SolaX",
   "model": "Power hybrid inverters",
-  "models": ["Power Hybrid X1", "Hybrid X3", "X1AC"],
+  "models": [
+    "Power Hybrid X1",
+    "Hybrid X3",
+    "X1AC"
+  ],
   "vendor_website": "solaxpower.com",
-  "revision": 4,
+  "revision": 5,
   "revised": "2026-11-15",
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table solarx/power-hybrid-x1-hybrid-x3-x1ac; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/solarx-power-hybrid-x1-hybrid-x3-x1ac.htm. Not verified against the manufacturer's documentation",
+  "source": "SolaX Power, Hybrid X1 & X3 G4 Modbus TCP & RTU communication protocol, V3.29",
   "notes": [
-    "Solarx Power Hybrid X1 Hybrid X3 / X1AC.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Modbus RTU on RS-485, default station address 1, 19200 8N1. The inverter has no Modbus TCP of its own; TCP on port 502 comes from SolaX's monitoring module. Poll no faster than once per second, with at least 1 s between two requests.",
+    "Only the real-time values of function 04 (input registers) are mapped. The settings registers of function 03 (read) and 06/16 (write) are not mapped.",
+    "Addresses are those printed in the manual in hexadecimal; address base 0. Register values are big-endian; the manual says 32-bit values use little-endian order, so the low word is at the lower address (word order little).",
+    "Names ending in (X1) or (X3) apply to that family only; the manual does not say what the other family returns there. The X1-AC is taken to follow the X1 columns; the manual's title names the Hybrid X1 and X3 G4 only.",
+    "Three registers (0x9A, 0xAE, 0xB0) are listed in the manual as 16-bit values with a length of two registers; they are mapped as 32-bit, low word first, like their neighbours.",
+    "The document used here is V3.29 (the cover page reads V3.28), a copy of the manufacturer's protocol hosted on a public forum, because SolaX hands the current file out on request.",
+    "Written from the manufacturer's manual; not tested on a device."
   ],
   "byte_order": "big",
-  "word_order": "big",
+  "word_order": "little",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Grid current (X1)", "area": "holding", "address": 1, "type": "int16", "unit": "V", "access": "R"},
-    {"name": "Grid power (X1)", "area": "holding", "address": 2, "type": "int16", "unit": "W", "access": "R"},
-    {"name": "Pv voltage1 (Hybrid)", "area": "holding", "address": 3, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Pv voltage2 (Hybrid)", "area": "holding", "address": 4, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Pv current1 (Hybrid)", "area": "holding", "address": 5, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Pv current2 (Hybrid)", "area": "holding", "address": 6, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Grid frequency (X1)", "area": "holding", "address": 7, "type": "uint16", "unit": "Hz", "access": "R"},
-    {"name": "Temperature", "area": "holding", "address": 8, "type": "int16", "access": "R"},
-    {"name": "Run mode", "area": "holding", "address": 9, "type": "uint16", "access": "R"},
-    {"name": "Powerdc1 (Hybrid)", "area": "holding", "address": 10, "type": "uint16", "unit": "W", "access": "R"},
-    {"name": "Powerdc2 (Hybrid)", "area": "holding", "address": 11, "type": "uint16", "unit": "W", "access": "R"},
-    {"name": "Temper fault value", "area": "holding", "address": 12, "type": "int16", "access": "R"},
-    {"name": "Pv1Volt fault value", "area": "holding", "address": 13, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Pv2Volt fault value", "area": "holding", "address": 14, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Gfci fault value", "area": "holding", "address": 15, "type": "uint16", "unit": "mA", "access": "R"},
-    {"name": "Grid volt fault value", "area": "holding", "address": 16, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Grid freq fault value T", "area": "holding", "address": 17, "type": "uint16", "unit": "Hz", "access": "R"},
-    {"name": "Dci fault value", "area": "holding", "address": 18, "type": "uint16", "unit": "mA", "access": "R"},
-    {"name": "Time count down", "area": "holding", "address": 19, "type": "uint16", "unit": "ms", "access": "R"},
-    {"name": "Bat voltage charge1", "area": "holding", "address": 20, "type": "int16", "unit": "V", "access": "R"},
-    {"name": "Bat current charge1", "area": "holding", "address": 21, "type": "int16", "unit": "A", "access": "R"},
-    {"name": "Batpower charge1", "area": "holding", "address": 22, "type": "int16", "unit": "W", "access": "R"},
-    {"name": "BMS connect state", "area": "holding", "address": 23, "type": "uint16", "access": "R"},
-    {"name": "Temperature bat", "area": "holding", "address": 24, "type": "int16", "access": "R"},
-    {"name": "Battery capacity", "area": "holding", "address": 28, "type": "uint16", "unit": "%", "access": "R"},
-    {"name": "Output energy Charge.LSB", "area": "holding", "address": 29, "type": "uint16", "unit": "kWh", "access": "R"},
-    {"name": "Output energy Charge.MSB", "area": "holding", "address": 30, "type": "uint16", "unit": "kWh", "access": "R"},
-    {"name": "BMS warning LSB", "area": "holding", "address": 31, "type": "uint16", "access": "R"},
-    {"name": "Output energy charge today", "area": "holding", "address": 32, "type": "uint16", "unit": "kWh", "access": "R"},
-    {"name": "Input energy Charge.LSB", "area": "holding", "address": 33, "type": "uint16", "unit": "kWh", "access": "R"},
-    {"name": "Input energy Charge.MSB", "area": "holding", "address": 34, "type": "uint16", "unit": "kWh", "access": "R"},
-    {"name": "Input energy charge today", "area": "holding", "address": 35, "type": "uint16", "unit": "kWh", "access": "R"},
-    {"name": "BMS charge max current", "area": "holding", "address": 36, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "BMS discharge max current", "area": "holding", "address": 37, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "BMS warning MSB", "area": "holding", "address": 38, "type": "uint16", "access": "R"},
-    {"name": "Inv fault Message.LSB", "area": "holding", "address": 64, "type": "uint16", "access": "R"},
-    {"name": "Inv fault Message.MSB", "area": "holding", "address": 65, "type": "uint16", "access": "R"},
-    {"name": "Mgr fault message", "area": "holding", "address": 67, "type": "uint16", "access": "R"},
-    {"name": "Feedin power (meter)", "area": "holding", "address": 70, "type": "int32", "unit": "w", "access": "R"},
-    {"name": "Feedin energy total (meter)", "area": "holding", "address": 72, "type": "uint32", "unit": "kWh", "access": "R"},
-    {"name": "Consum energy total (meter)", "area": "holding", "address": 74, "type": "uint32", "unit": "kWh", "access": "R"},
-    {"name": "EPS volt (X1)", "area": "holding", "address": 76, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "EPS current (X1)", "area": "holding", "address": 77, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "EPS power (X1)", "area": "holding", "address": 78, "type": "uint16", "unit": "VA", "access": "R"},
-    {"name": "EPS frequency (X1)", "area": "holding", "address": 79, "type": "uint16", "unit": "Hz", "access": "R"},
-    {"name": "Etoday togrid", "area": "holding", "address": 80, "type": "uint16", "unit": "kWh", "access": "R"},
-    {"name": "Etotal togrid", "area": "holding", "address": 82, "type": "uint32", "unit": "kWh", "access": "R"},
-    {"name": "Lock state", "area": "holding", "address": 84, "type": "uint16", "access": "R"},
-    {"name": "Bus volt", "area": "holding", "address": 102, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "W dcv fault val", "area": "holding", "address": 103, "type": "uint16", "unit": "V", "access": "R"}
-  ]
+    {
+      "name": "Grid voltage (X1)",
+      "group": "Grid",
+      "area": "input",
+      "address": 0,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Grid voltage of the single-phase models"
+    },
+    {
+      "name": "Grid current (X1)",
+      "group": "Grid",
+      "area": "input",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "Grid current of the single-phase models"
+    },
+    {
+      "name": "Grid power (X1)",
+      "group": "Grid",
+      "area": "input",
+      "address": 2,
+      "type": "int16",
+      "access": "R",
+      "unit": "W",
+      "description": "Grid power of the single-phase models"
+    },
+    {
+      "name": "PV voltage 1",
+      "group": "PV",
+      "area": "input",
+      "address": 3,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "PV voltage 2",
+      "group": "PV",
+      "area": "input",
+      "address": 4,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "PV current 1",
+      "group": "PV",
+      "area": "input",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "PV current 2",
+      "group": "PV",
+      "area": "input",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Grid frequency (X1)",
+      "group": "Grid",
+      "area": "input",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Radiator temperature",
+      "group": "Status",
+      "area": "input",
+      "address": 8,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C"
+    },
+    {
+      "name": "Run mode",
+      "group": "Status",
+      "area": "input",
+      "address": 9,
+      "type": "uint16",
+      "access": "R",
+      "enum": "run_mode",
+      "description": "Operating state, see the run mode table (0 Waiting to 10 Standby)"
+    },
+    {
+      "name": "PV power 1",
+      "group": "PV",
+      "area": "input",
+      "address": 10,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "PV power 2",
+      "group": "PV",
+      "area": "input",
+      "address": 11,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Temperature fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 12,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "PV1 voltage fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 13,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "PV2 voltage fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 14,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "GFCI fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mA",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "Grid voltage fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 16,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "Grid frequency fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "DCI fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 18,
+      "type": "uint16",
+      "access": "R",
+      "unit": "mA",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "Time count down",
+      "group": "Status",
+      "area": "input",
+      "address": 19,
+      "type": "uint16",
+      "access": "R",
+      "unit": "ms"
+    },
+    {
+      "name": "Battery voltage",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 20,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Battery current",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 21,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Battery power",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 22,
+      "type": "int16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "BMS connect state",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 23,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 disconnected, 1 connected"
+    },
+    {
+      "name": "Battery temperature",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 24,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C"
+    },
+    {
+      "name": "Battery converter status",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 25,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 discharge, 1 charge, 2 stop"
+    },
+    {
+      "name": "Grid status",
+      "group": "Status",
+      "area": "input",
+      "address": 26,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 on grid, 1 off grid"
+    },
+    {
+      "name": "MPPT count",
+      "group": "PV",
+      "area": "input",
+      "address": 27,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Battery capacity",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 28,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%",
+      "description": "State of charge"
+    },
+    {
+      "name": "Battery output energy total",
+      "group": "Energy",
+      "area": "input",
+      "address": 29,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "Energy discharged from the battery, low word first"
+    },
+    {
+      "name": "Battery output energy today",
+      "group": "Energy",
+      "area": "input",
+      "address": 32,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Battery input energy total",
+      "group": "Energy",
+      "area": "input",
+      "address": 33,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "Energy charged into the battery, low word first"
+    },
+    {
+      "name": "Battery input energy today",
+      "group": "Energy",
+      "area": "input",
+      "address": 35,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "BMS charge max current",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 36,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "Real-time limit from the battery"
+    },
+    {
+      "name": "BMS discharge max current",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 37,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A",
+      "description": "Real-time limit from the battery"
+    },
+    {
+      "name": "BMS battery capacity",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 38,
+      "type": "uint16",
+      "access": "R",
+      "unit": "Wh"
+    },
+    {
+      "name": "PCS major fault",
+      "group": "Faults",
+      "area": "input",
+      "address": 62,
+      "type": "uint16",
+      "access": "R",
+      "description": "Fault bit field, the manual gives no bit table for it"
+    },
+    {
+      "name": "Battery major fault",
+      "group": "Faults",
+      "area": "input",
+      "address": 63,
+      "type": "uint16",
+      "access": "R",
+      "description": "Fault bit field, the manual gives no bit table for it"
+    },
+    {
+      "name": "Inverter fault message",
+      "group": "Faults",
+      "area": "input",
+      "address": 64,
+      "type": "uint32",
+      "access": "R",
+      "description": "32-bit fault bit field, low word first; bits in tables 2-4 (X1) and 2-3 (X3) of the manual"
+    },
+    {
+      "name": "Manager fault message",
+      "group": "Faults",
+      "area": "input",
+      "address": 67,
+      "type": "uint16",
+      "access": "R",
+      "description": "Fault bit field, table 2-5 of the manual"
+    },
+    {
+      "name": "BMS warning message",
+      "group": "Faults",
+      "area": "input",
+      "address": 68,
+      "type": "uint32",
+      "access": "R",
+      "description": "32-bit warning bit field, low word first; table 2-6 of the manual"
+    },
+    {
+      "name": "Feed-in power (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 70,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Measured by the meter or CT; positive when feeding the grid, negative when taking from it"
+    },
+    {
+      "name": "Feed-in energy total (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 72,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "Energy sent to the grid"
+    },
+    {
+      "name": "Consumed energy total (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 74,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "Energy taken from the grid"
+    },
+    {
+      "name": "Off-grid voltage (X1)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Off-grid current (X1)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 77,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Off-grid power (X1)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 78,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Off-grid frequency (X1)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 79,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Energy to grid today",
+      "group": "Energy",
+      "area": "input",
+      "address": 80,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "At the inverter AC port"
+    },
+    {
+      "name": "Energy to grid total",
+      "group": "Energy",
+      "area": "input",
+      "address": 82,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "At the inverter AC port, low word first"
+    },
+    {
+      "name": "Lock state",
+      "group": "Status",
+      "area": "input",
+      "address": 84,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 locked, 1 unlocked"
+    },
+    {
+      "name": "Bus voltage",
+      "group": "Status",
+      "area": "input",
+      "address": 102,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "DC voltage fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 103,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "Overload fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 104,
+      "type": "uint16",
+      "access": "R",
+      "unit": "W",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "Battery voltage fault value",
+      "group": "Fault values",
+      "area": "input",
+      "address": 105,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V",
+      "description": "Value recorded when the fault happened"
+    },
+    {
+      "name": "Grid voltage R (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 106,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Grid current R (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 107,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Grid power R (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 108,
+      "type": "int16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Grid frequency R (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 109,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Grid voltage S (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 110,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Grid current S (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 111,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Grid power S (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 112,
+      "type": "int16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Grid frequency S (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 113,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Grid voltage T (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 114,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Grid current T (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 115,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Grid power T (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 116,
+      "type": "int16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Grid frequency T (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 117,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Off-grid voltage R (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 118,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Off-grid current R (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 119,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Off-grid active power R (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 120,
+      "type": "int16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Off-grid apparent power R (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 121,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Off-grid voltage S (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 122,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Off-grid current S (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 123,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Off-grid active power S (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 124,
+      "type": "int16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Off-grid apparent power S (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 125,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Off-grid voltage T (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 126,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Off-grid current T (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 127,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Off-grid active power T (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 128,
+      "type": "int16",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Off-grid apparent power T (X3)",
+      "group": "Off-grid",
+      "area": "input",
+      "address": 129,
+      "type": "uint16",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Feed-in power R (X3)",
+      "group": "Meter",
+      "area": "input",
+      "address": 130,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Measured by the meter or CT, low word first"
+    },
+    {
+      "name": "Feed-in power S (X3)",
+      "group": "Meter",
+      "area": "input",
+      "address": 132,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Measured by the meter or CT, low word first"
+    },
+    {
+      "name": "Feed-in power T (X3)",
+      "group": "Meter",
+      "area": "input",
+      "address": 134,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Measured by the meter or CT, low word first"
+    },
+    {
+      "name": "On-grid run time",
+      "group": "Status",
+      "area": "input",
+      "address": 136,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "h",
+      "description": "Low word first"
+    },
+    {
+      "name": "Off-grid run time",
+      "group": "Status",
+      "area": "input",
+      "address": 138,
+      "type": "int32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "h",
+      "description": "Low word first"
+    },
+    {
+      "name": "Off-grid yield total",
+      "group": "Energy",
+      "area": "input",
+      "address": 142,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "Low word first"
+    },
+    {
+      "name": "Off-grid yield today",
+      "group": "Energy",
+      "area": "input",
+      "address": 144,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Charge energy today",
+      "group": "Energy",
+      "area": "input",
+      "address": 145,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "Energy charged at the inverter AC port"
+    },
+    {
+      "name": "Charge energy total",
+      "group": "Energy",
+      "area": "input",
+      "address": 146,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "Energy charged at the inverter AC port, low word first"
+    },
+    {
+      "name": "Total energy",
+      "group": "Energy",
+      "area": "input",
+      "address": 148,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh",
+      "description": "Listed as EnergyTotal in the manual, low word first"
+    },
+    {
+      "name": "Solar energy today",
+      "group": "Energy",
+      "area": "input",
+      "address": 150,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "kWh"
+    },
+    {
+      "name": "Feed-in energy today (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 152,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "Energy sent to the grid, low word first"
+    },
+    {
+      "name": "Consumed energy today (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 154,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "Energy taken from the grid, low word first; the manual lists the data type as 16-bit but a length of two registers"
+    },
+    {
+      "name": "Inverter voltage R (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 156,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Inverter voltage S (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 157,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Inverter voltage T (X3)",
+      "group": "Grid",
+      "area": "input",
+      "address": 158,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Feed-in power (meter 2)",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 168,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Feed-in energy total (meter 2)",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 170,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "Low word first"
+    },
+    {
+      "name": "Consumed energy total (meter 2)",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 172,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "Low word first"
+    },
+    {
+      "name": "Feed-in energy today (meter 2)",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 174,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "Low word first; the manual lists the data type as 16-bit but a length of two registers"
+    },
+    {
+      "name": "Consumed energy today (meter 2)",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 176,
+      "type": "uint32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "kWh",
+      "description": "Low word first; the manual lists the data type as 16-bit but a length of two registers"
+    },
+    {
+      "name": "Feed-in power R (X3, meter 2)",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 178,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Feed-in power S (X3, meter 2)",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 180,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Feed-in power T (X3, meter 2)",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 182,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Meter 1 communication state",
+      "group": "Meter",
+      "area": "input",
+      "address": 184,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 communication error, 1 normal"
+    },
+    {
+      "name": "Meter 2 communication state",
+      "group": "Meter 2",
+      "area": "input",
+      "address": 185,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 communication error, 1 normal"
+    },
+    {
+      "name": "Battery temperature high",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 186,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Battery temperature low",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 187,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "°C"
+    },
+    {
+      "name": "Cell voltage high",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 188,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "V"
+    },
+    {
+      "name": "Cell voltage low",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 189,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.001,
+      "unit": "V"
+    },
+    {
+      "name": "BMS user SOC",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 190,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "BMS user SOH",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 191,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Grid reactive power total (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 192,
+      "type": "int16",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Grid reactive power R (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 193,
+      "type": "int16",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Grid reactive power S (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 194,
+      "type": "int16",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Grid reactive power T (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 195,
+      "type": "int16",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Grid power factor total (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 196,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Grid power factor R (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 197,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Grid power factor S (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 198,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Grid power factor T (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 199,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.01
+    },
+    {
+      "name": "Grid frequency (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 200,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "Hz"
+    },
+    {
+      "name": "Grid voltage total (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 201,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Grid voltage R (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 202,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Grid voltage S (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 203,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Grid voltage T (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 204,
+      "type": "uint16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "V"
+    },
+    {
+      "name": "Grid current total (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 205,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Grid current R (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 206,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Grid current S (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 207,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Grid current T (meter)",
+      "group": "Meter",
+      "area": "input",
+      "address": 208,
+      "type": "int16",
+      "access": "R",
+      "scale": 0.1,
+      "unit": "A"
+    },
+    {
+      "name": "Modbus power control mode",
+      "group": "Remote control",
+      "area": "input",
+      "address": 256,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 remote control off, 1 power control, 2 energy control, 3 SOC target control"
+    },
+    {
+      "name": "Target finish flag",
+      "group": "Remote control",
+      "area": "input",
+      "address": 257,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 not finished, 1 finished"
+    },
+    {
+      "name": "Active power target",
+      "group": "Remote control",
+      "area": "input",
+      "address": 258,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Reactive power target",
+      "group": "Remote control",
+      "area": "input",
+      "address": 260,
+      "type": "int32",
+      "access": "R",
+      "unit": "var",
+      "description": "Low word first"
+    },
+    {
+      "name": "Active power real",
+      "group": "Remote control",
+      "area": "input",
+      "address": 262,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Reactive power real",
+      "group": "Remote control",
+      "area": "input",
+      "address": 264,
+      "type": "int32",
+      "access": "R",
+      "unit": "var",
+      "description": "Low word first"
+    },
+    {
+      "name": "Active power upper limit",
+      "group": "Remote control",
+      "area": "input",
+      "address": 266,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Active power lower limit",
+      "group": "Remote control",
+      "area": "input",
+      "address": 268,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Reactive power upper limit",
+      "group": "Remote control",
+      "area": "input",
+      "address": 270,
+      "type": "int32",
+      "access": "R",
+      "unit": "var",
+      "description": "Low word first"
+    },
+    {
+      "name": "Reactive power lower limit",
+      "group": "Remote control",
+      "area": "input",
+      "address": 272,
+      "type": "int32",
+      "access": "R",
+      "unit": "var",
+      "description": "Low word first"
+    },
+    {
+      "name": "Target energy",
+      "group": "Remote control",
+      "area": "input",
+      "address": 274,
+      "type": "int32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Low word first"
+    },
+    {
+      "name": "Charge discharge power",
+      "group": "Remote control",
+      "area": "input",
+      "address": 276,
+      "type": "int32",
+      "access": "R",
+      "unit": "W",
+      "description": "Low word first"
+    },
+    {
+      "name": "Chargeable electric capacity",
+      "group": "Remote control",
+      "area": "input",
+      "address": 278,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Low word first"
+    },
+    {
+      "name": "Dischargeable electric capacity",
+      "group": "Remote control",
+      "area": "input",
+      "address": 280,
+      "type": "uint32",
+      "access": "R",
+      "unit": "Wh",
+      "description": "Low word first"
+    },
+    {
+      "name": "Time of duration",
+      "group": "Remote control",
+      "area": "input",
+      "address": 282,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s"
+    },
+    {
+      "name": "Target SOC",
+      "group": "Remote control",
+      "area": "input",
+      "address": 283,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "SOC upper limit",
+      "group": "Remote control",
+      "area": "input",
+      "address": 284,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "SOC lower limit",
+      "group": "Remote control",
+      "area": "input",
+      "address": 285,
+      "type": "uint16",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Remote control timeout",
+      "group": "Remote control",
+      "area": "input",
+      "address": 286,
+      "type": "uint16",
+      "access": "R",
+      "unit": "s",
+      "description": "Valid range 4 to 65535"
+    },
+    {
+      "name": "Battery force charge flag",
+      "group": "Battery",
+      "area": "input",
+      "address": 287,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 no action, 1 force charge"
+    },
+    {
+      "name": "BMS relay state",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 288,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 off, 1 on"
+    },
+    {
+      "name": "BMS restart flag",
+      "group": "Power & battery",
+      "area": "input",
+      "address": 289,
+      "type": "uint16",
+      "access": "R",
+      "description": "0 initial, 1 restart"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hybrid X1&X3-G4 Modbus TCP&RTU communication protocol (English)",
+      "version": "V3.29 (PDF dated 2023-10-31; cover page V3.28)",
+      "url": "https://community.symcon.de/uploads/short-url/oXEOAOO6ec7RmBAj2hmcFJpoXS8.pdf",
+      "note": "Manufacturer protocol document as hosted on a public forum; read input registers 0x0000 to 0x0121, run mode table and fault tables",
+      "accessed": "2026-11-15",
+      "sha256": "d65f7868ea4a1282806d3c721a6857aeb7aecad35bbf0620aae87257d8c0ba50"
+    }
+  ],
+  "description": "SolaX hybrid inverters (X1 single phase, X3 three phase): real-time grid, PV, battery, off-grid, meter, fault and remote-control readback values over the input registers",
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 19200,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "enums": {
+    "run_mode": {
+      "0": "Waiting",
+      "1": "Checking",
+      "2": "Normal",
+      "3": "Fault",
+      "4": "Permanent fault",
+      "5": "Update",
+      "6": "Off-grid waiting",
+      "7": "Off-grid",
+      "8": "Self testing",
+      "9": "Idle",
+      "10": "Standby"
+    }
+  }
 }
