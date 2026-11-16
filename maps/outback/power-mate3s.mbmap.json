@@ -3,71 +3,1917 @@
   "mbmap": 2,
   "vendor": "Outback",
   "model": "Power MATE3S",
-  "models": ["Power MATE3S"],
+  "models": [
+    "Power MATE3S"
+  ],
   "vendor_website": "outbackpower.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table outback/power-mate3s; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/outback-power-mate3s.htm. Not verified against the manufacturer's documentation",
+  "revision": 3,
+  "source": "OutBack Power, SunSpec Map spreadsheet (MATE3 and AXS Port) and AXS Port application note",
   "notes": [
-    "Outback Power MATE3S.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Modbus TCP over the Ethernet port of the MATE3s (also the AXS Port) using SunSpec data blocks; the Modbus port is set in the MATE3s menu and defaults to 502. The manual gives no unit identifier. The map is SunSpec-style: every block starts with a model ID (DID) and a length register, and the blocks follow each other.",
+    "Addresses are zero-based register addresses. The SunSpec identifier is at 40000 and 40001; the common block (DID 1, length 65) starts at 40002; the OutBack block (DID 64110, length 420) starts at 40069 and ends at 40490. The tables of the manual number the fields from 1 starting at the DID, so the address is 40001 plus the number for the common block and 40068 plus the number for the OutBack block. The positions follow the open-source mate3 client, which reads the block chain from 40000.",
+    "The blocks of the connected devices follow the OutBack block, one after the other, in the order of the system, and the chain ends with a block with DID 65535 and length 0. Their addresses therefore depend on the devices connected, so they are not mapped: walk the chain with the DID and length registers. The manual lists these DIDs: 64111 charge controller status, 64112 charge controller configuration, 64113 FX inverter real time, 64114 FX inverter configuration, 64115 split-phase Radian real time, 64116 Radian configuration, 64117 single-phase Radian real time, 64118 FLEXnet DC real time, 64119 FLEXnet DC configuration, 64120 system control, 64255 OPTICS packet statistics, and the SunSpec inverter models 101, 102 and 103.",
+    "Values with a scale factor are the register value times 10 to the power of the scale factor register named in scale_factor (voltage -1, hour -1, time zone -2, temperature 0). Writes need the write password set first, and changes made too often can lock up the interface of the MATE3s; keep polling to about once per second.",
+    "Passwords and the write-only fields are kept as write-only strings. Spare registers are not named. The total generator run time is listed with the unit hours but described as seconds; no unit is given.",
+    "Written from the manufacturer's manual; not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "AC Current", "area": "holding", "address": 40520, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Phase A Current", "area": "holding", "address": 40521, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Phase B Current", "area": "holding", "address": 40522, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Phase C Current", "area": "holding", "address": 40523, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Scale factor [A SF]", "area": "holding", "address": 40524, "type": "int16", "access": "R"},
-    {"name": "Phase Voltage AB", "area": "holding", "address": 40525, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Phase Voltage BC", "area": "holding", "address": 40526, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Phase Voltage CA", "area": "holding", "address": 40527, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Phase Voltage AN", "area": "holding", "address": 40528, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Phase Voltage BN", "area": "holding", "address": 40529, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Phase Voltage CN", "area": "holding", "address": 40530, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Scale factor [V SF]", "area": "holding", "address": 40531, "type": "int16", "access": "R"},
-    {"name": "AC Power", "area": "holding", "address": 40532, "type": "int16", "unit": "W", "access": "R"},
-    {"name": "Scale factor [W SF]", "area": "holding", "address": 40533, "type": "int16", "access": "R"},
-    {"name": "Line Frequency", "area": "holding", "address": 40534, "type": "uint16", "unit": "Hz", "access": "R"},
-    {"name": "Scale factor [HZ SF]", "area": "holding", "address": 40535, "type": "int16", "access": "R"},
-    {"name": "AC Apparent Power", "area": "holding", "address": 40536, "type": "int16", "unit": "VA", "access": "R"},
-    {"name": "Scale factor [VA SF]", "area": "holding", "address": 40537, "type": "int16", "access": "R"},
-    {"name": "AC Reactive Power", "area": "holding", "address": 40538, "type": "int16", "unit": "var", "access": "R"},
-    {"name": "Scale factor [VAR SF]", "area": "holding", "address": 40539, "type": "int16", "access": "R"},
-    {"name": "AC Power Factor", "area": "holding", "address": 40540, "type": "int16", "unit": "%", "access": "R"},
-    {"name": "Scale factor [PF SF]", "area": "holding", "address": 40541, "type": "int16", "access": "R"},
-    {"name": "AC Energy", "area": "holding", "address": 40542, "type": "uint32", "unit": "Wh", "access": "R"},
-    {"name": "Scale factor [WH SF]", "area": "holding", "address": 40544, "type": "int16", "access": "R"},
-    {"name": "DC Current", "area": "holding", "address": 40545, "type": "uint16", "unit": "A", "access": "R"},
-    {"name": "Scale factor [DCA SF]", "area": "holding", "address": 40546, "type": "int16", "access": "R"},
-    {"name": "DC Voltage", "area": "holding", "address": 40547, "type": "uint16", "unit": "V", "access": "R"},
-    {"name": "Scale factor [DCV SF]", "area": "holding", "address": 40548, "type": "int16", "access": "R"},
-    {"name": "DC Power", "area": "holding", "address": 40549, "type": "int16", "unit": "W", "access": "R"},
-    {"name": "Scale factor [DCW SF]", "area": "holding", "address": 40550, "type": "int16", "access": "R"},
-    {"name": "Cabinet Temperature", "area": "holding", "address": 40551, "type": "int16", "unit": "°C", "access": "R"},
-    {"name": "Heat Sink Temperature", "area": "holding", "address": 40552, "type": "int16", "unit": "°C", "access": "R"},
-    {"name": "Transformer Temperature", "area": "holding", "address": 40553, "type": "int16", "unit": "°C", "access": "R"},
-    {"name": "Other Temperature", "area": "holding", "address": 40554, "type": "int16", "unit": "°C", "access": "R"},
-    {"name": "Scale factor [TMP SF]", "area": "holding", "address": 40555, "type": "int16", "access": "R"},
-    {"name": "Enumerated value. Operating state", "area": "holding", "address": 40556, "type": "uint16", "access": "R"},
-    {"name": "Vendor specific operating state code", "area": "holding", "address": 40557, "type": "uint16", "access": "R"},
-    {"name": "Bitmask value. Event fields", "area": "holding", "address": 40558, "type": "uint32", "access": "R"},
-    {"name": "Reserved for future use", "area": "holding", "address": 40560, "type": "uint32", "access": "R"},
-    {"name": "Vendor defined events (40562)", "area": "holding", "address": 40562, "type": "uint32", "access": "R"},
-    {"name": "Vendor defined events (40564)", "area": "holding", "address": 40564, "type": "uint32", "access": "R"},
-    {"name": "Vendor defined events (40566)", "area": "holding", "address": 40566, "type": "uint32", "access": "R"},
-    {"name": "Vendor defined events (40568)", "area": "holding", "address": 40568, "type": "uint32", "access": "R"},
-    {"name": "Type of DER device. Default value is 4 to indicate PV device.", "area": "holding", "address": 40630, "type": "uint16", "access": "R"},
-    {"name": "Continuous power output capability of the inverter.", "area": "holding", "address": 40631, "type": "uint16", "unit": "W", "access": "R"},
-    {"name": "Scale factor (40632)", "area": "holding", "address": 40632, "type": "int16", "access": "R"},
-    {"name": "Continuous Volt Ampere capability of the inverter.", "area": "holding", "address": 40633, "type": "uint16", "unit": "VA", "access": "R"},
-    {"name": "Scale factor (40634)", "area": "holding", "address": 40634, "type": "int16", "access": "R"},
-    {"name": "Continuous VAR capability of the inverter in quadrant 1.", "area": "holding", "address": 40635, "type": "int16", "unit": "var", "access": "R"},
-    {"name": "Continuous VAR capability of the inverter in quadrant 2.", "area": "holding", "address": 40636, "type": "int16", "unit": "var", "access": "R"}
-  ]
+    {
+      "name": "SunSpec identifier",
+      "group": "SunSpec header",
+      "area": "holding",
+      "address": 40000,
+      "type": "string",
+      "length": 2,
+      "access": "R",
+      "reference": "SunS",
+      "description": "Fixed marker \"SunS\" (0x53756E53) at the start of the register map"
+    },
+    {
+      "name": "C SunSpec DID",
+      "group": "Common block (DID 1)",
+      "area": "holding",
+      "address": 40002,
+      "type": "uint16",
+      "access": "R",
+      "reference": 1
+    },
+    {
+      "name": "C SunSpec Length",
+      "group": "Common block (DID 1)",
+      "area": "holding",
+      "address": 40003,
+      "type": "uint16",
+      "access": "R",
+      "reference": 65
+    },
+    {
+      "name": "C Manufacturer",
+      "group": "Common block (DID 1)",
+      "area": "holding",
+      "address": 40004,
+      "type": "string",
+      "length": 16,
+      "access": "R",
+      "description": "SunSpec common block: manufacturer"
+    },
+    {
+      "name": "C Model",
+      "group": "Common block (DID 1)",
+      "area": "holding",
+      "address": 40020,
+      "type": "string",
+      "length": 16,
+      "access": "R",
+      "role": "model"
+    },
+    {
+      "name": "C Options",
+      "group": "Common block (DID 1)",
+      "area": "holding",
+      "address": 40036,
+      "type": "string",
+      "length": 8,
+      "access": "R"
+    },
+    {
+      "name": "C Version",
+      "group": "Common block (DID 1)",
+      "area": "holding",
+      "address": 40044,
+      "type": "string",
+      "length": 8,
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "C SerialNumber",
+      "group": "Common block (DID 1)",
+      "area": "holding",
+      "address": 40052,
+      "type": "string",
+      "length": 16,
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "C DeviceAddress",
+      "group": "Common block (DID 1)",
+      "area": "holding",
+      "address": 40068,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack DID",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40069,
+      "type": "uint16",
+      "access": "R",
+      "reference": 64110
+    },
+    {
+      "name": "OutBack Length",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40070,
+      "type": "uint16",
+      "access": "R",
+      "reference": 420
+    },
+    {
+      "name": "OutBack Major Firmware Number",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40071,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "OutBack Mid Firmware Number",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40072,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "OutBack Minor Firmware Number",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40073,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "OutBack Encryption Key",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40074,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "OutBack MAC Address",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40075,
+      "type": "string",
+      "length": 7,
+      "access": "R"
+    },
+    {
+      "name": "OutBack Write Password",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40082,
+      "type": "string",
+      "length": 8,
+      "access": "W"
+    },
+    {
+      "name": "OutBack Enable DHCP",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40090,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_enable_dhcp"
+    },
+    {
+      "name": "OutBack TCP/IP Address",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40091,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack TCP/IP Gateway MSW",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40093,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack TCP/IP Netmask MSW",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40095,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack TCP/IP DNS 1 MSW",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40097,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack TCP/IP DNS 2 MSW",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40099,
+      "type": "uint32",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Modbus Port",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40101,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack SMTP Server Name",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40102,
+      "type": "string",
+      "length": 20,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack SMTP Account Name",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40122,
+      "type": "string",
+      "length": 16,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack SMTP SSL Enable",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40138,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_smtp_ssl_enable"
+    },
+    {
+      "name": "OutBack SMTP Email Password",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40139,
+      "type": "string",
+      "length": 8,
+      "access": "W"
+    },
+    {
+      "name": "OutBack SMTP Email User Name",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40147,
+      "type": "string",
+      "length": 20,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Status Email Interval",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40167,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = Status Email Disabled, 1-23 Status Email every n hours"
+    },
+    {
+      "name": "OutBack Status Email Status Time",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40168,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Status Email Subject Line",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40169,
+      "type": "string",
+      "length": 25,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Status Email To Address 1",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40194,
+      "type": "string",
+      "length": 20,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Status Email To Address 2",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40214,
+      "type": "string",
+      "length": 20,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Alarm Email Enable",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40234,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack System Name",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40235,
+      "type": "string",
+      "length": 30,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Alarm Email To Address 1",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40265,
+      "type": "string",
+      "length": 15,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Alarm Email To Address 2",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40280,
+      "type": "string",
+      "length": 20,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack FTP Password",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40300,
+      "type": "string",
+      "length": 8,
+      "access": "W"
+    },
+    {
+      "name": "OutBack Telnet Password",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40308,
+      "type": "string",
+      "length": 8,
+      "access": "W"
+    },
+    {
+      "name": "OutBack SD Card Data Log Write Interval",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40316,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = SD-Card Data Logging disabled, 1-60 seconds"
+    },
+    {
+      "name": "OutBack SD Card Data Log Retain Days",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40317,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 = Log until SD-Card is full then erase oldest, 1-731 Number of days to retain data logs"
+    },
+    {
+      "name": "OutBack SD Card Data Logging Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40318,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_sd_card_data_logging_mode"
+    },
+    {
+      "name": "OutBack Time Server Name",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40319,
+      "type": "string",
+      "length": 20,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Enable Time Server",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40339,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_enable_time_server"
+    },
+    {
+      "name": "OutBack Set Time Zone",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40340,
+      "type": "int16",
+      "access": "RW",
+      "unit": "h",
+      "scale_factor": "OutBack Time Zone SF",
+      "description": "Time zone from -12.0 to +14.0 hours"
+    },
+    {
+      "name": "OutBack Enable Float Coordination",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40341,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Enable FNDC Charge Termination",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40342,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Enable FNDC Grid Tie Control",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40343,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Voltage SF",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40344,
+      "type": "int16",
+      "access": "R",
+      "reference": -1
+    },
+    {
+      "name": "OutBack Hour SF",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40345,
+      "type": "int16",
+      "access": "R",
+      "reference": -1
+    },
+    {
+      "name": "OutBack AGS Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40346,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS Port",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40347,
+      "type": "uint16",
+      "access": "RW",
+      "description": "AGS device port number 0-10"
+    },
+    {
+      "name": "OutBack AGS Port Type",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40348,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_ags_port_type"
+    },
+    {
+      "name": "OutBack AGS Generator Type",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40349,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_ags_generator_type"
+    },
+    {
+      "name": "OutBack AGS DC Gen Absorb Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40350,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack AGS DC Gen Absorb Time",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40351,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "scale_factor": "OutBack Hour SF"
+    },
+    {
+      "name": "OutBack AGS Fault Time",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40352,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack AGS Gen Cool Down Time",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40353,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack AGS Gen Warm Up Time",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40354,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack AGS Generator Exercise Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40355,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS Exercise Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40356,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Exercise Start Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Exercise Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40357,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "Exercise Start Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Exercise Day",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40358,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_ags_exercise_day"
+    },
+    {
+      "name": "OutBack AGS Exercise Period",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40359,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "Exercise Period 1-240 minutes"
+    },
+    {
+      "name": "OutBack AGS Exercise Interval",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40360,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "week",
+      "description": "Exercise interval 1-8 Weeks"
+    },
+    {
+      "name": "OutBack AGS Sell Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40361,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_ags_sell_mode"
+    },
+    {
+      "name": "OutBack AGS 2 Min Start Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40362,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS 2 Min Start Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40363,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack AGS 2 Hour Start Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40364,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS 2 Hour Start Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40365,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack AGS 24 Hour Start Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40366,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS 24 Hour Start Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40367,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack AGS Load Start Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40368,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS Load Start kW",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40369,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "kW"
+    },
+    {
+      "name": "OutBack AGS Load Start Delay",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40370,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack AGS Load Stop kW",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40371,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "kW"
+    },
+    {
+      "name": "OutBack AGS Load Stop Delay",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40372,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack AGS SOC Start Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40373,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS SOC Start Percentage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40374,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "OutBack AGS SOC Stop Percentage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40375,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "OutBack AGS Enable Full Charge Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40376,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS Full Charge Interval",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40377,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "day"
+    },
+    {
+      "name": "OutBack AGS Must Run Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40378,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS Must Run Weekday Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40379,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "AGS Must Run Weekday Start Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Must Run Weekday Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40380,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "AGS Must Run Weekday Start Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Must Run Weekday Stop Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40381,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "AGS Must Run Weekday Stop Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Must Run Weekday Stop Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40382,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "AGS Must Run Weekday Stop Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Must Run Weekend Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40383,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "AGS Must Run Weekend Start Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Must Run Weekend Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40384,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "AGS Must Run Weekend Start Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Must Run Weekend Stop Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40385,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "AGS Must Run Weekend Stop Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Must Run Weekend Stop Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40386,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "AGS Must Run Weekend Stop Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40387,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Weekday Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40388,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "AGS Quiet Time Weekday Start Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Weekday Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40389,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "AGS Quiet Time Weekday Start Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Weekday Stop Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40390,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "AGS Quiet Time Weekday Stop Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Weekday Stop Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40391,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "AGS Quiet Time Weekday Stop Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Weekend Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40392,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "AGS Quiet Time Weekend Start Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Weekend Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40393,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "AGS Quiet Time Weekend Start Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Weekend Stop Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40394,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "AGS Quiet Time Weekend Stop Hour 0-23"
+    },
+    {
+      "name": "OutBack AGS Quiet Time Weekend Stop Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40395,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min",
+      "description": "AGS Quiet Time Weekend Stop Minute 0-59"
+    },
+    {
+      "name": "OutBack AGS Total Generator Run Time",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40396,
+      "type": "uint32",
+      "access": "RW",
+      "description": "Listed with the unit hours, but the manual text says seconds; unit left out"
+    },
+    {
+      "name": "OutBack HBX Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40398,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_hbx_mode"
+    },
+    {
+      "name": "OutBack HBX Grid Connect Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40399,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack HBX Grid Connect Delay",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40400,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "scale_factor": "OutBack Hour SF"
+    },
+    {
+      "name": "OutBack HBX Grid Disconnect Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40401,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack HBX Grid Disconnect Delay",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40402,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "scale_factor": "OutBack Hour SF"
+    },
+    {
+      "name": "OutBack HBX Grid Connect SOC",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40403,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "OutBack HBX Grid Disconnect SOC",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40404,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "%"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40405,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Weekday Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40406,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 1 Weekday Start Hour 0-23"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Weekday Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40407,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 1 Weekday Start Minute 0-59"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Weekday Stop Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40408,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 1 Weekday Stop Hour 0-23"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Weekday Stop Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40409,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 1 Weekday Stop Minute 0-59"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Weekend Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40410,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 1 Weekend Start Hour 0-23"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Weekend Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40411,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 1 Weekend Start Minute 0-59"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Weekend Stop Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40412,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 1 Weekend Stop Hour 0-23"
+    },
+    {
+      "name": "OutBack Grid Use Interval 1 Weekend Stop Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40413,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 1 Weekend Stop Minute 0-59"
+    },
+    {
+      "name": "OutBack Grid Use Interval 2 Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40414,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Grid Use Interval 2 Weekday Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40415,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 2 Weekday Start Hour 0-23"
+    },
+    {
+      "name": "OutBack Grid Use Interval 2 Weekday Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40416,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 2 Weekday Start Minute 0-59"
+    },
+    {
+      "name": "OutBack Grid Use Interval 2 Weekday Stop Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40417,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 2 Weekday Stop Hour 0-23"
+    },
+    {
+      "name": "OutBack Grid Use Interval 2 Weekday Stop Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40418,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 2 Weekday Stop Minute 0-59"
+    },
+    {
+      "name": "OutBack Grid Use Interval 3 Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40419,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Grid Use Interval 3 Weekday Start Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40420,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 3 Weekday Start Hour 0-23"
+    },
+    {
+      "name": "OutBack Grid Use Interval 3 Weekday Start Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40421,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 3 Weekday Start Minute 0-59"
+    },
+    {
+      "name": "OutBack Grid Use Interval 3 Weekday Stop Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40422,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 3 Weekday Stop Hour 0-23"
+    },
+    {
+      "name": "OutBack Grid Use Interval 3 Weekday Stop Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40423,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h",
+      "description": "Grid Use Interval 3 Weekday Stop Minute 0-59"
+    },
+    {
+      "name": "OutBack Load Grid Transfer Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40424,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Load Grid Transfer Threshold",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40425,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "kW",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack Load Grid Transfer Connect Delay",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40426,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s"
+    },
+    {
+      "name": "OutBack Load Grid Transfer Disconnect Delay",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40427,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "s"
+    },
+    {
+      "name": "OutBack Load Grid Transfer Connect Battery Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40428,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack Load Grid Transfer Re Connect Battery Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40429,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack Global Charger Control Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40430,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Global Charger Control Output Limit",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40431,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "A"
+    },
+    {
+      "name": "OutBack Radian AC Coupled Control Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40432,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Radian AC Coupled AUX Port",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40433,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Radian Inverter Port Number for AUX Control 0-10"
+    },
+    {
+      "name": "OutBack URL Update Lock",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40434,
+      "type": "uint32",
+      "access": "W"
+    },
+    {
+      "name": "OutBack Web Reporting Base URL",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40436,
+      "type": "string",
+      "length": 20,
+      "access": "RW"
+    },
+    {
+      "name": "OutBack WEB User Logged In Status",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40456,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_web_user_logged_in_status"
+    },
+    {
+      "name": "OutBack HUB Type",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40457,
+      "type": "uint16",
+      "access": "R",
+      "enum": "outback_hub_type"
+    },
+    {
+      "name": "OutBack HUB Major Firmware Number",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40458,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "OutBack HUB Mid Firmware Number",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40459,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "OutBack HUB Minor Firmware Number",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40460,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "OutBack Year",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40461,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Month",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40462,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Clock Month (1 - 12)"
+    },
+    {
+      "name": "OutBack Day",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40463,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Clock Day (1 - 31)"
+    },
+    {
+      "name": "OutBack Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40464,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Clock Hour (0 - 23)"
+    },
+    {
+      "name": "OutBack Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40465,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Clock Minute (0 - 59)"
+    },
+    {
+      "name": "OutBack Second",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40466,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Clock Second (0 - 59)"
+    },
+    {
+      "name": "OutBack Temp Batt",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40467,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C"
+    },
+    {
+      "name": "OutBack Temp Ambient",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40468,
+      "type": "int16",
+      "access": "R",
+      "unit": "°C"
+    },
+    {
+      "name": "OutBack Temp SF",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40469,
+      "type": "int16",
+      "access": "R",
+      "reference": 0
+    },
+    {
+      "name": "OutBack Error",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Error bit: Write High Limit",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "High limit last write"
+    },
+    {
+      "name": "Error bit: Write Low Limit",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 1,
+      "access": "R",
+      "description": "Low limit last write"
+    },
+    {
+      "name": "Error bit: Write Invalid",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 2,
+      "access": "R",
+      "description": "Last write invalid"
+    },
+    {
+      "name": "Error bit: DHCP Failed",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 3,
+      "access": "R",
+      "description": "DHCP failed"
+    },
+    {
+      "name": "Error bit: DNS Resolve Failed",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 4,
+      "access": "R",
+      "description": "DNS resolve failure"
+    },
+    {
+      "name": "Error bit: SMTP Authorization Failed",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 5,
+      "access": "R",
+      "description": "SMTP authorization failed"
+    },
+    {
+      "name": "Error bit: SMTP Send Failed",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 6,
+      "access": "R",
+      "description": "SMTP send failed"
+    },
+    {
+      "name": "Error bit: FTP Error",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 7,
+      "access": "R",
+      "description": "FTP Error"
+    },
+    {
+      "name": "Error bit: SD Card Error",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 8,
+      "access": "R",
+      "description": "SD-Card Error"
+    },
+    {
+      "name": "Error bit: SNTP failure",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 9,
+      "access": "R",
+      "description": "SNTP failure"
+    },
+    {
+      "name": "Error bit: Write While Locked",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 10,
+      "access": "R",
+      "description": "Write while locked"
+    },
+    {
+      "name": "Error bit: Firmware Update Not Supported",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 11,
+      "access": "R",
+      "description": "Device firmware updating not supported"
+    },
+    {
+      "name": "Error bit: Firmware Update File Not Found",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 12,
+      "access": "R",
+      "description": "Device firmware update file not found"
+    },
+    {
+      "name": "Error bit: Firmware Update File Invalid",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 13,
+      "access": "R",
+      "description": "Device firmware update file invalid"
+    },
+    {
+      "name": "Error bit: Firmware Update Failure",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40470,
+      "type": "bool",
+      "bit": 14,
+      "access": "R",
+      "description": "Device firmware update failure"
+    },
+    {
+      "name": "OutBack Status",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40471,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Status bit: Firmware Update Complete",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40471,
+      "type": "bool",
+      "bit": 0,
+      "access": "R",
+      "description": "Firmware Update Complete"
+    },
+    {
+      "name": "Update device firmware port number",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40472,
+      "type": "uint16",
+      "bit": 0,
+      "bits": 8,
+      "access": "RW",
+      "description": "Port of the device to update"
+    },
+    {
+      "name": "Update device firmware percentage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40472,
+      "type": "uint16",
+      "bit": 8,
+      "bits": 8,
+      "access": "R",
+      "description": "Progress of the firmware update"
+    },
+    {
+      "name": "OutBack Gateway Type",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40473,
+      "type": "uint16",
+      "access": "R",
+      "enum": "outback_gateway_type"
+    },
+    {
+      "name": "OutBack System Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40474,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "OutBack Measured System Voltage",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40475,
+      "type": "uint16",
+      "access": "R",
+      "unit": "V",
+      "scale_factor": "OutBack Voltage SF"
+    },
+    {
+      "name": "OutBack AGS AC Reconnect Delay",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40476,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack Multi Phase Coordination",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40477,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_alarm_email_enable"
+    },
+    {
+      "name": "OutBack Sched 1 AC Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40478,
+      "type": "int16",
+      "access": "RW",
+      "enum": "outback_sched_1_ac_mode"
+    },
+    {
+      "name": "OutBack Sched 1 AC Mode Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40479,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h"
+    },
+    {
+      "name": "OutBack Sched 1 AC Mode Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40480,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack Sched 2 AC Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40481,
+      "type": "int16",
+      "access": "RW",
+      "enum": "outback_sched_1_ac_mode"
+    },
+    {
+      "name": "OutBack Sched 2 AC Mode Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40482,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h"
+    },
+    {
+      "name": "OutBack Sched 2 AC Mode Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40483,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack Sched 3 AC Mode",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40484,
+      "type": "int16",
+      "access": "RW",
+      "enum": "outback_sched_1_ac_mode"
+    },
+    {
+      "name": "OutBack Sched 3 AC Mode Hour",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40485,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "h"
+    },
+    {
+      "name": "OutBack Sched 3 AC Mode Minute",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40486,
+      "type": "uint16",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "OutBack Auto reboot",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40487,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "outback_auto_reboot"
+    },
+    {
+      "name": "OutBack Time Zone SF",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40488,
+      "type": "int16",
+      "access": "R",
+      "reference": -2
+    },
+    {
+      "name": "OutBack Spare Reg 3",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40489,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "OutBack Spare Reg 4",
+      "group": "OutBack block (DID 64110)",
+      "area": "holding",
+      "address": 40490,
+      "type": "uint16",
+      "access": "RW"
+    }
+  ],
+  "revised": "2026-11-15",
+  "sources": [
+    {
+      "title": "OutBack Power SunSpec Map (ControllerSunSpecMap), registers and bit fields supported by the MATE3 and AXS Port",
+      "version": "revision history to 2019-07-29",
+      "url": "https://raw.githubusercontent.com/adamcharnock/mate3/master/mate3/sunspec/doc/OutBack.Power.SunSpec.Map.xlsx",
+      "note": "Spreadsheet shipped by OutBack with its Modbus Development Package; copy kept in the open-source mate3 repository; sheets SunSpecMap and Bitfields",
+      "accessed": "2026-11-15",
+      "sha256": "10389c34392190631bc1e2063263574ec1a85b1ec1db11a6ed4aa1862e41ecf8"
+    },
+    {
+      "title": "SunSpec Data Blocks and the AXS Port (Application Note)",
+      "version": "undated",
+      "url": "https://raw.githubusercontent.com/adamcharnock/mate3/master/mate3/sunspec/doc/AXS_APP_NOTE.pdf",
+      "note": "OutBack application note with the same block tables as the spreadsheet; copy kept in the mate3 repository",
+      "accessed": "2026-11-15",
+      "sha256": "9daf21413ea2c8bb1eeebe4eadc5f1c02da2337ccfc818f86fb3602109e76230"
+    },
+    {
+      "title": "MATE3s System Display and Controller Programming Guide",
+      "version": "undated",
+      "url": "https://s1.solacity.com/docs/Outback/mate3s_programmingguide_web.pdf",
+      "note": "Says the SunSpec interface and the Modbus TCP/IP port are set in the MATE3s menu and points to the AXS Port manual for the data blocks",
+      "accessed": "2026-11-15",
+      "sha256": "c9da591e5e1c893ce8470e0dca51037c90e3f14106af092ad547e6c3027a4ae5"
+    }
+  ],
+  "description": "OutBack MATE3s system display and controller: SunSpec Modbus TCP head of the register map, the common block (manufacturer, model, version, serial number) and the OutBack block with network, e-mail, logging, clock, AGS generator, grid-use schedule and status settings",
+  "protocol": "tcp",
+  "port": 502,
+  "enums": {
+    "outback_enable_dhcp": {
+      "0": "DHCP Disabled",
+      "1": "DHCP Enabled"
+    },
+    "outback_smtp_ssl_enable": {
+      "0": "SSL Disabled",
+      "1": "SSL Enabled (not implemented)"
+    },
+    "outback_alarm_email_enable": {
+      "0": "Disabled",
+      "1": "Enabled"
+    },
+    "outback_sd_card_data_logging_mode": {
+      "0": "Disabled",
+      "1": "Excel Format",
+      "2": "Compact Format"
+    },
+    "outback_enable_time_server": {
+      "0": "Time Server Disabled",
+      "1": "Time  Server Enabled"
+    },
+    "outback_ags_port_type": {
+      "0": "Radian AUX Relay",
+      "1": "Radian AUX Output"
+    },
+    "outback_ags_generator_type": {
+      "0": "AC Gen",
+      "1": "DC Gen",
+      "2": "No Gen"
+    },
+    "outback_ags_exercise_day": {
+      "0": "Sun",
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thr",
+      "5": "Fri",
+      "6": "Sat"
+    },
+    "outback_ags_sell_mode": {
+      "0": "Selling Enabled",
+      "1": "Selling Disabled"
+    },
+    "outback_hbx_mode": {
+      "0": "Disabled",
+      "1": "Voltage Only",
+      "2": "SOC Only",
+      "3": "Both"
+    },
+    "outback_web_user_logged_in_status": {
+      "0": "WEB User NOT logged in",
+      "1": "WEB user logged in"
+    },
+    "outback_hub_type": {
+      "0": "Legacy HUB",
+      "4": "HUB4",
+      "10": "HUB10.3",
+      "11": "HUB3PH"
+    },
+    "outback_gateway_type": {
+      "1": "AXS Port",
+      "2": "MATE3"
+    },
+    "outback_sched_1_ac_mode": {
+      "-1": "Disable",
+      "0": "Generator",
+      "1": "Support",
+      "2": "Grid Tied",
+      "3": "UPS",
+      "4": "Backup",
+      "5": "Mini Grid",
+      "6": "Grid Zero"
+    },
+    "outback_auto_reboot": {
+      "0": "Disable",
+      "1": "Enable"
+    }
+  }
 }
