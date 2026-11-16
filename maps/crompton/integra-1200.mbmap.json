@@ -3,71 +3,1674 @@
   "mbmap": 2,
   "vendor": "Crompton",
   "model": "Integra 1200",
-  "models": ["Integra 1200"],
-  "vendor_website": "crompton-instruments.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table crompton/integra-1200; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/crompton-integra-1200.htm. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Crompton Integra 1200.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+  "models": [
+    "Integra 1200"
   ],
+  "vendor_website": "crompton-instruments.com",
+  "revision": 4,
+  "revised": "2026-11-15",
+  "source": "Crompton Instruments, Integra INT-12XX Communications Guide, CI-3L12002 Rev 04 (2020-11-18)",
+  "sources": [
+    {
+      "title": "Integra, INT-12XX Power Measurement Digital Metering System Communications Guide",
+      "version": "CI-3L12002 Rev 04 (18/11/2020)",
+      "url": "http://www.crompton-instruments.com/installation_docs/CI-3L12002-INT-1222-Communications-Guide-Rev-04.pdf",
+      "note": "Appendix 1 (input registers) and Appendix 2 (holding registers); the guide covers the INT-12XX family and has an Integra 1200 column",
+      "accessed": "2026-11-15",
+      "sha256": "d46af8f25532a7161d2ca225a943e76c1e3774509cd3babada5581442cc83051"
+    }
+  ],
+  "notes": [
+    "Modbus RTU slave on 2-wire RS485. The manual gives baud rates 2400 to 38400 (code 2, 9600 baud, is the default), a parity/stop-bit code (default one stop bit, no parity) and a node address of 1 to 247 (default 1); 8 data bits.",
+    "Input registers are read with function 04; holding registers with function 03 and written with function 16, one parameter per message. Addresses are the start addresses of the manual (30001 is address 0), so the address base is 0.",
+    "Every value is a 32-bit IEEE 754 float in two registers, most significant register first (big byte order, big word order). Reads and writes must cover an even number of registers; at most 50 values (100 registers) per request. Index and code registers are also carried as floats.",
+    "The Network register order holding register can switch the network port to reversed word order; this map describes the default (normal) order.",
+    "Parameters marked No for the wiring system in use (3P4W, 3P3W, 1P2W) return zero.",
+    "Writes to protected holding registers need the password to be entered first, and the manual says a write must be preceded by writing 0000 0005h to the write-enable registers (40513 and 40514).",
+    "Left out because the manual is inconsistent: the neutral current registers (parameters 113 to 117) print a start address of 0000 that disagrees with their register numbers 30224 to 30232, and three holding registers (secondary voltage 40298, system frequency 49798, current direction connection 49832) have a hex start address that disagrees with the register number. The manual's parameter numbering has gaps (for example 23 and 26); only the parameters it prints are mapped.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "description": "Integra 1200 digital power meter: voltages, currents, powers, power factors, energies, demands, minima and maxima, THD and configuration registers",
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Phase 2 line to neutral voltage", "area": "holding", "address": 2, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Phase 3 line to neutral voltage", "area": "holding", "address": 4, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Line 1 current", "area": "holding", "address": 6, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Line 2 current", "area": "holding", "address": 8, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Line 3 current", "area": "holding", "address": 10, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Phase 1 power", "area": "holding", "address": 12, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Phase 2 power", "area": "holding", "address": 14, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Phase 3 power", "area": "holding", "address": 16, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Phase 1 VA", "area": "holding", "address": 18, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Phase 2 VA", "area": "holding", "address": 20, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Phase 3 VA", "area": "holding", "address": 22, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Phase 1 VAr", "area": "holding", "address": 24, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Phase 2 VAr", "area": "holding", "address": 26, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Phase 3 VAr", "area": "holding", "address": 28, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Phase 1 power factor", "area": "holding", "address": 30, "type": "float32", "access": "R"},
-    {"name": "Phase 2 power factor", "area": "holding", "address": 32, "type": "float32", "access": "R"},
-    {"name": "Phase 3 power factor", "area": "holding", "address": 34, "type": "float32", "access": "R"},
-    {"name": "Phase 1 phase angle", "area": "holding", "address": 36, "type": "float32", "unit": "°", "access": "R"},
-    {"name": "Phase 2 phase angle", "area": "holding", "address": 38, "type": "float32", "unit": "°", "access": "R"},
-    {"name": "Phase 3 phase angle", "area": "holding", "address": 40, "type": "float32", "unit": "°", "access": "R"},
-    {"name": "Average line to neutral voltage", "area": "holding", "address": 42, "type": "float32", "unit": "V", "access": "R"},
-    {"name": "Average line current", "area": "holding", "address": 46, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Sum of line currents", "area": "holding", "address": 48, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Sum of phase powers", "area": "holding", "address": 52, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Sum of phase VAs", "area": "holding", "address": 56, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Sum of phase VArs", "area": "holding", "address": 60, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Total system power factor", "area": "holding", "address": 62, "type": "float32", "access": "R"},
-    {"name": "Total system phase angle", "area": "holding", "address": 66, "type": "float32", "unit": "°", "access": "R"},
-    {"name": "System frequency", "area": "holding", "address": 70, "type": "float32", "unit": "Hz", "access": "R"},
-    {"name": "Import watt hours", "area": "holding", "address": 72, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Export watt hours", "area": "holding", "address": 74, "type": "float32", "unit": "Wh", "access": "R"},
-    {"name": "Import VAr hours", "area": "holding", "address": 76, "type": "float32", "unit": "varh", "access": "R"},
-    {"name": "Export VAr hours", "area": "holding", "address": 78, "type": "float32", "unit": "varh", "access": "R"},
-    {"name": "VA hours", "area": "holding", "address": 80, "type": "float32", "access": "R", "description": "unit: VA Hours"},
-    {"name": "Current sum hours", "area": "holding", "address": 82, "type": "float32", "access": "R", "description": "unit: A Hours"},
-    {"name": "Import power sum demand", "area": "holding", "address": 84, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Maximum import power sum demand", "area": "holding", "address": 86, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Import active power demand", "area": "holding", "address": 88, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Import active power max demand", "area": "holding", "address": 90, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Export active power demand", "area": "holding", "address": 92, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "Export active power max demand", "area": "holding", "address": 94, "type": "float32", "unit": "W", "access": "R"},
-    {"name": "VA sum demand", "area": "holding", "address": 100, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Maximum VA sum demand", "area": "holding", "address": 102, "type": "float32", "unit": "VA", "access": "R"},
-    {"name": "Neutral current demand", "area": "holding", "address": 104, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Maximum neutral current demand", "area": "holding", "address": 106, "type": "float32", "unit": "A", "access": "R"},
-    {"name": "Total system reactive power demand", "area": "holding", "address": 108, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Maximum total system reactive power demand", "area": "holding", "address": 110, "type": "float32", "unit": "var", "access": "R"},
-    {"name": "Voltage phase sequence normal=1 reverse=2)", "area": "holding", "address": 160, "type": "float32", "access": "R"},
-    {"name": "Current phase sequence normal=1 reverse=2)", "area": "holding", "address": 162, "type": "float32", "access": "R"},
-    {"name": "Nature of the load resistive =1 inductive =2 capacitive =3)", "area": "holding", "address": 192, "type": "float32", "access": "R"}
+    {
+      "name": "Phase 1 line to neutral voltage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 0,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase 2 line to neutral voltage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase 3 line to neutral voltage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 4,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Line 1 current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 6,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Line 2 current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 8,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Line 3 current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 10,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase 1 power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 12,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase 2 power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 14,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase 3 power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 16,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase 1 VA",
+      "group": "Measurements",
+      "area": "input",
+      "address": 18,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase 2 VA",
+      "group": "Measurements",
+      "area": "input",
+      "address": 20,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase 3 VA",
+      "group": "Measurements",
+      "area": "input",
+      "address": 22,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase 1 VAr",
+      "group": "Measurements",
+      "area": "input",
+      "address": 24,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase 2 VAr",
+      "group": "Measurements",
+      "area": "input",
+      "address": 26,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase 3 VAr",
+      "group": "Measurements",
+      "area": "input",
+      "address": 28,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Phase 1 power factor",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase 2 power factor",
+      "group": "Measurements",
+      "area": "input",
+      "address": 32,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase 3 power factor",
+      "group": "Measurements",
+      "area": "input",
+      "address": 34,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase 1 phase angle",
+      "group": "Measurements",
+      "area": "input",
+      "address": 36,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Phase 2 phase angle",
+      "group": "Measurements",
+      "area": "input",
+      "address": 38,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Phase 3 phase angle",
+      "group": "Measurements",
+      "area": "input",
+      "address": 40,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Average line to neutral voltage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 42,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average line current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 46,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Sum of line currents",
+      "group": "Measurements",
+      "area": "input",
+      "address": 48,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Sum of phase powers",
+      "group": "Measurements",
+      "area": "input",
+      "address": 52,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Sum of phase VAs",
+      "group": "Measurements",
+      "area": "input",
+      "address": 56,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Sum of phase VArs",
+      "group": "Measurements",
+      "area": "input",
+      "address": 60,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Total system power factor",
+      "group": "Measurements",
+      "area": "input",
+      "address": 62,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Total system phase angle",
+      "group": "Measurements",
+      "area": "input",
+      "address": 66,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "System frequency",
+      "group": "Measurements",
+      "area": "input",
+      "address": 70,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Import Watt hours",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 72,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh"
+    },
+    {
+      "name": "Export Watt hours",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 74,
+      "type": "float32",
+      "access": "R",
+      "unit": "Wh"
+    },
+    {
+      "name": "Import VAr hours",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 76,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh"
+    },
+    {
+      "name": "Export VAr hours",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 78,
+      "type": "float32",
+      "access": "R",
+      "unit": "varh"
+    },
+    {
+      "name": "VA hours",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 80,
+      "type": "float32",
+      "access": "R",
+      "unit": "VAh"
+    },
+    {
+      "name": "Import power sum demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 84,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Maximum import power sum demand",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 86,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "VA sum demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 100,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Maximum VA sum demand",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 102,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Current sum demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 104,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum current sum demand",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 106,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum phase 1 line to neutral voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 108,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Minimum phase 1 line to neutral voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 110,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Maximum phase 2 line to neutral voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 112,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Minimum phase 2 line to neutral voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 114,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Maximum phase 3 line to neutral voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 116,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Minimum phase 3 line to neutral voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 118,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Maximum line 1 current",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 120,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Minimum line 1 current",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 122,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum line 2 current",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 124,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Minimum line 2 current",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 126,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum line 3 current",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 128,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Minimum line 3 current",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 130,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum average line to neutral voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 132,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Minimum average line to neutral voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 134,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Maximum average line current",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 140,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Minimum average line current",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 142,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum sum of line currents",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 144,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Minimum sum of line currents",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 146,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum phase 1 power",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 148,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Minimum phase 1 power",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 150,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Maximum phase 2 power",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 152,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Minimum phase 2 power",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 154,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Maximum phase 3 power",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 156,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Minimum phase 3 power",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 158,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Maximum sum of phase powers",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 160,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Minimum sum of phase powers",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 162,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Maximum phase 1 VArs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 164,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Minimum phase 1 VArs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 166,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Maximum phase 2 VArs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 168,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Minimum phase 2 VArs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 170,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Maximum phase 3 VArs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 172,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Minimum phase 3 VArs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 174,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Maximum sum of phase VArs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 176,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Minimum sum of phase VArs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 178,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Maximum phase 1 VAs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 180,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Minimum phase 1 VAs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 182,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Maximum phase 2 VAs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 184,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Minimum phase 2 VAs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 186,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Maximum phase 3 VAs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 188,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Minimum phase 3 VAs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 190,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Maximum sum of phase VAs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 192,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Minimum sum of phase VAs",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 194,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Maximum system voltage frequency",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 196,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Minimum system voltage frequency",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 198,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Voltage line 1 to line 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 200,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage line 2 to line 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 202,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Voltage line 3 to line 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 204,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average line to line voltage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 206,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Maximum line 1 to line 2 voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 208,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Minimum line 1 to line 2 voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 210,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Maximum line 2 to line 3 voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 212,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Minimum line 2 to line 3 voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 214,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Maximum line 3 to line 1 voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 216,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Minimum line 3 to line 1 voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 218,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Maximum average line to line voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 220,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Minimum average line to line voltage",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 222,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Phase 1 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 234,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase 2 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 236,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Phase 3 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 238,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Line 1 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 240,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Line 2 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 242,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Line 3 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 244,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Average line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 248,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Average line current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 250,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Hours run at over minimum load",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 252,
+      "type": "float32",
+      "access": "R",
+      "scale": 0.01,
+      "unit": "h"
+    },
+    {
+      "name": "Total system power factor, times minus one",
+      "group": "Measurements",
+      "area": "input",
+      "address": 254,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Line 1 current demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 258,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Line 2 current demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 260,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Line 3 current demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 262,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum line 1 current demand",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 264,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum line 2 current demand",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 266,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Maximum line 3 current demand",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 268,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Phase rotation sequence",
+      "group": "Measurements",
+      "area": "input",
+      "address": 270,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Line to neutral voltage out of balance",
+      "group": "Unbalance",
+      "area": "input",
+      "address": 272,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Line current out of balance",
+      "group": "Unbalance",
+      "area": "input",
+      "address": 276,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum line to neutral voltage out of balance",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 278,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum line to neutral voltage out of balance",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 280,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum line current out of balance",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 286,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum line current out of balance",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 288,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum phase 1 power factor",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 290,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum phase 1 power factor",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 292,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum phase 2 power factor",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 294,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum phase 2 power factor",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 296,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum phase 3 power factor",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 298,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum phase 3 power factor",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 300,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum total system power factor",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 302,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Minimum total system power factor",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 304,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Maximum total system phase angle",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 306,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Minimum total system phase angle",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 308,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Maximum phase 1 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 310,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum phase 1 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 312,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum phase 2 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 314,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum phase 2 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 316,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum phase 3 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 318,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum phase 3 line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 320,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum line 1 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 322,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum line 1 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 324,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum line 2 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 326,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum line 2 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 328,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum line 3 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 330,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum line 3 current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 332,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Import phase 1 power demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 334,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Import phase 2 power demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 336,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Import phase 3 power demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 338,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Import phase 1 power demand maximum",
+      "group": "Demand",
+      "area": "input",
+      "address": 340,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Import phase 2 power demand maximum",
+      "group": "Demand",
+      "area": "input",
+      "address": 342,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Import phase 3 power demand maximum",
+      "group": "Demand",
+      "area": "input",
+      "address": 344,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Phase 1 VA demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 346,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase 2 VA demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 348,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase 3 VA demand",
+      "group": "Demand",
+      "area": "input",
+      "address": 350,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase 1 VA demand maximum",
+      "group": "Demand",
+      "area": "input",
+      "address": 352,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase 2 VA demand maximum",
+      "group": "Demand",
+      "area": "input",
+      "address": 354,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Phase 3 VA demand maximum",
+      "group": "Demand",
+      "area": "input",
+      "address": 356,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "Maximum average line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 358,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum average line to neutral voltage THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 360,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum average line current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 362,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Minimum average line current THD",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 364,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Maximum phase 1 phase angle",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 366,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Maximum phase 2 phase angle",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 368,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Maximum phase 3 phase angle",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 370,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Minimum phase 1 phase angle",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 372,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Minimum phase 2 phase angle",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 374,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Minimum phase 3 phase angle",
+      "group": "Maximum and minimum",
+      "area": "input",
+      "address": 376,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Time into the present demand period",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 0,
+      "type": "float32",
+      "access": "R",
+      "unit": "min"
+    },
+    {
+      "name": "Demand period",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 2,
+      "type": "float32",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "System voltage",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "System current",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8,
+      "type": "float32",
+      "access": "RW",
+      "unit": "A"
+    },
+    {
+      "name": "System type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 10,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Relay pulse width",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 12,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Password lock",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Network parity and stop bits",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Network node address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Pulse divisor",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Password",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Network baud rate code",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 28,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Energy units prefix",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 30,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Low power limit flag",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 32,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "System power",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "Network register order",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Input voltage range",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 58,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Input current range",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 60,
+      "type": "float32",
+      "access": "RW",
+      "unit": "A"
+    },
+    {
+      "name": "Relay 1 energy type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 86,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Reset logged data",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 216,
+      "type": "float32",
+      "access": "RW"
+    }
   ]
 }
