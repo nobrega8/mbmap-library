@@ -8,416 +8,173 @@
     "Flash D"
   ],
   "vendor_website": "electrex.it",
-  "revision": 3,
-  "revised": "2026-11-14",
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table electrex/flash-96; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/electrex-flash-96.htm. Not verified against the manufacturer's documentation; Modbus Database (Jibril Sharafi, MIT licence), table electrex/flash-d; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/electrex-flash-d.htm. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+  "description": "Electrex Flash 96 and Flash D multifunction energy analyzers: voltages, currents, powers, power factors, THD, demand, energy counters and setup registers",
+  "revision": 4,
+  "revised": "2026-11-15",
+  "source": "Flash D Electric Energy Analyzer User Manual (and Flash N Electric Energy Analyzer User Manual (file name Flash 96))",
+  "sources": [
+    {
+      "title": "Flash D Electric Energy Analyzer User Manual",
+      "version": "Version 8, November 2005 (84 pages), section 9 Modbus Protocol",
+      "url": "https://www.electrex.it/en/download/Manuals/User_manual_(extended)_Flash_D.pdf",
+      "note": "Register mapping 9.4 (holding 0 to 139, input 200 to 376, coils 64 to 70)",
+      "accessed": "2026-11-15",
+      "sha256": "b40e6f0b8d8ae6b331b116efe06ffb7f1fc2974ef26dd7e5663a37d8fd502176"
+    },
+    {
+      "title": "Flash N Electric Energy Analyzer User Manual (file name Flash 96)",
+      "version": "Version 8, November 2005, section 9 Modbus Protocol",
+      "url": "https://www.electrex.it/en/download/Manuals/User_manual_(extended)_Flash_96.pdf",
+      "note": "Same register mapping as the Flash D manual (the text of the holding and input register tables is identical)",
+      "accessed": "2026-11-15",
+      "sha256": "0b2a169dd8181df102cb24c376be20d0fe045335f2772b838cbc208e6a330290"
+    }
   ],
+  "notes": [
+    "Electrex Flash 96 and Flash D multifunction meters (the manuals are titled Flash N and Flash D).",
+    "Modbus RTU or ASCII (selected in the communication menu), slave address and transmission delay (default 100 ms) set on the meter; the speed is 2400 to 38400 bps, with data bits, parity and stop bits selectable. The manual gives no factory defaults for these, so no serial settings are fixed in this map. Needs the optional RS485 or RS232 module.",
+    "Addresses are the register numbers printed in the manual; they are written here as printed, address base 0. Holding registers 0 to 139 are the setup area, input registers 200 and up are the measurements (the manual's 'FLASH D original registers'), and coils 64 to 70 are the commands. A float or 32-bit value takes two registers and a 64-bit value four; the manual numbers each word.",
+    "Big-endian byte and word order is the default (Motorola-like); holding register 70 and the coils 64 and 65 swap it.",
+    "Several measurement registers change meaning with the wiring (3P4W, 3P3W and so on): the description of each register lists the wirings; the two readings of one register are given in its name and description.",
+    "Energy counters are unsigned 32-bit (two registers) or 64-bit (four registers, high resolution) integers in the manual's unit written 'kWh/10', 'Wh/10', etc.; the scale 0.1 reads this as one count = 0.1 of the unit. The manual does not state the signedness of the integers; unsigned is assumed.",
+    "The backward-compatibility input area (addresses 0 to 199, the Kilo layout), the old coils 0 to 18, and the parameter selection tables for the analog outputs and alarms (9.4.2) are not mapped; the analog out and alarm registers are listed, with the index tables left to the manual. Bitmapped registers are listed as 16-bit words with the bit meaning in the description.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {
-      "name": "Phase to neutral voltage, thd (200)",
-      "area": "holding",
-      "address": 200,
-      "type": "float32",
-      "unit": "%",
-      "access": "R"
-    },
-    {
-      "name": "Phase to neutral voltage, thd (202)",
-      "area": "holding",
-      "address": 202,
-      "type": "float32",
-      "unit": "%",
-      "access": "R"
-    },
-    {
-      "name": "Phase to neutral voltage, thd (204)",
-      "area": "holding",
-      "address": 204,
-      "type": "float32",
-      "unit": "%",
-      "access": "R"
-    },
-    {
-      "name": "Line current, thd (206)",
-      "area": "holding",
-      "address": 206,
-      "type": "float32",
-      "unit": "%",
-      "access": "R"
-    },
-    {
-      "name": "Line current, thd (208)",
-      "area": "holding",
-      "address": 208,
-      "type": "float32",
-      "unit": "%",
-      "access": "R"
-    },
-    {
-      "name": "Line current, thd (210)",
-      "area": "holding",
-      "address": 210,
-      "type": "float32",
-      "unit": "%",
-      "access": "R"
-    },
-    {
-      "name": "Voltage input frequency",
-      "area": "holding",
-      "address": 212,
-      "type": "float32",
-      "unit": "Hz",
-      "access": "R"
-    },
-    {
-      "name": "Phase to neutral voltage, rms amplitude (214)",
-      "area": "holding",
-      "address": 214,
-      "type": "float32",
-      "unit": "V",
-      "access": "R"
-    },
-    {
-      "name": "Phase to neutral voltage, rms amplitude (216)",
-      "area": "holding",
-      "address": 216,
-      "type": "float32",
-      "unit": "V",
-      "access": "R"
-    },
-    {
-      "name": "Phase to neutral voltage, rms amplitude (218)",
-      "area": "holding",
-      "address": 218,
-      "type": "float32",
-      "unit": "V",
-      "access": "R"
-    },
-    {
-      "name": "Phase to phase voltage, rms amplitude (220)",
-      "area": "holding",
-      "address": 220,
-      "type": "float32",
-      "unit": "V",
-      "access": "R"
-    },
-    {
-      "name": "Phase to phase voltage, rms amplitude (222)",
-      "area": "holding",
-      "address": 222,
-      "type": "float32",
-      "unit": "V",
-      "access": "R"
-    },
-    {
-      "name": "Phase to phase voltage, rms amplitude (224)",
-      "area": "holding",
-      "address": 224,
-      "type": "float32",
-      "unit": "V",
-      "access": "R"
-    },
-    {
-      "name": "Line current, rms amplitude (226)",
-      "area": "holding",
-      "address": 226,
-      "type": "float32",
-      "unit": "A",
-      "access": "R"
-    },
-    {
-      "name": "Line current, rms amplitude (228)",
-      "area": "holding",
-      "address": 228,
-      "type": "float32",
-      "unit": "A",
-      "access": "R"
-    },
-    {
-      "name": "Line current, rms amplitude (230)",
-      "area": "holding",
-      "address": 230,
-      "type": "float32",
-      "unit": "A",
-      "access": "R"
-    },
-    {
-      "name": "Neutral current, rms amplitude",
-      "area": "holding",
-      "address": 232,
-      "type": "float32",
-      "unit": "A",
-      "access": "R"
-    },
-    {
-      "name": "Phase active power (+/) (234)",
-      "area": "holding",
-      "address": 234,
-      "type": "float32",
-      "unit": "W",
-      "access": "R"
-    },
-    {
-      "name": "Phase active power (+/) (236)",
-      "area": "holding",
-      "address": 236,
-      "type": "float32",
-      "unit": "W",
-      "access": "R"
-    },
-    {
-      "name": "Phase active power (+/) (238)",
-      "area": "holding",
-      "address": 238,
-      "type": "float32",
-      "unit": "W",
-      "access": "R"
-    },
-    {
-      "name": "Phase reactive power (+/) (240)",
-      "area": "holding",
-      "address": 240,
-      "type": "float32",
-      "unit": "var",
-      "access": "R"
-    },
-    {
-      "name": "Phase reactive power (+/) (242)",
-      "area": "holding",
-      "address": 242,
-      "type": "float32",
-      "unit": "var",
-      "access": "R"
-    },
-    {
-      "name": "Phase reactive power (+/) (244)",
-      "area": "holding",
-      "address": 244,
-      "type": "float32",
-      "unit": "var",
-      "access": "R"
-    },
-    {
-      "name": "Phase apparent power (246)",
-      "area": "holding",
-      "address": 246,
-      "type": "float32",
-      "unit": "VA",
-      "access": "R"
-    },
-    {
-      "name": "Phase apparent power (248)",
-      "area": "holding",
-      "address": 248,
-      "type": "float32",
-      "unit": "VA",
-      "access": "R"
-    },
-    {
-      "name": "Phase apparent power (250)",
-      "area": "holding",
-      "address": 250,
-      "type": "float32",
-      "unit": "VA",
-      "access": "R"
-    },
-    {
-      "name": "Phase power factor (+/) (252)",
-      "area": "holding",
-      "address": 252,
-      "type": "float32",
-      "access": "R"
-    },
-    {
-      "name": "Phase power factor (+/) (254)",
-      "area": "holding",
-      "address": 254,
-      "type": "float32",
-      "access": "R"
-    },
-    {
-      "name": "Phase power factor (+/) (256)",
-      "area": "holding",
-      "address": 256,
-      "type": "float32",
-      "access": "R"
-    },
-    {
-      "name": "Phase voltage, mean thd",
-      "area": "holding",
-      "address": 258,
-      "type": "float32",
-      "unit": "%",
-      "access": "R"
-    },
-    {
-      "name": "Line current, mean thd",
-      "area": "holding",
-      "address": 260,
-      "type": "float32",
-      "unit": "%",
-      "access": "R"
-    },
-    {
-      "name": "Phase to neutral mean voltage, rms amplitude",
-      "area": "holding",
-      "address": 262,
-      "type": "float32",
-      "unit": "V",
-      "access": "R"
-    },
-    {
-      "name": "Phase to phase mean voltage, rms amplitude",
-      "area": "holding",
-      "address": 264,
-      "type": "float32",
-      "unit": "V",
-      "access": "R"
-    },
-    {
-      "name": "Three phase current, rms amplitude",
-      "area": "holding",
-      "address": 266,
-      "type": "float32",
-      "unit": "A",
-      "access": "R"
-    },
-    {
-      "name": "Total active power (+/)",
-      "area": "holding",
-      "address": 268,
-      "type": "float32",
-      "unit": "W",
-      "access": "R"
-    },
-    {
-      "name": "Total reactive power (+/)",
-      "area": "holding",
-      "address": 270,
-      "type": "float32",
-      "unit": "var",
-      "access": "R"
-    },
-    {
-      "name": "Total apparent power",
-      "area": "holding",
-      "address": 272,
-      "type": "float32",
-      "unit": "VA",
-      "access": "R"
-    },
-    {
-      "name": "Total power factor (+/)",
-      "area": "holding",
-      "address": 274,
-      "type": "float32",
-      "access": "R"
-    },
-    {
-      "name": "Total import active power, avg",
-      "area": "holding",
-      "address": 276,
-      "type": "float32",
-      "unit": "W",
-      "access": "R"
-    },
-    {
-      "name": "Total avg (278)",
-      "area": "holding",
-      "address": 278,
-      "type": "float32",
-      "access": "R",
-      "description": "unit: import"
-    },
-    {
-      "name": "Total import capacitive power, avg",
-      "area": "holding",
-      "address": 280,
-      "type": "float32",
-      "unit": "var",
-      "access": "R"
-    },
-    {
-      "name": "Total avg (282)",
-      "area": "holding",
-      "address": 282,
-      "type": "float32",
-      "access": "R",
-      "description": "unit: import"
-    },
-    {
-      "name": "Total export active power, avg",
-      "area": "holding",
-      "address": 284,
-      "type": "float32",
-      "unit": "W",
-      "access": "R"
-    },
-    {
-      "name": "Total avg (286)",
-      "area": "holding",
-      "address": 286,
-      "type": "float32",
-      "access": "R",
-      "description": "unit: export"
-    },
-    {
-      "name": "Total export capacitive power, avg",
-      "area": "holding",
-      "address": 288,
-      "type": "float32",
-      "unit": "var",
-      "access": "R"
-    },
-    {
-      "name": "Total avg (290)",
-      "area": "holding",
-      "address": 290,
-      "type": "float32",
-      "access": "R",
-      "description": "unit: export"
-    },
-    {
-      "name": "Total import active power, md",
-      "area": "holding",
-      "address": 292,
-      "type": "float32",
-      "unit": "W",
-      "access": "R"
-    },
-    {
-      "name": "Total md (294)",
-      "area": "holding",
-      "address": 294,
-      "type": "float32",
-      "access": "R",
-      "description": "unit: import"
-    },
-    {
-      "name": "Total import capacitive power, md",
-      "area": "holding",
-      "address": 296,
-      "type": "float32",
-      "unit": "var",
-      "access": "R"
-    },
-    {
-      "name": "Total md (298)",
-      "area": "holding",
-      "address": 298,
-      "type": "float32",
-      "access": "R",
-      "description": "unit: import"
-    }
-  ],
-  "description": "Electrex Flash 96 and Flash D multifunction meters"
+    {"name": "Voltage THD L1-N or L1-L2", "group": "Harmonics", "area": "input", "address": 200, "type": "float32", "access": "R", "unit": "%", "description": "Meaning depends on the wiring: phase to neutral voltage THD U1N (3P4W, 3P-b 4W, 1P2W) or phase to phase voltage THD U12 (3P3W, 3P-b 3W, 2P2W)"},
+    {"name": "Voltage THD L2-N or L2-L3", "group": "Harmonics", "area": "input", "address": 202, "type": "float32", "access": "R", "unit": "%", "description": "Meaning depends on the wiring: THD U2N (3P4W) or THD U23 (3P3W)"},
+    {"name": "Voltage THD L3-N or L3-L1", "group": "Harmonics", "area": "input", "address": 204, "type": "float32", "access": "R", "unit": "%", "description": "Meaning depends on the wiring: THD U3N (3P4W) or THD U31 (3P3W)"},
+    {"name": "Line current THD I1", "group": "Harmonics", "area": "input", "address": 206, "type": "float32", "access": "R", "unit": "%", "description": "3P4W, 3P3W, 3P-b 4W, 1P2W"},
+    {"name": "Line current THD I2", "group": "Harmonics", "area": "input", "address": 208, "type": "float32", "access": "R", "unit": "%", "description": "3P4W, 3P3W"},
+    {"name": "Line current THD I3", "group": "Harmonics", "area": "input", "address": 210, "type": "float32", "access": "R", "unit": "%", "description": "3P4W, 3P3W, 3P-b 3W"},
+    {"name": "Voltage input frequency", "group": "Measurements", "area": "input", "address": 212, "type": "float32", "access": "R", "unit": "Hz", "description": "Meaning depends on the wiring: f1N (3P4W, 3P-b 4W, 1P2W) or f12 (3P3W, 3P-b 3W, 2P2W)"},
+    {"name": "Phase to neutral voltage RMS U1N", "group": "Measurements", "area": "input", "address": 214, "type": "float32", "access": "R", "unit": "V", "description": "3P4W, 3P-b 4W, 1P2W"},
+    {"name": "Phase to neutral voltage RMS U2N", "group": "Measurements", "area": "input", "address": 216, "type": "float32", "access": "R", "unit": "V", "description": "3P4W"},
+    {"name": "Phase to neutral voltage RMS U3N", "group": "Measurements", "area": "input", "address": 218, "type": "float32", "access": "R", "unit": "V", "description": "3P4W"},
+    {"name": "Phase to phase voltage RMS U12", "group": "Measurements", "area": "input", "address": 220, "type": "float32", "access": "R", "unit": "V", "description": "3P4W, 3P3W, 3P-b 3W, 2P2W"},
+    {"name": "Phase to phase voltage RMS U23", "group": "Measurements", "area": "input", "address": 222, "type": "float32", "access": "R", "unit": "V", "description": "3P4W, 3P3W"},
+    {"name": "Phase to phase voltage RMS U31", "group": "Measurements", "area": "input", "address": 224, "type": "float32", "access": "R", "unit": "V", "description": "3P4W, 3P3W"},
+    {"name": "Line current RMS I1", "group": "Measurements", "area": "input", "address": 226, "type": "float32", "access": "R", "unit": "A", "description": "3P4W, 3P3W, 3P-b 4W, 1P2W"},
+    {"name": "Line current RMS I2", "group": "Measurements", "area": "input", "address": 228, "type": "float32", "access": "R", "unit": "A", "description": "3P4W, 3P3W"},
+    {"name": "Line current RMS I3", "group": "Measurements", "area": "input", "address": 230, "type": "float32", "access": "R", "unit": "A", "description": "3P4W, 3P3W, 3P-b 3W"},
+    {"name": "Neutral current RMS IN", "group": "Measurements", "area": "input", "address": 232, "type": "float32", "access": "R", "unit": "A", "description": "3P4W"},
+    {"name": "Phase active power P1 (import/export)", "group": "Measurements", "area": "input", "address": 234, "type": "float32", "access": "R", "unit": "W", "description": "3P4W, 3P-b 4W, 1P2W"},
+    {"name": "Phase active power P2 (import/export)", "group": "Measurements", "area": "input", "address": 236, "type": "float32", "access": "R", "unit": "W", "description": "3P4W"},
+    {"name": "Phase active power P3 (import/export)", "group": "Measurements", "area": "input", "address": 238, "type": "float32", "access": "R", "unit": "W", "description": "3P4W"},
+    {"name": "Phase reactive power Q1 (import/export)", "group": "Measurements", "area": "input", "address": 240, "type": "float32", "access": "R", "unit": "var", "description": "3P4W, 3P-b 4W, 1P2W"},
+    {"name": "Phase reactive power Q2 (import/export)", "group": "Measurements", "area": "input", "address": 242, "type": "float32", "access": "R", "unit": "var", "description": "3P4W"},
+    {"name": "Phase reactive power Q3 (import/export)", "group": "Measurements", "area": "input", "address": 244, "type": "float32", "access": "R", "unit": "var", "description": "3P4W"},
+    {"name": "Phase apparent power S1", "group": "Measurements", "area": "input", "address": 246, "type": "float32", "access": "R", "unit": "VA", "description": "3P4W, 3P-b 4W, 1P2W"},
+    {"name": "Phase apparent power S2", "group": "Measurements", "area": "input", "address": 248, "type": "float32", "access": "R", "unit": "VA", "description": "3P4W"},
+    {"name": "Phase apparent power S3", "group": "Measurements", "area": "input", "address": 250, "type": "float32", "access": "R", "unit": "VA", "description": "3P4W"},
+    {"name": "Phase power factor PF1 (import/export)", "group": "Measurements", "area": "input", "address": 252, "type": "float32", "access": "R", "description": "3P4W, 3P-b 4W, 1P2W"},
+    {"name": "Phase power factor PF2 (import/export)", "group": "Measurements", "area": "input", "address": 254, "type": "float32", "access": "R", "description": "3P4W"},
+    {"name": "Phase power factor PF3 (import/export)", "group": "Measurements", "area": "input", "address": 256, "type": "float32", "access": "R", "description": "3P4W"},
+    {"name": "Mean voltage THD", "group": "Harmonics", "area": "input", "address": 258, "type": "float32", "access": "R", "unit": "%", "description": "Meaning depends on the wiring: 3P4W (star mean) or 3P3W (delta mean)"},
+    {"name": "Mean line current THD", "group": "Harmonics", "area": "input", "address": 260, "type": "float32", "access": "R", "unit": "%", "description": "3P4W, 3P3W"},
+    {"name": "Mean phase to neutral voltage RMS", "group": "Measurements", "area": "input", "address": 262, "type": "float32", "access": "R", "unit": "V", "description": "3P4W"},
+    {"name": "Mean phase to phase voltage RMS", "group": "Measurements", "area": "input", "address": 264, "type": "float32", "access": "R", "unit": "V", "description": "3P4W, 3P3W"},
+    {"name": "Three-phase mean current RMS", "group": "Measurements", "area": "input", "address": 266, "type": "float32", "access": "R", "unit": "A", "description": "3P4W, 3P3W"},
+    {"name": "Total active power (import/export)", "group": "Measurements", "area": "input", "address": 268, "type": "float32", "access": "R", "unit": "W", "description": "All wirings"},
+    {"name": "Total reactive power (import/export)", "group": "Measurements", "area": "input", "address": 270, "type": "float32", "access": "R", "unit": "var", "description": "All wirings"},
+    {"name": "Total apparent power", "group": "Measurements", "area": "input", "address": 272, "type": "float32", "access": "R", "unit": "VA", "description": "All wirings"},
+    {"name": "Total power factor (import/export)", "group": "Measurements", "area": "input", "address": 274, "type": "float32", "access": "R", "description": "All wirings"},
+    {"name": "Total import active power, average", "group": "Demand", "area": "input", "address": 276, "type": "float32", "access": "R", "unit": "W", "description": "All wirings"},
+    {"name": "Total import inductive power, average", "group": "Demand", "area": "input", "address": 278, "type": "float32", "access": "R", "unit": "var", "description": "All wirings"},
+    {"name": "Total import capacitive power, average", "group": "Demand", "area": "input", "address": 280, "type": "float32", "access": "R", "unit": "var", "description": "All wirings"},
+    {"name": "Total import apparent power, average", "group": "Demand", "area": "input", "address": 282, "type": "float32", "access": "R", "unit": "VA", "description": "All wirings"},
+    {"name": "Total export active power, average", "group": "Demand", "area": "input", "address": 284, "type": "float32", "access": "R", "unit": "W", "description": "Import/export configuration only. All wirings"},
+    {"name": "Total export inductive power, average", "group": "Demand", "area": "input", "address": 286, "type": "float32", "access": "R", "unit": "var", "description": "Import/export configuration only. All wirings"},
+    {"name": "Total export capacitive power, average", "group": "Demand", "area": "input", "address": 288, "type": "float32", "access": "R", "unit": "var", "description": "Import/export configuration only. All wirings"},
+    {"name": "Total export apparent power, average", "group": "Demand", "area": "input", "address": 290, "type": "float32", "access": "R", "unit": "VA", "description": "Import/export configuration only. All wirings"},
+    {"name": "Total import active power, maximum demand", "group": "Demand", "area": "input", "address": 292, "type": "float32", "access": "R", "unit": "W", "description": "All wirings"},
+    {"name": "Total import inductive power, maximum demand", "group": "Demand", "area": "input", "address": 294, "type": "float32", "access": "R", "unit": "var", "description": "All wirings"},
+    {"name": "Total import capacitive power, maximum demand", "group": "Demand", "area": "input", "address": 296, "type": "float32", "access": "R", "unit": "var", "description": "All wirings"},
+    {"name": "Total import apparent power, maximum demand", "group": "Demand", "area": "input", "address": 298, "type": "float32", "access": "R", "unit": "VA", "description": "All wirings"},
+    {"name": "Total export active power, maximum demand", "group": "Demand", "area": "input", "address": 300, "type": "float32", "access": "R", "unit": "W", "description": "Import/export configuration only. All wirings"},
+    {"name": "Total export inductive power, maximum demand", "group": "Demand", "area": "input", "address": 302, "type": "float32", "access": "R", "unit": "var", "description": "Import/export configuration only. All wirings"},
+    {"name": "Total export capacitive power, maximum demand", "group": "Demand", "area": "input", "address": 304, "type": "float32", "access": "R", "unit": "var", "description": "Import/export configuration only. All wirings"},
+    {"name": "Total export apparent power, maximum demand", "group": "Demand", "area": "input", "address": 306, "type": "float32", "access": "R", "unit": "VA", "description": "Import/export configuration only. All wirings"},
+    {"name": "Hold counters, elapsed time of the interval in progress", "group": "Energy", "area": "input", "address": 308, "type": "uint16", "access": "R", "unit": "s"},
+    {"name": "Hold counters, duration of the last expired interval", "group": "Energy", "area": "input", "address": 309, "type": "uint16", "access": "R", "unit": "s"},
+    {"name": "Hold counters, ID of the last expired interval", "group": "Energy", "area": "input", "address": 310, "type": "uint16", "access": "R"},
+    {"name": "Hold counter, Import active energy", "group": "Energy", "area": "input", "address": 311, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kWh", "description": "All wirings"},
+    {"name": "Hold counter, Import inductive energy", "group": "Energy", "area": "input", "address": 313, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kvarh", "description": "All wirings"},
+    {"name": "Hold counter, Import capacitive energy", "group": "Energy", "area": "input", "address": 315, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kvarh", "description": "All wirings"},
+    {"name": "Hold counter, Import apparent energy", "group": "Energy", "area": "input", "address": 317, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kVAh", "description": "All wirings"},
+    {"name": "Hold counter, Export active energy", "group": "Energy", "area": "input", "address": 319, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kWh", "description": "Import/export configuration only. All wirings"},
+    {"name": "Hold counter, Export inductive energy", "group": "Energy", "area": "input", "address": 321, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kvarh", "description": "Import/export configuration only. All wirings"},
+    {"name": "Hold counter, Export capacitive energy", "group": "Energy", "area": "input", "address": 323, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kvarh", "description": "Import/export configuration only. All wirings"},
+    {"name": "Hold counter, Export apparent energy", "group": "Energy", "area": "input", "address": 325, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kVAh", "description": "Import/export configuration only. All wirings"},
+    {"name": "Import active energy", "group": "Energy", "area": "input", "address": 327, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kWh", "description": "All wirings"},
+    {"name": "Import inductive energy", "group": "Energy", "area": "input", "address": 329, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kvarh", "description": "All wirings"},
+    {"name": "Import capacitive energy", "group": "Energy", "area": "input", "address": 331, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kvarh", "description": "All wirings"},
+    {"name": "Import apparent energy", "group": "Energy", "area": "input", "address": 333, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kVAh", "description": "All wirings"},
+    {"name": "Export active energy", "group": "Energy", "area": "input", "address": 335, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kWh", "description": "Import/export configuration only. All wirings"},
+    {"name": "Export inductive energy", "group": "Energy", "area": "input", "address": 337, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kvarh", "description": "Import/export configuration only. All wirings"},
+    {"name": "Export capacitive energy", "group": "Energy", "area": "input", "address": 339, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kvarh", "description": "Import/export configuration only. All wirings"},
+    {"name": "Export apparent energy", "group": "Energy", "area": "input", "address": 341, "type": "uint32", "access": "R", "scale": 0.1, "unit": "kVAh", "description": "Import/export configuration only. All wirings"},
+    {"name": "Life timer", "group": "Energy", "area": "input", "address": 343, "type": "uint32", "access": "R", "unit": "s"},
+    {"name": "High resolution Import active energy", "group": "Energy", "area": "input", "address": 345, "type": "uint64", "access": "R", "scale": 0.1, "unit": "Wh", "description": "All wirings"},
+    {"name": "High resolution Import inductive energy", "group": "Energy", "area": "input", "address": 349, "type": "uint64", "access": "R", "scale": 0.1, "unit": "varh", "description": "All wirings"},
+    {"name": "High resolution Import capacitive energy", "group": "Energy", "area": "input", "address": 353, "type": "uint64", "access": "R", "scale": 0.1, "unit": "varh", "description": "All wirings"},
+    {"name": "High resolution Import apparent energy", "group": "Energy", "area": "input", "address": 357, "type": "uint64", "access": "R", "scale": 0.1, "unit": "VAh", "description": "All wirings"},
+    {"name": "High resolution Export active energy", "group": "Energy", "area": "input", "address": 361, "type": "uint64", "access": "R", "scale": 0.1, "unit": "Wh", "description": "Import/export configuration only. All wirings"},
+    {"name": "High resolution Export inductive energy", "group": "Energy", "area": "input", "address": 365, "type": "uint64", "access": "R", "scale": 0.1, "unit": "varh", "description": "Import/export configuration only. All wirings"},
+    {"name": "High resolution Export capacitive energy", "group": "Energy", "area": "input", "address": 369, "type": "uint64", "access": "R", "scale": 0.1, "unit": "varh", "description": "Import/export configuration only. All wirings"},
+    {"name": "High resolution Export apparent energy", "group": "Energy", "area": "input", "address": 373, "type": "uint64", "access": "R", "scale": 0.1, "unit": "VAh", "description": "Import/export configuration only. All wirings"},
+    {"name": "CT ratio", "group": "Configuration", "area": "holding", "address": 0, "type": "uint16", "access": "RW", "unit": "A/A", "description": "1 to 9999 (backward compatible register)"},
+    {"name": "VT ratio", "group": "Configuration", "area": "holding", "address": 1, "type": "uint16", "access": "RW", "unit": "V/V", "description": "1 to 9999 (backward compatible register)"},
+    {"name": "Average integration time", "group": "Configuration", "area": "holding", "address": 2, "type": "uint16", "access": "RW", "unit": "min", "description": "1 to 60 (backward compatible register)"},
+    {"name": "Digital outputs watchdog", "group": "Configuration", "area": "holding", "address": 7, "type": "uint16", "access": "RW", "unit": "min", "description": "0 to 65535; 0 = watchdog disabled"},
+    {"name": "Bytes/words swap", "group": "Configuration", "area": "holding", "address": 70, "type": "uint16", "access": "RW", "description": "Bitmap: swap bytes (0 standard, 1 swapped), swap words, swap doublewords, swap words in float values; standard is Motorola-like (big endian), swapped is Intel-like. Write the same bit combination in both the low and the high part of the register; the byte swap setting is then meaningless for this register."},
+    {"name": "Tx delay time", "group": "Configuration", "area": "holding", "address": 71, "type": "uint16", "access": "RW", "unit": "s/100", "description": "0 to 100"},
+    {"name": "Network type (4 or 3 wires, import/export)", "group": "Configuration", "area": "holding", "address": 72, "type": "uint16", "access": "RW", "description": "Bitmap: network type 0 = 4 wires (star), 1 = 3 wires (delta); import/export 0 = export disabled (2 quadrants), 1 = export enabled (4 quadrants)"},
+    {"name": "CT primary", "group": "Configuration", "area": "holding", "address": 73, "type": "uint16", "access": "RW", "unit": "A", "description": "1 to 10000"},
+    {"name": "CT secondary", "group": "Configuration", "area": "holding", "address": 74, "type": "uint16", "access": "RW", "unit": "A", "description": "1 or 5"},
+    {"name": "VT primary", "group": "Configuration", "area": "holding", "address": 75, "type": "uint32", "access": "RW", "unit": "V", "description": "1 to 400000"},
+    {"name": "VT secondary", "group": "Configuration", "area": "holding", "address": 77, "type": "uint16", "access": "RW", "unit": "V", "description": "1 to 999"},
+    {"name": "Average/maximum demand integration time", "group": "Configuration", "area": "holding", "address": 78, "type": "uint16", "access": "RW", "unit": "min", "description": "1 to 60"},
+    {"name": "Counters hold time", "group": "Configuration", "area": "holding", "address": 79, "type": "uint16", "access": "RW", "unit": "min", "description": "1 to 60"},
+    {"name": "Analog output 1 quantity index", "group": "Configuration", "area": "holding", "address": 80, "type": "uint16", "access": "RW", "description": "Main index and sub index, see the parameter selection tables of the manual (section 9.4.2). Reading or writing causes an exception response if the 4-20 mA option is not fitted."},
+    {"name": "Analog output 1 mode", "group": "Configuration", "area": "holding", "address": 81, "type": "uint16", "access": "RW", "description": "Exception response if the 4-20 mA option is not fitted."},
+    {"name": "Analog output 1 scale begin value", "group": "Configuration", "area": "holding", "address": 82, "type": "float32", "access": "RW", "description": "Exception response if the 4-20 mA option is not fitted."},
+    {"name": "Analog output 1 scale end value", "group": "Configuration", "area": "holding", "address": 84, "type": "float32", "access": "RW", "description": "Exception response if the 4-20 mA option is not fitted."},
+    {"name": "Analog output 2 quantity index", "group": "Configuration", "area": "holding", "address": 86, "type": "uint16", "access": "RW", "description": "Main index and sub index, see the parameter selection tables of the manual (section 9.4.2). Exception response if the 4-20 mA option is not fitted."},
+    {"name": "Analog output 2 mode", "group": "Configuration", "area": "holding", "address": 87, "type": "uint16", "access": "RW", "description": "Exception response if the 4-20 mA option is not fitted."},
+    {"name": "Analog output 2 scale begin value", "group": "Configuration", "area": "holding", "address": 88, "type": "float32", "access": "RW", "description": "Exception response if the 4-20 mA option is not fitted."},
+    {"name": "Analog output 2 scale end value", "group": "Configuration", "area": "holding", "address": 90, "type": "float32", "access": "RW", "description": "Exception response if the 4-20 mA option is not fitted."},
+    {"name": "Digital output 1 configuration (alarm mode)", "group": "Configuration", "area": "holding", "address": 92, "type": "uint16", "access": "RW", "description": "Bitmap: mode 00 = pulse, 01 = alarm, 10 = remote, 11 = not allowed; polarity 0 = normally open, 1 = normally closed"},
+    {"name": "Digital output 2 configuration (alarm mode)", "group": "Configuration", "area": "holding", "address": 93, "type": "uint16", "access": "RW", "description": "Bitmap: mode 00 = pulse, 01 = alarm, 10 = remote, 11 = not allowed; polarity 0 = normally open, 1 = normally closed"},
+    {"name": "Digital outputs watchdog (alarm area)", "group": "Configuration", "area": "holding", "address": 94, "type": "uint16", "access": "RW", "unit": "min", "description": "0 to 65535; 0 = watchdog disabled"},
+    {"name": "Alarm 1 quantity index", "group": "Configuration", "area": "holding", "address": 95, "type": "uint16", "access": "RW", "description": "Main index and sub index, see the parameter selection tables of the manual (section 9.4.2)"},
+    {"name": "Alarm 1 mode", "group": "Configuration", "area": "holding", "address": 96, "type": "uint16", "access": "RW", "description": "Bitmap: alarm coil driving mode 00 = normal, 01 = pulsed; alarm type 0 = minimum, 1 = maximum"},
+    {"name": "Alarm 1 threshold", "group": "Configuration", "area": "holding", "address": 97, "type": "float32", "access": "RW"},
+    {"name": "Alarm 1 hysteresis", "group": "Configuration", "area": "holding", "address": 99, "type": "uint16", "access": "RW", "unit": "%", "description": "0 to 99"},
+    {"name": "Alarm 1 latency", "group": "Configuration", "area": "holding", "address": 100, "type": "uint16", "access": "RW", "unit": "s", "description": "1 to 99"},
+    {"name": "Alarm 2 quantity index", "group": "Configuration", "area": "holding", "address": 101, "type": "uint16", "access": "RW", "description": "Main index and sub index, see the parameter selection tables of the manual (section 9.4.2)"},
+    {"name": "Alarm 2 mode", "group": "Configuration", "area": "holding", "address": 102, "type": "uint16", "access": "RW", "description": "Bitmap: alarm coil driving mode 00 = normal, 01 = pulsed; alarm type 0 = minimum, 1 = maximum"},
+    {"name": "Alarm 2 threshold", "group": "Configuration", "area": "holding", "address": 103, "type": "float32", "access": "RW"},
+    {"name": "Alarm 2 hysteresis", "group": "Configuration", "area": "holding", "address": 105, "type": "uint16", "access": "RW", "unit": "%", "description": "0 to 99"},
+    {"name": "Alarm 2 latency", "group": "Configuration", "area": "holding", "address": 106, "type": "uint16", "access": "RW", "unit": "s", "description": "1 to 99"},
+    {"name": "Network type (extended)", "group": "Configuration", "area": "holding", "address": 119, "type": "uint16", "access": "RW", "description": "0 = 1P 2W, 1 = 2P 2W, 2 = 3P 4W, 3 = 3P 3W, 4 = 3P-b 4W, 5 = 3P-b 3W; the same register also holds the import/export flag (0 = export disabled, 2 quadrants; 1 = export enabled, 4 quadrants)"},
+    {"name": "Pulse output 1 quantity selection", "group": "Configuration", "area": "holding", "address": 120, "type": "uint16", "access": "RW", "description": "Bitmap: measurement scaling 0 = primary side of CT/VT, 1 = secondary side; measurement selection 0 to 7 = P+, P-, Qind+, Qcap+, Qind-, Qcap-, S+, S-"},
+    {"name": "Pulse output 1 weight and duration", "group": "Configuration", "area": "holding", "address": 121, "type": "uint16", "access": "RW", "description": "Pulse weight 0 to 7 (weight = 10^(n-1) Wh); pulse width 5 to 90 (ms * 10)"},
+    {"name": "Pulse output 2 quantity selection", "group": "Configuration", "area": "holding", "address": 122, "type": "uint16", "access": "RW", "description": "Bitmap: measurement scaling 0 = primary side of CT/VT, 1 = secondary side; measurement selection 0 to 7 = P+, P-, Qind+, Qcap+, Qind-, Qcap-, S+, S-"},
+    {"name": "Pulse output 2 weight and duration", "group": "Configuration", "area": "holding", "address": 123, "type": "uint16", "access": "RW", "description": "Pulse weight 0 to 7 (weight = 10^(n-1) Wh); pulse width 5 to 90 (ms * 10)"},
+    {"name": "Digital output 1 configuration (pulse set up)", "group": "Configuration", "area": "holding", "address": 128, "type": "uint16", "access": "RW", "description": "Bitmap: mode 00 = pulse, 01 = alarm, 10 = remote, 11 = tariff; polarity 0 = normally open, 1 = normally closed"},
+    {"name": "Digital output 2 configuration (pulse set up)", "group": "Configuration", "area": "holding", "address": 129, "type": "uint16", "access": "RW", "description": "Bitmap: mode 00 = pulse, 01 = alarm, 10 = remote, 11 = tariff; polarity 0 = normally open, 1 = normally closed"},
+    {"name": "Swap bytes", "group": "Commands", "area": "coil", "address": 64, "type": "bool", "access": "RW", "description": "Data format control in memory; 1 inverts the byte order relative to the Modbus standard (Motorola-like)"},
+    {"name": "Swap words", "group": "Commands", "area": "coil", "address": 65, "type": "bool", "access": "RW", "description": "Data format control in memory; 1 inverts the word order relative to the Modbus standard (Motorola-like)"},
+    {"name": "Reset (warm boot)", "group": "Commands", "area": "coil", "address": 66, "type": "bool", "access": "RW", "description": "Reinitialize the device, the counters are not reset. Triggered on the leading edge; reads always 1."},
+    {"name": "Clear energy counters", "group": "Commands", "area": "coil", "address": 67, "type": "bool", "access": "RW", "description": "Reset all the energy counters. Triggered on the leading edge; reads always 1."},
+    {"name": "Power integration synchronization", "group": "Commands", "area": "coil", "address": 68, "type": "bool", "access": "RW", "description": "Synchronize the integration time. Triggered on the leading edge; reads always 1."},
+    {"name": "Clear average powers", "group": "Commands", "area": "coil", "address": 69, "type": "bool", "access": "RW", "description": "Reset all the power values in moving average. Triggered on the leading edge; reads always 1."},
+    {"name": "Clear maximum demand powers", "group": "Commands", "area": "coil", "address": 70, "type": "bool", "access": "RW", "description": "Reset all the power peak values. Triggered on the leading edge; reads always 1."}
+  ]
 }
