@@ -3,71 +3,1070 @@
   "mbmap": 2,
   "vendor": "Elspec",
   "model": "EQC ACR",
-  "models": ["EQC ACR"],
+  "models": [
+    "EQC ACR"
+  ],
   "vendor_website": "elspec-ltd.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table elspec/eqc-acr; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/elspec-eqc-acr.htm. Not verified against the manufacturer's documentation",
+  "revision": 3,
+  "revised": "2026-11-15",
+  "source": "Elspec, EQ-ACR (EQ-Activar) 3-Phase Balanced System User Manual V22, document SMX-0609-0101, January 2026, section Native Serial Modbus (tables 12 to 14)",
+  "sources": [
+    {
+      "title": "EQ-ACR 3 Phase Balanced System User Manual (EQ- Activar, V22)",
+      "version": "V22, SMX-0609-0101, January 2026",
+      "url": "https://www.elspec-ltd.com/download/eq-acr-3-phase-balanced-system-user-manual/",
+      "note": "Native serial Modbus chapter: status and control variables, status bits and parameter addresses (tables 12 to 14).",
+      "accessed": "2026-11-15",
+      "sha256": "333084d10a5eef074eb2628c8ba3b5e3980940e98fd5997938c1f1e48272b2ab"
+    }
+  ],
   "notes": [
-    "Elspec EQC ACR.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+    "Read-only native serial Modbus RTU: 8 data bits, no parity, 1 stop bit; the baud rate is detected automatically between 9600 and 115200 bps and the slave ID (1 to 32) is set from the front panel.",
+    "The manual says all parameters are 4x registers, read with function 3 (offset 40000) or function 4 (offset 30000). They are listed here as holding registers (function 3). Addresses are the PLC addresses of the manual, address base 1 (subtract 1 for the wire address); hexadecimal addresses are written as printed.",
+    "All values are IEEE 754 single-precision floats in real units (volts, amperes) in the standard Modbus byte order; the manual says the byte order may have to be changed in some applications, so big-endian is assumed. The system status register is a 16-bit value.",
+    "Names are decoded from the manual's identifiers (r, s, t = L1, L2, L3; rs, st, tr = L12, L23, L31; 1 = mains, 2 = capacitor system, 3 = load centre); the manual's own identifier is in each description. Units are only given where the manual states them (volts, amperes, kW and kVAr for the 15-minute and monthly values); the manual gives none for the power, power factor and THD values.",
+    "Only the first harmonic of each series is listed (the manual lists VrH1 to It3H1); the following harmonics are at consecutive addresses in steps of 2, e.g. the 2nd harmonic of VrH1 is at 0x0303. The number of harmonics is not stated. The Fault parameter (0x2101) is left out because its format is not stated. The 15-minute and monthly table is available from firmware 4.0.3 or 5.0.3.",
+    "Written from the manufacturer's manual; not tested on a device."
   ],
   "byte_order": "big",
   "word_order": "big",
-  "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "address_base": 1,
+  "x_status": "official",
   "registers": [
-    {"name": "Voltage L2", "area": "holding", "address": 2, "type": "float32", "access": "R"},
-    {"name": "Voltage L3", "area": "holding", "address": 4, "type": "float32", "access": "R"},
-    {"name": "Voltage (6)", "area": "holding", "address": 6, "type": "float32", "access": "R"},
-    {"name": "Voltage L12", "area": "holding", "address": 8, "type": "float32", "access": "R"},
-    {"name": "Voltage L23", "area": "holding", "address": 10, "type": "float32", "access": "R"},
-    {"name": "Voltage L31", "area": "holding", "address": 12, "type": "float32", "access": "R"},
-    {"name": "Voltage (14)", "area": "holding", "address": 14, "type": "float32", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 16, "type": "float32", "access": "R"},
-    {"name": "Current L1 (mains)", "area": "holding", "address": 20, "type": "float32", "access": "R"},
-    {"name": "Current L2 (mains)", "area": "holding", "address": 22, "type": "float32", "access": "R"},
-    {"name": "Current L3 (mains)", "area": "holding", "address": 24, "type": "float32", "access": "R"},
-    {"name": "Current (mains)", "area": "holding", "address": 26, "type": "float32", "access": "R"},
-    {"name": "Current L1 (caps)", "area": "holding", "address": 28, "type": "float32", "access": "R"},
-    {"name": "Current L2 (caps)", "area": "holding", "address": 30, "type": "float32", "access": "R"},
-    {"name": "Current L3 (caps)", "area": "holding", "address": 32, "type": "float32", "access": "R"},
-    {"name": "Current (caps)", "area": "holding", "address": 34, "type": "float32", "access": "R"},
-    {"name": "Current L1 (load)", "area": "holding", "address": 36, "type": "float32", "access": "R"},
-    {"name": "Current L2 (load)", "area": "holding", "address": 38, "type": "float32", "access": "R"},
-    {"name": "Current L3 (load)", "area": "holding", "address": 40, "type": "float32", "access": "R"},
-    {"name": "Current (load)", "area": "holding", "address": 42, "type": "float32", "access": "R"},
-    {"name": "Active power L1 (mains)", "area": "holding", "address": 50, "type": "float32", "access": "R"},
-    {"name": "Active power L2 (mains)", "area": "holding", "address": 52, "type": "float32", "access": "R"},
-    {"name": "Active power L3 (mains) (54)", "area": "holding", "address": 54, "type": "float32", "access": "R"},
-    {"name": "Active power L3 (mains) (56)", "area": "holding", "address": 56, "type": "float32", "access": "R"},
-    {"name": "Reactive power L1 (mains)", "area": "holding", "address": 58, "type": "float32", "access": "R"},
-    {"name": "Reactive power L2 (mains)", "area": "holding", "address": 60, "type": "float32", "access": "R"},
-    {"name": "Reactive power L3 (mains) (62)", "area": "holding", "address": 62, "type": "float32", "access": "R"},
-    {"name": "Reactive power L3 (mains) (64)", "area": "holding", "address": 64, "type": "float32", "access": "R"},
-    {"name": "Apparent power L1 (mains)", "area": "holding", "address": 66, "type": "float32", "access": "R"},
-    {"name": "Apparent power L2 (mains)", "area": "holding", "address": 68, "type": "float32", "access": "R"},
-    {"name": "Apparent power L3 (mains) (70)", "area": "holding", "address": 70, "type": "float32", "access": "R"},
-    {"name": "Apparent power L3 (mains) (72)", "area": "holding", "address": 72, "type": "float32", "access": "R"},
-    {"name": "Reactive power L1 (caps)", "area": "holding", "address": 88, "type": "float32", "access": "R"},
-    {"name": "Reactive power L2 (caps)", "area": "holding", "address": 90, "type": "float32", "access": "R"},
-    {"name": "Reactive power L3 (caps) (92)", "area": "holding", "address": 92, "type": "float32", "access": "R"},
-    {"name": "Reactive power L3 (caps) (94)", "area": "holding", "address": 94, "type": "float32", "access": "R"},
-    {"name": "Active power L1 (load)", "area": "holding", "address": 110, "type": "float32", "access": "R"},
-    {"name": "Active power L2 (load)", "area": "holding", "address": 112, "type": "float32", "access": "R"},
-    {"name": "Active power L3 (load) (114)", "area": "holding", "address": 114, "type": "float32", "access": "R"},
-    {"name": "Active power L3 (load) (116)", "area": "holding", "address": 116, "type": "float32", "access": "R"},
-    {"name": "Reactive power L1 (load)", "area": "holding", "address": 118, "type": "float32", "access": "R"},
-    {"name": "Reactive power L2 (load)", "area": "holding", "address": 120, "type": "float32", "access": "R"},
-    {"name": "Reactive power L3 (load) (122)", "area": "holding", "address": 122, "type": "float32", "access": "R"},
-    {"name": "Reactive power L3 (load) (124)", "area": "holding", "address": 124, "type": "float32", "access": "R"},
-    {"name": "Apparent power L1 (load)", "area": "holding", "address": 126, "type": "float32", "access": "R"},
-    {"name": "Apparent power L2 (load)", "area": "holding", "address": 128, "type": "float32", "access": "R"},
-    {"name": "Apparent power L3 (load) (130)", "area": "holding", "address": 130, "type": "float32", "access": "R"},
-    {"name": "Apparent power L3 (load) (132)", "area": "holding", "address": 132, "type": "float32", "access": "R"},
-    {"name": "Power factor (mains)", "area": "holding", "address": 140, "type": "float32", "access": "R"},
-    {"name": "Fault", "area": "holding", "address": 8448, "type": "float32", "access": "R"}
+    {
+      "name": "System status",
+      "group": "Status",
+      "area": "holding",
+      "address": "0x2AB4",
+      "type": "uint16",
+      "access": "R",
+      "description": "0 = system OK. Bit 0 operation mode (0 auto, 1 manual); bit 1 stand-by (0 running, 1 stop); bit 2 installation (0 completed, 1 not yet); bit 3 test (1 in progress); bit 4 faults (1 some general faults); bit 5 inhibiting signal (1 activated); bit 6 cooling mode (1 activated); bits 7-15 reserved."
+    },
+    {
+      "name": "Apparent power L2 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 69,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Ss1RMS"
+    },
+    {
+      "name": "THD current L1 mains",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 221,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIr1"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 17,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz",
+      "description": "Manual parameter Frequency"
+    },
+    {
+      "name": "Apparent power L3 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 71,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter St1RMS"
+    },
+    {
+      "name": "THD current L2 mains",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 223,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIs1"
+    },
+    {
+      "name": "Voltage L1 RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VrRMS"
+    },
+    {
+      "name": "Apparent power total mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 73,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Stot1RMS"
+    },
+    {
+      "name": "THD current L3 mains",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 225,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIt1"
+    },
+    {
+      "name": "Voltage L2 RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 3,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VsRMS"
+    },
+    {
+      "name": "Reactive power L1 capacitor system RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 89,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qr2RMS"
+    },
+    {
+      "name": "THD current mains maximum",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 227,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDI1_max"
+    },
+    {
+      "name": "Voltage L3 RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 5,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VtRMS"
+    },
+    {
+      "name": "Reactive power L2 capacitor system RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 91,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qs2RMS"
+    },
+    {
+      "name": "THD current L1 capacitor system",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 231,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIr2"
+    },
+    {
+      "name": "Voltage average RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 7,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VavgRMS"
+    },
+    {
+      "name": "Reactive power L3 capacitor system RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 93,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qt2RMS"
+    },
+    {
+      "name": "THD current L2 capacitor system",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 233,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIs2"
+    },
+    {
+      "name": "Voltage L12 RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 9,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VrsRMS"
+    },
+    {
+      "name": "Reactive power total capacitor system RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 95,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qtot2RMS"
+    },
+    {
+      "name": "THD current L3 capacitor system",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 235,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIt2"
+    },
+    {
+      "name": "Voltage L23 RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 11,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VstRMS"
+    },
+    {
+      "name": "Active power L1 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 111,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Pr3RMS"
+    },
+    {
+      "name": "THD current capacitor system maximum",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 237,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDI2_max"
+    },
+    {
+      "name": "Voltage L31 RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 13,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VtrRMS"
+    },
+    {
+      "name": "Active power L2 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 113,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Ps3RMS"
+    },
+    {
+      "name": "THD current L1 load centre",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 239,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIr3"
+    },
+    {
+      "name": "Voltage line-to-line average RMS (VVavgRMS)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 15,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VVavgRMS"
+    },
+    {
+      "name": "Active power L3 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 115,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Pt3RMS"
+    },
+    {
+      "name": "THD current L2 load centre",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 241,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIs3"
+    },
+    {
+      "name": "Current L1 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 21,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Ir1RMS"
+    },
+    {
+      "name": "Active power total load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 117,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Ptot3RMS"
+    },
+    {
+      "name": "THD current L3 load centre",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 243,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIt3"
+    },
+    {
+      "name": "Current L2 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 23,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Is1RMS"
+    },
+    {
+      "name": "Reactive power L1 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 119,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qr3RMS"
+    },
+    {
+      "name": "THD current load centre maximum",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 245,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDI3_max"
+    },
+    {
+      "name": "Current L3 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 25,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter It1RMS"
+    },
+    {
+      "name": "Reactive power L2 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 121,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qs3RMS"
+    },
+    {
+      "name": "Voltage L1 harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0301",
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VrH1"
+    },
+    {
+      "name": "Current average mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 27,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter I1avgRMS"
+    },
+    {
+      "name": "Reactive power L3 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 123,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qt3RMS"
+    },
+    {
+      "name": "Voltage L2 harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0401",
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VsH1"
+    },
+    {
+      "name": "Current L1 capacitor system RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 29,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Ir2RMS"
+    },
+    {
+      "name": "Reactive power total load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 125,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qtot3RMS"
+    },
+    {
+      "name": "Voltage L3 harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0501",
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VtH1"
+    },
+    {
+      "name": "Current L2 capacitor system RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 31,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Is2RMS"
+    },
+    {
+      "name": "Apparent power L1 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 127,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Sr3RMS"
+    },
+    {
+      "name": "Voltage L12 harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0601",
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VrsH1"
+    },
+    {
+      "name": "Current L3 capacitor system RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 33,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter It2RMS"
+    },
+    {
+      "name": "Apparent power L2 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 129,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Ss3RMS"
+    },
+    {
+      "name": "Voltage L23 harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0701",
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VstH1"
+    },
+    {
+      "name": "Current average capacitor system RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 35,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter I2avgRMS"
+    },
+    {
+      "name": "Apparent power L3 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 131,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter St3RMS"
+    },
+    {
+      "name": "Voltage L31 harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0801",
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VtrH1"
+    },
+    {
+      "name": "Current L1 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 37,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Ir3RMS"
+    },
+    {
+      "name": "Apparent power total load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 133,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Stot3RMS"
+    },
+    {
+      "name": "Current L1 mains harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0901",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Ir1H1"
+    },
+    {
+      "name": "Current L2 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 39,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Is3RMS"
+    },
+    {
+      "name": "Power factor L1 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 141,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter CosR1RMS"
+    },
+    {
+      "name": "Current L2 mains harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0A01",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Is1H1"
+    },
+    {
+      "name": "Current L3 load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 41,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter It3RMS"
+    },
+    {
+      "name": "Power factor L2 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 143,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter CosS1RMS"
+    },
+    {
+      "name": "Current L3 mains harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0B01",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter It1H1"
+    },
+    {
+      "name": "Current average load centre RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 43,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter I3avgRMS"
+    },
+    {
+      "name": "Power factor L3 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 145,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter CosT1RMS"
+    },
+    {
+      "name": "Current L1 capacitor system harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0C01",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Ir2H1"
+    },
+    {
+      "name": "Active power L1 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 51,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Pr1RMS"
+    },
+    {
+      "name": "Power factor total mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 147,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter CosTot1RMS"
+    },
+    {
+      "name": "Current L2 capacitor system harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0D01",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Is2H1"
+    },
+    {
+      "name": "Active power L2 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 53,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Ps1RMS"
+    },
+    {
+      "name": "THD voltage L1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 201,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDVr"
+    },
+    {
+      "name": "Current L3 capacitor system harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0E01",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter It2H1"
+    },
+    {
+      "name": "Active power L3 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 55,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Pt1RMS"
+    },
+    {
+      "name": "THD voltage L2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 203,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDVs"
+    },
+    {
+      "name": "Current L1 load centre harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x0F01",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Ir3H1"
+    },
+    {
+      "name": "Active power total mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 57,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Ptot1RMS"
+    },
+    {
+      "name": "THD voltage L3",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 205,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDVt"
+    },
+    {
+      "name": "Current L2 load centre harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x1001",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter Is3H1"
+    },
+    {
+      "name": "Reactive power L1 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 59,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qr1RMS"
+    },
+    {
+      "name": "THD voltage maximum",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 207,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDV_max"
+    },
+    {
+      "name": "Current L3 load centre harmonic 1",
+      "group": "Harmonics",
+      "area": "holding",
+      "address": "0x1201",
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter It3H1"
+    },
+    {
+      "name": "Reactive power L2 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 61,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qs1RMS"
+    },
+    {
+      "name": "THD voltage L12",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 209,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDVrs"
+    },
+    {
+      "name": "Voltage neutral RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 281,
+      "type": "float32",
+      "access": "R",
+      "unit": "V",
+      "description": "Manual parameter VnRMS"
+    },
+    {
+      "name": "Reactive power L3 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 63,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qt1RMS"
+    },
+    {
+      "name": "THD voltage L23",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 211,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDVst"
+    },
+    {
+      "name": "Current neutral RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 283,
+      "type": "float32",
+      "access": "R",
+      "unit": "A",
+      "description": "Manual parameter InRMS"
+    },
+    {
+      "name": "Reactive power total mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 65,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Qtot1RMS"
+    },
+    {
+      "name": "THD voltage L31",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 213,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDVtr"
+    },
+    {
+      "name": "THD voltage neutral",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 285,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDVn"
+    },
+    {
+      "name": "Apparent power L1 mains RMS",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 67,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter Sr1RMS"
+    },
+    {
+      "name": "THD voltage line-to-line maximum",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 215,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDVV_max"
+    },
+    {
+      "name": "THD current neutral",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 287,
+      "type": "float32",
+      "access": "R",
+      "description": "Manual parameter THDIn"
+    },
+    {
+      "name": "Current KW IN 15",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6656,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW",
+      "description": "The KW (IN) of the current 15 minutes."
+    },
+    {
+      "name": "Current KW OUT 15",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6658,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW",
+      "description": "The KW (OUT) of the current 15 minutes."
+    },
+    {
+      "name": "Current KVAr IN 15",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6660,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar",
+      "description": "The KVAr (IN) of the current 15 minutes."
+    },
+    {
+      "name": "Current KVAr OUT 15",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6662,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar",
+      "description": "The KVAr (OUT) of the current 15 minutes."
+    },
+    {
+      "name": "Last KW IN 15",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6664,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW",
+      "description": "The KW (IN) of the previous 15 minutes."
+    },
+    {
+      "name": "Last KW OUT 15",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6666,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW",
+      "description": "The KW (OUT) of the previous 15 minutes."
+    },
+    {
+      "name": "Last KVAr IN 15",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6668,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar",
+      "description": "The KVAr (IN) of the previous 15 minutes."
+    },
+    {
+      "name": "Last KVAr OUT 15",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6670,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar",
+      "description": "The KVAr (OUT) of the previous 15 minutes."
+    },
+    {
+      "name": "Current KW IN Total",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6672,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW",
+      "description": "The KW (IN) of the current month."
+    },
+    {
+      "name": "Current KW OUT Total",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6674,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW",
+      "description": "The KW (OUT) of the current month."
+    },
+    {
+      "name": "Current KVAr IN Total",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6676,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar",
+      "description": "The KVAr (IN) of the current month."
+    },
+    {
+      "name": "Current KVAr OUT Total",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6678,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar",
+      "description": "The KVAr (OUT) of the current month."
+    },
+    {
+      "name": "Last KW IN Total",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6680,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW",
+      "description": "The KW (IN) of the previous month."
+    },
+    {
+      "name": "Last KW OUT Total",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6682,
+      "type": "float32",
+      "access": "R",
+      "unit": "kW",
+      "description": "The KW (OUT) of the previous month."
+    },
+    {
+      "name": "Last KVAr IN Total",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6684,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar",
+      "description": "The KVAr (IN) of the previous month."
+    },
+    {
+      "name": "Last KVAr OUT Total",
+      "group": "Demand",
+      "area": "holding",
+      "address": 6686,
+      "type": "float32",
+      "access": "R",
+      "unit": "kvar",
+      "description": "The KVAr (OUT) of the previous month."
+    }
   ]
 }
