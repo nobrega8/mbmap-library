@@ -3,71 +3,838 @@
   "mbmap": 2,
   "vendor": "Crompton",
   "model": "Integra 1630",
-  "models": ["Integra 1630"],
-  "vendor_website": "crompton-instruments.com",
-  "revision": 2,
-  "source": "Modbus Database (Jibril Sharafi, MIT licence), table tyco/electronics-integra-1630; https://www.aggsoft.com/serial-data-logger/tutorials/modbus-data-logging/tyco-electronics-integra-1630.htm. Not verified against the manufacturer's documentation",
-  "notes": [
-    "Crompton Integra 1630.",
-    "Converted automatically from the Modbus Database (MIT licence, Jibril Sharafi).",
-    "Not verified against the manufacturer's documentation. The byte order is a guess: the source does not give one.",
-    "Corrections are welcome (CONTRIBUTING.md). Change x_status once this table has been checked against the manual."
+  "models": [
+    "Integra 1630"
   ],
+  "vendor_website": "crompton-instruments.com",
+  "revision": 3,
+  "revised": "2026-11-15",
+  "source": "Crompton Instruments, Integra 1630 Communications Guide, Issue 7 (Nov 2017)",
+  "sources": [
+    {
+      "title": "Integra 1630 Communications Guide",
+      "version": "Issue 7 (Nov-17)",
+      "url": "https://www.crompton-instruments.com/installation_docs/Integra_1630_Communications_Guide_Iss_7.pdf",
+      "note": "Section 1: Modbus implementation, input registers (1.2) and holding registers (1.3)",
+      "accessed": "2026-11-15",
+      "sha256": "c061eda5f344e529629b481080227281455583355e8235b4bdbcd9ce65eeab56"
+    }
+  ],
+  "notes": [
+    "Modbus RTU slave on 2-wire RS485 (the guide also describes a Modbus TCP Ethernet module in its issue 6 edition, which is not mapped here). Framing is 8 data bits; baud rate 4800, 9600, 19200 or 38400 with parity and stop bits chosen by the RS485 set-up code (coded in the guide's table, for example 9600 baud, no parity, 1 stop bit is 6); node address 1 to 247.",
+    "Input registers are read with function 04 and holding registers with function 03, written with function 16 one parameter per message. Addresses are the start addresses printed in the guide (30001 is address 0), so the address base is 0.",
+    "Every value is a 32-bit IEEE 754 float in two registers; the default is the most significant register first (big byte order, big word order). Writing 2141.0 to the Register Order register makes the meter use the order of that write for all float transfers. Reads and writes must cover an even number of registers, at most 40 values (80 registers) per request.",
+    "Parameters marked X for the wiring system in use (3 phase 4 wire, 3 phase 3 wire, single phase 2 wire) return zero.",
+    "The guide gives no engineering units. Units are set here only where the parameter name states them (volts, current, W, VA, var, degrees, Hz, THD in percent). The energy counters (Wh Import and so on, which the relay text calls kWh/kVArh), Hours Run, the VArh demands, serial numbers and System Power are left without a unit because the guide does not settle it.",
+    "Holding registers marked r/wp need the password written to the Password register before a change is accepted; reading Password returns 1 if the instrument is unprotected and 0 if protected. The System Type register takes 1 (single phase 2 wire), 2 (3 phase 3 wire) or 3 (3 phase 4 wire); Relay Pulse Width is in multiples of 20 ms (3, 5 or 10); Demand Period accepts 8, 15, 20, 30 or 60 minutes; Selected Energy Param. takes 0 (relay disabled) or 37 to 41 (import kWh, export kWh, import kVArh, export kVArh, kVAh); Energy Reset, Hours Run Reset and Demand Time are reset by writing 0.",
+    "The guide numbers its parameters with gaps (for example 23, 26, 28), so only the parameters it prints are mapped.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "description": "Integra 1630 digital power meter: voltages, currents, powers, power factors, energies, demands, THD and configuration registers",
+  "protocol": "rtu",
+  "databits": 8,
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "unofficial",
-  "x_origin": "modbus-database",
+  "x_status": "official",
   "registers": [
-    {"name": "Volts 2 (L2 N 4w or L2 L3 3w)", "area": "holding", "address": 2, "type": "float32", "access": "R"},
-    {"name": "Volts 3 (L3 N 4w or L3 L1 3w)", "area": "holding", "address": 4, "type": "float32", "access": "R"},
-    {"name": "Current 1", "area": "holding", "address": 6, "type": "float32", "access": "R"},
-    {"name": "Current 2", "area": "holding", "address": 8, "type": "float32", "access": "R"},
-    {"name": "Current 3", "area": "holding", "address": 10, "type": "float32", "access": "R"},
-    {"name": "W phase 1", "area": "holding", "address": 12, "type": "float32", "access": "R"},
-    {"name": "W phase 2", "area": "holding", "address": 14, "type": "float32", "access": "R"},
-    {"name": "W phase 3", "area": "holding", "address": 16, "type": "float32", "access": "R"},
-    {"name": "Va phase 1", "area": "holding", "address": 18, "type": "float32", "access": "R"},
-    {"name": "Va phase 2", "area": "holding", "address": 20, "type": "float32", "access": "R"},
-    {"name": "Va phase 3", "area": "holding", "address": 22, "type": "float32", "access": "R"},
-    {"name": "Var phase 1", "area": "holding", "address": 24, "type": "float32", "access": "R"},
-    {"name": "Var phase 2", "area": "holding", "address": 26, "type": "float32", "access": "R"},
-    {"name": "Var phase 3", "area": "holding", "address": 28, "type": "float32", "access": "R"},
-    {"name": "Power factor phase 1", "area": "holding", "address": 30, "type": "float32", "access": "R"},
-    {"name": "Power factor phase 2", "area": "holding", "address": 32, "type": "float32", "access": "R"},
-    {"name": "Power factor phase 3", "area": "holding", "address": 34, "type": "float32", "access": "R"},
-    {"name": "Phase angle phase 1", "area": "holding", "address": 36, "type": "float32", "access": "R"},
-    {"name": "Phase angle phase 2", "area": "holding", "address": 38, "type": "float32", "access": "R"},
-    {"name": "Phase angle phase 3", "area": "holding", "address": 40, "type": "float32", "access": "R"},
-    {"name": "Volts ave", "area": "holding", "address": 42, "type": "float32", "access": "R"},
-    {"name": "Current ave", "area": "holding", "address": 46, "type": "float32", "access": "R"},
-    {"name": "Current sum", "area": "holding", "address": 48, "type": "float32", "access": "R"},
-    {"name": "Watts sum", "area": "holding", "address": 52, "type": "float32", "access": "R"},
-    {"name": "Va sum", "area": "holding", "address": 56, "type": "float32", "access": "R"},
-    {"name": "Var sum", "area": "holding", "address": 60, "type": "float32", "access": "R"},
-    {"name": "Power factor ave", "area": "holding", "address": 62, "type": "float32", "access": "R"},
-    {"name": "Average phase angle", "area": "holding", "address": 66, "type": "float32", "access": "R"},
-    {"name": "Frequency", "area": "holding", "address": 70, "type": "float32", "access": "R"},
-    {"name": "Wh import", "area": "holding", "address": 72, "type": "float32", "access": "R"},
-    {"name": "Wh export", "area": "holding", "address": 74, "type": "float32", "access": "R"},
-    {"name": "Varh import", "area": "holding", "address": 76, "type": "float32", "access": "R"},
-    {"name": "Varh export", "area": "holding", "address": 78, "type": "float32", "access": "R"},
-    {"name": "Vah", "area": "holding", "address": 80, "type": "float32", "access": "R"},
-    {"name": "W demand import", "area": "holding", "address": 84, "type": "float32", "access": "R"},
-    {"name": "W max. Demand import", "area": "holding", "address": 86, "type": "float32", "access": "R"},
-    {"name": "Va demand", "area": "holding", "address": 100, "type": "float32", "access": "R"},
-    {"name": "Va max. Demand", "area": "holding", "address": 102, "type": "float32", "access": "R"},
-    {"name": "A demand", "area": "holding", "address": 104, "type": "float32", "access": "R"},
-    {"name": "A max. Demand", "area": "holding", "address": 106, "type": "float32", "access": "R"},
-    {"name": "V L1 L2", "area": "holding", "address": 200, "type": "float32", "access": "R"},
-    {"name": "V L2 L3", "area": "holding", "address": 202, "type": "float32", "access": "R"},
-    {"name": "V L3 L1", "area": "holding", "address": 204, "type": "float32", "access": "R"},
-    {"name": "Average line to line volts", "area": "holding", "address": 206, "type": "float32", "access": "R"},
-    {"name": "Neutral current", "area": "holding", "address": 224, "type": "float32", "access": "R"},
-    {"name": "Thd volts 1", "area": "holding", "address": 234, "type": "float32", "access": "R"},
-    {"name": "Thd volts 2", "area": "holding", "address": 236, "type": "float32", "access": "R"},
-    {"name": "Thd volts 3", "area": "holding", "address": 238, "type": "float32", "access": "R"},
-    {"name": "Thd current 1", "area": "holding", "address": 240, "type": "float32", "access": "R"},
-    {"name": "Thd current 2", "area": "holding", "address": 242, "type": "float32", "access": "R"}
+    {
+      "name": "Volts 1 (L1 – N 4W or L1 – L2 3W)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 0,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Volts 2 (L2 – N 4W or L2 – L3 3W)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 2,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Volts 3 (L3 – N 4W or L3 – L1 3W)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 4,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Current 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 6,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 8,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 10,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "W Phase 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 12,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "W Phase 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 14,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "W Phase 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 16,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "VA Phase 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 18,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "VA Phase 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 20,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "VA Phase 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 22,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "var Phase 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 24,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "var Phase 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 26,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "var Phase 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 28,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Power Factor Phase 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 30,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor Phase 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 32,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor Phase 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 34,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase Angle Phase 1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 36,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Phase Angle Phase 2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 38,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Phase Angle Phase 3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 40,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Volts Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 42,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Current Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 46,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 48,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Watts Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 52,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "VA Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 56,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "var Sum",
+      "group": "Measurements",
+      "area": "input",
+      "address": 60,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "Power Factor Ave",
+      "group": "Measurements",
+      "area": "input",
+      "address": 62,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Average Phase Angle",
+      "group": "Measurements",
+      "area": "input",
+      "address": 66,
+      "type": "float32",
+      "access": "R",
+      "unit": "°"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "input",
+      "address": 70,
+      "type": "float32",
+      "access": "R",
+      "unit": "Hz"
+    },
+    {
+      "name": "Wh Import",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 72,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Wh Export",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 74,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "varh Import",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 76,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "varh Export",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 78,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "VAh",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 80,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "W Demand Import",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 84,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "W Max. Demand Import",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 86,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "VArh Import Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 92,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "VArh Import Demand Max",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 94,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "VArh Export Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 96,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "VArh Export Demand Max",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 98,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "VA Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 100,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "VA Max. Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 102,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "A Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 104,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "A Max. Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 106,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "I_Sum_MAX",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 144,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "W_Sum_MAX",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 160,
+      "type": "float32",
+      "access": "R",
+      "unit": "W"
+    },
+    {
+      "name": "VAr_Sum_MAX",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 176,
+      "type": "float32",
+      "access": "R",
+      "unit": "var"
+    },
+    {
+      "name": "VA_Sum_MAX",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 192,
+      "type": "float32",
+      "access": "R",
+      "unit": "VA"
+    },
+    {
+      "name": "V L1-L2",
+      "group": "Measurements",
+      "area": "input",
+      "address": 200,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "V L2-L3",
+      "group": "Measurements",
+      "area": "input",
+      "address": 202,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "V L3-L1",
+      "group": "Measurements",
+      "area": "input",
+      "address": 204,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Average Line to Line Volts",
+      "group": "Measurements",
+      "area": "input",
+      "address": 206,
+      "type": "float32",
+      "access": "R",
+      "unit": "V"
+    },
+    {
+      "name": "Neutral Current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 224,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "THD Volts 1",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 234,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD Volts 2",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 236,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD Volts 3",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 238,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD Current 1",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 240,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD Current 2",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 242,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD Current 3",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 244,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD Voltage Mean",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 248,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "THD Current Mean",
+      "group": "Harmonic distortion",
+      "area": "input",
+      "address": 250,
+      "type": "float32",
+      "access": "R",
+      "unit": "%"
+    },
+    {
+      "name": "Hours Run",
+      "group": "Energy and run time",
+      "area": "input",
+      "address": 252,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power Factor (+Ind/-Cap)",
+      "group": "Measurements",
+      "area": "input",
+      "address": 254,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Current 1 Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 258,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current 2 Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 260,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current 3 Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 262,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current 1 Max. Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 264,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current 2 Max. Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 266,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Current 3 Max. Demand",
+      "group": "Demand and maximum",
+      "area": "input",
+      "address": 268,
+      "type": "float32",
+      "access": "R",
+      "unit": "A"
+    },
+    {
+      "name": "Demand Time",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 0,
+      "type": "float32",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "Demand Period",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 2,
+      "type": "float32",
+      "access": "RW",
+      "unit": "min"
+    },
+    {
+      "name": "System Voltage",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "System Current",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 8,
+      "type": "float32",
+      "access": "RW",
+      "unit": "A"
+    },
+    {
+      "name": "System Type",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 10,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Relay Pulse Width",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 12,
+      "type": "float32",
+      "access": "RW",
+      "unit": "ms",
+      "scale": 20
+    },
+    {
+      "name": "Energy Reset",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "access": "W"
+    },
+    {
+      "name": "RS485 set-up code",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Node Address",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Relay Pulse Divisor",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Password",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "System Power",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Register Order",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "High Serial Number",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 42,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Low Serial Number",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 44,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Max Pulse Relay Setups",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 56,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Selected Pulse Relay",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 58,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Selected Energy Param.",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 60,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Hours Run Reset",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 98,
+      "type": "float32",
+      "access": "W"
+    },
+    {
+      "name": "Hours Run VA Level",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 100,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Secondary Volts",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 298,
+      "type": "float32",
+      "access": "RW",
+      "unit": "V"
+    },
+    {
+      "name": "Max Energy Count",
+      "group": "Configuration",
+      "area": "holding",
+      "address": 306,
+      "type": "float32",
+      "access": "RW"
+    }
   ]
 }
