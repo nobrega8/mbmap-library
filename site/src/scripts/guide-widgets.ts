@@ -9,9 +9,10 @@ import { ZH } from "./guide-widgets-zh.ts";
 import { HI } from "./guide-widgets-hi.ts";
 import { ES } from "./guide-widgets-es.ts";
 import { FR } from "./guide-widgets-fr.ts";
+import { BN } from "./guide-widgets-bn.ts";
 
 // Translations of the figures per language; a language without an entry shows English.
-const TEXT: Record<string, Record<string, string> | undefined> = { pt: PT, zh: ZH, hi: HI, es: ES, fr: FR };
+const TEXT: Record<string, Record<string, string> | undefined> = { pt: PT, zh: ZH, hi: HI, es: ES, fr: FR, bn: BN };
 
 /** Text of the figures in the language of the page; English is the key. {name} placeholders are filled from vars. */
 const tx = (en: string, vars?: Record<string, string | number>) => {
