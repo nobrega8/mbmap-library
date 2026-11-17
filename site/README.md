@@ -39,7 +39,7 @@ prefix (`/pt/`). The languages are listed in `src/i18n/locales.ts` and in
 `astro.config.mjs`.
 
 - **Interface text** is in `src/i18n/en.ts` (the source of every string) and one
-  file per language (`src/i18n/pt.ts`, `src/i18n/zh.ts`, `src/i18n/hi.ts`, `src/i18n/es.ts`, `src/i18n/fr.ts`, `src/i18n/bn.ts`, `src/i18n/ru.ts`, `src/i18n/de.ts`, `src/i18n/tr.ts`, `src/i18n/th.ts`, `src/i18n/hu.ts`). A key missing from a language shows the
+  file per language (`src/i18n/pt.ts`, `src/i18n/zh.ts`, `src/i18n/hi.ts`, `src/i18n/es.ts`, `src/i18n/fr.ts`, `src/i18n/bn.ts`, `src/i18n/ru.ts`, `src/i18n/de.ts`, `src/i18n/tr.ts`, `src/i18n/th.ts`, `src/i18n/hu.ts`, `src/i18n/id.ts`). A key missing from a language shows the
   English text. Strings may hold `{name}` placeholders; nouns that are counted
   have a `.one` and a `.many` key.
 - **Pages** are written once, in `src/views/`, and rendered by thin routes in

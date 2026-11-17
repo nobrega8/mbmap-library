@@ -177,6 +177,16 @@ const cardsHu = {
   docs: { title: "A dokumentáció javítása", text: "Kérdések a formátumról, ötletek hozzá, vagy egy eszköz, amely .mbmap fájlokat olvas: nyisson beszélgetést, vagy javasoljon módosítást a dokumentációban.", links: ["Kérdés feltevése", "Ötlet javaslása", "Eszköz bemutatása"] },
 } as const;
 
+// id text of the cards, in the order of `cards`.
+const cardsId = {
+  add: { title: "Tambahkan perangkat baru", text: "Tulis peta dari dokumentasi publik produsen, periksa dengan validator, lalu buka pull request.", links: ["Cara menambah peta", "Contoh peta"] },
+  request: { title: "Minta perangkat", text: "Tidak bisa menulis petanya sendiri? Mintalah, sebaiknya dengan tautan ke dokumentasi Modbus produsen.", links: ["Minta peta"] },
+  verify: { title: "Verifikasi peta pada perangkat keras nyata", text: "Baca perangkat dengan sebuah peta dan cocokkan nilainya dengan layarnya. Laporkan hasilnya, baik atau buruk, meskipun bukan Anda yang menulis petanya.", links: ["Laporkan pengujian", "Apa yang diverifikasi"] },
+  correct: { title: "Laporkan atau perbaiki data yang salah", text: "Alamat, tipe, skala, atau urutan byte yang salah? Setiap halaman perangkat memiliki “Usulkan perbaikan”, yang mengedit file di GitHub dan membuka pull request, serta “Laporkan masalah”.", links: ["Edit peta", "Issue yang terbuka"] },
+  check: { title: "Verifikasi peta tidak resmi", text: "Bandingkan peta hasil konversi dengan manual produsen, perbaiki yang salah, dan catat dokumen yang digunakan. Peta itu lalu menjadi resmi.", links: ["Cara memverifikasinya", "Peta tidak resmi"] },
+  docs: { title: "Perbaiki dokumentasi", text: "Pertanyaan tentang format, ide untuknya, atau alat yang membaca file .mbmap: buka diskusi, atau usulkan perubahan pada dokumentasi.", links: ["Ajukan pertanyaan", "Usulkan ide", "Tampilkan alat"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
@@ -189,12 +199,13 @@ const de = locale === "de";
 const tr = locale === "tr";
 const th = locale === "th";
 const hu = locale === "hu";
+const id = locale === "id";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "参与贡献" : hu ? "Közreműködés" : th ? "ร่วมสนับสนุน" : tr ? "Katkıda bulun" : de ? "Mitmachen" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : hu ? "Adjon hozzá Modbus eszköztérképet, javítson egy regisztert, vagy jelentsen tesztet valódi hardveren. Az MBMap térképek a GitHubon vannak, és mindenki számára nyitottak." : th ? "เพิ่มแมปอุปกรณ์ Modbus แก้ไขรีจิสเตอร์ หรือแจ้งผลการทดสอบบนฮาร์ดแวร์จริง แมป MBMap อยู่บน GitHub และเปิดให้ทุกคน" : tr ? "Bir Modbus cihaz haritası ekleyin, bir register'ı düzeltin veya gerçek donanımda bir test bildirin. MBMap haritaları GitHub'dadır ve herkese açıktır." : de ? "Fügen Sie eine Modbus-Gerätemap hinzu, korrigieren Sie ein Register oder melden Sie einen Test an echter Hardware. Die MBMap-Maps liegen auf GitHub und stehen allen offen." : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  title={zh ? "参与贡献" : id ? "Berkontribusi" : hu ? "Közreműködés" : th ? "ร่วมสนับสนุน" : tr ? "Katkıda bulun" : de ? "Mitmachen" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : id ? "Tambahkan peta perangkat Modbus, perbaiki register, atau laporkan pengujian pada perangkat keras nyata. Peta MBMap ada di GitHub dan terbuka untuk semua orang." : hu ? "Adjon hozzá Modbus eszköztérképet, javítson egy regisztert, vagy jelentsen tesztet valódi hardveren. Az MBMap térképek a GitHubon vannak, és mindenki számára nyitottak." : th ? "เพิ่มแมปอุปกรณ์ Modbus แก้ไขรีจิสเตอร์ หรือแจ้งผลการทดสอบบนฮาร์ดแวร์จริง แมป MBMap อยู่บน GitHub และเปิดให้ทุกคน" : tr ? "Bir Modbus cihaz haritası ekleyin, bir register'ı düzeltin veya gerçek donanımda bir test bildirin. MBMap haritaları GitHub'dadır ve herkese açıktır." : de ? "Fügen Sie eine Modbus-Gerätemap hinzu, korrigieren Sie ein Register oder melden Sie einen Test an echter Hardware. Die MBMap-Maps liegen auf GitHub und stehen allen offen." : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -252,6 +263,64 @@ const hu = locale === "hu";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : id ? (
+<>
+  <header class="page-head">
+    <h1>Berkontribusi</h1>
+    <p class="lead">
+      Peta yang baik menyelamatkan orang berikutnya dari satu sore bersama manual PDF. Semua peta ada di repositori GitHub <a href={LINKS.repo}>mbmap-library</a>; setiap kontribusi masuk melaluinya.
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsId[c.id].title}</h2>
+          <p class="muted">{cardsId[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsId[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">Mengirim peta dan memverifikasi peta</h2>
+    <p>
+      <strong>Mengirim</strong> berarti menambah atau mengubah sebuah file: Anda menulis register dari suatu sumber dan menyebutkan di <code>sources</code> sumber yang mana. Peta yang ditulis dari dokumen produsen adalah
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span>; peta yang disalin dari katalog lain, forum, atau integrasi pihak ketiga adalah
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>.
+    </p>
+    <p>
+      <strong>Memverifikasi</strong> berarti menguji peta yang ada pada perangkat nyata: baca perangkat, cocokkan nilainya dengan layar perangkat atau perangkat lunaknya sendiri (setidaknya satu nilai dari setiap grup register, dan untuk nilai 32-bit, urutan byte dan word), lalu laporkan perangkat, firmware, dan koneksi yang Anda gunakan. Hanya dengan begitu sebuah peta menjadi
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span>. Siapa pun dapat memverifikasi peta; Anda tidak harus menjadi penulisnya. Pengujian yang menemukan masalah sama berharganya: laporkan agar peta tidak ditandai terverifikasi.
+    </p>
+
+    <h2>Sebelum membuka pull request</h2>
+    <ul>
+      <li>Beri nama file <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> dengan slug huruf kecil, misalnya <code>maps/acme-meters/pm-200.mbmap.json</code>.</li>
+      <li>Jalankan validator dan perbaiki setiap kesalahan: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>Bangun ulang indeks: <code>python tools/index/build_index.py</code></li>
+      <li>Naikkan <code>revision</code> jika perubahan memengaruhi cara perangkat dibaca atau ditulis.</li>
+    </ul>
+
+    <h2>Aturan</h2>
+    <ul>
+      <li><strong>Hanya informasi publik.</strong> Tidak ada yang berasal dari dokumen di bawah NDA atau yang ditandai rahasia.</li>
+      <li><strong>Jangan menyalin manual.</strong> Alamat, tipe, dan satuan adalah fakta; tulis deskripsi dengan kata-kata Anda sendiri.</li>
+      <li><strong>Tanpa data pribadi.</strong> Tidak ada alamat IP, nomor seri, atau nama lokasi dari instalasi nyata.</li>
+      <li><strong>Pilih ketepatan daripada kelengkapan.</strong> Jika ragu tentang sebuah register, lewati atau catat keraguan itu.</li>
+    </ul>
+    <p>
+      Panduan lengkapnya adalah <a href={LINKS.contributing}>CONTRIBUTING.md</a>. Dengan berkontribusi, Anda setuju menerbitkan kontribusi Anda di bawah <a href={LINKS.license}>CC0 1.0</a>.
     </p>
   </section>
 </>
