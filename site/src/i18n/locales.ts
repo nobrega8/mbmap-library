@@ -1,8 +1,8 @@
 // The languages of the site. English is the default and lives at the root
-// of the site; every other locale lives under its own prefix (/pt/, /zh/, /hi/, /es/, /fr/, /bn/, /ru/, /de/).
+// of the site; every other locale lives under its own prefix (/pt/, /zh/, /hi/, /es/, /fr/, /bn/, /ru/, /de/, /tr/).
 // Imports nothing, so the build and the browser scripts can share it.
 
-export const LOCALES = ["en", "pt", "zh", "hi", "es", "fr", "bn", "ru", "de"] as const;
+export const LOCALES = ["en", "pt", "zh", "hi", "es", "fr", "bn", "ru", "de", "tr"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "en";
 
@@ -17,6 +17,7 @@ export const LOCALE_NAME: Record<Locale, string> = {
   bn: "বাংলা",
   ru: "Русский",
   de: "Deutsch",
+  tr: "Türkçe",
 };
 
 /** BCP 47 tag for `lang`, Open Graph and date formatting. */
@@ -30,6 +31,7 @@ export const LOCALE_TAG: Record<Locale, string> = {
   bn: "bn-BD",
   ru: "ru-RU",
   de: "de-DE",
+  tr: "tr-TR",
 };
 
 export const OG_LOCALE: Record<Locale, string> = {
@@ -42,6 +44,7 @@ export const OG_LOCALE: Record<Locale, string> = {
   bn: "bn_BD",
   ru: "ru_RU",
   de: "de_DE",
+  tr: "tr_TR",
 };
 
 /** The flag shown next to each language: the file name in assets/flags/ (served at /library/assets/flags/<name>.png). */
@@ -55,10 +58,11 @@ export const LOCALE_FLAG: Record<Locale, string> = {
   bn: "bangladesh",
   ru: "russia",
   de: "germany",
+  tr: "turkey",
 };
 
 /** Languages that have the long prose pages (About, Contribute, Specification, Compatibility, Terms, Privacy). */
-export const PROSE_LOCALES: readonly Locale[] = ["en", "pt", "zh", "hi", "es", "fr", "bn", "ru", "de"];
+export const PROSE_LOCALES: readonly Locale[] = ["en", "pt", "zh", "hi", "es", "fr", "bn", "ru", "de", "tr"];
 
 export function isLocale(v: unknown): v is Locale {
   return LOCALES.includes(v as Locale);
