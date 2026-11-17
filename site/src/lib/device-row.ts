@@ -2,7 +2,7 @@
 // catalogue script in the browser, so both draw the same markup.
 
 import { localizeUrl } from "./base.ts";
-import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { DEFAULT_LOCALE, LOCALE_TAG, type Locale } from "../i18n/locales.ts";
 import { translate } from "../i18n/index.ts";
 import { protocolName, statusLabel, statusShort } from "../i18n/labels.ts";
 import { icon } from "./icons.ts";
@@ -21,7 +21,7 @@ export function deviceRow(e: DeviceEntry, opts: { query?: string; line?: string;
     opts.vendor === false
       ? ""
       : `<td class="c-vendor"><span class="vendor-cell">${vendorTile(e.v, e.i)}<span class="vendor-name">${mark(e.v)}</span></span></td>`;
-  return `<tr class="linked">${vendor}<td class="c-model"><a class="row-link" href="${registerLink(localizeUrl(e.u, locale), opts.line)}">${mark(e.m)}</a>${others}${match}</td><td class="desc-cell"${e.d ? ` title="${escapeHtml(e.d)}"` : ""}>${e.d ? mark(e.d) : ""}</td><td class="c-status">${status}</td><td class="c-proto faint">${e.p ? escapeHtml(protocolName(locale, e.p).replace("Modbus ", "")) : ""}</td><td class="c-regs num">${e.r.toLocaleString(locale === "pt" ? "pt-PT" : "en-US")}</td></tr>`;
+  return `<tr class="linked">${vendor}<td class="c-model"><a class="row-link" href="${registerLink(localizeUrl(e.u, locale), opts.line)}">${mark(e.m)}</a>${others}${match}</td><td class="desc-cell"${e.d ? ` title="${escapeHtml(e.d)}"` : ""}>${e.d ? mark(e.d) : ""}</td><td class="c-status">${status}</td><td class="c-proto faint">${e.p ? escapeHtml(protocolName(locale, e.p).replace("Modbus ", "")) : ""}</td><td class="c-regs num">${e.r.toLocaleString(LOCALE_TAG[locale])}</td></tr>`;
 }
 
 export function deviceHead(vendor = true, locale: Locale = DEFAULT_LOCALE): string {

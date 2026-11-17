@@ -1,4 +1,6 @@
 ---
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { statusLabel } from "../i18n/labels.ts";
 import { href } from "../lib/base.ts";
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
@@ -65,14 +67,86 @@ const cards = [
     ],
   },
 ] as const;
+// Simplified Chinese text of the cards, in the order of `cards`.
+const cardsZh = {
+  add: { title: "添加新设备", text: "根据制造商的公开文档编写映射表，用校验器检查，然后提交拉取请求。", links: ["如何添加映射表", "示例映射表"] },
+  request: { title: "请求添加设备", text: "自己无法编写映射表？提出请求，最好附上制造商 Modbus 文档的链接。", links: ["请求映射表"] },
+  verify: { title: "在真实硬件上验证映射表", text: "用映射表读取设备，并将数值与设备显示屏对照。无论结果好坏，即使映射表不是您编写的，也请报告结果。", links: ["报告测试结果", "需要核对什么"] },
+  correct: { title: "报告或修正错误数据", text: "地址、类型、比例或字节序有误？每个设备页面都有“建议更正”（在 GitHub 上编辑文件并创建拉取请求）和“报告问题”。", links: ["修改映射表", "未解决的 issue"] },
+  check: { title: "检查非官方映射表", text: "将转换而来的映射表与制造商手册对照，修正错误并记录所用文档。它随后会成为官方映射表。", links: ["如何检查", "非官方映射表"] },
+  docs: { title: "改进文档", text: "对格式有疑问、有想法，或有读取 .mbmap 文件的工具：发起一个讨论，或提出对文档的修改。", links: ["提问", "提出想法", "展示工具"] },
+} as const;
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const zh = locale === "zh";
 ---
 
 <Base
-  untranslated
-  title="Contribute"
-  description="Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."
+  untranslated={!zh}
+  title={zh ? "参与贡献" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
+{zh ? (
+<>
+  <header class="page-head">
+    <h1>参与贡献</h1>
+    <p class="lead">
+      一个好的映射表能让下一个人省去对着 PDF 手册折腾一下午。所有映射表都存放在 GitHub 上的 <a href={LINKS.repo}>mbmap-library</a> 仓库中；每一项贡献都通过它完成。
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsZh[c.id].title}</h2>
+          <p class="muted">{cardsZh[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsZh[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">提交映射表与验证映射表</h2>
+    <p>
+      <strong>提交</strong>是添加或修改一个文件：您根据某个来源编写寄存器，并在 <code>sources</code> 中说明来源。根据制造商文档编写的映射表是
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span>；从其他目录、论坛或第三方集成复制而来的则是
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>。
+    </p>
+    <p>
+      <strong>验证</strong>是在真实设备上测试现有的映射表：读取它，将数值与设备显示屏或其自带软件对照（每个寄存器分组至少核对一个值，以及 32 位数值的字节序和字序），并报告您使用的设备、固件和连接方式。只有这样，映射表才会成为
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span>。任何人都可以验证映射表；您不必是它的作者。发现问题的测试同样有用：请报告它，以免该映射表被标记为已验证。
+    </p>
+
+    <h2>提交拉取请求之前</h2>
+    <ul>
+      <li>文件命名为 <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code>，使用小写的 slug，例如 <code>maps/acme-meters/pm-200.mbmap.json</code>。</li>
+      <li>运行校验器并修正所有错误：<code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>重建索引：<code>python tools/index/build_index.py</code></li>
+      <li>当修改会影响设备的读取或写入方式时，增加 <code>revision</code>。</li>
+    </ul>
+
+    <h2>规则</h2>
+    <ul>
+      <li><strong>只用公开信息。</strong>不得使用受保密协议约束或标明机密的文档中的任何内容。</li>
+      <li><strong>不要复制手册。</strong>地址、类型和单位是事实；说明请用自己的话撰写。</li>
+      <li><strong>不含私人数据。</strong>不得包含真实安装现场的 IP 地址、序列号或现场名称。</li>
+      <li><strong>准确优先于全面。</strong>如果对某个寄存器没有把握，请省略它或注明。</li>
+    </ul>
+    <p>
+      完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : (
+<>
   <header class="page-head">
     <h1>Contribute</h1>
     <p class="lead">
@@ -136,6 +210,8 @@ const cards = [
       contribution under <a href={LINKS.license}>CC0 1.0</a>.
     </p>
   </section>
+</>
+)}
 </Base>
 
 <style>

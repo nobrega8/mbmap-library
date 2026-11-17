@@ -2,13 +2,13 @@ import { pageHref } from "../lib/base.ts";
 // Every page of the site, in every language that has it, each with links to
 // its other-language versions. Device pages carry the date of their map's last
 // revision, when the map gives one. Pages that are only English under another
-// language (the long prose pages, untranslated guides) are left out.
+// language (the long prose pages of a language without them, untranslated guides) are left out.
 import type { APIRoute } from "astro";
 import { registry } from "../lib/registry.ts";
 import { GUIDES } from "../lib/guides.ts";
 import { guideSource } from "../lib/markdown.ts";
 import { localizeUrl } from "../lib/base.ts";
-import { LOCALES, LOCALE_TAG, type Locale } from "../i18n/locales.ts";
+import { LOCALES, LOCALE_TAG, PROSE_LOCALES, type Locale } from "../i18n/locales.ts";
 
 export const GET: APIRoute = ({ site }) => {
   const { devices, manufacturers, commitDate } = registry();
@@ -28,7 +28,7 @@ export const GET: APIRoute = ({ site }) => {
     route("/manufacturers", commitDate),
     route("/guides"),
     ...GUIDES.map((g) => route(`/guides/${g.slug}`, null, LOCALES.filter((l) => guideSource(g.slug, l)?.translated))),
-    ...["/spec", "/compatibility", "/contribute", "/about", "/terms", "/privacy"].map((p) => route(p, null, ["en"])),
+    ...["/spec", "/compatibility", "/contribute", "/about", "/terms", "/privacy"].map((p) => route(p, null, PROSE_LOCALES)),
     ...manufacturers.map((m) => page((l) => localizeUrl(m.url, l))),
     ...devices.map((d) => page((l) => localizeUrl(d.url, l), d.info.revised ?? d.added?.slice(0, 10))),
   ];

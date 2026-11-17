@@ -1,12 +1,13 @@
 // Translations. `t()` falls back to English, so a missing key shows English
 // text instead of a hole. Strings may hold {name} placeholders.
 
-import type { Locale } from "./locales.ts";
+import { LOCALE_TAG, type Locale } from "./locales.ts";
 import { en } from "./en.ts";
 import { pt } from "./pt.ts";
+import { zh } from "./zh.ts";
 
 export type Key = keyof typeof en;
-const DICT: Record<Locale, Partial<Record<Key, string>>> = { en, pt };
+const DICT: Record<Locale, Partial<Record<Key, string>>> = { en, pt, zh };
 
 export type Vars = Record<string, string | number>;
 
@@ -22,9 +23,10 @@ export function useT(locale: Locale) {
 
 /** "3 devices": the noun is a key with "one" and "many" forms (key.one, key.many). */
 export function count(locale: Locale, n: number, base: string): string {
-  const num = n.toLocaleString(locale === "pt" ? "pt-PT" : "en-US");
+  const num = n.toLocaleString(LOCALE_TAG[locale]);
   const key = `${base}.${n === 1 ? "one" : "many"}` as Key;
-  return `${num} ${translate(locale, key)}`;
+  // Chinese puts no space between the number and the measure word.
+  return `${num}${locale === "zh" ? "" : " "}${translate(locale, key)}`;
 }
 
 /** The dictionary of a language as it goes to the browser scripts. */

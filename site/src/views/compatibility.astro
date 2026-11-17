@@ -3,18 +3,22 @@ import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 import { renderLibraryMarkdown } from "../lib/markdown.ts";
 import { LINKS } from "../lib/site.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
 
-const html = (await renderLibraryMarkdown("COMPATIBILITY.md"))?.html;
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const zh = locale === "zh";
+const doc = await renderLibraryMarkdown("COMPATIBILITY.md", locale);
+const html = doc?.html;
 ---
 
 <Base
-  untranslated
-  title="Compatible Tools"
-  description="Modbus tools that read .mbmap device maps, including Modbench, and which parts of the MBMap format each one supports."
+  untranslated={!doc?.translated}
+  title={zh ? "兼容的工具" : "Compatible Tools"}
+  description={zh ? "读取 .mbmap 设备映射表的 Modbus 工具（包括 Modbench），以及它们各自支持 MBMap 格式的哪些部分。" : "Modbus tools that read .mbmap device maps, including Modbench, and which parts of the MBMap format each one supports."}
   nav="compatibility"
 >
   <header class="page-head">
-    <h1>Compatibility</h1>
+    <h1>{zh ? "兼容性" : "Compatibility"}</h1>
   </header>
 
   <section class="card pad">
@@ -23,14 +27,14 @@ const html = (await renderLibraryMarkdown("COMPATIBILITY.md"))?.html;
         <div class="prose wide" set:html={html} />
       ) : (
         <div class="empty">
-          <strong>The compatibility list could not be read</strong>
-          See <a href={LINKS.compatibility}>COMPATIBILITY.md</a> on GitHub.
+          <strong>{zh ? "无法读取兼容性列表" : "The compatibility list could not be read"}</strong>
+          {zh ? <>请在 GitHub 上查看 <a href={LINKS.compatibility}>COMPATIBILITY.md</a>。</> : <>See <a href={LINKS.compatibility}>COMPATIBILITY.md</a> on GitHub.</>}
         </div>
       )
     }
     <p class="faint src">
-      <Icon name="github" size={13} /> From <a href={LINKS.compatibility}>COMPATIBILITY.md</a> in the library. To add a tool,
-      open a pull request that changes that file.
+      <Icon name="github" size={13} />
+      {zh ? <>来自库中的 <a href={LINKS.compatibility}>COMPATIBILITY.md</a>。要添加工具，请提交修改该文件的拉取请求。</> : <>From <a href={LINKS.compatibility}>COMPATIBILITY.md</a> in the library. To add a tool, open a pull request that changes that file.</>}
     </p>
   </section>
 </Base>

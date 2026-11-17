@@ -5,6 +5,7 @@
 
 import { CATALOGUE_PAGE, deviceRow } from "../lib/device-row.ts";
 import { count as countOf } from "../i18n/index.ts";
+import { LOCALE_TAG } from "../i18n/locales.ts";
 import { locale, t as tr } from "./i18n.ts";
 import { staggerRows } from "./motion.ts";
 import { type DeviceEntry, type Hit, REGISTER_QUERY_MIN, loadDevices, loadRegisters, search } from "./search-core.ts";
@@ -86,7 +87,7 @@ function render(animate = true) {
 
   const filtered = query || vendor.value || status;
   count.textContent = filtered
-    ? tr("count.of", { n: countOf(locale, hits.length, "map"), total: entries.length.toLocaleString(locale === "pt" ? "pt-PT" : "en-US") })
+    ? tr("count.of", { n: countOf(locale, hits.length, "map"), total: entries.length.toLocaleString(LOCALE_TAG[locale]) })
     : countOf(locale, entries.length, "map");
   if (query.length >= REGISTER_QUERY_MIN && !regs) count.textContent += ` · ${tr("search.searchingRegisters").toLowerCase()}`;
 

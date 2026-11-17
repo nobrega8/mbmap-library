@@ -7,6 +7,7 @@ import { parseMap, type MapInfo, type Register } from "../lib/normalize.ts";
 import { REGISTER_COLUMNS, REGISTER_PAGE, registerDetail, registerRow } from "../lib/register-row.ts";
 import { fold, parseInteger } from "../lib/mbmap.ts";
 import { count as countOf } from "../i18n/index.ts";
+import { LOCALE_TAG } from "../i18n/locales.ts";
 import { locale, t as trans } from "./i18n.ts";
 import { highlightJson } from "../lib/json-highlight.ts";
 import { staggerRows } from "./motion.ts";
@@ -119,7 +120,7 @@ function render(animate = true) {
     .join("");
   if (animate) staggerRows(body);
   const total = map.registers.length;
-  count.textContent = regs.length === total ? countOf(locale, total, "register") : trans("count.of", { n: countOf(locale, regs.length, "register"), total: total.toLocaleString(locale === "pt" ? "pt-PT" : "en-US") });
+  count.textContent = regs.length === total ? countOf(locale, total, "register") : trans("count.of", { n: countOf(locale, regs.length, "register"), total: total.toLocaleString(LOCALE_TAG[locale]) });
   table.hidden = !regs.length;
   empty.hidden = regs.length > 0;
   pager.hidden = pages < 2;

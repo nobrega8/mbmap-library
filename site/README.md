@@ -39,7 +39,7 @@ prefix (`/pt/`). The languages are listed in `src/i18n/locales.ts` and in
 `astro.config.mjs`.
 
 - **Interface text** is in `src/i18n/en.ts` (the source of every string) and one
-  file per language (`src/i18n/pt.ts`). A key missing from a language shows the
+  file per language (`src/i18n/pt.ts`, `src/i18n/zh.ts`). A key missing from a language shows the
   English text. Strings may hold `{name}` placeholders; nouns that are counted
   have a `.one` and a `.many` key.
 - **Pages** are written once, in `src/views/`, and rendered by thin routes in
@@ -49,10 +49,14 @@ prefix (`/pt/`). The languages are listed in `src/i18n/locales.ts` and in
 - **Guides** are `docs/guides/<slug>.md` in English; a translation goes in
   `docs/guides/<locale>/<slug>.md` and the site falls back to English for any
   guide without one. The figures inside the guides (`src/scripts/guide-widgets.ts`)
-  take their text from `src/scripts/guide-widgets-pt.ts`.
+  take their text from `src/scripts/guide-widgets-<locale>.ts` (a language without one shows English).
 - **Long prose pages** (About, Contribute, Specification, Compatibility, Terms,
-  Privacy) are English only for now: under another language they show a note and
-  are left out of search engines and the sitemap.
+  Privacy): a language that has them is listed in `PROSE_LOCALES`
+  (`src/i18n/locales.ts`). The text of About, Contribute, Terms and Privacy sits in
+  the page's view next to the English; the Specification and Compatibility pages
+  render `docs/<locale>/SPEC.md` and `docs/<locale>/COMPATIBILITY.md`. Under a
+  language without them the pages show a note and are left out of search engines
+  and the sitemap.
 - Register names, descriptions and notes in the maps are data and stay as the
   map's author wrote them.
 

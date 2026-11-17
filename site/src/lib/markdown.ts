@@ -19,9 +19,12 @@ export interface Heading {
 const unescape = (s: string) =>
   s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
 
-export async function renderLibraryMarkdown(name: string): Promise<{ html: string; title: string; headings: Heading[] } | null> {
-  const src = libraryFile(name);
+/** A library document in a language (docs/<locale>/<name>), or the English one when it has not been translated. */
+export async function renderLibraryMarkdown(name: string, locale: Locale = DEFAULT_LOCALE): Promise<{ html: string; title: string; headings: Heading[]; translated: boolean } | null> {
+  const own = locale === DEFAULT_LOCALE ? null : libraryFile(`docs/${locale}/${name}`);
+  const src = own ?? libraryFile(name);
   if (src == null) return null;
+  const translated = own != null || locale === DEFAULT_LOCALE;
   processor ??= createMarkdownProcessor({ syntaxHighlight: false, gfm: true, smartypants: false });
   // The page draws its own title
   const title = /^# (.*)\n/.exec(src)?.[1]?.replace(/`/g, "") ?? name;
@@ -43,7 +46,7 @@ export async function renderLibraryMarkdown(name: string): Promise<{ html: strin
       /<pre><code class="language-json">([\s\S]*?)<\/code><\/pre>/g,
       (_, c: string) => `<pre class="json"><code>${highlightJson(unescape(c))}</code></pre>`,
     );
-  return { html, title, headings: metadata.headings as Heading[] };
+  return { html, title, headings: metadata.headings as Heading[], translated };
 }
 
 /** A guide from docs/guides/, with links to other guides and site pages kept on the site. */

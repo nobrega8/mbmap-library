@@ -5,10 +5,14 @@
 
 import { locale } from "./i18n.ts";
 import { PT } from "./guide-widgets-pt.ts";
+import { ZH } from "./guide-widgets-zh.ts";
+
+// Translations of the figures per language; a language without an entry shows English.
+const TEXT: Record<string, Record<string, string> | undefined> = { pt: PT, zh: ZH };
 
 /** Text of the figures in the language of the page; English is the key. {name} placeholders are filled from vars. */
 const tx = (en: string, vars?: Record<string, string | number>) => {
-  const s = locale === "pt" ? (PT[en] ?? en) : en;
+  const s = TEXT[locale]?.[en] ?? en;
   return vars ? s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m)) : s;
 };
 

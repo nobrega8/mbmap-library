@@ -1,6 +1,6 @@
 ---
 import { localizeUrl, pageHref } from "../../lib/base.ts";
-import { DEFAULT_LOCALE, type Locale } from "../../i18n/locales.ts";
+import { DEFAULT_LOCALE, LOCALE_TAG, type Locale } from "../../i18n/locales.ts";
 import { count, translate, useT } from "../../i18n/index.ts";
 import Base from "../../layouts/Base.astro";
 import StatusBar from "../../components/StatusBar.astro";
@@ -16,7 +16,7 @@ const t = useT(locale);
 const total = m.devices.length;
 const models = m.devices.map((d) => d.info.model);
 const shownModels = models.length > 6 ? t("maker.andMore", { list: models.slice(0, 6).join(", "), n: models.length - 6 }) : models.join(", ");
-const description = t("maker.description", { count: translate(locale, total === 1 ? "maker.countMaps.one" : "maker.countMaps.many", { n: total.toLocaleString(locale === "pt" ? "pt-PT" : "en-US"), name: m.name }), models: shownModels });
+const description = t("maker.description", { count: translate(locale, total === 1 ? "maker.countMaps.one" : "maker.countMaps.many", { n: total.toLocaleString(LOCALE_TAG[locale]), name: m.name }), models: shownModels });
 const site = m.website ? (/^https?:/.test(m.website) ? m.website : `https://${m.website}`) : null;
 const icons = await vendorIcons();
 const rows = m.devices.map((d) => deviceRow(deviceEntry(d, icons), { vendor: false, locale })).join("");

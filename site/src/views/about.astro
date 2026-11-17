@@ -1,4 +1,6 @@
 ---
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { statusLabel, statusLong } from "../i18n/labels.ts";
 import { href } from "../lib/base.ts";
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
@@ -21,14 +23,110 @@ const example = `{
     {"name": "Reset energy", "group": "Commands", "area": "coil", "address": 0, "type": "bool", "access": "W"}
   ]
 }`;
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const zh = locale === "zh";
 ---
 
 <Base
-  untranslated
-  title="About MBMap"
-  description="MBMap is an open, community-driven registry of Modbus device maps in one JSON format, readable by any tool. What it is, how the format works and how to contribute."
+  untranslated={!zh}
+  title={zh ? "关于 MBMap" : "About MBMap"}
+  description={zh ? "MBMap 是一个开放的、由社区驱动的 Modbus 设备映射库，采用任何工具都可读取的同一种 JSON 格式。它是什么、格式如何运作以及如何参与贡献。" : "MBMap is an open, community-driven registry of Modbus device maps in one JSON format, readable by any tool. What it is, how the format works and how to contribute."}
   nav="about"
 >
+{zh ? (
+<>
+  <div class="about">
+    <section class="card pad prose">
+      <h1>关于 {SITE_NAME}</h1>
+      <p class="lead">
+        {SITE_NAME} 是一种开放格式，也是一个由社区共同维护的 Modbus 设备映射库：目前收录来自 {manufacturers.length} 家制造商的 {devices.length} 台设备，全部属于公有领域。
+      </p>
+
+      <h2>问题所在</h2>
+      <p>
+        读取 Modbus 设备要从它的寄存器映射表开始，而这张表通常藏在 PDF 手册里：一张包含地址、数据类型、比例系数和字节序的表格，每位工程师都要手工把它输入自己的工具。每个工具用自己的格式保存，于是同样的工作要为每台设备、在每个工具里、由每个使用者重复一遍。抄写中的错误（差一位的地址、颠倒的字序）会在现场表现为错误的数值。
+      </p>
+
+      <h2>{SITE_NAME} 做什么</h2>
+      <p>
+        一个 <code>.mbmap.json</code> 文件描述一种设备型号：谁制造它、如何连接它，以及每个寄存器的含义。映射表只需编写一次、核对一次，任何兼容的工具都可以加载它，变量已经命名、换算并标明类型。映射库把这些映射表集中存放在
+        <a href={REPO_URL}>GitHub</a> 上，任何人都可以添加设备或更正内容。
+      </p>
+
+      <h2 id="format">格式如何运作</h2>
+      <p>
+        映射表是一份普通的 JSON 文档，配有 <a href={LINKS.schema}>JSON Schema</a>。顶层键给出制造商、型号和连接默认值（协议、单元 ID、串口设置、字节序和字序、地址基数）。每个寄存器都有名称、Modbus 区域（<code>coil</code>、<code>discrete</code>、<code>input</code>、<code>holding</code>）、地址和类型，还可以添加单位、比例、访问权限、写入限制，以及状态和位字段的对照表。每行一个寄存器，使每次修改都只是一行差异。
+      </p>
+      <pre><code>{example}</code></pre>
+      <p>
+        完整的规则，包括所有读取方都以同样方式报告的校验代码，见<a href={LINKS.spec}>规范（SPEC.md）</a>。
+      </p>
+
+      <h2 id="status">映射表有多可信</h2>
+      <p>
+        库中的每个映射表都在 <code>x_status</code> 中说明其来源。这是本库的约定，不属于格式本身，Modbench 会在每个映射表旁显示它。
+      </p>
+      <ul class="status-list">
+        {
+          STATUSES.map((s) => (
+            <li>
+              <span class={`status ${s}`}>
+                <Icon name={s} /> {statusLabel(locale, s)}
+              </span>
+              <span>
+                {statusLong(locale, s)} <span class="faint">（{statusCounts[s]} 个映射表）</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <p>
+        许多非官方映射表是为了启动本库，从其他开放目录转换而来的，目前还没有人对照制造商文档检查过。无论状态如何，映射表都按现状提供：向运行中的设备写入之前，请对照制造商文档核对映射表。
+      </p>
+
+      <h2 id="modbench">{SITE_NAME} 和 Modbench</h2>
+      <p>
+        <a href={MODBENCH_URL}>Modbench</a> 是适用于 Windows、Linux 和 macOS 的 Modbus TCP/RTU 客户端，也是读取 {SITE_NAME} 映射表的主要工具。它可直接浏览和下载本库，按寄存器名称读写设备，根据映射表的型号和固件核对设备，还可以运行一个依照映射表构建的模拟设备。本网站是它在网页上的搭档：同样的映射表，同样的外观，用于在连接设备之前查找设备。
+      </p>
+
+      <h2 id="integrate">在您自己的工具中使用映射表</h2>
+      <p>格式是开放的，任何工具都可以读取。所有内容都由仓库提供：</p>
+      <ul>
+        <li><a href={rawUrl("index.json")}><code>index.json</code></a> 列出每个映射表及其路径、大小、SHA-256、状态和寄存器数。</li>
+        <li>每个映射表位于 <code>{rawUrl("maps/<vendor>/<model>.mbmap.json")}</code>。</li>
+        <li>
+          索引的签名副本发布在 <a href={`${REPO_URL}/tree/signed`}><code>signed</code></a> 分支上，应用可以据此核实所下载的映射表确实来自本库（参见 <a href={`${LINKS.contributing}#signed-index`}>签名索引</a>）。
+        </li>
+        <li><a href={LINKS.tests}><code>tests/</code></a> 文件夹包含示例文件和读取方必须报告的诊断信息，可用来对照规范检查实现。</li>
+      </ul>
+      <p>
+        支持格式的一部分或全部，然后提交拉取请求，即可把您的工具列入<a href={href("/compatibility")}>兼容性页面</a>。
+      </p>
+
+      <h2>一个开放的社区项目</h2>
+      <p>
+        映射表、规范和工具均以 <a href={LINKS.license}>CC0 1.0</a> 贡献给公有领域：可用于任何用途，包括商业产品，无需征求许可。映射库因工程师、技术人员、集成商和制造商的贡献而不断壮大：新的映射表、更正，以及在真实硬件上的测试。
+        <a href={href("/contribute")}>了解如何参与</a>。
+      </p>
+    </section>
+
+    <aside class="card pad links" aria-label="链接">
+      <h2 class="key">链接</h2>
+      <ul>
+        <li><a href={REPO_URL}><Icon name="github" /> GitHub 上的 mbmap-library</a></li>
+        <li><a href={LINKS.spec}><Icon name="library" /> 规范（SPEC.md）</a></li>
+        <li><a href={LINKS.schema}><Icon name="raw" /> JSON Schema</a></li>
+        <li><a href={LINKS.contributing}><Icon name="plus" /> CONTRIBUTING.md</a></li>
+        <li><a href={LINKS.example}><Icon name="official" /> 示例映射表</a></li>
+        <li><a href={LINKS.discussions}><Icon name="about" /> 讨论区</a></li>
+        <li><a href={MODBENCH_URL}><Icon name="registers" /> Modbench</a></li>
+      </ul>
+    </aside>
+  </div>
+</>
+) : (
+<>
   <div class="about">
     <section class="card pad prose">
       <h1>About {SITE_NAME}</h1>
@@ -138,6 +236,8 @@ const example = `{
       </ul>
     </aside>
   </div>
+</>
+)}
 </Base>
 
 <style>

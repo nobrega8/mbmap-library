@@ -4,33 +4,36 @@ import Icon from "../components/Icon.astro";
 import { renderLibraryMarkdown } from "../lib/markdown.ts";
 import { LINKS } from "../lib/site.ts";
 import { BRANCH, REPO_URL } from "../lib/registry.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
 
-const doc = await renderLibraryMarkdown("SPEC.md");
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const zh = locale === "zh";
+const doc = await renderLibraryMarkdown("SPEC.md", locale);
 const toc = doc?.headings.filter((h) => h.depth === 2 || h.depth === 3) ?? [];
 ---
 
 <Base
-  untranslated
-  title="The .mbmap Format Specification"
-  description="The .mbmap format, version 2: a JSON format for Modbus device register maps. Top-level keys, registers, areas and addresses, data types, byte and word order, and validation."
+  untranslated={!doc?.translated}
+  title={zh ? ".mbmap 格式规范" : "The .mbmap Format Specification"}
+  description={zh ? ".mbmap 格式第 2 版：用于 Modbus 设备寄存器映射表的 JSON 格式。顶层键、寄存器、区域和地址、数据类型、字节序和字序，以及校验。" : "The .mbmap format, version 2: a JSON format for Modbus device register maps. Top-level keys, registers, areas and addresses, data types, byte and word order, and validation."}
   nav="spec"
 >
   <header class="page-head">
-    <p class="key">Specification</p>
-    <h1>{doc?.title ?? "The .mbmap format"}</h1>
+    <p class="key">{zh ? "规范" : "Specification"}</p>
+    <h1>{doc?.title ?? (zh ? ".mbmap 格式" : "The .mbmap format")}</h1>
     <div class="actions">
-      <a class="btn" href={LINKS.spec}><Icon name="github" /> SPEC.md on GitHub</a>
+      <a class="btn" href={LINKS.spec}><Icon name="github" /> {zh ? "GitHub 上的 SPEC.md" : "SPEC.md on GitHub"}</a>
       <a class="btn" href={LINKS.schema}><Icon name="raw" /> JSON Schema</a>
-      <a class="btn" href={LINKS.example}><Icon name="official" /> Example map</a>
-      <a class="btn" href={`${REPO_URL}/commits/${BRANCH}/SPEC.md`}>History</a>
+      <a class="btn" href={LINKS.example}><Icon name="official" /> {zh ? "示例映射表" : "Example map"}</a>
+      <a class="btn" href={`${REPO_URL}/commits/${BRANCH}/SPEC.md`}>{zh ? "历史" : "History"}</a>
     </div>
   </header>
 
   {
     doc ? (
       <div class="spec">
-        <nav class="toc card" aria-label="Contents">
-          <p class="key">Contents</p>
+        <nav class="toc card" aria-label={zh ? "目录" : "Contents"}>
+          <p class="key">{zh ? "目录" : "Contents"}</p>
           <ol>
             {toc.map((h) => (
               <li class={`d${h.depth}`}>
@@ -43,8 +46,8 @@ const toc = doc?.headings.filter((h) => h.depth === 2 || h.depth === 3) ?? [];
       </div>
     ) : (
       <section class="card pad empty">
-        <strong>The specification could not be read</strong>
-        Read <a href={LINKS.spec}>SPEC.md</a> on GitHub.
+        <strong>{zh ? "无法读取规范" : "The specification could not be read"}</strong>
+        {zh ? <>请在 GitHub 上阅读 <a href={LINKS.spec}>SPEC.md</a>。</> : <>Read <a href={LINKS.spec}>SPEC.md</a> on GitHub.</>}
       </section>
     )
   }
