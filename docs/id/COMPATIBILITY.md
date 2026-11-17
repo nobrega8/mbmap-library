@@ -1,0 +1,46 @@
+# Kompatibilitas
+
+Alat yang membaca file `.mbmap`, dan bagian format ([SPEC.md](SPEC.md)) yang didukung masing-masing.
+
+## Alat
+
+| Alat | Apa itu | Apa yang dilakukannya dengan peta |
+|---|---|---|
+| <img src="https://raw.githubusercontent.com/nobrega8/modbench/main/assets/icon.svg" width="20" height="20" alt="" align="top"> [Modbench](https://github.com/nobrega8/modbench) | Klien Modbus TCP/UDP/RTU/ASCII untuk Windows, Linux, dan macOS, dengan baris perintah (`modbench-cli`) dan server MCP | Membuka peta dan membaca (serta menulis) perangkat berdasarkan nama register; menjelajahi dan mengunduh pustaka ini; menjalankan perangkat simulasi yang dibentuk dari sebuah peta. Dari baris perintah: `validate` dan `convert` peta, dan `map` membaca setiap register sebuah peta dari perangkat; alat MCP `read_map` dan `validate_map` melakukan hal yang sama untuk asisten AI |
+| <img src="assets/tools/scanbus-br.png" width="20" height="20" alt="" align="top"> [ScanBus-BR](https://github.com/ortegahernandes/ScanBus-BR-Simulator-Modbus) | Master Modbus RTU/TCP gratis, simulator slave, dan sniffer RTU untuk Windows dan Linux (sejak versi 5.2.0) | Mencari di pustaka ini dan menampilkan register perangkat (nama, fungsi, alamat); mengimpor nama register sebagai alias dan mengisi fungsi, alamat awal, tipe, dan urutan byte register pertama, plus unit ID, baud rate, dan paritas peta. Tabel utamanya membaca blok yang berurutan (alamat awal dan jumlah), bukan register tunggal menurut nama; mengeklik sebuah register membukanya di jendela terpisah. Menampilkan status setiap peta dan menyimpan peta sebagai CSV (hanya register), TXT, atau RTF (dengan deskripsi dan catatan) |
+| <img src="assets/tools/mtui.png" width="20" height="20" alt="" align="top"> [MTUI](https://github.com/inowattio/MTUI) | Klien Modbus TCP/RTU berbasis papan ketik untuk terminal, untuk Windows, Linux, dan macOS, dengan demo web (sejak versi 1.6.0) | Mengimpor peta yang ditempelkan: setiap register disematkan dan diberi label nama dan satuannya, serta mendapat aturan yang mendekode tipe, urutan byte dan word, skala, offset, dan tabel terjemahannya. Register yang tidak dapat didekode (string, bidang multi-bit) hanya mempertahankan labelnya |
+| <img src="assets/tools/modbus-tools.png" width="20" height="20" alt="" align="top"> [Modbus Tools](https://github.com/serhmarch/ModbusTools) | Klien Modbus (ModbusClient) dan simulator server (ModbusServer) untuk Windows dan Linux, dengan TCP, UDP, RTU, dan ASCII (belum dalam rilis: dukungannya digabungkan di cabang `v0.5dev`) | **Data › Import Data View…** dan **Import Items…** menerima file `.mbmap.json`: setiap register menjadi item tampilan data (alamat, format, urutan byte dan word, serta komentar berisi nama, satuan, skala, dan offset), dan tampilan diberi nama sesuai peta. Bidang bit dan bit `bool` dalam sebuah register menjadi satu item `Bin16` per register, dengan komentar yang menamai setiap bit. Ekspor tidak berubah |
+| <img src="assets/tools/open-modscan.png" width="20" height="20" alt="" align="top"> [Open ModScan](https://github.com/sanny32/OpenModScan) | Master (klien) Modbus gratis untuk Windows dan Linux (digabungkan di cabang `dev`, belum dalam rilis: 1.16.2 belum memilikinya) | File › Open menerima file `.mbmap.json`: register dikelompokkan ke dalam jendela menurut area, mode tampilan, dan urutan byte (celah hingga 10 alamat, dalam batas pembacaan), masing-masing diatur dengan tipe titik, alamat awal, panjang, ID perangkat, basis alamat, dan mode tampilan, dengan nama register (beserta satuan dan skala) sebagai deskripsi alamat. Peta dengan lebih dari 8 jendela membuka daftar untuk dipilih. File › Device Map Library mengunduh indeks pustaka ini, mencantumkan peta dengan filter, dan membuka yang dipilih |
+
+## Dukungan per fitur
+
+Keterangan: **Ya** didukung · **Dipertahankan** dibaca dan ditulis kembali, tidak ditampilkan · **—** tidak didukung atau tidak didokumentasikan.
+
+| Fitur (bagian SPEC.md) | <img src="https://raw.githubusercontent.com/nobrega8/modbench/main/assets/icon.svg" width="16" height="16" alt="" align="top"> Modbench | <img src="assets/tools/scanbus-br.png" width="16" height="16" alt="" align="top"> ScanBus-BR | <img src="assets/tools/mtui.png" width="16" height="16" alt="" align="top"> MTUI | <img src="assets/tools/modbus-tools.png" width="16" height="16" alt="" align="top"> [Modbus Tools](https://github.com/serhmarch/ModbusTools) | <img src="assets/tools/open-modscan.png" width="16" height="16" alt="" align="top"> [Open ModScan](https://github.com/sanny32/OpenModScan) |
+|---|---|---|---|---|---|
+| Format versi 2, JSON (§2, §3) | Ya | Ya: peta dari pustaka ini | Ya: ditempel sebagai JSON | Ya: hanya versi 2; versi lain dan JSON tidak valid ditolak dengan pesan | Ya: hanya versi 2; versi lain ditolak dengan pesan |
+| Format versi 1, CSV (§10, usang) | Ya: membukanya dengan peringatan dan mengonversinya ke versi 2 | — | — | — | — |
+| Semua tipe: `bool`, bilangan bulat 16/32/64-bit, `float32`, `float64`, `string` (§6) | Ya | Ya: tipe register pertama atau register yang diklik digunakan | Ya: hanya dilabeli | Ya: masing-masing menjadi format tampilan data; `bool` hanya di `coil` dan `discrete`, sebuah `string` memakai 2 karakter per register | Ya: ditampilkan sebagai mode tampilan (bilangan bulat, float, string sebagai ANSI); `bool` dalam register adalah sebuah bit |
+| `byte_order` dan `word_order`, per file dan per register (§6) | Ya, dan pengguna dapat menimpa urutan byte peta | Ya: urutan byte register pertama atau register yang diklik digunakan | Ya | Ya: per file dan per register | Ya: per file dan per register |
+| `address_base` 0 dan 1 (§5) | Ya | — | Ya | Ya | Ya |
+| Nilai bawaan koneksi: `protocol`, `unit_id`, `port`, `baudrate`, `parity`, `databits`, `stopbits` (§3) | Ya: diisi saat peta dibuka | Hanya `unit_id`, `baudrate`, dan `parity`: diisi jika belum terhubung, dan dapat diedit | — | — | Hanya `unit_id`: ID perangkat dari jendela |
+| `max_read_registers`, `max_read_bits` (§3) | Ya: pembacaan yang lebih panjang dipecah | — | — | — | Ya: jendela dijaga dalam batas ini |
+| Tabel terjemahan, bernama (`enums`) dan sebaris (§4.1) | Ya: label ditampilkan, dan ditawarkan saat menulis | — | Ya: label ditampilkan | — | — |
+| Nilai sentinel (§4.2) | Ya: ditampilkan sebagai labelnya, dikeluarkan dari grafik dan alarm | — | — | — | — |
+| Bidang bit, `bit` dan `bits` (§4.3) | Ya: dibaca, dan ditulis dengan hanya mengubah bidangnya | — | Hanya `bit`: bit-bit satu register berbagi satu aturan; `bits` hanya dilabeli | Ya: satu item `Bin16` per register, komentarnya menamai setiap bit atau bidang | Ya: ditampilkan dalam biner, nama setiap bit atau bidang ada di deskripsi |
+| Register faktor skala, `scale_factor` (§4.4) | Ya: register eksponen dibaca bersama nilainya | — | — | — | — |
+| Batas penulisan, `write_min` dan `write_max` (§4.5) | Ya: nilai di luar batas ditolak sebelum menulis | — | — | — | — |
+| Nilai referensi (§4.6) | Ya: kecocokan, ketidakcocokan, dan pemeriksaan yang gagal ditampilkan | — | — | — | — |
+| Register identitas, `role`, dan `models` (§4.7, §9) | Ya: perangkat diperiksa terhadap model dan firmware peta | — | — | — | — |
+| Identitas dari perangkat, `identify` dengan FC17 atau FC43 (§4.8, §9) | Ya: dibaca, divalidasi, dipertahankan saat peta disimpan, dan dibandingkan dengan model dan firmware peta oleh Check device (aplikasi dan baris perintah). FC43 lengkap. Jawaban FC17 yang byte indikator run-nya bukan `0x00` atau `0xFF` ditolak oleh pustaka Modbus, sehingga pemeriksaan tidak diketahui untuk perangkat tersebut. Pembuat peta belum memiliki bidang untuknya | — | — | — | — |
+| Permintaan baca terpisah, `read_alone` dan `read_group` (§4.9) | Ya: divalidasi, dan dipatuhi saat pembacaan direncanakan (polling dan ekspor Node-RED). Pembuat peta belum memiliki bidang untuknya | — | — | — | — |
+| Bagian dari blok, `parts` (§4.10) | Ya (0.7.3): dibaca, divalidasi, dipertahankan saat peta disimpan. Daftar tulis dan tabel register menampilkan bagian sebagai bidang terpisah; penulisan membangun seluruh blok dari bagian-bagiannya dan mengirimnya dalam satu permintaan, dan nilai dipecah menjadi bagian-bagiannya saat dibaca | — | — | — | — |
+| Rentang firmware, per peta dan per register (§3.2, §9) | Ya: setelah firmware diketahui, hanya register-nya yang dibaca | — | — | — | — |
+| `revision` dan `revised` (§3.1) | Ya: ditampilkan bersama peta | — | — | — | — |
+| `source`, `sources`, `notes`, `comment` (§3.3, §2) | Dipertahankan | Catatan dan deskripsi: disertakan saat peta disimpan sebagai TXT atau RTF | — | — | — |
+| Kode validasi (§7) | Ya: semuanya, dengan kode dan JSON Pointer yang sama; diperiksa terhadap [`tests/`](tests/) | — | — | — | — |
+| `x_status` (milik pustaka ini, bukan format) | Ya: ditampilkan sebagai ikon di pustaka dan pemilih peta | Ya: ditampilkan sebagai indikator (resmi, tidak resmi, terverifikasi) | — | — | — |
+
+## Menambahkan alat
+
+Membangun alat yang membaca `.mbmap`? Ikuti [SPEC.md](SPEC.md) dan periksa terhadap file contoh di [`tests/`](tests/): masing-masing mencantumkan diagnostik yang harus dilaporkan pembaca. Lalu buka pull request yang menambahkan alat Anda ke halaman ini, beserta apa yang didukungnya. Dukungan parsial tidak masalah: sebutkan bagian mana yang dibaca dan mana yang diabaikan.
