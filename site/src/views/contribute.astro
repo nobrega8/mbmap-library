@@ -167,6 +167,16 @@ const cardsTh = {
   docs: { title: "ปรับปรุงเอกสาร", text: "มีคำถามเกี่ยวกับรูปแบบ มีไอเดีย หรือมีเครื่องมือที่อ่านไฟล์ .mbmap เปิดการสนทนา หรือเสนอการแก้ไขเอกสาร", links: ["ถามคำถาม", "เสนอไอเดีย", "แสดงเครื่องมือ"] },
 } as const;
 
+// hu text of the cards, in the order of `cards`.
+const cardsHu = {
+  add: { title: "Új eszköz hozzáadása", text: "Írjon térképet a gyártó nyilvános dokumentációjából, ellenőrizze az ellenőrzővel, és nyisson egy pull requestet.", links: ["Hogyan adjon hozzá térképet", "Példatérkép"] },
+  request: { title: "Eszköz kérése", text: "Nem tudja maga megírni a térképet? Kérje, lehetőleg a gyártó Modbus-dokumentációjára mutató hivatkozással.", links: ["Térkép kérése"] },
+  verify: { title: "Térkép ellenőrzése valódi hardveren", text: "Olvasson be egy eszközt egy térképpel, és vesse össze az értékeket a kijelzőjével. Jelentse az eredményt, jót vagy rosszat, akkor is, ha nem Ön írta a térképet.", links: ["Teszt jelentése", "Mit érdemes ellenőrizni"] },
+  correct: { title: "Hibás adatok jelentése vagy javítása", text: "Hibás cím, típus, skála vagy bájtsorrend? Minden eszközoldalon van „Javítás javaslása”, amely a GitHubon szerkeszti a fájlt, és pull requestet nyit, valamint „Hiba jelentése”.", links: ["Térkép szerkesztése", "Nyitott issue-k"] },
+  check: { title: "Nem hivatalos térkép ellenőrzése", text: "Vesse össze az átalakított térképet a gyártó kézikönyvével, javítsa, ami téves, és jegyezze fel a használt dokumentumot. Ekkor hivatalossá válik.", links: ["Hogyan ellenőrizzen egyet", "Nem hivatalos térképek"] },
+  docs: { title: "A dokumentáció javítása", text: "Kérdések a formátumról, ötletek hozzá, vagy egy eszköz, amely .mbmap fájlokat olvas: nyisson beszélgetést, vagy javasoljon módosítást a dokumentációban.", links: ["Kérdés feltevése", "Ötlet javaslása", "Eszköz bemutatása"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
@@ -178,12 +188,13 @@ const ru = locale === "ru";
 const de = locale === "de";
 const tr = locale === "tr";
 const th = locale === "th";
+const hu = locale === "hu";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "参与贡献" : th ? "ร่วมสนับสนุน" : tr ? "Katkıda bulun" : de ? "Mitmachen" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : th ? "เพิ่มแมปอุปกรณ์ Modbus แก้ไขรีจิสเตอร์ หรือแจ้งผลการทดสอบบนฮาร์ดแวร์จริง แมป MBMap อยู่บน GitHub และเปิดให้ทุกคน" : tr ? "Bir Modbus cihaz haritası ekleyin, bir register'ı düzeltin veya gerçek donanımda bir test bildirin. MBMap haritaları GitHub'dadır ve herkese açıktır." : de ? "Fügen Sie eine Modbus-Gerätemap hinzu, korrigieren Sie ein Register oder melden Sie einen Test an echter Hardware. Die MBMap-Maps liegen auf GitHub und stehen allen offen." : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  title={zh ? "参与贡献" : hu ? "Közreműködés" : th ? "ร่วมสนับสนุน" : tr ? "Katkıda bulun" : de ? "Mitmachen" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : hu ? "Adjon hozzá Modbus eszköztérképet, javítson egy regisztert, vagy jelentsen tesztet valódi hardveren. Az MBMap térképek a GitHubon vannak, és mindenki számára nyitottak." : th ? "เพิ่มแมปอุปกรณ์ Modbus แก้ไขรีจิสเตอร์ หรือแจ้งผลการทดสอบบนฮาร์ดแวร์จริง แมป MBMap อยู่บน GitHub และเปิดให้ทุกคน" : tr ? "Bir Modbus cihaz haritası ekleyin, bir register'ı düzeltin veya gerçek donanımda bir test bildirin. MBMap haritaları GitHub'dadır ve herkese açıktır." : de ? "Fügen Sie eine Modbus-Gerätemap hinzu, korrigieren Sie ein Register oder melden Sie einen Test an echter Hardware. Die MBMap-Maps liegen auf GitHub und stehen allen offen." : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -241,6 +252,64 @@ const th = locale === "th";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : hu ? (
+<>
+  <header class="page-head">
+    <h1>Közreműködés</h1>
+    <p class="lead">
+      Egy jó térkép megspórolja a következő embernek az egyik délutánt egy PDF kézikönyvvel. Minden térkép a GitHubon, az <a href={LINKS.repo}>mbmap-library</a> tárházban van; minden közreműködés azon keresztül érkezik.
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsHu[c.id].title}</h2>
+          <p class="muted">{cardsHu[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsHu[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">Térkép beküldése és térkép ellenőrzése</h2>
+    <p>
+      A <strong>beküldés</strong> fájl hozzáadását vagy módosítását jelenti: Ön egy forrásból írja a regisztereket, és a <code>sources</code> mezőben megmondja, melyikből. A gyártó dokumentumából írt térkép
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span>; egy másik katalógusból, fórumról vagy harmadik fél integrációjából másolt térkép
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>.
+    </p>
+    <p>
+      Az <strong>ellenőrzés</strong> egy meglévő térkép tesztelését jelenti valódi eszközön: olvassa be az eszközt, vesse össze az értékeket az eszköz kijelzőjével vagy saját szoftverével (minden regisztercsoportból legalább egy értéket, és a 32 bites értékeknél a bájt- és szósorrendet), és jelezze, melyik eszközt, firmware-t és kapcsolatot használta. Csak ekkor lesz egy térkép
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span>. Bárki ellenőrizhet térképet; nem kell a szerzőjének lennie. Egy problémát feltáró teszt ugyanolyan értékes: jelezze, hogy a térképet ne jelöljék ellenőrzöttnek.
+    </p>
+
+    <h2>Pull request nyitása előtt</h2>
+    <ul>
+      <li>Nevezze el a fájlt <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> néven, kisbetűs slug-gal, például <code>maps/acme-meters/pm-200.mbmap.json</code>.</li>
+      <li>Futtassa az ellenőrzőt, és javítson minden hibát: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>Építse újra az indexet: <code>python tools/index/build_index.py</code></li>
+      <li>Növelje a <code>revision</code> értékét, ha egy módosítás befolyásolja, hogyan olvasható vagy írható az eszköz.</li>
+    </ul>
+
+    <h2>Szabályok</h2>
+    <ul>
+      <li><strong>Csak nyilvános információ.</strong> Semmi NDA alatt álló vagy bizalmasnak jelölt dokumentumból.</li>
+      <li><strong>Ne másoljon kézikönyveket.</strong> A címek, típusok és egységek tények; a leírásokat a saját szavaival írja.</li>
+      <li><strong>Nincs személyes adat.</strong> Ne szerepeljen valódi telepítés IP-címe, sorozatszáma vagy helyszínneve.</li>
+      <li><strong>A pontosság többet ér a teljességnél.</strong> Ha bizonytalan egy regiszterben, hagyja ki, vagy jelezze a kételyét.</li>
+    </ul>
+    <p>
+      A teljes útmutató a <a href={LINKS.contributing}>CONTRIBUTING.md</a>. A közreműködéssel Ön beleegyezik, hogy a hozzájárulását a <a href={LINKS.license}>CC0 1.0</a> alatt teszik közzé.
     </p>
   </section>
 </>
