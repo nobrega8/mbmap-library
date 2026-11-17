@@ -187,6 +187,16 @@ const cardsId = {
   docs: { title: "Perbaiki dokumentasi", text: "Pertanyaan tentang format, ide untuknya, atau alat yang membaca file .mbmap: buka diskusi, atau usulkan perubahan pada dokumentasi.", links: ["Ajukan pertanyaan", "Usulkan ide", "Tampilkan alat"] },
 } as const;
 
+// nl text of the cards, in the order of `cards`.
+const cardsNl = {
+  add: { title: "Een nieuw apparaat toevoegen", text: "Schrijf een kaart uit de openbare documentatie van de fabrikant, controleer hem met de validator en open een pull request.", links: ["Hoe u een kaart toevoegt", "Voorbeeldkaart"] },
+  request: { title: "Een apparaat aanvragen", text: "Kunt u de kaart niet zelf schrijven? Vraag hem aan, bij voorkeur met een link naar de Modbus-documentatie van de fabrikant.", links: ["Een kaart aanvragen"] },
+  verify: { title: "Een kaart op echte hardware verifiëren", text: "Lees een apparaat uit met een kaart en vergelijk de waarden met zijn display. Meld het resultaat, goed of slecht, ook als u de kaart niet zelf schreef.", links: ["Een test melden", "Wat te verifiëren"] },
+  correct: { title: "Onjuiste gegevens melden of corrigeren", text: "Een onjuist adres, type, schaal of bytevolgorde? Elke apparaatpagina heeft “Een correctie voorstellen”, dat het bestand op GitHub bewerkt en een pull request opent, en “Een probleem melden”.", links: ["Een kaart bewerken", "Open issues"] },
+  check: { title: "Een onofficiële kaart verifiëren", text: "Vergelijk een omgezette kaart met de handleiding van de fabrikant, corrigeer wat fout is en noteer het gebruikte document. Dan wordt hij officieel.", links: ["Hoe u er een verifieert", "Onofficiële kaarten"] },
+  docs: { title: "De documentatie verbeteren", text: "Vragen over het formaat, ideeën ervoor of een hulpmiddel dat .mbmap-bestanden leest: open een discussie of stel een wijziging in de documentatie voor.", links: ["Een vraag stellen", "Een idee voorstellen", "Een hulpmiddel tonen"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
@@ -200,12 +210,13 @@ const tr = locale === "tr";
 const th = locale === "th";
 const hu = locale === "hu";
 const id = locale === "id";
+const nl = locale === "nl";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "参与贡献" : id ? "Berkontribusi" : hu ? "Közreműködés" : th ? "ร่วมสนับสนุน" : tr ? "Katkıda bulun" : de ? "Mitmachen" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : id ? "Tambahkan peta perangkat Modbus, perbaiki register, atau laporkan pengujian pada perangkat keras nyata. Peta MBMap ada di GitHub dan terbuka untuk semua orang." : hu ? "Adjon hozzá Modbus eszköztérképet, javítson egy regisztert, vagy jelentsen tesztet valódi hardveren. Az MBMap térképek a GitHubon vannak, és mindenki számára nyitottak." : th ? "เพิ่มแมปอุปกรณ์ Modbus แก้ไขรีจิสเตอร์ หรือแจ้งผลการทดสอบบนฮาร์ดแวร์จริง แมป MBMap อยู่บน GitHub และเปิดให้ทุกคน" : tr ? "Bir Modbus cihaz haritası ekleyin, bir register'ı düzeltin veya gerçek donanımda bir test bildirin. MBMap haritaları GitHub'dadır ve herkese açıktır." : de ? "Fügen Sie eine Modbus-Gerätemap hinzu, korrigieren Sie ein Register oder melden Sie einen Test an echter Hardware. Die MBMap-Maps liegen auf GitHub und stehen allen offen." : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  title={zh ? "参与贡献" : nl ? "Bijdragen" : id ? "Berkontribusi" : hu ? "Közreműködés" : th ? "ร่วมสนับสนุน" : tr ? "Katkıda bulun" : de ? "Mitmachen" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : nl ? "Voeg een Modbus-apparaatkaart toe, corrigeer een register of meld een test op echte hardware. De MBMap-kaarten staan op GitHub en zijn open voor iedereen." : id ? "Tambahkan peta perangkat Modbus, perbaiki register, atau laporkan pengujian pada perangkat keras nyata. Peta MBMap ada di GitHub dan terbuka untuk semua orang." : hu ? "Adjon hozzá Modbus eszköztérképet, javítson egy regisztert, vagy jelentsen tesztet valódi hardveren. Az MBMap térképek a GitHubon vannak, és mindenki számára nyitottak." : th ? "เพิ่มแมปอุปกรณ์ Modbus แก้ไขรีจิสเตอร์ หรือแจ้งผลการทดสอบบนฮาร์ดแวร์จริง แมป MBMap อยู่บน GitHub และเปิดให้ทุกคน" : tr ? "Bir Modbus cihaz haritası ekleyin, bir register'ı düzeltin veya gerçek donanımda bir test bildirin. MBMap haritaları GitHub'dadır ve herkese açıktır." : de ? "Fügen Sie eine Modbus-Gerätemap hinzu, korrigieren Sie ein Register oder melden Sie einen Test an echter Hardware. Die MBMap-Maps liegen auf GitHub und stehen allen offen." : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -263,6 +274,64 @@ const id = locale === "id";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : nl ? (
+<>
+  <header class="page-head">
+    <h1>Bijdragen</h1>
+    <p class="lead">
+      Een goede kaart bespaart de volgende persoon een middag met een pdf-handleiding. Alle kaarten staan in de GitHub-repository <a href={LINKS.repo}>mbmap-library</a>; elke bijdrage loopt daarlangs.
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsNl[c.id].title}</h2>
+          <p class="muted">{cardsNl[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsNl[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">Een kaart indienen en een kaart verifiëren</h2>
+    <p>
+      <strong>Indienen</strong> is een bestand toevoegen of wijzigen: u schrijft de registers uit een bron en noemt in <code>sources</code> welke. Een kaart die uit het document van de fabrikant is geschreven, is
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span>; een kaart die uit een andere catalogus, een forum of een integratie van een derde is gekopieerd, is
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>.
+    </p>
+    <p>
+      <strong>Verifiëren</strong> is een bestaande kaart op een echt apparaat testen: lees het apparaat uit, vergelijk de waarden met het display van het apparaat of zijn eigen software (minstens één waarde uit elke registergroep, en bij 32-bitswaarden de byte- en woordvolgorde) en meld welk apparaat, welke firmware en welke verbinding u gebruikte. Pas dan wordt een kaart
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span>. Iedereen kan een kaart verifiëren; u hoeft de auteur niet te zijn. Een test die een probleem vindt is even waardevol: meld het, zodat de kaart niet als geverifieerd wordt gemarkeerd.
+    </p>
+
+    <h2>Voordat u een pull request opent</h2>
+    <ul>
+      <li>Noem het bestand <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code>, met een slug in kleine letters, bijvoorbeeld <code>maps/acme-meters/pm-200.mbmap.json</code>.</li>
+      <li>Draai de validator en los elke fout op: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>Bouw de index opnieuw: <code>python tools/index/build_index.py</code></li>
+      <li>Verhoog <code>revision</code> als een wijziging beïnvloedt hoe het apparaat wordt gelezen of geschreven.</li>
+    </ul>
+
+    <h2>Regels</h2>
+    <ul>
+      <li><strong>Alleen openbare informatie.</strong> Niets uit documenten onder NDA of als vertrouwelijk gemarkeerd.</li>
+      <li><strong>Kopieer geen handleidingen.</strong> Adressen, typen en eenheden zijn feiten; schrijf beschrijvingen in uw eigen woorden.</li>
+      <li><strong>Geen persoonsgegevens.</strong> Geen IP-adressen, serienummers of locatienamen van echte installaties.</li>
+      <li><strong>Kies nauwkeurigheid boven volledigheid.</strong> Bent u onzeker over een register, laat het dan weg of vermeld de twijfel.</li>
+    </ul>
+    <p>
+      De volledige richtlijnen staan in <a href={LINKS.contributing}>CONTRIBUTING.md</a>. Door bij te dragen gaat u ermee akkoord uw bijdrage te publiceren onder <a href={LINKS.license}>CC0 1.0</a>.
     </p>
   </section>
 </>
