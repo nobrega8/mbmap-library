@@ -157,6 +157,16 @@ const cardsTr = {
   docs: { title: "Belgelendirmeyi iyileştirin", text: "Biçimle ilgili sorular, ona dair fikirler ya da .mbmap dosyalarını okuyan bir araç: bir tartışma açın veya belgelerde bir değişiklik önerin.", links: ["Bir soru sorun", "Bir fikir önerin", "Bir aracı tanıtın"] },
 } as const;
 
+// th text of the cards, in the order of `cards`.
+const cardsTh = {
+  add: { title: "เพิ่มอุปกรณ์ใหม่", text: "เขียนแมปจากเอกสารสาธารณะของผู้ผลิต ตรวจสอบด้วยตัวตรวจสอบ แล้วเปิด pull request", links: ["วิธีเพิ่มแมป", "แมปตัวอย่าง"] },
+  request: { title: "ขออุปกรณ์", text: "เขียนแมปเองไม่ได้ใช่ไหม ขอมาได้เลย ควรแนบลิงก์ไปยังเอกสาร Modbus ของผู้ผลิต", links: ["ขอแมป"] },
+  verify: { title: "ตรวจสอบแมปกับฮาร์ดแวร์จริง", text: "อ่านอุปกรณ์ด้วยแมปแล้วเทียบค่ากับหน้าจอของอุปกรณ์ แจ้งผลไม่ว่าดีหรือไม่ดี แม้คุณจะไม่ได้เขียนแมปนั้นเอง", links: ["แจ้งผลการทดสอบ", "สิ่งที่ควรตรวจสอบ"] },
+  correct: { title: "แจ้งหรือแก้ไขข้อมูลที่ผิด", text: "ที่อยู่ ชนิด สเกล หรือลำดับไบต์ผิดใช่ไหม ทุกหน้าอุปกรณ์มี “เสนอการแก้ไข” ซึ่งแก้ไขไฟล์บน GitHub และเปิด pull request และ “แจ้งปัญหา”", links: ["แก้ไขแมป", "issue ที่เปิดอยู่"] },
+  check: { title: "ตรวจสอบแมปที่ไม่เป็นทางการ", text: "เทียบแมปที่แปลงมากับคู่มือของผู้ผลิต แก้สิ่งที่ผิด และจดเอกสารที่ใช้ แล้วแมปจะกลายเป็นแมปทางการ", links: ["วิธีตรวจสอบ", "แมปที่ไม่เป็นทางการ"] },
+  docs: { title: "ปรับปรุงเอกสาร", text: "มีคำถามเกี่ยวกับรูปแบบ มีไอเดีย หรือมีเครื่องมือที่อ่านไฟล์ .mbmap เปิดการสนทนา หรือเสนอการแก้ไขเอกสาร", links: ["ถามคำถาม", "เสนอไอเดีย", "แสดงเครื่องมือ"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
@@ -167,12 +177,13 @@ const bn = locale === "bn";
 const ru = locale === "ru";
 const de = locale === "de";
 const tr = locale === "tr";
+const th = locale === "th";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "参与贡献" : tr ? "Katkıda bulun" : de ? "Mitmachen" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : tr ? "Bir Modbus cihaz haritası ekleyin, bir register'ı düzeltin veya gerçek donanımda bir test bildirin. MBMap haritaları GitHub'dadır ve herkese açıktır." : de ? "Fügen Sie eine Modbus-Gerätemap hinzu, korrigieren Sie ein Register oder melden Sie einen Test an echter Hardware. Die MBMap-Maps liegen auf GitHub und stehen allen offen." : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  title={zh ? "参与贡献" : th ? "ร่วมสนับสนุน" : tr ? "Katkıda bulun" : de ? "Mitmachen" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : th ? "เพิ่มแมปอุปกรณ์ Modbus แก้ไขรีจิสเตอร์ หรือแจ้งผลการทดสอบบนฮาร์ดแวร์จริง แมป MBMap อยู่บน GitHub และเปิดให้ทุกคน" : tr ? "Bir Modbus cihaz haritası ekleyin, bir register'ı düzeltin veya gerçek donanımda bir test bildirin. MBMap haritaları GitHub'dadır ve herkese açıktır." : de ? "Fügen Sie eine Modbus-Gerätemap hinzu, korrigieren Sie ein Register oder melden Sie einen Test an echter Hardware. Die MBMap-Maps liegen auf GitHub und stehen allen offen." : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -230,6 +241,64 @@ const tr = locale === "tr";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : th ? (
+<>
+  <header class="page-head">
+    <h1>ร่วมสนับสนุน</h1>
+    <p class="lead">
+      แมปที่ดีช่วยประหยัดเวลาหนึ่งบ่ายกับคู่มือ PDF ให้คนถัดไป ทุกแมปอยู่ในคลัง <a href={LINKS.repo}>mbmap-library</a> บน GitHub และทุกการมีส่วนร่วมผ่านที่นั่น
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsTh[c.id].title}</h2>
+          <p class="muted">{cardsTh[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsTh[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">การส่งแมปและการตรวจสอบแมป</h2>
+    <p>
+      <strong>การส่ง</strong>คือการเพิ่มหรือแก้ไขไฟล์ คุณเขียนรีจิสเตอร์จากแหล่งหนึ่งและระบุใน <code>sources</code> ว่าแหล่งใด แมปที่เขียนจากเอกสารของผู้ผลิตเป็น
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span> ส่วนแมปที่คัดลอกจากแคตตาล็อกอื่น ฟอรัม หรือการผสานรวมของบุคคลที่สามเป็น
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>
+    </p>
+    <p>
+      <strong>การตรวจสอบ</strong>คือการทดสอบแมปที่มีอยู่กับอุปกรณ์จริง อ่านอุปกรณ์ เทียบค่ากับหน้าจอของอุปกรณ์หรือซอฟต์แวร์ของมันเอง (อย่างน้อยหนึ่งค่าจากแต่ละกลุ่มรีจิสเตอร์ และสำหรับค่า 32 บิตให้ตรวจลำดับไบต์และเวิร์ด) แล้วแจ้งว่าใช้อุปกรณ์ เฟิร์มแวร์ และการเชื่อมต่อแบบใด เมื่อทำเช่นนั้นแมปจึงเป็น
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span> ใครก็ตรวจสอบแมปได้ คุณไม่จำเป็นต้องเป็นผู้เขียน การทดสอบที่พบปัญหามีค่าเท่ากัน ให้แจ้งเพื่อไม่ให้แมปถูกทำเครื่องหมายว่าตรวจสอบแล้ว
+    </p>
+
+    <h2>ก่อนเปิด pull request</h2>
+    <ul>
+      <li>ตั้งชื่อไฟล์ <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> ด้วย slug ตัวพิมพ์เล็ก เช่น <code>maps/acme-meters/pm-200.mbmap.json</code></li>
+      <li>รันตัวตรวจสอบและแก้ทุกข้อผิดพลาด: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>สร้างดัชนีใหม่: <code>python tools/index/build_index.py</code></li>
+      <li>เพิ่ม <code>revision</code> หากการเปลี่ยนแปลงส่งผลต่อวิธีอ่านหรือเขียนอุปกรณ์</li>
+    </ul>
+
+    <h2>กฎ</h2>
+    <ul>
+      <li><strong>เฉพาะข้อมูลสาธารณะ</strong> ห้ามนำจากเอกสารที่อยู่ภายใต้ NDA หรือระบุว่าเป็นความลับ</li>
+      <li><strong>อย่าคัดลอกคู่มือ</strong> ที่อยู่ ชนิด และหน่วยเป็นข้อเท็จจริง ให้เขียนคำอธิบายด้วยคำพูดของคุณเอง</li>
+      <li><strong>ไม่มีข้อมูลส่วนบุคคล</strong> ห้ามใส่ที่อยู่ IP หมายเลขซีเรียล หรือชื่อสถานที่ของการติดตั้งจริง</li>
+      <li><strong>เลือกความถูกต้องก่อนความครบถ้วน</strong> หากไม่แน่ใจเกี่ยวกับรีจิสเตอร์ ให้ข้ามหรือระบุข้อสงสัย</li>
+    </ul>
+    <p>
+      คู่มือฉบับเต็มคือ <a href={LINKS.contributing}>CONTRIBUTING.md</a> การมีส่วนร่วมของคุณหมายถึงคุณตกลงเผยแพร่ภายใต้ <a href={LINKS.license}>CC0 1.0</a>
     </p>
   </section>
 </>

@@ -13,9 +13,10 @@ import { BN } from "./guide-widgets-bn.ts";
 import { RU } from "./guide-widgets-ru.ts";
 import { DE } from "./guide-widgets-de.ts";
 import { TR } from "./guide-widgets-tr.ts";
+import { TH } from "./guide-widgets-th.ts";
 
 // Translations of the figures per language; a language without an entry shows English.
-const TEXT: Record<string, Record<string, string> | undefined> = { pt: PT, zh: ZH, hi: HI, es: ES, fr: FR, bn: BN, ru: RU, de: DE, tr: TR };
+const TEXT: Record<string, Record<string, string> | undefined> = { pt: PT, zh: ZH, hi: HI, es: ES, fr: FR, bn: BN, ru: RU, de: DE, tr: TR, th: TH };
 
 /** Text of the figures in the language of the page; English is the key. {name} placeholders are filled from vars. */
 const tx = (en: string, vars?: Record<string, string | number>) => {
