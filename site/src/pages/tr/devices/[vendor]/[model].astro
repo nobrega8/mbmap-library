@@ -1,0 +1,13 @@
+---
+import type { GetStaticPaths } from "astro";
+import View from "../../../../views/devices/device.astro";
+import { registry } from "../../../../lib/registry.ts";
+
+export const getStaticPaths = (() =>
+  registry().devices.map((d) => ({
+    params: { vendor: d.vendorSlug, model: d.modelSlug },
+    props: { device: d },
+  }))) satisfies GetStaticPaths;
+---
+
+<View {...Astro.props} />
