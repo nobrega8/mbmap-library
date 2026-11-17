@@ -10,9 +10,10 @@ import { es } from "./es.ts";
 import { fr } from "./fr.ts";
 import { bn } from "./bn.ts";
 import { ru } from "./ru.ts";
+import { de } from "./de.ts";
 
 export type Key = keyof typeof en;
-const DICT: Record<Locale, Partial<Record<Key, string>>> = { en, pt, zh, hi, es, fr, bn, ru };
+const DICT: Record<Locale, Partial<Record<Key, string>>> = { en, pt, zh, hi, es, fr, bn, ru, de };
 
 export type Vars = Record<string, string | number>;
 
