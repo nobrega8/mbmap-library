@@ -50,17 +50,38 @@ themeBtn.addEventListener("click", () => {
 });
 showTheme(currentTheme());
 
-// ── language menu: closes on a click elsewhere and on Escape ──
+// ── language menu: closes with a short animation, on a click elsewhere and on Escape ──
 const langMenu = document.getElementById("lang-menu") as HTMLDetailsElement | null;
 if (langMenu) {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let closing = false;
+  const closeLang = (refocus = false) => {
+    if (!langMenu.open || closing) return;
+    if (reduce) {
+      langMenu.open = false;
+    } else {
+      closing = true;
+      langMenu.classList.add("closing");
+      setTimeout(() => {
+        langMenu.open = false;
+        langMenu.classList.remove("closing");
+        closing = false;
+      }, 120);
+    }
+    if (refocus) (langMenu.querySelector("summary") as HTMLElement).focus();
+  };
+  // Clicking the button while it is open plays the closing animation instead of cutting it off
+  langMenu.querySelector("summary")!.addEventListener("click", (e) => {
+    if (langMenu.open) {
+      e.preventDefault();
+      closeLang();
+    }
+  });
   document.addEventListener("click", (e) => {
-    if (langMenu.open && !langMenu.contains(e.target as Node)) langMenu.open = false;
+    if (!langMenu.contains(e.target as Node)) closeLang();
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && langMenu.open) {
-      langMenu.open = false;
-      (langMenu.querySelector("summary") as HTMLElement).focus();
-    }
+    if (e.key === "Escape") closeLang(true);
   });
 }
 

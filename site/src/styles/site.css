@@ -1849,20 +1849,34 @@ pre.json:focus-visible {
   letter-spacing: 0.04em;
   min-width: 38px;
 }
-/* language menu: a details element, so it opens without JavaScript */
+/* language menu: a details element, so it opens without JavaScript.
+   Themed like the search menu (card surface, hairline border, e3 shadow) and
+   animated like it: it rises in, and shell.ts plays the reverse before closing. */
 .lang-menu { position: relative; }
-.lang-menu > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.lang-menu > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; user-select: none; }
 .lang-menu > summary::-webkit-details-marker { display: none; }
+.lang-menu[open] > summary { background: var(--hover); color: var(--text); }
 .lang-list {
-  position: absolute; z-index: 30; top: calc(100% + 6px); right: 0; min-width: 170px; margin: 0; padding: 6px; list-style: none;
-  background: var(--bg, canvas); border-radius: 10px; box-shadow: 0 0 0 1px var(--border-strong, var(--border)), 0 10px 28px rgba(0,0,0,.14);
+  position: absolute; z-index: 30; top: calc(100% + 8px); right: 0; min-width: 190px; margin: 0; padding: 6px; list-style: none;
+  background: var(--card); color: var(--text); border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--border), var(--e3);
+  transform-origin: top right;
 }
-.lang-list a { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px; border-radius: 7px; text-decoration: none; color: var(--text); white-space: nowrap; }
-.lang-list a:hover, .lang-list a:focus-visible { background: var(--accent-soft, var(--subtle)); }
-.lang-list a[aria-current] { font-weight: 600; }
-.lang-list a { justify-content: flex-start; }
+.lang-menu[open] > .lang-list { animation: lang-in 0.18s var(--ease); }
+.lang-menu.closing > .lang-list { animation: lang-out 0.12s var(--ease) forwards; }
+@keyframes lang-in { from { opacity: 0; transform: translateY(-6px) scale(0.97); } }
+@keyframes lang-out { to { opacity: 0; transform: translateY(-4px) scale(0.97); } }
+.lang-list li { margin: 0; }
+.lang-list a {
+  display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 6px 10px; border-radius: 8px;
+  color: var(--text-2); text-decoration: none; white-space: nowrap;
+  transition: background-color 0.14s var(--ease), color 0.14s var(--ease);
+}
+.lang-list a:hover, .lang-list a:focus-visible { background: var(--hover); color: var(--text); }
+.lang-list a:focus-visible { outline: 2px solid var(--text); outline-offset: -2px; }
+.lang-list a[aria-current] { color: var(--text); font-weight: 600; }
 .lang-list .lang-name { flex: 1; }
-.flag { width: 18px; height: 18px; border-radius: 50%; flex: none; object-fit: cover; }
+.flag { width: 18px; height: 18px; border-radius: 50%; flex: none; object-fit: cover; box-shadow: 0 0 0 1px var(--border); }
 .untranslated {
   margin: 0 0 16px;
   font-size: 14px;

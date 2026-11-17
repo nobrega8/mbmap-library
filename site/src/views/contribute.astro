@@ -107,17 +107,28 @@ const cardsEs = {
   docs: { title: "Mejorar la documentación", text: "Preguntas sobre el formato, ideas para él, o una herramienta que lee archivos .mbmap: abre un debate o propón un cambio en la documentación.", links: ["Hacer una pregunta", "Sugerir una idea", "Mostrar una herramienta"] },
 } as const;
 
+// French text of the cards, in the order of `cards`.
+const cardsFr = {
+  add: { title: "Ajouter un nouveau périphérique", text: "Écrivez une carte à partir de la documentation publique du fabricant, vérifiez-la avec le validateur et ouvrez une pull request.", links: ["Comment ajouter une carte", "Carte d’exemple"] },
+  request: { title: "Demander un périphérique", text: "Vous ne pouvez pas écrire la carte vous-même ? Demandez-la, de préférence avec un lien vers la documentation Modbus du fabricant.", links: ["Demander une carte"] },
+  verify: { title: "Vérifier une carte sur du matériel réel", text: "Lisez un périphérique avec une carte et comparez les valeurs avec son afficheur. Signalez le résultat, bon ou mauvais, même si vous n’avez pas écrit la carte.", links: ["Signaler un test", "Que vérifier"] },
+  correct: { title: "Signaler ou corriger des données incorrectes", text: "Une adresse, un type, une échelle ou un ordre d’octets incorrects ? Chaque page de périphérique a « Suggérer une correction », qui modifie le fichier sur GitHub et ouvre une pull request, et « Signaler un problème ».", links: ["Modifier une carte", "Issues ouvertes"] },
+  check: { title: "Vérifier une carte non officielle", text: "Comparez une carte convertie avec le manuel du fabricant, corrigez ce qui est faux et notez le document utilisé. Elle devient alors officielle.", links: ["Comment en vérifier une", "Cartes non officielles"] },
+  docs: { title: "Améliorer la documentation", text: "Des questions sur le format, des idées pour lui, ou un outil qui lit les fichiers .mbmap : ouvrez une discussion, ou proposez une modification de la documentation.", links: ["Poser une question", "Suggérer une idée", "Présenter un outil"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
 const hi = locale === "hi";
 const es = locale === "es";
+const fr = locale === "fr";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "参与贡献" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  title={zh ? "参与贡献" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -175,6 +186,64 @@ const es = locale === "es";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : fr ? (
+<>
+  <header class="page-head">
+    <h1>Contribuer</h1>
+    <p class="lead">
+      Une bonne carte épargne à la personne suivante un après-midi passé avec un manuel PDF. Toutes les cartes sont dans le dépôt <a href={LINKS.repo}>mbmap-library</a> sur GitHub ; toute contribution passe par lui.
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsFr[c.id].title}</h2>
+          <p class="muted">{cardsFr[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsFr[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">Soumettre une carte et vérifier une carte</h2>
+    <p>
+      <strong>Soumettre</strong> ajoute ou modifie un fichier : vous écrivez les registres à partir d’une source et vous indiquez laquelle dans <code>sources</code>. Une carte écrite à partir de la documentation du fabricant est
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span> ; une carte copiée d’un autre catalogue, d’un forum ou d’une intégration tierce est
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>.
+    </p>
+    <p>
+      <strong>Vérifier</strong>, c’est tester une carte existante sur un périphérique réel : la lire, comparer les valeurs avec l’afficheur du périphérique ou son propre logiciel (au moins une valeur par groupe de registres, et l’ordre des octets et des mots d’une valeur 32 bits), et signaler le périphérique, le firmware et la connexion utilisés. C’est seulement alors qu’une carte devient
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span>. N’importe qui peut vérifier une carte ; il n’est pas nécessaire d’en être l’auteur. Un test qui révèle des problèmes est tout aussi utile : signalez-le pour que la carte ne soit pas marquée comme vérifiée.
+    </p>
+
+    <h2>Avant d’ouvrir une pull request</h2>
+    <ul>
+      <li>Nommez le fichier <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> avec des slugs en minuscules, par exemple <code>maps/acme-meters/pm-200.mbmap.json</code>.</li>
+      <li>Lancez le validateur et corrigez toutes les erreurs : <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>Reconstruisez l’index : <code>python tools/index/build_index.py</code></li>
+      <li>Augmentez <code>revision</code> quand une modification affecte la façon dont un périphérique est lu ou écrit.</li>
+    </ul>
+
+    <h2>Règles</h2>
+    <ul>
+      <li><strong>Seulement des informations publiques.</strong> Rien issu de documents sous NDA ou marqués confidentiels.</li>
+      <li><strong>Ne copiez pas les manuels.</strong> Les adresses, les types et les unités sont des faits ; rédigez les descriptions avec vos propres mots.</li>
+      <li><strong>Aucune donnée privée.</strong> Ni adresses IP, ni numéros de série, ni noms de sites d’une installation réelle.</li>
+      <li><strong>Mieux vaut la précision que l’exhaustivité.</strong> Si vous avez un doute sur un registre, laissez-le de côté ou dites-le.</li>
+    </ul>
+    <p>
+      Le guide complet est <a href={LINKS.contributing}>CONTRIBUTING.md</a>. En contribuant, vous acceptez de publier votre contribution sous <a href={LINKS.license}>CC0 1.0</a>.
     </p>
   </section>
 </>
