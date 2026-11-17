@@ -68,6 +68,29 @@ const flag = (l: Locale) => (existsSync(join(flagRoot, `${LOCALE_FLAG[l]}.png`))
     <link rel="canonical" href={canonical} />
     {alternates.map(([l, url]) => <link rel="alternate" hreflang={LOCALE_TAG[l as Locale]} href={url} />)}
     <link rel="alternate" hreflang="x-default" href={alternates[0]![1]} />
+    {
+      // First visit to the English page: open it in the language of the browser, unless the visitor
+      // already chose a language in the menu. Pages in other languages are never redirected.
+      locale === DEFAULT_LOCALE && (
+        <script
+          is:inline
+          define:vars={{ targets: Object.fromEntries(alternates.filter(([l]) => l !== DEFAULT_LOCALE).map(([l, url]) => [l, new URL(url).pathname])) }}
+        >(function () {
+  try {
+    if (localStorage.getItem("lang")) return;
+    var prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+    for (var i = 0; i < prefs.length; i++) {
+      var code = String(prefs[i] || "").toLowerCase().split("-")[0];
+      if (code === "en") return;
+      if (targets[code]) {
+        location.replace(targets[code] + location.search + location.hash);
+        return;
+      }
+    }
+  } catch (e) {}
+})();</script>
+      )
+    }
     <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
     <link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href={href("/sitemap.xml")} />
