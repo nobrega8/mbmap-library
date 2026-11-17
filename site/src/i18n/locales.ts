@@ -26,6 +26,9 @@ export const OG_LOCALE: Record<Locale, string> = {
   zh: "zh_CN",
 };
 
+/** Languages that have the long prose pages (About, Contribute, Specification, Compatibility, Terms, Privacy). */
+export const PROSE_LOCALES: readonly Locale[] = ["en", "zh"];
+
 export function isLocale(v: unknown): v is Locale {
   return LOCALES.includes(v as Locale);
 }

@@ -51,8 +51,12 @@ prefix (`/pt/`). The languages are listed in `src/i18n/locales.ts` and in
   guide without one. The figures inside the guides (`src/scripts/guide-widgets.ts`)
   take their text from `src/scripts/guide-widgets-<locale>.ts` (a language without one shows English).
 - **Long prose pages** (About, Contribute, Specification, Compatibility, Terms,
-  Privacy) are English only for now: under another language they show a note and
-  are left out of search engines and the sitemap.
+  Privacy): a language that has them is listed in `PROSE_LOCALES`
+  (`src/i18n/locales.ts`). The text of About, Contribute, Terms and Privacy sits in
+  the page's view next to the English; the Specification and Compatibility pages
+  render `docs/<locale>/SPEC.md` and `docs/<locale>/COMPATIBILITY.md`. Under a
+  language without them the pages show a note and are left out of search engines
+  and the sitemap.
 - Register names, descriptions and notes in the maps are data and stay as the
   map's author wrote them.
 

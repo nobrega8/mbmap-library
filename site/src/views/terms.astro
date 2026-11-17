@@ -1,16 +1,59 @@
 ---
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
 import { href } from "../lib/base.ts";
 import Base from "../layouts/Base.astro";
 import { LINKS, SITE_NAME } from "../lib/site.ts";
 
 const updated = "11 November 2026";
+
+const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
+const zh = locale === "zh";
 ---
 
 <Base
-  untranslated
-  title="Terms of use"
-  description="The terms for using the MBMap registry website and the Modbus device maps it publishes: public domain, provided as is."
+  untranslated={!zh}
+  title={zh ? "使用条款" : "Terms of use"}
+  description={zh ? "使用 MBMap 映射库网站及其发布的 Modbus 设备映射表的条款：公有领域，按现状提供。" : "The terms for using the MBMap registry website and the Modbus device maps it publishes: public domain, provided as is."}
 >
+{zh ? (
+<>
+  <div class="about">
+    <section class="card pad prose">
+      <h1>使用条款</h1>
+      <p class="lead">最后更新于 {updated}。</p>
+
+      <h2>映射库</h2>
+      <p>
+        {SITE_NAME} 映射库是一个免费的、由社区维护的 Modbus 设备映射表目录。使用本网站即表示您同意这些条款。
+      </p>
+
+      <h2>许可</h2>
+      <p>
+        映射表、规范和工具均属公有领域，采用 <a href={LINKS.license}>CC0 1.0</a>。您可以出于任何目的使用、复制和修改它们，无需征得许可，也无需署名。制造商名称、标志和产品名称归其所有者所有，在此仅用于标识设备。
+      </p>
+
+      <h2>不提供担保</h2>
+      <p>
+        映射表由志愿者根据公开文档编写，可能存在错误。在依赖任何映射表之前，请对照设备手册进行核对，并先在安全的环境中测试写入：错误的地址、比例或写入可能损坏设备、中断生产过程或造成人身伤害。本网站和映射表<strong>“按现状”</strong>提供，不附带任何形式的担保，维护者对因使用它们而造成的任何损失不承担责任。
+      </p>
+
+      <h2>贡献</h2>
+      <p>
+        贡献在 <a href={LINKS.repo}>GitHub</a> 上进行，并以 CC0 1.0 发布。请只提交您有权发布的作品，不要成批复制制造商文档；参见<a href={href("/contribute")}>参与贡献</a>。
+      </p>
+
+      <h2>合理使用</h2>
+      <p>请勿使本网站过载或试图破坏其运行。以合理的频率自动读取是可以的；如需批量复制，仓库本身是更好的来源。</p>
+
+      <h2>隐私和变更</h2>
+      <p>
+        数据和 Cookie 的处理方式见<a href={href("/privacy")}>隐私政策</a>。这些条款可能会变更；当前版本始终在本页。如有疑问：<a href={LINKS.issues}>GitHub issues</a>。
+      </p>
+    </section>
+  </div>
+</>
+) : (
+<>
   <div class="about">
     <section class="card pad prose">
       <h1>Terms of use</h1>
@@ -53,4 +96,6 @@ const updated = "11 November 2026";
       </p>
     </section>
   </div>
+</>
+)}
 </Base>
