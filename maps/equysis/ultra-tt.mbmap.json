@@ -1,0 +1,206 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "EQUYSIS",
+  "model": "Ultra-TT",
+  "vendor_website": "equysis.com",
+  "description": "Ultrasonic flow meter, Modbus RTU",
+  "revision": 1,
+  "revised": "2026-11-17",
+  "source": "EQUYSIS, Modbus map of the ULTRA TT user guide (Medidor ultrasonico ULTRA TT)",
+  "sources": [
+    {
+      "title": "Mapa Modbus, Guia de usuario ULTRA TT",
+      "url": "https://equysis.com/Documentacion/mapa-modbus/medidor-ultrasonico-ultra-tt_48/medidor-ultrasonico-ultra-tt",
+      "note": "register map and request examples"
+    }
+  ],
+  "x_status": "official",
+  "notes": [
+    "EQUYSIS Ultra-TT ultrasonic flow meter. Addresses come from the read and write examples of the document (the register table of the PDF is garbled, so the examples decide where they differ).",
+    "Each measurement uses three registers: a 32-bit value (high word first) and one word with the unit code in its high byte and the number of decimal digits in its low byte. Example: 0x075BCD15 with unit 0x2C and 1 digit is 12345678.9 m3.",
+    "Unit codes: 0x29 L, 0x2C m3, 0x32 L/h, 0x35 m3/h, 0x40 degrees C, 0x41 K, 0x50 h, 0x51 d.",
+    "Reads use function 03 (several registers per request); writes use function 06 or 16. Error responses use codes 0x8001 (date error), 0x8002 (address error) and 0x8030 (address plus count too long, or zero).",
+    "The document does not say whether the 32-bit values are signed, and gives no factory serial settings other than the example slave address 1. Not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "registers": [
+    {
+      "name": "Positive flow volume",
+      "group": "Totals",
+      "area": "holding",
+      "address": 512,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value in units of the code in the next register, divided by 10 to the power of the fraction digits"
+    },
+    {
+      "name": "Positive flow volume unit and fraction",
+      "group": "Totals",
+      "area": "holding",
+      "address": 514,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: unit code (see the notes); low byte: number of decimal digits of the volume"
+    },
+    {
+      "name": "Backward flow volume",
+      "group": "Totals",
+      "area": "holding",
+      "address": 515,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value in units of the code in the next register, divided by 10 to the power of the fraction digits"
+    },
+    {
+      "name": "Backward flow volume unit and fraction",
+      "group": "Totals",
+      "area": "holding",
+      "address": 517,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: unit code (see the notes); low byte: number of decimal digits of the volume"
+    },
+    {
+      "name": "Flow rate",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1024,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value in units of the code in the next register, divided by 10 to the power of the fraction digits"
+    },
+    {
+      "name": "Flow rate unit and fraction",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1026,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: unit code (see the notes); low byte: number of decimal digits of the flow rate"
+    },
+    {
+      "name": "Water temperature",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1027,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value in units of the code in the next register, divided by 10 to the power of the fraction digits"
+    },
+    {
+      "name": "Water temperature unit and fraction",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1029,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: unit code (see the notes); low byte: number of decimal digits of the temperature"
+    },
+    {
+      "name": "Operating time",
+      "group": "Time",
+      "area": "holding",
+      "address": 1030,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value in units of the code in the next register, divided by 10 to the power of the fraction digits"
+    },
+    {
+      "name": "Operating time unit and fraction",
+      "group": "Time",
+      "area": "holding",
+      "address": 1032,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: unit code (see the notes); low byte: number of decimal digits of the time"
+    },
+    {
+      "name": "Warning time",
+      "group": "Time",
+      "area": "holding",
+      "address": 1033,
+      "type": "uint32",
+      "access": "R",
+      "description": "Value in units of the code in the next register, divided by 10 to the power of the fraction digits"
+    },
+    {
+      "name": "Warning time unit and fraction",
+      "group": "Time",
+      "area": "holding",
+      "address": 1035,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: unit code (see the notes); low byte: number of decimal digits of the time"
+    },
+    {
+      "name": "Device status",
+      "group": "Status",
+      "area": "holding",
+      "address": 1036,
+      "type": "uint16",
+      "access": "R",
+      "description": "Bit 7: factory flag set; bit 6: seals set; bit 5: sensor error; bit 2: power low"
+    },
+    {
+      "name": "Software version",
+      "group": "Info",
+      "area": "holding",
+      "address": 1536,
+      "type": "uint16",
+      "access": "R",
+      "description": "0x1234 reads as version 12.34",
+      "role": "firmware"
+    },
+    {
+      "name": "Hardware version",
+      "group": "Info",
+      "area": "holding",
+      "address": 1537,
+      "type": "uint16",
+      "access": "R",
+      "description": "0x020B reads as version 2.0B"
+    },
+    {
+      "name": "Secondary address",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1538,
+      "type": "uint32",
+      "access": "R",
+      "description": "Eight-digit secondary address (e.g. 0x00BC614E = 12345678)"
+    },
+    {
+      "name": "Slave address",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1540,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Modbus address, 1 to 247 (the address in the frame changes after a write)"
+    },
+    {
+      "name": "Communication parameters",
+      "group": "Settings",
+      "area": "holding",
+      "address": 1541,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bits 2-0 baud rate (000: 2400, 001: 300, 010: 600, 011: 1200, 100: 2400, 101: 4800, 110: 9600), bit 3 stop bits (0: one, 1: two), bits 5-4 parity (00 even, 01 none, 10 even, 11 odd), bits 7-6 protocol (01: Modbus)"
+    },
+    {
+      "name": "Date and time",
+      "group": "Settings",
+      "area": "holding",
+      "address": 65279,
+      "type": "string",
+      "access": "W",
+      "description": "Written with function 16 as 12 ASCII digits: month, day, year, hour, minute, second (two digits each)",
+      "length": 6
+    }
+  ]
+}
