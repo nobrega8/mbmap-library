@@ -1,5 +1,5 @@
 ---
-import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { DEFAULT_LOCALE, PROSE_LOCALES, type Locale } from "../i18n/locales.ts";
 import { statusLabel } from "../i18n/labels.ts";
 import { href } from "../lib/base.ts";
 import Base from "../layouts/Base.astro";
@@ -77,14 +77,25 @@ const cardsZh = {
   docs: { title: "改进文档", text: "对格式有疑问、有想法，或有读取 .mbmap 文件的工具：发起一个讨论，或提出对文档的修改。", links: ["提问", "提出想法", "展示工具"] },
 } as const;
 
+// Portuguese text of the cards, in the order of `cards`.
+const cardsPt = {
+  add: { title: "Acrescentar um dispositivo novo", text: "Escreva um mapa a partir da documentação pública do fabricante, confira-o com o validador e abra um pull request.", links: ["Como acrescentar um mapa", "Mapa de exemplo"] },
+  request: { title: "Pedir um dispositivo", text: "Não consegue escrever o mapa? Peça-o, de preferência com uma ligação para a documentação Modbus do fabricante.", links: ["Pedir um mapa"] },
+  verify: { title: "Verificar um mapa em hardware real", text: "Leia um dispositivo com um mapa e compare os valores com o seu visor. Comunique o resultado, bom ou mau, mesmo que não tenha escrito o mapa.", links: ["Comunicar um teste", "O que conferir"] },
+  correct: { title: "Comunicar ou corrigir dados errados", text: "Um endereço, tipo, escala ou ordem de bytes errados? Cada página de dispositivo tem “Sugerir uma correção”, que edita o ficheiro no GitHub e abre um pull request, e “Comunicar um problema”.", links: ["Alterar um mapa", "Issues abertas"] },
+  check: { title: "Conferir um mapa não oficial", text: "Compare um mapa convertido com o manual do fabricante, corrija o que estiver errado e registe o documento que usou. Passa então a oficial.", links: ["Como conferir um", "Mapas não oficiais"] },
+  docs: { title: "Melhorar a documentação", text: "Dúvidas sobre o formato, ideias para ele, ou uma ferramenta que lê ficheiros .mbmap: abra uma discussão ou proponha uma alteração à documentação.", links: ["Fazer uma pergunta", "Sugerir uma ideia", "Mostrar uma ferramenta"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
+const pt = locale === "pt";
 ---
 
 <Base
-  untranslated={!zh}
-  title={zh ? "参与贡献" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  untranslated={!PROSE_LOCALES.includes(locale)}
+  title={zh ? "参与贡献" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -142,6 +153,64 @@ const zh = locale === "zh";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : pt ? (
+<>
+  <header class="page-head">
+    <h1>Contribuir</h1>
+    <p class="lead">
+      Um bom mapa poupa à pessoa seguinte uma tarde com um manual em PDF. Todos os mapas estão no repositório <a href={LINKS.repo}>mbmap-library</a>, no GitHub; todas as contribuições passam por ele.
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsPt[c.id].title}</h2>
+          <p class="muted">{cardsPt[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsPt[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">Submeter um mapa e verificar um mapa</h2>
+    <p>
+      <strong>Submeter</strong> acrescenta ou altera um ficheiro: escreve os registos a partir de uma fonte e indica qual em <code>sources</code>. Um mapa escrito a partir da documentação do fabricante é
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span>; um copiado de outro catálogo, de um fórum ou de uma integração de terceiros é
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>.
+    </p>
+    <p>
+      <strong>Verificar</strong> é testar um mapa existente num dispositivo real: lê-lo, comparar os valores com o visor do dispositivo ou com o seu próprio software (pelo menos um valor por grupo de registos, e a ordem de bytes e de palavras de um valor de 32 bits) e comunicar o dispositivo, o firmware e a ligação que usou. Só então um mapa passa a
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span>. Qualquer pessoa pode verificar um mapa; não precisa de ser o seu autor. Um teste que encontra problemas é igualmente útil: comunique-o para que o mapa não fique marcado como verificado.
+    </p>
+
+    <h2>Antes de abrir um pull request</h2>
+    <ul>
+      <li>Dê ao ficheiro o nome <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> com slugs em minúsculas, por exemplo <code>maps/acme-meters/pm-200.mbmap.json</code>.</li>
+      <li>Execute o validador e corrija todos os erros: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>Reconstrua o índice: <code>python tools/index/build_index.py</code></li>
+      <li>Aumente <code>revision</code> quando uma alteração afeta a forma como um dispositivo é lido ou escrito.</li>
+    </ul>
+
+    <h2>Regras</h2>
+    <ul>
+      <li><strong>Só informação pública.</strong> Nada de documentos sob NDA ou marcados como confidenciais.</li>
+      <li><strong>Não copie manuais.</strong> Endereços, tipos e unidades são factos; escreva as descrições por palavras suas.</li>
+      <li><strong>Sem dados privados.</strong> Sem endereços IP, números de série nem nomes de instalações reais.</li>
+      <li><strong>Mais vale rigor do que cobertura.</strong> Se tem dúvidas sobre um registo, deixe-o de fora ou diga-o.</li>
+    </ul>
+    <p>
+      O guia completo é o <a href={LINKS.contributing}>CONTRIBUTING.md</a>. Ao contribuir, aceita publicar a sua contribuição ao abrigo da <a href={LINKS.license}>CC0 1.0</a>.
     </p>
   </section>
 </>
