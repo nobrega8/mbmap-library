@@ -50,6 +50,20 @@ themeBtn.addEventListener("click", () => {
 });
 showTheme(currentTheme());
 
+// ── language menu: closes on a click elsewhere and on Escape ──
+const langMenu = document.getElementById("lang-menu") as HTMLDetailsElement | null;
+if (langMenu) {
+  document.addEventListener("click", (e) => {
+    if (langMenu.open && !langMenu.contains(e.target as Node)) langMenu.open = false;
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && langMenu.open) {
+      langMenu.open = false;
+      (langMenu.querySelector("summary") as HTMLElement).focus();
+    }
+  });
+}
+
 // ── menu on small screens ──
 const bar = document.getElementById("bar")!;
 const menuBtn = document.getElementById("menu")!;

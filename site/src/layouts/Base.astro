@@ -9,7 +9,9 @@ import { registry } from "../lib/registry.ts";
 import logo from "../assets/mbmap-logo.svg?raw";
 import interUrl from "../assets/fonts/Inter-Variable.woff2?url";
 import { href, pageHref, stripLocale } from "../lib/base.ts";
-import { DEFAULT_LOCALE, LOCALES, LOCALE_NAME, LOCALE_TAG, OG_LOCALE, type Locale } from "../i18n/locales.ts";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_FLAG, LOCALE_NAME, LOCALE_TAG, OG_LOCALE, type Locale } from "../i18n/locales.ts";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { useT } from "../i18n/index.ts";
 
 interface Props {
@@ -51,6 +53,9 @@ const tabs = [
   ["about", "/about", t("nav.about")],
 ] as const;
 const others = LOCALES.filter((l) => l !== locale);
+// A flag is shown only when its file is in assets/flags/
+const flagRoot = join(registry().libraryDir, "assets", "flags");
+const flag = (l: Locale) => (existsSync(join(flagRoot, `${LOCALE_FLAG[l]}.png`)) ? href(`/library/assets/flags/${LOCALE_FLAG[l]}.png`) : null);
 ---
 
 <!doctype html>
@@ -116,13 +121,25 @@ const others = LOCALES.filter((l) => l !== locale);
           <button class="btn icon ghost" type="button" id="theme" title={t("theme.label", { theme: t("theme.system") })} aria-label={t("theme.label", { theme: t("theme.system") })}>
             <Icon name="system" />
           </button>
-          {
-            others.map((l) => (
-              <a class="btn ghost lang" href={inLocale(l)} hreflang={LOCALE_TAG[l]} lang={LOCALE_TAG[l]} title={LOCALE_NAME[l]} aria-label={`${t("lang.switch")}: ${LOCALE_NAME[l]}`} data-lang={l}>
-                {l.toUpperCase()}
-              </a>
-            ))
-          }
+          <details class="lang-menu" id="lang-menu">
+            <summary class="btn ghost lang" title={t("lang.switch")} aria-label={`${t("lang.switch")}: ${LOCALE_NAME[locale]}`}>
+              {flag(locale) ? <img class="flag" src={flag(locale)!} alt="" width="18" height="18" /> : <Icon name="globe" />}
+              <span>{locale.toUpperCase()}</span>
+            </summary>
+            <ul class="lang-list">
+              {
+                LOCALES.map((l) => (
+                  <li>
+                    <a href={inLocale(l)} hreflang={LOCALE_TAG[l]} lang={LOCALE_TAG[l]} data-lang={l} aria-current={l === locale ? "true" : undefined}>
+                      {flag(l) ? <img class="flag" src={flag(l)!} alt="" width="18" height="18" loading="lazy" /> : <Icon name="globe" size={18} />}
+                      <span class="lang-name">{LOCALE_NAME[l]}</span>
+                      {l === locale && <Icon name="check" size={14} />}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </details>
           <a class="btn icon ghost" href={LINKS.repo} title={t("github.title")} aria-label={t("github.title")}>
             <Icon name="github" />
           </a>
