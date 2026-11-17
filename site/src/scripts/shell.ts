@@ -51,6 +51,16 @@ themeBtn.addEventListener("click", () => {
 showTheme(currentTheme());
 
 // ── language menu: closes with a short animation, on a click elsewhere and on Escape ──
+// A language picked in the menu is remembered, so the English page stops following the browser language.
+document.querySelectorAll<HTMLAnchorElement>("#lang-menu a[data-lang]").forEach((a) =>
+  a.addEventListener("click", () => {
+    try {
+      localStorage.setItem("lang", a.dataset.lang ?? "");
+    } catch {
+      /* storage is blocked: the choice is not remembered */
+    }
+  }),
+);
 const langMenu = document.getElementById("lang-menu") as HTMLDetailsElement | null;
 if (langMenu) {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;

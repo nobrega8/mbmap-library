@@ -1,7 +1,7 @@
 ---
 import { href, localizeUrl, pageHref } from "../../lib/base.ts";
 import { DEFAULT_LOCALE, LOCALE_TAG, type Locale } from "../../i18n/locales.ts";
-import { count, translate, useT } from "../../i18n/index.ts";
+import { count, pluralKey, translate, useT } from "../../i18n/index.ts";
 import { accessName, areaName, parityName, protocolName, roleLabel as roleLabelOf, roleLong, statusLabel, statusLong } from "../../i18n/labels.ts";
 import Base from "../../layouts/Base.astro";
 import Icon from "../../components/Icon.astro";
@@ -187,7 +187,7 @@ for (const r of info.registers) accessCounts[r.access]++;
                 <dt>{t("d.serial")}</dt>
                 <dd>
                   <span class="mono">{info.baudrate} {info.databits}{info.parity}{info.stopbits}</span>
-                  <span class="faint"> · {t("d.serialLong", { baud: info.baudrate, data: info.databits, parity: parityName(locale, info.parity).toLowerCase(), stop: info.stopbits, stopWord: t(info.stopbits > 1 ? "d.stopBit.many" : "d.stopBit.one") })}</span>
+                  <span class="faint"> · {t("d.serialLong", { baud: info.baudrate, data: info.databits, parity: parityName(locale, info.parity).toLowerCase(), stop: info.stopbits, stopWord: t(pluralKey(locale, info.stopbits, "d.stopBit")) })}</span>
                   {!["baudrate", "parity", "databits", "stopbits"].some(said) && <span class="def">{t("d.defaults")}</span>}
                 </dd>
               </>
@@ -212,7 +212,7 @@ for (const r of info.registers) accessCounts[r.access]++;
         <dl class="facts">
           <dt>{t("d.registers")}</dt>
           <dd>
-            {areas.map((a, i) => <>{i > 0 && ", "}<span class="mono">{d.areaCounts[a]}</span> {translate(locale, d.areaCounts[a]! === 1 ? `areaN.${a}.one` : `areaN.${a}.many`)}</>)}
+            {areas.map((a, i) => <>{i > 0 && ", "}<span class="mono">{d.areaCounts[a]}</span> {translate(locale, pluralKey(locale, d.areaCounts[a]!, `areaN.${a}`))}</>)}
             {info.skipped > 0 && <span class="faint"> · {t("d.notShown", { n: info.skipped })}</span>}
           </dd>
           {groups.length > 0 && <><dt>{t("d.groups")}</dt><dd>{groups.length}</dd></>}

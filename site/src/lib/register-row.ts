@@ -4,7 +4,7 @@
 import type { Register } from "./normalize.ts";
 import { AREA_FUNCTIONS, AREA_TAG, hex, modicon, registerCount, typeLabel } from "./mbmap.ts";
 import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
-import { translate } from "../i18n/index.ts";
+import { pluralKey, translate } from "../i18n/index.ts";
 import { accessName, areaName, roleLabel, roleLong } from "../i18n/labels.ts";
 import { icon } from "./icons.ts";
 import { escapeHtml, highlight } from "../scripts/search-core.ts";
@@ -80,7 +80,7 @@ export function registerDetail(r: Register, addressBase: number, columns: number
       `<span class="mono">${r.wire} · ${hex(r.wire)}</span>${m ? ` <span class="faint">Modicon</span> <span class="mono">${m}</span>` : ""}`,
     );
   }
-  add(T("reg.dType"), `<span class="mono">${escapeHtml(typeLabel(r))}</span>${width ? ` <span class="faint">${T(width > 1 ? "reg.registersWide.many" : "reg.registersWide.one", { n: width })}</span>` : ""}`);
+  add(T("reg.dType"), `<span class="mono">${escapeHtml(typeLabel(r))}</span>${width ? ` <span class="faint">${T(pluralKey(locale, width, "reg.registersWide"), { n: width })}</span>` : ""}`);
   if (width && width > 1) add(T("reg.dOrder"), `${r.byteOrder} / ${r.wordOrder}`);
   add(T("reg.dAccess"), accessName(locale, r.access));
   add(T("reg.dUnit"), r.unit && escapeHtml(r.unit));

@@ -127,6 +127,16 @@ const cardsBn = {
   docs: { title: "ডকুমেন্টেশন উন্নত করুন", text: "ফরম্যাট নিয়ে প্রশ্ন, তার জন্য ধারণা, বা .mbmap ফাইল পড়ে এমন একটি টুল: একটি আলোচনা খুলুন, বা ডকুমেন্টেশনে পরিবর্তনের প্রস্তাব দিন।", links: ["প্রশ্ন করুন", "ধারণা দিন", "একটি টুল দেখান"] },
 } as const;
 
+// Russian text of the cards, in the order of `cards`.
+const cardsRu = {
+  add: { title: "Добавить новое устройство", text: "Составьте карту по общедоступной документации производителя, проверьте её валидатором и откройте pull request.", links: ["Как добавить карту", "Пример карты"] },
+  request: { title: "Запросить устройство", text: "Не можете написать карту сами? Запросите её, желательно со ссылкой на документацию Modbus производителя.", links: ["Запросить карту"] },
+  verify: { title: "Проверить карту на реальном оборудовании", text: "Прочитайте устройство по карте и сверьте значения с его дисплеем. Сообщите результат, хороший или плохой, даже если карту писали не вы.", links: ["Сообщить о проверке", "Что проверять"] },
+  correct: { title: "Сообщить о неверных данных или исправить их", text: "Неверный адрес, тип, масштаб или порядок байтов? На странице каждого устройства есть «Предложить исправление», которое открывает файл для правки на GitHub и создаёт pull request, и «Сообщить о проблеме».", links: ["Изменить карту", "Открытые issue"] },
+  check: { title: "Проверить неофициальную карту", text: "Сверьте преобразованную карту с руководством производителя, исправьте ошибки и укажите использованный документ. После этого она становится официальной.", links: ["Как проверить карту", "Неофициальные карты"] },
+  docs: { title: "Улучшить документацию", text: "Вопросы о формате, идеи для него или инструмент, который читает файлы .mbmap: откройте обсуждение или предложите правку документации.", links: ["Задать вопрос", "Предложить идею", "Показать инструмент"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
@@ -134,12 +144,13 @@ const hi = locale === "hi";
 const es = locale === "es";
 const fr = locale === "fr";
 const bn = locale === "bn";
+const ru = locale === "ru";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "参与贡献" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  title={zh ? "参与贡献" : ru ? "Участие" : bn ? "অবদান রাখুন" : fr ? "Contribuer" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : ru ? "Добавьте карту устройства Modbus, исправьте регистр или сообщите о проверке на реальном оборудовании. Карты MBMap находятся на GitHub и открыты для всех." : bn ? "একটি Modbus ডিভাইস ম্যাপ যোগ করুন, একটি রেজিস্টার ঠিক করুন বা বাস্তব হার্ডওয়্যারে পরীক্ষার ফল জানান। MBMap ম্যাপ GitHub-এ এবং সবার জন্য উন্মুক্ত।" : fr ? "Ajoutez une carte de périphérique Modbus, corrigez un registre ou signalez un test sur du matériel réel. Les cartes MBMap sont sur GitHub et ouvertes à tous." : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -197,6 +208,64 @@ const bn = locale === "bn";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : ru ? (
+<>
+  <header class="page-head">
+    <h1>Участие</h1>
+    <p class="lead">
+      Хорошая карта экономит следующему человеку вечер с PDF-руководством. Все карты находятся в репозитории <a href={LINKS.repo}>mbmap-library</a> на GitHub; любой вклад проходит через него.
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsRu[c.id].title}</h2>
+          <p class="muted">{cardsRu[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsRu[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">Отправить карту и проверить карту</h2>
+    <p>
+      <strong>Отправить</strong> значит добавить или изменить файл: вы пишете регистры по какому-либо источнику и указываете в <code>sources</code>, по какому именно. Карта, составленная по документу производителя, —
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span>; карта, скопированная из другого каталога, форума или стороннего решения, —
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>.
+    </p>
+    <p>
+      <strong>Проверить</strong> значит испытать существующую карту на реальном устройстве: прочитайте его, сверьте значения с дисплеем устройства или его собственным ПО (хотя бы одно значение из каждой группы регистров, а для 32-битных значений — порядок байтов и слов) и сообщите, какое устройство, прошивку и подключение вы использовали. Только тогда карта становится
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span>. Проверить карту может любой; её автором быть не нужно. Не менее ценна проверка, которая нашла проблему: сообщите о ней, чтобы карту не помечали как проверенную.
+    </p>
+
+    <h2>Прежде чем открывать pull request</h2>
+    <ul>
+      <li>Назовите файл <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> с slug в нижнем регистре, например <code>maps/acme-meters/pm-200.mbmap.json</code>.</li>
+      <li>Запустите валидатор и исправьте все ошибки: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>Пересоберите индекс: <code>python tools/index/build_index.py</code></li>
+      <li>Увеличьте <code>revision</code>, если изменение влияет на то, как устройство читается или записывается.</li>
+    </ul>
+
+    <h2>Правила</h2>
+    <ul>
+      <li><strong>Только общедоступная информация.</strong> Ничего из документов под NDA или помеченных как конфиденциальные.</li>
+      <li><strong>Не копируйте руководства.</strong> Адреса, типы и единицы — это факты; описания пишите своими словами.</li>
+      <li><strong>Никаких персональных данных.</strong> Никаких IP-адресов, серийных номеров или названий объектов реальных установок.</li>
+      <li><strong>Точность важнее полноты.</strong> Если вы не уверены в регистре, пропустите его или отметьте сомнение.</li>
+    </ul>
+    <p>
+      Полное руководство — <a href={LINKS.contributing}>CONTRIBUTING.md</a>. Вкладывая свой труд, вы соглашаетесь опубликовать его по лицензии <a href={LINKS.license}>CC0 1.0</a>.
     </p>
   </section>
 </>
