@@ -1,5 +1,5 @@
 ---
-import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { DEFAULT_LOCALE, PROSE_LOCALES, type Locale } from "../i18n/locales.ts";
 import { href } from "../lib/base.ts";
 import Base from "../layouts/Base.astro";
 import { GTM_ID } from "../lib/analytics.ts";
@@ -9,12 +9,13 @@ const updated = "11 November 2026";
 
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
+const pt = locale === "pt";
 ---
 
 <Base
-  untranslated={!zh}
-  title={zh ? "隐私政策" : "Privacy policy"}
-  description={zh ? "MBMap 映射库网站收集什么，仅在您同意后才设置的 Cookie，以及如何更改您的选择。" : "What the MBMap registry website collects, the cookies it sets only with your consent, and how to change your choice."}
+  untranslated={!PROSE_LOCALES.includes(locale)}
+  title={zh ? "隐私政策" : pt ? "Política de privacidade" : "Privacy policy"}
+  description={zh ? "MBMap 映射库网站收集什么，仅在您同意后才设置的 Cookie，以及如何更改您的选择。" : pt ? "O que o sítio do registo MBMap recolhe, os cookies que só define com o seu consentimento e como alterar a sua escolha." : "What the MBMap registry website collects, the cookies it sets only with your consent, and how to change your choice."}
 >
 {zh ? (
 <>
@@ -61,6 +62,54 @@ const zh = locale === "zh";
 
       <h2>变更</h2>
       <p>本政策的变更会连同新日期一起发布在本页。另见<a href={href("/terms")}>使用条款</a>。</p>
+    </section>
+  </div>
+</>
+) : pt ? (
+<>
+  <div class="about">
+    <section class="card pad prose">
+      <h1>Política de privacidade</h1>
+      <p class="lead">Última atualização em {updated}.</p>
+
+      <h2>Quem é o responsável</h2>
+      <p>
+        O Registo {SITE_NAME} é gerido por <a href="https://nobrega.me">Afonso Nóbrega</a>. Para perguntar o que quer que seja sobre os seus dados, abra uma issue no <a href={LINKS.issues}>GitHub</a>.
+      </p>
+
+      <h2>O que o sítio recolhe</h2>
+      <p>
+        O sítio é estático: não há contas, formulários nem comentários, e os mapas e o índice de pesquisa são ficheiros simples. O alojamento (GitHub Pages) mantém registos normais do servidor, como o endereço IP e a página pedida, ao abrigo da
+        <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">declaração de privacidade do GitHub</a>.
+      </p>
+
+      <h2>Análises e cookies</h2>
+      {GTM_ID ? (
+        <>
+          <p>
+            Com o seu consentimento, o sítio usa o Google Analytics 4, carregado através do Google Tag Manager (Google Ireland Limited), para contar visitas e ver que páginas e mapas são usados. Define os cookies <code>_ga</code> e <code>_ga_*</code> (até dois anos) e envia à Google a página vista, a origem da visita, a localização aproximada a partir de um endereço IP truncado e o tipo de navegador e de dispositivo. As funcionalidades de publicidade, a personalização de anúncios e os sinais da Google estão desativados.
+          </p>
+          <p>
+            Nada da Google é carregado, e nenhum cookie de análise é definido, até carregar em <strong>Aceitar</strong> no aviso de cookies. <strong>Rejeitar</strong> mantém o sítio totalmente funcional sem eles. A sua escolha fica guardada no navegador (<code>localStorage</code>, chave <code>consent</code>), juntamente com o tema que escolher.
+          </p>
+          <p>
+            Pode mudar de ideias a qualquer momento em <button class="linkbtn" type="button" data-consent-open>Definições de cookies</button>, aqui ou no rodapé. Rejeitar apaga os cookies de análise neste sítio.
+          </p>
+          <p>
+            A base legal é o seu consentimento (RGPD, art. 6.º, n.º 1, al. a) e as regras da ePrivacy). A Google pode tratar dados fora da UE ao abrigo das suas cláusulas contratuais-tipo; veja <a href="https://policies.google.com/technologies/partner-sites">como a Google usa os dados</a>.
+          </p>
+        </>
+      ) : (
+        <p>Esta versão do sítio não tem análises e não define cookies. Apenas a sua escolha de tema fica guardada no navegador.</p>
+      )}
+
+      <h2>Os seus direitos</h2>
+      <p>
+        Pode pedir o acesso, a retificação ou o apagamento dos dados que lhe dizem respeito, opor-se ao seu tratamento ou retirar o consentimento, e apresentar reclamação à sua autoridade de proteção de dados (em Portugal, a CNPD). Os dados de análise não estão associados a um nome nem a um e-mail, pelo que, na prática, retirar o consentimento e limpar os cookies é a forma de os travar.
+      </p>
+
+      <h2>Alterações</h2>
+      <p>As alterações a esta política são publicadas nesta página com uma nova data. Veja também os <a href={href("/terms")}>termos de utilização</a>.</p>
     </section>
   </div>
 </>

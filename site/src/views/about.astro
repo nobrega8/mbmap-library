@@ -1,5 +1,5 @@
 ---
-import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { DEFAULT_LOCALE, PROSE_LOCALES, type Locale } from "../i18n/locales.ts";
 import { statusLabel, statusLong } from "../i18n/labels.ts";
 import { href } from "../lib/base.ts";
 import Base from "../layouts/Base.astro";
@@ -26,12 +26,13 @@ const example = `{
 
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
+const pt = locale === "pt";
 ---
 
 <Base
-  untranslated={!zh}
-  title={zh ? "关于 MBMap" : "About MBMap"}
-  description={zh ? "MBMap 是一个开放的、由社区驱动的 Modbus 设备映射库，采用任何工具都可读取的同一种 JSON 格式。它是什么、格式如何运作以及如何参与贡献。" : "MBMap is an open, community-driven registry of Modbus device maps in one JSON format, readable by any tool. What it is, how the format works and how to contribute."}
+  untranslated={!PROSE_LOCALES.includes(locale)}
+  title={zh ? "关于 MBMap" : pt ? "Sobre o MBMap" : "About MBMap"}
+  description={zh ? "MBMap 是一个开放的、由社区驱动的 Modbus 设备映射库，采用任何工具都可读取的同一种 JSON 格式。它是什么、格式如何运作以及如何参与贡献。" : pt ? "O MBMap é um registo aberto, mantido pela comunidade, de mapas de dispositivos Modbus num só formato JSON, legível por qualquer ferramenta. O que é, como funciona o formato e como contribuir." : "MBMap is an open, community-driven registry of Modbus device maps in one JSON format, readable by any tool. What it is, how the format works and how to contribute."}
   nav="about"
 >
 {zh ? (
@@ -120,6 +121,97 @@ const zh = locale === "zh";
         <li><a href={LINKS.contributing}><Icon name="plus" /> CONTRIBUTING.md</a></li>
         <li><a href={LINKS.example}><Icon name="official" /> 示例映射表</a></li>
         <li><a href={LINKS.discussions}><Icon name="about" /> 讨论区</a></li>
+        <li><a href={MODBENCH_URL}><Icon name="registers" /> Modbench</a></li>
+      </ul>
+    </aside>
+  </div>
+</>
+) : pt ? (
+<>
+  <div class="about">
+    <section class="card pad prose">
+      <h1>Sobre o {SITE_NAME}</h1>
+      <p class="lead">
+        O {SITE_NAME} é um formato aberto e um registo partilhado, mantido pela comunidade, de mapas de dispositivos Modbus: hoje {devices.length} dispositivos de {manufacturers.length} fabricantes, todos no domínio público.
+      </p>
+
+      <h2>O problema</h2>
+      <p>
+        Ler um dispositivo Modbus começa pelo seu mapa de registos, e esse mapa costuma estar num manual em PDF: uma tabela de endereços, tipos de dados, fatores de escala e ordens de bytes que cada engenheiro escreve à mão na sua própria ferramenta. Cada ferramenta guarda-o no seu formato, por isso o mesmo trabalho repete-se para cada dispositivo, em cada ferramenta, por cada pessoa que o usa. Os erros da cópia (um endereço desviado de um, uma ordem de palavras trocada) aparecem em obra como valores errados.
+      </p>
+
+      <h2>O que o {SITE_NAME} faz</h2>
+      <p>
+        Um ficheiro <code>.mbmap.json</code> descreve um modelo de dispositivo: quem o fabrica, como ligar-se a ele e o que significa cada registo. Escreve-se o mapa uma vez, confere-se, e qualquer ferramenta compatível pode carregá-lo com as variáveis já nomeadas, escaladas e tipadas. O registo reúne estes mapas num só lugar, no
+        <a href={REPO_URL}>GitHub</a>, onde qualquer pessoa pode acrescentar um dispositivo ou corrigir um.
+      </p>
+
+      <h2 id="format">Como funciona o formato</h2>
+      <p>
+        Um mapa é um documento JSON simples com um <a href={LINKS.schema}>JSON Schema</a>. As chaves de topo indicam o fabricante, o modelo e os valores de ligação por omissão (protocolo, ID da unidade, definições série, ordem de bytes e de palavras, base dos endereços). Cada registo tem um nome, uma área Modbus (<code>coil</code>, <code>discrete</code>, <code>input</code>, <code>holding</code>), um endereço e um tipo, e pode acrescentar uma unidade, uma escala, direitos de acesso, limites de escrita e tabelas de tradução para estados e campos de bits. Um registo por linha faz de cada alteração uma diferença de uma só linha.
+      </p>
+      <pre><code>{example}</code></pre>
+      <p>
+        As regras completas, incluindo os códigos de validação que todos os leitores comunicam da mesma forma, estão na <a href={LINKS.spec}>especificação (SPEC.md)</a>.
+      </p>
+
+      <h2 id="status">Até onde se pode confiar num mapa</h2>
+      <p>
+        Cada mapa da biblioteca diz de onde vem em <code>x_status</code>. É uma convenção da biblioteca, não faz parte do formato, e o Modbench mostra-o junto a cada mapa.
+      </p>
+      <ul class="status-list">
+        {
+          STATUSES.map((s) => (
+            <li>
+              <span class={`status ${s}`}>
+                <Icon name={s} /> {statusLabel(locale, s)}
+              </span>
+              <span>
+                {statusLong(locale, s)} <span class="faint">({statusCounts[s]} mapas)</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <p>
+        Muitos mapas não oficiais foram convertidos de outros catálogos abertos para arrancar a biblioteca, e ninguém os conferiu ainda com a documentação do fabricante. Seja qual for o estado, os mapas são fornecidos tal como estão: confira um mapa com a documentação do fabricante antes de escrever num dispositivo em serviço.
+      </p>
+
+      <h2 id="modbench">{SITE_NAME} e Modbench</h2>
+      <p>
+        O <a href={MODBENCH_URL}>Modbench</a> é um cliente Modbus TCP/RTU para Windows, Linux e macOS e a principal ferramenta que lê mapas {SITE_NAME}. Navega e descarrega esta biblioteca diretamente, lê e escreve num dispositivo pelo nome do registo, verifica o dispositivo com os modelos e o firmware do mapa e pode executar um dispositivo simulado à imagem de um mapa. Este sítio é o seu companheiro na web: os mesmos mapas e o mesmo aspeto, para encontrar um dispositivo antes de se ligar a ele.
+      </p>
+
+      <h2 id="integrate">Usar os mapas na sua própria ferramenta</h2>
+      <p>O formato é aberto e qualquer ferramenta o pode ler. Tudo é servido a partir do repositório:</p>
+      <ul>
+        <li><a href={rawUrl("index.json")}><code>index.json</code></a> lista todos os mapas com o caminho, o tamanho, o SHA-256, o estado e o número de registos.</li>
+        <li>Cada mapa está em <code>{rawUrl("maps/<vendor>/<model>.mbmap.json")}</code>.</li>
+        <li>
+          Uma cópia assinada do índice é publicada no ramo <a href={`${REPO_URL}/tree/signed`}><code>signed</code></a>, para que uma aplicação possa verificar que os mapas que descarrega são os da biblioteca (veja <a href={`${LINKS.contributing}#signed-index`}>Índice assinado</a>).
+        </li>
+        <li>A pasta <a href={LINKS.tests}><code>tests/</code></a> tem ficheiros de exemplo e os diagnósticos que um leitor deve comunicar, para conferir uma implementação com a especificação.</li>
+      </ul>
+      <p>
+        Suporte parte do formato ou o formato todo e depois abra um pull request para listar a sua ferramenta na <a href={href("/compatibility")}>página de compatibilidade</a>.
+      </p>
+
+      <h2>Um projeto comunitário aberto</h2>
+      <p>
+        Os mapas, a especificação e as ferramentas estão dedicados ao domínio público ao abrigo da <a href={LINKS.license}>CC0 1.0</a>: use-os para qualquer fim, incluindo produtos comerciais, sem pedir autorização. O registo cresce com as contribuições de engenheiros, técnicos, integradores e fabricantes: novos mapas, correções e testes em hardware real.
+        <a href={href("/contribute")}>Veja como ajudar</a>.
+      </p>
+    </section>
+
+    <aside class="card pad links" aria-label="Ligações">
+      <h2 class="key">Ligações</h2>
+      <ul>
+        <li><a href={REPO_URL}><Icon name="github" /> mbmap-library no GitHub</a></li>
+        <li><a href={LINKS.spec}><Icon name="library" /> Especificação (SPEC.md)</a></li>
+        <li><a href={LINKS.schema}><Icon name="raw" /> JSON Schema</a></li>
+        <li><a href={LINKS.contributing}><Icon name="plus" /> CONTRIBUTING.md</a></li>
+        <li><a href={LINKS.example}><Icon name="official" /> Mapa de exemplo</a></li>
+        <li><a href={LINKS.discussions}><Icon name="about" /> Discussões</a></li>
         <li><a href={MODBENCH_URL}><Icon name="registers" /> Modbench</a></li>
       </ul>
     </aside>

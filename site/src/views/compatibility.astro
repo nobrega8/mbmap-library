@@ -7,18 +7,19 @@ import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
 
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
+const pt = locale === "pt";
 const doc = await renderLibraryMarkdown("COMPATIBILITY.md", locale);
 const html = doc?.html;
 ---
 
 <Base
   untranslated={!doc?.translated}
-  title={zh ? "兼容的工具" : "Compatible Tools"}
-  description={zh ? "读取 .mbmap 设备映射表的 Modbus 工具（包括 Modbench），以及它们各自支持 MBMap 格式的哪些部分。" : "Modbus tools that read .mbmap device maps, including Modbench, and which parts of the MBMap format each one supports."}
+  title={zh ? "兼容的工具" : pt ? "Ferramentas compatíveis" : "Compatible Tools"}
+  description={zh ? "读取 .mbmap 设备映射表的 Modbus 工具（包括 Modbench），以及它们各自支持 MBMap 格式的哪些部分。" : pt ? "Ferramentas Modbus que leem mapas de dispositivos .mbmap, incluindo o Modbench, e que partes do formato MBMap cada uma suporta." : "Modbus tools that read .mbmap device maps, including Modbench, and which parts of the MBMap format each one supports."}
   nav="compatibility"
 >
   <header class="page-head">
-    <h1>{zh ? "兼容性" : "Compatibility"}</h1>
+    <h1>{zh ? "兼容性" : pt ? "Compatibilidade" : "Compatibility"}</h1>
   </header>
 
   <section class="card pad">
@@ -27,14 +28,14 @@ const html = doc?.html;
         <div class="prose wide" set:html={html} />
       ) : (
         <div class="empty">
-          <strong>{zh ? "无法读取兼容性列表" : "The compatibility list could not be read"}</strong>
-          {zh ? <>请在 GitHub 上查看 <a href={LINKS.compatibility}>COMPATIBILITY.md</a>。</> : <>See <a href={LINKS.compatibility}>COMPATIBILITY.md</a> on GitHub.</>}
+          <strong>{zh ? "无法读取兼容性列表" : pt ? "Não foi possível ler a lista de compatibilidade" : "The compatibility list could not be read"}</strong>
+          {zh ? <>请在 GitHub 上查看 <a href={LINKS.compatibility}>COMPATIBILITY.md</a>。</> : pt ? <>Veja o <a href={LINKS.compatibility}>COMPATIBILITY.md</a> no GitHub.</> : <>See <a href={LINKS.compatibility}>COMPATIBILITY.md</a> on GitHub.</>}
         </div>
       )
     }
     <p class="faint src">
       <Icon name="github" size={13} />
-      {zh ? <>来自库中的 <a href={LINKS.compatibility}>COMPATIBILITY.md</a>。要添加工具，请提交修改该文件的拉取请求。</> : <>From <a href={LINKS.compatibility}>COMPATIBILITY.md</a> in the library. To add a tool, open a pull request that changes that file.</>}
+      {zh ? <>来自库中的 <a href={LINKS.compatibility}>COMPATIBILITY.md</a>。要添加工具，请提交修改该文件的拉取请求。</> : pt ? <>Do <a href={LINKS.compatibility}>COMPATIBILITY.md</a> da biblioteca. Para acrescentar uma ferramenta, abra um pull request que altere esse ficheiro.</> : <>From <a href={LINKS.compatibility}>COMPATIBILITY.md</a> in the library. To add a tool, open a pull request that changes that file.</>}
     </p>
   </section>
 </Base>

@@ -1,5 +1,5 @@
 ---
-import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
+import { DEFAULT_LOCALE, PROSE_LOCALES, type Locale } from "../i18n/locales.ts";
 import { href } from "../lib/base.ts";
 import Base from "../layouts/Base.astro";
 import { LINKS, SITE_NAME } from "../lib/site.ts";
@@ -8,12 +8,13 @@ const updated = "11 November 2026";
 
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
+const pt = locale === "pt";
 ---
 
 <Base
-  untranslated={!zh}
-  title={zh ? "使用条款" : "Terms of use"}
-  description={zh ? "使用 MBMap 映射库网站及其发布的 Modbus 设备映射表的条款：公有领域，按现状提供。" : "The terms for using the MBMap registry website and the Modbus device maps it publishes: public domain, provided as is."}
+  untranslated={!PROSE_LOCALES.includes(locale)}
+  title={zh ? "使用条款" : pt ? "Termos de utilização" : "Terms of use"}
+  description={zh ? "使用 MBMap 映射库网站及其发布的 Modbus 设备映射表的条款：公有领域，按现状提供。" : pt ? "Os termos de utilização do sítio do registo MBMap e dos mapas de dispositivos Modbus que publica: domínio público, fornecidos tal como estão." : "The terms for using the MBMap registry website and the Modbus device maps it publishes: public domain, provided as is."}
 >
 {zh ? (
 <>
@@ -48,6 +49,43 @@ const zh = locale === "zh";
       <h2>隐私和变更</h2>
       <p>
         数据和 Cookie 的处理方式见<a href={href("/privacy")}>隐私政策</a>。这些条款可能会变更；当前版本始终在本页。如有疑问：<a href={LINKS.issues}>GitHub issues</a>。
+      </p>
+    </section>
+  </div>
+</>
+) : pt ? (
+<>
+  <div class="about">
+    <section class="card pad prose">
+      <h1>Termos de utilização</h1>
+      <p class="lead">Última atualização em {updated}.</p>
+
+      <h2>O registo</h2>
+      <p>
+        O Registo {SITE_NAME} é um catálogo gratuito de mapas de dispositivos Modbus, mantido pela comunidade. Ao utilizar o sítio, aceita estes termos.
+      </p>
+
+      <h2>Licença</h2>
+      <p>
+        Os mapas, a especificação e as ferramentas estão no domínio público ao abrigo da <a href={LINKS.license}>CC0 1.0</a>. Pode usá-los, copiá-los e alterá-los para qualquer fim, sem pedir autorização nem dar crédito. Os nomes, logótipos e nomes de produtos dos fabricantes pertencem aos seus proprietários e aparecem apenas para identificar os dispositivos.
+      </p>
+
+      <h2>Sem garantia</h2>
+      <p>
+        Os mapas são escritos por voluntários a partir de documentação pública e podem conter erros. Confira cada mapa com o manual do dispositivo antes de confiar nele e teste as escritas primeiro num ambiente seguro: um endereço, uma escala ou uma escrita errados podem danificar equipamento, interromper um processo ou causar ferimentos. O sítio e os mapas são fornecidos <strong>“tal como estão”</strong>, sem garantia de qualquer tipo, e os responsáveis não respondem por qualquer perda resultante da sua utilização.
+      </p>
+
+      <h2>Contribuições</h2>
+      <p>
+        As contribuições fazem-se no <a href={LINKS.repo}>GitHub</a> e são publicadas ao abrigo da CC0 1.0. Submeta apenas trabalho que tenha o direito de publicar e não copie documentos de fabricantes por atacado; veja <a href={href("/contribute")}>Contribuir</a>.
+      </p>
+
+      <h2>Utilização aceitável</h2>
+      <p>Não sobrecarregue o sítio nem tente perturbar o seu funcionamento. A leitura automática a um ritmo razoável é aceitável; para cópias em massa, o próprio repositório é a melhor fonte.</p>
+
+      <h2>Privacidade e alterações</h2>
+      <p>
+        O tratamento de dados e cookies está descrito na <a href={href("/privacy")}>política de privacidade</a>. Estes termos podem mudar; a versão em vigor está sempre nesta página. Questões: <a href={LINKS.issues}>issues no GitHub</a>.
       </p>
     </section>
   </div>
