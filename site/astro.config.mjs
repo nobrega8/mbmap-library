@@ -20,8 +20,8 @@ export default defineConfig({
   compressHTML: true,
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "pt", "zh", "hi", "es", "fr", "bn", "ru", "de", "tr", "th", "hu", "id"],
-    // English at the root, other languages under /pt/, /zh/, /hi/, /es/, /fr/, /bn/, /ru/, /de/, /tr/, /th/, /hu/, /id/
+    locales: ["en", "pt", "zh", "hi", "es", "fr", "bn", "ru", "de", "tr", "th", "hu", "id", "nl"],
+    // English at the root, other languages under /pt/, /zh/, /hi/, /es/, /fr/, /bn/, /ru/, /de/, /tr/, /th/, /hu/, /id/, /nl/
     routing: { prefixDefaultLocale: false },
   },
 });
