@@ -9,32 +9,33 @@ import { DEFAULT_LOCALE, type Locale } from "../i18n/locales.ts";
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
+const hi = locale === "hi";
 const doc = await renderLibraryMarkdown("SPEC.md", locale);
 const toc = doc?.headings.filter((h) => h.depth === 2 || h.depth === 3) ?? [];
 ---
 
 <Base
   untranslated={!doc?.translated}
-  title={zh ? ".mbmap 格式规范" : pt ? "Especificação do formato .mbmap" : "The .mbmap Format Specification"}
-  description={zh ? ".mbmap 格式第 2 版：用于 Modbus 设备寄存器映射表的 JSON 格式。顶层键、寄存器、区域和地址、数据类型、字节序和字序，以及校验。" : pt ? "O formato .mbmap, versão 2: um formato JSON para mapas de registos de dispositivos Modbus. Chaves de topo, registos, áreas e endereços, tipos de dados, ordem de bytes e de palavras, e validação." : "The .mbmap format, version 2: a JSON format for Modbus device register maps. Top-level keys, registers, areas and addresses, data types, byte and word order, and validation."}
+  title={zh ? ".mbmap 格式规范" : hi ? ".mbmap फ़ॉर्मैट विनिर्देश" : pt ? "Especificação do formato .mbmap" : "The .mbmap Format Specification"}
+  description={zh ? ".mbmap 格式第 2 版：用于 Modbus 设备寄存器映射表的 JSON 格式。顶层键、寄存器、区域和地址、数据类型、字节序和字序，以及校验。" : hi ? ".mbmap फ़ॉर्मैट, संस्करण 2: Modbus डिवाइस रजिस्टर मैप के लिए JSON फ़ॉर्मैट। शीर्ष-स्तर की कुंजियाँ, रजिस्टर, क्षेत्र और पते, डेटा प्रकार, बाइट और वर्ड क्रम, और सत्यापन।" : pt ? "O formato .mbmap, versão 2: um formato JSON para mapas de registos de dispositivos Modbus. Chaves de topo, registos, áreas e endereços, tipos de dados, ordem de bytes e de palavras, e validação." : "The .mbmap format, version 2: a JSON format for Modbus device register maps. Top-level keys, registers, areas and addresses, data types, byte and word order, and validation."}
   nav="spec"
 >
   <header class="page-head">
-    <p class="key">{zh ? "规范" : pt ? "Especificação" : "Specification"}</p>
-    <h1>{doc?.title ?? (zh ? ".mbmap 格式" : pt ? "O formato .mbmap" : "The .mbmap format")}</h1>
+    <p class="key">{zh ? "规范" : hi ? "विनिर्देश" : pt ? "Especificação" : "Specification"}</p>
+    <h1>{doc?.title ?? (zh ? ".mbmap 格式" : hi ? ".mbmap फ़ॉर्मैट" : pt ? "O formato .mbmap" : "The .mbmap format")}</h1>
     <div class="actions">
-      <a class="btn" href={LINKS.spec}><Icon name="github" /> {zh ? "GitHub 上的 SPEC.md" : pt ? "SPEC.md no GitHub" : "SPEC.md on GitHub"}</a>
+      <a class="btn" href={LINKS.spec}><Icon name="github" /> {zh ? "GitHub 上的 SPEC.md" : hi ? "GitHub पर SPEC.md" : pt ? "SPEC.md no GitHub" : "SPEC.md on GitHub"}</a>
       <a class="btn" href={LINKS.schema}><Icon name="raw" /> JSON Schema</a>
-      <a class="btn" href={LINKS.example}><Icon name="official" /> {zh ? "示例映射表" : pt ? "Mapa de exemplo" : "Example map"}</a>
-      <a class="btn" href={`${REPO_URL}/commits/${BRANCH}/SPEC.md`}>{zh ? "历史" : pt ? "Histórico" : "History"}</a>
+      <a class="btn" href={LINKS.example}><Icon name="official" /> {zh ? "示例映射表" : hi ? "उदाहरण मैप" : pt ? "Mapa de exemplo" : "Example map"}</a>
+      <a class="btn" href={`${REPO_URL}/commits/${BRANCH}/SPEC.md`}>{zh ? "历史" : hi ? "इतिहास" : pt ? "Histórico" : "History"}</a>
     </div>
   </header>
 
   {
     doc ? (
       <div class="spec">
-        <nav class="toc card" aria-label={zh ? "目录" : pt ? "Índice" : "Contents"}>
-          <p class="key">{zh ? "目录" : pt ? "Índice" : "Contents"}</p>
+        <nav class="toc card" aria-label={zh ? "目录" : hi ? "विषय-सूची" : pt ? "Índice" : "Contents"}>
+          <p class="key">{zh ? "目录" : hi ? "विषय-सूची" : pt ? "Índice" : "Contents"}</p>
           <ol>
             {toc.map((h) => (
               <li class={`d${h.depth}`}>
@@ -47,8 +48,8 @@ const toc = doc?.headings.filter((h) => h.depth === 2 || h.depth === 3) ?? [];
       </div>
     ) : (
       <section class="card pad empty">
-        <strong>{zh ? "无法读取规范" : pt ? "Não foi possível ler a especificação" : "The specification could not be read"}</strong>
-        {zh ? <>请在 GitHub 上阅读 <a href={LINKS.spec}>SPEC.md</a>。</> : pt ? <>Leia o <a href={LINKS.spec}>SPEC.md</a> no GitHub.</> : <>Read <a href={LINKS.spec}>SPEC.md</a> on GitHub.</>}
+        <strong>{zh ? "无法读取规范" : hi ? "विनिर्देश पढ़ा नहीं जा सका" : pt ? "Não foi possível ler a especificação" : "The specification could not be read"}</strong>
+        {zh ? <>请在 GitHub 上阅读 <a href={LINKS.spec}>SPEC.md</a>。</> : hi ? <>GitHub पर <a href={LINKS.spec}>SPEC.md</a> पढ़ें।</> : pt ? <>Leia o <a href={LINKS.spec}>SPEC.md</a> no GitHub.</> : <>Read <a href={LINKS.spec}>SPEC.md</a> on GitHub.</>}
       </section>
     )
   }

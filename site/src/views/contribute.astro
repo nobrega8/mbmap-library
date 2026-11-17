@@ -87,15 +87,26 @@ const cardsPt = {
   docs: { title: "Melhorar a documentação", text: "Dúvidas sobre o formato, ideias para ele, ou uma ferramenta que lê ficheiros .mbmap: abra uma discussão ou proponha uma alteração à documentação.", links: ["Fazer uma pergunta", "Sugerir uma ideia", "Mostrar uma ferramenta"] },
 } as const;
 
+// Hindi text of the cards, in the order of `cards`.
+const cardsHi = {
+  add: { title: "नया डिवाइस जोड़ें", text: "निर्माता के सार्वजनिक दस्तावेज़ों से मैप लिखें, वैलिडेटर से जाँचें और pull request खोलें।", links: ["मैप कैसे जोड़ें", "उदाहरण मैप"] },
+  request: { title: "डिवाइस माँगें", text: "मैप खुद नहीं लिख सकते? उसे माँगें, बेहतर होगा निर्माता के Modbus दस्तावेज़ की कड़ी के साथ।", links: ["मैप माँगें"] },
+  verify: { title: "असली हार्डवेयर पर मैप सत्यापित करें", text: "किसी मैप से डिवाइस को पढ़ें और मानों की तुलना उसकी स्क्रीन से करें। नतीजा, अच्छा या बुरा, ज़रूर बताएँ, भले ही मैप आपने न लिखा हो।", links: ["परीक्षण की रिपोर्ट करें", "क्या जाँचें"] },
+  correct: { title: "गलत डेटा की रिपोर्ट करें या ठीक करें", text: "गलत पता, प्रकार, स्केल या बाइट क्रम? हर डिवाइस पेज पर “सुधार सुझाएँ” है, जो GitHub पर फ़ाइल संपादित करके pull request खोलता है, और “समस्या बताएँ” भी।", links: ["मैप बदलना", "खुले issue"] },
+  check: { title: "अनौपचारिक मैप जाँचें", text: "बदलकर लाए गए मैप की तुलना निर्माता के मैनुअल से करें, जो गलत है उसे ठीक करें और जिस दस्तावेज़ का उपयोग किया उसे दर्ज करें। तब वह आधिकारिक बन जाता है।", links: ["किसी को कैसे जाँचें", "अनौपचारिक मैप"] },
+  docs: { title: "दस्तावेज़ीकरण सुधारें", text: "फ़ॉर्मैट के बारे में प्रश्न, उसके लिए विचार, या .mbmap फ़ाइलें पढ़ने वाला टूल: चर्चा शुरू करें, या दस्तावेज़ों में बदलाव प्रस्तावित करें।", links: ["प्रश्न पूछें", "विचार सुझाएँ", "टूल दिखाएँ"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
+const hi = locale === "hi";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "参与贡献" : pt ? "Contribuir" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  title={zh ? "参与贡献" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -153,6 +164,64 @@ const pt = locale === "pt";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : hi ? (
+<>
+  <header class="page-head">
+    <h1>योगदान दें</h1>
+    <p class="lead">
+      एक अच्छा मैप अगले व्यक्ति की PDF मैनुअल के साथ एक दोपहर बचा देता है। सारे मैप GitHub पर <a href={LINKS.repo}>mbmap-library</a> रिपॉज़िटरी में हैं; हर योगदान उसी से होकर जाता है।
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsHi[c.id].title}</h2>
+          <p class="muted">{cardsHi[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsHi[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">मैप जमा करना और मैप सत्यापित करना</h2>
+    <p>
+      <strong>जमा करना</strong> किसी फ़ाइल को जोड़ना या बदलना है: आप किसी स्रोत से रजिस्टर लिखते हैं, और <code>sources</code> में बताते हैं कि कौन-सा। निर्माता के दस्तावेज़ों से लिखा मैप
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span> है; किसी अन्य कैटलॉग, फ़ोरम या तृतीय-पक्ष इंटीग्रेशन से कॉपी किया गया मैप
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span> है।
+    </p>
+    <p>
+      <strong>सत्यापित करना</strong> किसी मौजूदा मैप को असली डिवाइस पर परखना है: उसे पढ़ें, मानों की तुलना डिवाइस की स्क्रीन या उसके अपने सॉफ़्टवेयर से करें (हर रजिस्टर समूह का कम से कम एक मान, और 32-बिट मान का बाइट और वर्ड क्रम), और जो डिवाइस, फ़र्मवेयर और कनेक्शन आपने इस्तेमाल किया उसकी रिपोर्ट करें। तभी कोई मैप
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span> बनता है। कोई भी मैप सत्यापित कर सकता है; आपका उसका लेखक होना ज़रूरी नहीं। जो परीक्षण समस्याएँ खोजता है, वह भी उतना ही उपयोगी है: उसकी रिपोर्ट करें ताकि मैप को सत्यापित चिह्नित न किया जाए।
+    </p>
+
+    <h2>pull request खोलने से पहले</h2>
+    <ul>
+      <li>फ़ाइल का नाम <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> रखें, छोटे अक्षरों के slug के साथ, जैसे <code>maps/acme-meters/pm-200.mbmap.json</code>।</li>
+      <li>वैलिडेटर चलाएँ और हर त्रुटि ठीक करें: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>इंडेक्स फिर से बनाएँ: <code>python tools/index/build_index.py</code></li>
+      <li>जब कोई बदलाव यह प्रभावित करे कि डिवाइस कैसे पढ़ा या लिखा जाता है, तो <code>revision</code> बढ़ाएँ।</li>
+    </ul>
+
+    <h2>नियम</h2>
+    <ul>
+      <li><strong>केवल सार्वजनिक जानकारी।</strong> NDA के अंतर्गत या गोपनीय चिह्नित दस्तावेज़ों से कुछ नहीं।</li>
+      <li><strong>मैनुअल कॉपी न करें।</strong> पते, प्रकार और इकाइयाँ तथ्य हैं; विवरण अपने शब्दों में लिखें।</li>
+      <li><strong>कोई निजी डेटा नहीं।</strong> किसी असली इंस्टॉलेशन के IP पते, सीरियल नंबर या साइट के नाम नहीं।</li>
+      <li><strong>कवरेज से अधिक सटीकता को चुनें।</strong> अगर किसी रजिस्टर के बारे में अनिश्चित हैं, तो उसे छोड़ दें या यह बता दें।</li>
+    </ul>
+    <p>
+      पूरी गाइड <a href={LINKS.contributing}>CONTRIBUTING.md</a> है। योगदान देकर आप अपने योगदान को <a href={LINKS.license}>CC0 1.0</a> के अंतर्गत जारी करने पर सहमत होते हैं।
     </p>
   </section>
 </>
