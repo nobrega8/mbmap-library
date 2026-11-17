@@ -6,9 +6,10 @@ import { en } from "./en.ts";
 import { pt } from "./pt.ts";
 import { zh } from "./zh.ts";
 import { hi } from "./hi.ts";
+import { es } from "./es.ts";
 
 export type Key = keyof typeof en;
-const DICT: Record<Locale, Partial<Record<Key, string>>> = { en, pt, zh, hi };
+const DICT: Record<Locale, Partial<Record<Key, string>>> = { en, pt, zh, hi, es };
 
 export type Vars = Record<string, string | number>;
 

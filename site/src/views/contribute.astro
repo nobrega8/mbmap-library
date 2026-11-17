@@ -97,16 +97,27 @@ const cardsHi = {
   docs: { title: "दस्तावेज़ीकरण सुधारें", text: "फ़ॉर्मैट के बारे में प्रश्न, उसके लिए विचार, या .mbmap फ़ाइलें पढ़ने वाला टूल: चर्चा शुरू करें, या दस्तावेज़ों में बदलाव प्रस्तावित करें।", links: ["प्रश्न पूछें", "विचार सुझाएँ", "टूल दिखाएँ"] },
 } as const;
 
+// Spanish text of the cards, in the order of `cards`.
+const cardsEs = {
+  add: { title: "Añadir un dispositivo nuevo", text: "Escribe un mapa a partir de la documentación pública del fabricante, compruébalo con el validador y abre una pull request.", links: ["Cómo añadir un mapa", "Mapa de ejemplo"] },
+  request: { title: "Solicitar un dispositivo", text: "¿No puedes escribir el mapa tú mismo? Pídelo, a ser posible con un enlace a la documentación Modbus del fabricante.", links: ["Solicitar un mapa"] },
+  verify: { title: "Verificar un mapa en hardware real", text: "Lee un dispositivo con un mapa y compara los valores con su pantalla. Informa del resultado, bueno o malo, aunque no hayas escrito el mapa.", links: ["Informar de una prueba", "Qué comprobar"] },
+  correct: { title: "Informar de datos incorrectos o corregirlos", text: "¿Una dirección, tipo, escala u orden de bytes incorrectos? Cada página de dispositivo tiene «Sugerir una corrección», que edita el archivo en GitHub y abre una pull request, e «Informar de un problema».", links: ["Modificar un mapa", "Issues abiertas"] },
+  check: { title: "Comprobar un mapa no oficial", text: "Compara un mapa convertido con el manual del fabricante, corrige lo que esté mal y anota el documento que usaste. Pasa entonces a ser oficial.", links: ["Cómo comprobar uno", "Mapas no oficiales"] },
+  docs: { title: "Mejorar la documentación", text: "Preguntas sobre el formato, ideas para él, o una herramienta que lee archivos .mbmap: abre un debate o propón un cambio en la documentación.", links: ["Hacer una pregunta", "Sugerir una idea", "Mostrar una herramienta"] },
+} as const;
+
 const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
 const hi = locale === "hi";
+const es = locale === "es";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "参与贡献" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
-  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
+  title={zh ? "参与贡献" : es ? "Contribuir" : hi ? "योगदान दें" : pt ? "Contribuir" : "Contribute"}
+  description={zh ? "添加 Modbus 设备映射表、更正寄存器，或报告在真实硬件上的测试。MBMap 映射表存放在 GitHub 上，向所有人开放。" : es ? "Añade un mapa de dispositivo Modbus, corrige un registro o informa de una prueba en hardware real. Los mapas de MBMap están en GitHub y abiertos a todos." : hi ? "Modbus डिवाइस मैप जोड़ें, कोई रजिस्टर सुधारें, या असली हार्डवेयर पर परीक्षण की रिपोर्ट करें। MBMap मैप GitHub पर हैं और सबके लिए खुले हैं।" : pt ? "Acrescente um mapa de dispositivo Modbus, corrija um registo ou comunique um teste em hardware real. Os mapas MBMap estão no GitHub e são abertos a todos." : "Add a Modbus device map, correct a register, or report a test on real hardware. MBMap maps live on GitHub and are open to everyone."}
   nav="contribute"
 >
 {zh ? (
@@ -164,6 +175,64 @@ const hi = locale === "hi";
     </ul>
     <p>
       完整指南见 <a href={LINKS.contributing}>CONTRIBUTING.md</a>。参与贡献即表示您同意以 <a href={LINKS.license}>CC0 1.0</a> 发布您的贡献。
+    </p>
+  </section>
+</>
+) : es ? (
+<>
+  <header class="page-head">
+    <h1>Contribuir</h1>
+    <p class="lead">
+      Un buen mapa le ahorra a la siguiente persona una tarde con un manual en PDF. Todos los mapas están en el repositorio <a href={LINKS.repo}>mbmap-library</a> de GitHub; todas las contribuciones pasan por él.
+    </p>
+  </header>
+
+  <div class="ways">
+    {
+      cards.map((c) => (
+        <section class="card pad way" id={c.id} aria-labelledby={`${c.id}-t`}>
+          <Icon name={c.icon} size={18} />
+          <h2 id={`${c.id}-t`}>{cardsEs[c.id].title}</h2>
+          <p class="muted">{cardsEs[c.id].text}</p>
+          <div class="actions">
+            {c.links.map((l, i) => (
+              <a class={`btn${"primary" in l && l.primary ? " primary" : ""}`} href={l.href}>{cardsEs[c.id].links[i]}</a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="card pad prose diff" aria-labelledby="diff-t">
+    <h2 id="diff-t">Enviar un mapa y verificar un mapa</h2>
+    <p>
+      <strong>Enviar</strong> añade o modifica un archivo: escribes los registros a partir de una fuente e indicas cuál en <code>sources</code>. Un mapa escrito a partir de la documentación del fabricante es
+      <span class="status official"><Icon name="official" size={14} /> {statusLabel(locale, "official")}</span>; uno copiado de otro catálogo, de un foro o de una integración de terceros es
+      <span class="status unofficial"><Icon name="unofficial" size={14} /> {statusLabel(locale, "unofficial")}</span>.
+    </p>
+    <p>
+      <strong>Verificar</strong> es probar un mapa existente en un dispositivo real: leerlo, comparar los valores con la pantalla del dispositivo o con su propio software (al menos un valor por grupo de registros, y el orden de bytes y de palabras de un valor de 32 bits) e informar del dispositivo, el firmware y la conexión que usaste. Solo entonces un mapa pasa a ser
+      <span class="status verified"><Icon name="verified" size={14} /> {statusLabel(locale, "verified")}</span>. Cualquiera puede verificar un mapa; no hace falta ser su autor. Una prueba que encuentra problemas es igual de útil: infórmala para que el mapa no quede marcado como verificado.
+    </p>
+
+    <h2>Antes de abrir una pull request</h2>
+    <ul>
+      <li>Nombra el archivo <code>maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code> con slugs en minúsculas, por ejemplo <code>maps/acme-meters/pm-200.mbmap.json</code>.</li>
+      <li>Ejecuta el validador y corrige todos los errores: <code>python tools/validate/validate.py maps/&lt;vendor&gt;/&lt;model&gt;.mbmap.json</code></li>
+      <li>Reconstruye el índice: <code>python tools/index/build_index.py</code></li>
+      <li>Aumenta <code>revision</code> cuando un cambio afecte a cómo se lee o se escribe un dispositivo.</li>
+    </ul>
+
+    <h2>Reglas</h2>
+    <ul>
+      <li><strong>Solo información pública.</strong> Nada de documentos sujetos a NDA o marcados como confidenciales.</li>
+      <li><strong>No copies manuales.</strong> Las direcciones, los tipos y las unidades son hechos; escribe las descripciones con tus propias palabras.</li>
+      <li><strong>Sin datos privados.</strong> Sin direcciones IP, números de serie ni nombres de instalaciones reales.</li>
+      <li><strong>Más vale precisión que cobertura.</strong> Si dudas de un registro, déjalo fuera o indícalo.</li>
+    </ul>
+    <p>
+      La guía completa es <a href={LINKS.contributing}>CONTRIBUTING.md</a>. Al contribuir, aceptas publicar tu contribución bajo la <a href={LINKS.license}>CC0 1.0</a>.
     </p>
   </section>
 </>

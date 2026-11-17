@@ -28,12 +28,13 @@ const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
 const hi = locale === "hi";
+const es = locale === "es";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "关于 MBMap" : hi ? "MBMap के बारे में" : pt ? "Sobre o MBMap" : "About MBMap"}
-  description={zh ? "MBMap 是一个开放的、由社区驱动的 Modbus 设备映射库，采用任何工具都可读取的同一种 JSON 格式。它是什么、格式如何运作以及如何参与贡献。" : hi ? "MBMap Modbus डिवाइस मैप की एक खुली, समुदाय-संचालित रजिस्ट्री है, एक ही JSON फ़ॉर्मैट में, जिसे कोई भी टूल पढ़ सकता है। यह क्या है, फ़ॉर्मैट कैसे काम करता है और योगदान कैसे दें।" : pt ? "O MBMap é um registo aberto, mantido pela comunidade, de mapas de dispositivos Modbus num só formato JSON, legível por qualquer ferramenta. O que é, como funciona o formato e como contribuir." : "MBMap is an open, community-driven registry of Modbus device maps in one JSON format, readable by any tool. What it is, how the format works and how to contribute."}
+  title={zh ? "关于 MBMap" : es ? "Acerca de MBMap" : hi ? "MBMap के बारे में" : pt ? "Sobre o MBMap" : "About MBMap"}
+  description={zh ? "MBMap 是一个开放的、由社区驱动的 Modbus 设备映射库，采用任何工具都可读取的同一种 JSON 格式。它是什么、格式如何运作以及如何参与贡献。" : es ? "MBMap es un registro abierto, impulsado por la comunidad, de mapas de dispositivos Modbus en un único formato JSON, legible por cualquier herramienta. Qué es, cómo funciona el formato y cómo contribuir." : hi ? "MBMap Modbus डिवाइस मैप की एक खुली, समुदाय-संचालित रजिस्ट्री है, एक ही JSON फ़ॉर्मैट में, जिसे कोई भी टूल पढ़ सकता है। यह क्या है, फ़ॉर्मैट कैसे काम करता है और योगदान कैसे दें।" : pt ? "O MBMap é um registo aberto, mantido pela comunidade, de mapas de dispositivos Modbus num só formato JSON, legível por qualquer ferramenta. O que é, como funciona o formato e como contribuir." : "MBMap is an open, community-driven registry of Modbus device maps in one JSON format, readable by any tool. What it is, how the format works and how to contribute."}
   nav="about"
 >
 {zh ? (
@@ -122,6 +123,97 @@ const hi = locale === "hi";
         <li><a href={LINKS.contributing}><Icon name="plus" /> CONTRIBUTING.md</a></li>
         <li><a href={LINKS.example}><Icon name="official" /> 示例映射表</a></li>
         <li><a href={LINKS.discussions}><Icon name="about" /> 讨论区</a></li>
+        <li><a href={MODBENCH_URL}><Icon name="registers" /> Modbench</a></li>
+      </ul>
+    </aside>
+  </div>
+</>
+) : es ? (
+<>
+  <div class="about">
+    <section class="card pad prose">
+      <h1>Acerca de {SITE_NAME}</h1>
+      <p class="lead">
+        {SITE_NAME} es un formato abierto y un registro compartido, mantenido por la comunidad, de mapas de dispositivos Modbus: hoy {devices.length} dispositivos de {manufacturers.length} fabricantes, todos de dominio público.
+      </p>
+
+      <h2>El problema</h2>
+      <p>
+        Leer un dispositivo Modbus empieza por su mapa de registros, y ese mapa suele estar en un manual en PDF: una tabla de direcciones, tipos de datos, factores de escala y órdenes de bytes que cada ingeniero teclea a mano en su propia herramienta. Cada herramienta lo guarda en su formato, así que el mismo trabajo se repite para cada dispositivo, en cada herramienta, por cada persona que lo usa. Los errores de la copia (una dirección desplazada en uno, un orden de palabras invertido) aparecen en obra como valores incorrectos.
+      </p>
+
+      <h2>Qué hace {SITE_NAME}</h2>
+      <p>
+        Un archivo <code>.mbmap.json</code> describe un modelo de dispositivo: quién lo fabrica, cómo conectarse a él y qué significa cada registro. Se escribe el mapa una vez, se comprueba, y cualquier herramienta compatible puede cargarlo con las variables ya nombradas, escaladas y tipadas. El registro reúne estos mapas en un solo lugar, en
+        <a href={REPO_URL}>GitHub</a>, donde cualquiera puede añadir un dispositivo o corregir uno.
+      </p>
+
+      <h2 id="format">Cómo funciona el formato</h2>
+      <p>
+        Un mapa es un documento JSON sencillo con un <a href={LINKS.schema}>JSON Schema</a>. Las claves de primer nivel indican el fabricante, el modelo y los valores de conexión por defecto (protocolo, ID de unidad, ajustes serie, orden de bytes y de palabras, base de las direcciones). Cada registro tiene un nombre, un área Modbus (<code>coil</code>, <code>discrete</code>, <code>input</code>, <code>holding</code>), una dirección y un tipo, y puede añadir una unidad, una escala, derechos de acceso, límites de escritura y tablas de traducción para estados y campos de bits. Un registro por línea hace que cada cambio sea una diferencia de una sola línea.
+      </p>
+      <pre><code>{example}</code></pre>
+      <p>
+        Las reglas completas, incluidos los códigos de validación que todos los lectores comunican de la misma forma, están en la <a href={LINKS.spec}>especificación (SPEC.md)</a>.
+      </p>
+
+      <h2 id="status">Hasta qué punto se puede confiar en un mapa</h2>
+      <p>
+        Cada mapa de la biblioteca indica de dónde procede en <code>x_status</code>. Es una convención de la biblioteca, no forma parte del formato, y Modbench lo muestra junto a cada mapa.
+      </p>
+      <ul class="status-list">
+        {
+          STATUSES.map((s) => (
+            <li>
+              <span class={`status ${s}`}>
+                <Icon name={s} /> {statusLabel(locale, s)}
+              </span>
+              <span>
+                {statusLong(locale, s)} <span class="faint">({statusCounts[s]} mapas)</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <p>
+        Muchos mapas no oficiales se convirtieron de otros catálogos abiertos para poner en marcha la biblioteca, y todavía nadie los ha comprobado con la documentación del fabricante. Sea cual sea el estado, los mapas se ofrecen tal cual: comprueba un mapa con la documentación del fabricante antes de escribir en un dispositivo en servicio.
+      </p>
+
+      <h2 id="modbench">{SITE_NAME} y Modbench</h2>
+      <p>
+        <a href={MODBENCH_URL}>Modbench</a> es un cliente Modbus TCP/RTU para Windows, Linux y macOS, y la principal herramienta que lee los mapas de {SITE_NAME}. Explora y descarga esta biblioteca directamente, lee y escribe en un dispositivo por nombre de registro, comprueba el dispositivo con los modelos y el firmware del mapa y puede ejecutar un dispositivo simulado con la forma de un mapa. Este sitio web es su compañero en la web: los mismos mapas y el mismo aspecto, para encontrar un dispositivo antes de conectarte a él.
+      </p>
+
+      <h2 id="integrate">Usar los mapas en tu propia herramienta</h2>
+      <p>El formato es abierto y cualquier herramienta puede leerlo. Todo se sirve desde el repositorio:</p>
+      <ul>
+        <li><a href={rawUrl("index.json")}><code>index.json</code></a> enumera cada mapa con su ruta, tamaño, SHA-256, estado y número de registros.</li>
+        <li>Cada mapa está en <code>{rawUrl("maps/<vendor>/<model>.mbmap.json")}</code>.</li>
+        <li>
+          Una copia firmada del índice se publica en la rama <a href={`${REPO_URL}/tree/signed`}><code>signed</code></a>, para que una aplicación pueda comprobar que los mapas que descarga son los de la biblioteca (consulta <a href={`${LINKS.contributing}#signed-index`}>Índice firmado</a>).
+        </li>
+        <li>La carpeta <a href={LINKS.tests}><code>tests/</code></a> contiene archivos de ejemplo y los diagnósticos que un lector debe comunicar, para comprobar una implementación con la especificación.</li>
+      </ul>
+      <p>
+        Admite parte del formato o todo él y luego abre una pull request para incluir tu herramienta en la <a href={href("/compatibility")}>página de compatibilidad</a>.
+      </p>
+
+      <h2>Un proyecto comunitario abierto</h2>
+      <p>
+        Los mapas, la especificación y las herramientas están dedicados al dominio público bajo la <a href={LINKS.license}>CC0 1.0</a>: úsalos para cualquier fin, incluidos los productos comerciales, sin pedir permiso. El registro crece con las contribuciones de ingenieros, técnicos, integradores y fabricantes: mapas nuevos, correcciones y pruebas en hardware real.
+        <a href={href("/contribute")}>Así puedes ayudar</a>.
+      </p>
+    </section>
+
+    <aside class="card pad links" aria-label="Enlaces">
+      <h2 class="key">Enlaces</h2>
+      <ul>
+        <li><a href={REPO_URL}><Icon name="github" /> mbmap-library en GitHub</a></li>
+        <li><a href={LINKS.spec}><Icon name="library" /> Especificación (SPEC.md)</a></li>
+        <li><a href={LINKS.schema}><Icon name="raw" /> JSON Schema</a></li>
+        <li><a href={LINKS.contributing}><Icon name="plus" /> CONTRIBUTING.md</a></li>
+        <li><a href={LINKS.example}><Icon name="official" /> Mapa de ejemplo</a></li>
+        <li><a href={LINKS.discussions}><Icon name="about" /> Debates</a></li>
         <li><a href={MODBENCH_URL}><Icon name="registers" /> Modbench</a></li>
       </ul>
     </aside>

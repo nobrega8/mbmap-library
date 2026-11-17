@@ -39,7 +39,7 @@ prefix (`/pt/`). The languages are listed in `src/i18n/locales.ts` and in
 `astro.config.mjs`.
 
 - **Interface text** is in `src/i18n/en.ts` (the source of every string) and one
-  file per language (`src/i18n/pt.ts`, `src/i18n/zh.ts`, `src/i18n/hi.ts`). A key missing from a language shows the
+  file per language (`src/i18n/pt.ts`, `src/i18n/zh.ts`, `src/i18n/hi.ts`, `src/i18n/es.ts`). A key missing from a language shows the
   English text. Strings may hold `{name}` placeholders; nouns that are counted
   have a `.one` and a `.many` key.
 - **Pages** are written once, in `src/views/`, and rendered by thin routes in
@@ -59,6 +59,12 @@ prefix (`/pt/`). The languages are listed in `src/i18n/locales.ts` and in
   and the sitemap.
 - Register names, descriptions and notes in the maps are data and stay as the
   map's author wrote them.
+
+The language switcher is a menu in the header (a `<details>` element, so it opens
+without JavaScript). Each language has a flag: `LOCALE_FLAG` in `src/i18n/locales.ts`
+names the file in `assets/flags/`, which the site serves at
+`/library/assets/flags/<name>.png`. A language whose flag file is missing shows a
+globe instead.
 
 To add a language: add it to `LOCALES`, `LOCALE_NAME`, `LOCALE_TAG` and
 `OG_LOCALE` in `src/i18n/locales.ts` and to `astro.config.mjs`, create

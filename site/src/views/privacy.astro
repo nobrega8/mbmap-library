@@ -11,12 +11,13 @@ const locale = (Astro.currentLocale ?? DEFAULT_LOCALE) as Locale;
 const zh = locale === "zh";
 const pt = locale === "pt";
 const hi = locale === "hi";
+const es = locale === "es";
 ---
 
 <Base
   untranslated={!PROSE_LOCALES.includes(locale)}
-  title={zh ? "隐私政策" : hi ? "गोपनीयता नीति" : pt ? "Política de privacidade" : "Privacy policy"}
-  description={zh ? "MBMap 映射库网站收集什么，仅在您同意后才设置的 Cookie，以及如何更改您的选择。" : hi ? "MBMap रजिस्ट्री वेबसाइट क्या एकत्र करती है, केवल आपकी सहमति से सेट होने वाली कुकी, और अपनी पसंद कैसे बदलें।" : pt ? "O que o sítio do registo MBMap recolhe, os cookies que só define com o seu consentimento e como alterar a sua escolha." : "What the MBMap registry website collects, the cookies it sets only with your consent, and how to change your choice."}
+  title={zh ? "隐私政策" : es ? "Política de privacidad" : hi ? "गोपनीयता नीति" : pt ? "Política de privacidade" : "Privacy policy"}
+  description={zh ? "MBMap 映射库网站收集什么，仅在您同意后才设置的 Cookie，以及如何更改您的选择。" : es ? "Qué recoge el sitio web del registro MBMap, las cookies que solo establece con tu consentimiento y cómo cambiar tu elección." : hi ? "MBMap रजिस्ट्री वेबसाइट क्या एकत्र करती है, केवल आपकी सहमति से सेट होने वाली कुकी, और अपनी पसंद कैसे बदलें।" : pt ? "O que o sítio do registo MBMap recolhe, os cookies que só define com o seu consentimento e como alterar a sua escolha." : "What the MBMap registry website collects, the cookies it sets only with your consent, and how to change your choice."}
 >
 {zh ? (
 <>
@@ -63,6 +64,54 @@ const hi = locale === "hi";
 
       <h2>变更</h2>
       <p>本政策的变更会连同新日期一起发布在本页。另见<a href={href("/terms")}>使用条款</a>。</p>
+    </section>
+  </div>
+</>
+) : es ? (
+<>
+  <div class="about">
+    <section class="card pad prose">
+      <h1>Política de privacidad</h1>
+      <p class="lead">Última actualización: {updated}.</p>
+
+      <h2>Quién es el responsable</h2>
+      <p>
+        El Registro {SITE_NAME} lo gestiona <a href="https://nobrega.me">Afonso Nóbrega</a>. Para preguntar cualquier cosa sobre tus datos, abre una issue en <a href={LINKS.issues}>GitHub</a>.
+      </p>
+
+      <h2>Qué recoge el sitio</h2>
+      <p>
+        El sitio es estático: no hay cuentas, formularios ni comentarios, y los mapas y el índice de búsqueda son archivos sencillos. El alojamiento (GitHub Pages) conserva los registros habituales del servidor, como la dirección IP y la página solicitada, según la
+        <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">declaración de privacidad de GitHub</a>.
+      </p>
+
+      <h2>Analítica y cookies</h2>
+      {GTM_ID ? (
+        <>
+          <p>
+            Con tu consentimiento, el sitio usa Google Analytics 4, cargado mediante Google Tag Manager (Google Ireland Limited), para contar las visitas y ver qué páginas y mapas se usan. Establece las cookies <code>_ga</code> y <code>_ga_*</code> (hasta dos años) y envía a Google la página vista, el referente, la ubicación aproximada a partir de una dirección IP truncada y el tipo de navegador y de dispositivo. Las funciones publicitarias, la personalización de anuncios y las señales de Google están desactivadas.
+          </p>
+          <p>
+            No se carga nada de Google, ni se establece ninguna cookie de analítica, hasta que pulsas <strong>Aceptar</strong> en el aviso de cookies. <strong>Rechazar</strong> mantiene el sitio plenamente funcional sin ellas. Tu elección se guarda en el navegador (<code>localStorage</code>, clave <code>consent</code>) junto con el tema que elijas.
+          </p>
+          <p>
+            Puedes cambiar de opinión en cualquier momento en <button class="linkbtn" type="button" data-consent-open>Configuración de cookies</button>, aquí o en el pie de página. Al rechazar se eliminan las cookies de analítica de este sitio.
+          </p>
+          <p>
+            La base jurídica es tu consentimiento (RGPD, art. 6.1.a) y las normas de ePrivacy). Google puede tratar datos fuera de la UE conforme a sus cláusulas contractuales tipo; consulta <a href="https://policies.google.com/technologies/partner-sites">cómo usa Google los datos</a>.
+          </p>
+        </>
+      ) : (
+        <p>Esta versión del sitio no tiene analítica y no establece cookies. Solo se guarda en tu navegador la elección del tema.</p>
+      )}
+
+      <h2>Tus derechos</h2>
+      <p>
+        Puedes solicitar el acceso, la rectificación o la supresión de los datos que te conciernen, oponerte a su tratamiento o retirar el consentimiento, y presentar una reclamación ante tu autoridad de protección de datos (en España, la AEPD). Los datos de analítica no están vinculados a un nombre ni a un correo electrónico, de modo que en la práctica retirar el consentimiento y borrar tus cookies es la forma de detenerlos.
+      </p>
+
+      <h2>Cambios</h2>
+      <p>Los cambios en esta política se publican en esta página con una nueva fecha. Consulta también los <a href={href("/terms")}>términos de uso</a>.</p>
     </section>
   </div>
 </>
