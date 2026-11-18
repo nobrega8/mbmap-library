@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Acquanativa",
+  "model": "AcquaSensor-TT",
+  "vendor_website": "acquanativa.com.br",
+  "description": "Digital turbidity probe with temperature output, Modbus RTU over RS-485",
+  "revision": 1,
+  "revised": "2026-11-18",
+  "source": "Acquanativa, Guia de Integração Modbus RTU: Sonda AcquaSensor-TT (web page saved as PDF, 20/02/2026)",
+  "sources": [
+    {
+      "title": "Guia Técnico: Integração Modbus RTU - AcquaSensor-TT",
+      "date": "2026-02-20",
+      "url": "https://www.acquanativa.com.br/artigos/documentos/Guia_Tecnico_Integracao_Modbus_TT.pdf",
+      "note": "sections 2 and 3, and the request example of section 4",
+      "accessed": "2026-11-18",
+      "sha256": "82c7a91a2819b2690e763fd119af08f34c561d1fed2512ba53d1e830b2b3e581"
+    }
+  ],
+  "notes": [
+    "Serial settings from the guide: 9600 bit/s, 8 data bits, no parity, 1 stop bit, address 1 (1 to 247). Powered with 12 to 24 V DC, 50 mA typical. Read with function 03.",
+    "Floating-point values are IEEE-754 single precision. The guide does not say which word comes first; this map assumes the high word first, so check the first reading against a known value.",
+    "The guide also lists a serial number string at 0x0900 (its length is not given) and a calibration coefficient at 0x1100 (written with function 16, its format is not given). Both are left out until the format is known.",
+    "The request example of the guide shows the CRC as one byte (4F) and reads four registers from 0x2600 (turbidity and temperature together).",
+    "Written from the manufacturer's guide; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "parity": "N",
+  "databits": 8,
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {"name": "Turbidity", "group": "Measurements", "area": "holding", "address": 9728, "type": "float32", "access": "R", "unit": "NTU", "description": "Wait at least 4 seconds after submerging the probe before reading"},
+    {"name": "Temperature", "group": "Measurements", "area": "holding", "address": 9730, "type": "float32", "access": "R", "unit": "°C"},
+    {"name": "Slave address", "group": "Settings", "area": "holding", "address": 12288, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 247, "description": "Modbus address of the probe"}
+  ]
+}

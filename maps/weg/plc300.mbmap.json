@@ -1,0 +1,84 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "WEG",
+  "model": "PLC300",
+  "vendor_website": "weg.net",
+  "description": "Programmable logic controller with RS232 and RS485 Modbus RTU slave or master: serial system markers and device identification. The data of the user program are not listed",
+  "revision": 1,
+  "revised": "2026-11-18",
+  "source": "WEG PLC300 Modbus RTU communication manual 10000850708 (Portuguese)",
+  "sources": [
+    {
+      "title": "PLC300 - Comunicação Modbus RTU - Manual",
+      "version": "10000850708",
+      "url": "https://static.weg.net/medias/downloadcenter/h14/h0d/WEG-plc300-comunicacao-modbus-rtu-10000850708-manual-portugues-br.pdf",
+      "note": "chapters 3, 5 and 8",
+      "accessed": "2026-11-18",
+      "sha256": "d005168d440301c23a70f73f4228b56ca41fdaa3a7d853f7040fa5f58e992f2c"
+    }
+  ],
+  "identify": {
+    "function": 43,
+    "fields": [
+      {
+        "name": "Vendor name",
+        "object": 0
+      },
+      {
+        "name": "Product code",
+        "object": 1,
+        "role": "model"
+      },
+      {
+        "name": "Firmware revision",
+        "object": 2,
+        "role": "firmware"
+      }
+    ]
+  },
+  "notes": [
+    "Serial settings are set in the setup menu: RS232 address is fixed at 1; RS485 address is 1 to 247 (factory 1), speed 1200 to 57600 bit/s (factory 19200) and parity (factory even, 1 stop bit). The RS485 port is in master mode by default (factory value 1 of the mode): set it to slave before using this map.",
+    "The PLC300 exposes the markers of the ladder program, whose number and type depend on the user program made with WPS: system read markers %SB/%SW/%SD (input registers 3000 to 4999, discrete inputs 0 to 15999), system write markers %CB/%CW/%CD (holding 3000 to 4999, coils 0 to 15999), physical inputs (input 5000 to 5999) and outputs (holding 5000 to 5999), network inputs and outputs (6000 to 7999), volatile memory markers (holding 8000 to 27999, coils 40000 to 49999) and retentive memory markers (holding 28000 to 47999, coils 50000 to 59999). The WPS software lists the Modbus address of each marker. Only the serial system markers of chapter 8 are listed here.",
+    "A register holds two consecutive markers: the lower-numbered byte marker is the low byte. The register address is the area base plus half the marker number (for example %SW3102 is input register 3051). The bit-field registers below split the two bytes. Double markers (%MD) take two registers, the least significant register first.",
+    "Functions 01, 02, 03, 04, 05, 06, 15, 16 and 43. A telegram is at most 67 bytes. Do not use RS232, RS485 slave, USB and Ethernet at the same time for online monitoring.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "databits": 8,
+  "stopbits": 1,
+  "parity": "E",
+  "baudrate": 19200,
+  "byte_order": "big",
+  "word_order": "little",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "master_state": {"0": "Normal operation", "1": "Master disabled"},
+    "error_type": {"0": "No error", "4": "Response timeout", "5": "Slave returned an error response"},
+    "byte_format": {"0": "No parity, 1 stop bit", "1": "Odd parity, 1 stop bit", "2": "Even parity, 1 stop bit", "4": "No parity, 2 stop bits", "5": "Odd parity, 2 stop bits", "6": "Even parity, 2 stop bits"},
+    "baud": {"0": "1200 bit/s", "1": "2400 bit/s", "2": "4800 bit/s", "3": "9600 bit/s", "4": "19200 bit/s", "5": "38400 bit/s", "6": "57600 bit/s"},
+    "rs485_mode": {"0": "Modbus RTU slave", "1": "Modbus RTU master"},
+    "master_ctrl": {"0": "Normal operation", "1": "Disable the interface"}
+  },
+  "registers": [
+    {"name": "Master state", "group": "Modbus master status", "area": "input", "address": 3050, "type": "uint16", "access": "R", "bit": 0, "bits": 8, "enum": "master_state", "description": "%SB3100"},
+    {"name": "Requests sent by the master", "group": "Modbus master status", "area": "input", "address": 3051, "type": "uint16", "access": "R", "description": "%SW3102. Wraps around at its maximum"},
+    {"name": "Responses received by the master", "group": "Modbus master status", "area": "input", "address": 3052, "type": "uint16", "access": "R", "description": "%SW3104"},
+    {"name": "Requests without response (timeout)", "group": "Modbus master status", "area": "input", "address": 3053, "type": "uint16", "access": "R", "description": "%SW3106"},
+    {"name": "Error responses received by the master", "group": "Modbus master status", "area": "input", "address": 3054, "type": "uint16", "access": "R", "description": "%SW3108"},
+    {"name": "Last error: slave address", "group": "Modbus master status", "area": "input", "address": 3055, "type": "uint16", "access": "R", "bit": 0, "bits": 8, "description": "%SB3110"},
+    {"name": "Last error: type", "group": "Modbus master status", "area": "input", "address": 3055, "type": "uint16", "access": "R", "bit": 8, "bits": 8, "enum": "error_type", "description": "%SB3111"},
+    {"name": "Last error: error code received", "group": "Modbus master status", "area": "input", "address": 3056, "type": "uint16", "access": "R", "bit": 0, "bits": 8, "description": "%SB3112, when the type is error response"},
+    {"name": "Slave telegrams received", "group": "Modbus slave status", "area": "input", "address": 3060, "type": "uint16", "access": "R", "description": "%SW3120"},
+    {"name": "Slave telegrams sent", "group": "Modbus slave status", "area": "input", "address": 3061, "type": "uint16", "access": "R", "description": "%SW3122"},
+    {"name": "RS232 byte format", "group": "RS232 settings", "area": "holding", "address": 3031, "type": "uint16", "access": "RW", "bit": 0, "bits": 8, "enum": "byte_format", "description": "%CB3062"},
+    {"name": "RS232 baud rate", "group": "RS232 settings", "area": "holding", "address": 3031, "type": "uint16", "access": "RW", "bit": 8, "bits": 8, "enum": "baud", "description": "%CB3063"},
+    {"name": "RS485 slave address", "group": "RS485 settings", "area": "holding", "address": 3034, "type": "uint16", "access": "RW", "bit": 0, "bits": 8, "write_min": 1, "write_max": 247, "description": "%CB3068"},
+    {"name": "RS485 operating mode", "group": "RS485 settings", "area": "holding", "address": 3034, "type": "uint16", "access": "RW", "bit": 8, "bits": 8, "enum": "rs485_mode", "description": "%CB3069"},
+    {"name": "RS485 byte format", "group": "RS485 settings", "area": "holding", "address": 3035, "type": "uint16", "access": "RW", "bit": 0, "bits": 8, "enum": "byte_format", "description": "%CB3070"},
+    {"name": "RS485 baud rate", "group": "RS485 settings", "area": "holding", "address": 3035, "type": "uint16", "access": "RW", "bit": 8, "bits": 8, "enum": "baud", "description": "%CB3071"},
+    {"name": "Modbus master control", "group": "Modbus master control", "area": "holding", "address": 3050, "type": "uint16", "access": "RW", "enum": "master_ctrl", "description": "%CW3100"}
+  ]
+}
