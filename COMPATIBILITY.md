@@ -28,7 +28,7 @@ Legend: **Yes** supported · **Kept** read and written back, not shown · **—*
 | Translation tables, named (`enums`) and inline (§4.1) | Yes: labels shown, and offered when writing | — | Yes: labels shown | — | — |
 | Sentinel values (§4.2) | Yes: shown as their label, left out of charts and alarms | — | — | — | — |
 | Bit fields, `bit` and `bits` (§4.3) | Yes: read, and written by changing only the field | — | `bit` only: the bits of one register share one rule; `bits` labelled only | Yes: one `Bin16` item per register, its comment naming each bit or field | Yes: shown in binary, the name of each bit or field in the description |
-| Scale factor registers, `scale_factor` (§4.4) | Yes: the exponent register is read with the value | — | — | — | — |
+| Scale factor registers, `scale_factor` (§4.4) | Yes: the exponent register is read with the value | — | Yes | — | — |
 | Write limits, `write_min` and `write_max` (§4.5) | Yes: values outside them are refused before writing | — | — | — | — |
 | Reference values (§4.6) | Yes: match, mismatch and failed checks are shown | — | — | — | — |
 | Identity registers, `role`, and `models` (§4.7, §9) | Yes: the device is checked against the map's models and firmware | — | — | — | — |
