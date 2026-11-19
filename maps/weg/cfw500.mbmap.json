@@ -8,8 +8,8 @@
   ],
   "vendor_website": "weg.net",
   "description": "Compact frequency inverter with Modbus RTU: monitoring, ramps and references, regulation, configuration, I/O, protections, motor, PID, SoftPLC and network control parameters",
-  "revision": 3,
-  "revised": "2026-10-20",
+  "revision": 4,
+  "revised": "2026-11-19",
   "source": "WEG CFW500 programming manual V2.2X and Modbus RTU manual",
   "sources": [
     {
@@ -36,7 +36,9 @@
     "P0312 = 2 selects Modbus RTU on the standard RS485 interface (default); a remote HMI uses the same port with P0312 = 0.",
     "Parity and stop bits: P0311, default 1 = 8 data bits, even parity, 1 stop bit.",
     "Parameters marked 'can be changed only with the motor stopped' are the manual's cfg parameters; the drive refuses a write while the motor runs.",
-    "A drive answers with an exception when a block of registers contains a parameter its firmware does not have, and the whole block fails. Parameters differ between firmware versions (V2.2X here); if a block fails, switch off the registers that the drive does not have (in Modbench: right-click, stop reading it)."
+    "A drive answers with an exception when a block of registers contains a parameter its firmware does not have, and the whole block fails. Parameters differ between firmware versions (V2.2X here); if a block fails, switch off the registers that the drive does not have (in Modbench: right-click, stop reading it).",
+    "Tested on a CFW500 with the CFW500-IOS plug-in, firmware 2.06 (P0023), 440 V, over RS485 at 19200 8E1, November 2026. Checked: every register group (monitoring, ramps, regulation, configuration, I/O, protections, motor, PID, SoftPLC, serial status), the scaled values against the decimal places of the manual, the bits of P0012, P0013 and P0680, and the fault history (undervoltage F021 with a DC link of about 364 V). The drive was stopped with no load, so current, torque, power and the output registers were read at zero.",
+    "On firmware 2.06 the permanent magnet motor parameters P0431, P0435, P0445 to P0448 and P0451 to P0454 answer with exception 2 (illegal data address); a read that includes them fails, so skip them on older firmware."
   ],
   "protocol": "rtu",
   "unit_id": 1,
@@ -46,7 +48,7 @@
   "stopbits": 1,
   "byte_order": "big",
   "address_base": 0,
-  "x_status": "official",
+  "x_status": "verified",
   "enums": {
     "inverter_status": {"0": "Ready", "1": "Run", "2": "Undervoltage", "3": "Fault", "4": "Self-tuning", "5": "Configuration", "6": "DC braking", "7": "Sleep mode"},
     "plugin": {"0": "Without plug-in", "1": "CFW500-IOS", "2": "CFW500-IOD", "3": "CFW500-IOAD", "4": "CFW500-IOR", "5": "CFW500-CUSB", "6": "CFW500-CCAN", "7": "CFW500-CRS232", "8": "CFW500-CPDP", "9": "CFW500-CRS485", "10": "CFW500-ENC", "11": "CFW500-CETH / CEMB-TCP / CEPN-IO", "12": "CFW500-ENC2", "13": "CFW500-ENC1"},
@@ -317,7 +319,7 @@
     {"name": "Control configuration: Dead time compensation", "group": "Motor", "area": "holding", "address": 397, "type": "bool", "bit": 1, "access": "RW", "description": "P0397; can be changed only with the motor stopped"},
     {"name": "Control configuration: Is stabilization", "group": "Motor", "area": "holding", "address": 397, "type": "bool", "bit": 2, "access": "RW", "description": "P0397; can be changed only with the motor stopped"},
     {"name": "Control configuration: Ud compensation for VVW PM", "group": "Motor", "area": "holding", "address": 397, "type": "bool", "bit": 5, "access": "RW", "description": "P0397; can be changed only with the motor stopped"},
-    {"name": "Motor service factor", "group": "Motor", "area": "holding", "address": 398, "type": "uint16", "scale": 0.01, "unit": "%", "access": "RW", "write_min": 1, "write_max": 1.5, "description": "P0398; can be changed only with the motor stopped"},
+    {"name": "Motor service factor", "group": "Motor", "area": "holding", "address": 398, "type": "uint16", "scale": 0.01, "access": "RW", "write_min": 1, "write_max": 1.5, "description": "P0398; can be changed only with the motor stopped"},
     {"name": "Motor rated efficiency", "group": "Motor", "area": "holding", "address": 399, "type": "uint16", "scale": 0.1, "unit": "%", "access": "RW", "write_min": 50, "write_max": 99.9, "description": "P0399; can be changed only with the motor stopped"},
     {"name": "Motor rated voltage", "group": "Motor", "area": "holding", "address": 400, "type": "uint16", "access": "RW", "unit": "V", "write_min": 200, "write_max": 600, "description": "P0400"},
     {"name": "Motor rated current", "group": "Motor", "area": "holding", "address": 401, "type": "uint16", "access": "RW", "scale": 0.1, "unit": "A", "write_min": 0, "write_max": 200, "description": "P0401"},

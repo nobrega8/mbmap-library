@@ -8,8 +8,8 @@
   ],
   "vendor_website": "yaskawa.eu.com",
   "description": "AC drive for cranes, 200 V and 400 V class, MEMOBUS/Modbus RTU on the built-in RS-485 port",
-  "revision": 1,
-  "revised": "2026-10-24",
+  "revision": 2,
+  "revised": "2026-11-19",
   "source": "YASKAWA AC Drive CR700 for Cranes Technical Manual, SIEPC71061723B, section 5.3 and chapter 10",
   "sources": [
     {
@@ -26,7 +26,8 @@
     "Frequency registers are scaled for o1-03 = 0 (0.01 Hz). Some current and power registers change resolution with the drive model; their scale is left at 1.",
     "Only the main parameters are listed. Every parameter has its MEMOBUS address in the manual's parameter list (chapter 10): read it with function 03 and write it as above.",
     "Do not use Modbus writes as a safety function on a crane: brake control, limits and emergency stop must stay in the drive's hardware and safety settings.",
-    "Written from the manufacturer's manual; not tested on a device."
+    "Tested on a CR700 (112 A drive, flash software number 1026 in U1-25), 440 V, over RS485 at 19200 8E1, node 1, November 2026. Checked: the command, monitor and Modbus error registers, the U1, U2, U3 and U4 monitors, the fault history and the parameters b1, C1, d1, E1, E2, H5 and o1 against the drive settings (A1-06 = Crane (hoist), o1-03 = 0.01 Hz). The drive was stopped, so output current, power and torque were read at zero; the Enter command registers and writes were not tested.",
+    "On this 112 A drive E2-01 (motor rated current) and the drive rated current are in steps of 0.1 A (640 and 1120 for a 37 kW motor)."
   ],
   "protocol": "rtu",
   "unit_id": 31,
@@ -36,7 +37,7 @@
   "stopbits": 1,
   "address_base": 0,
   "max_read_registers": 16,
-  "x_status": "official",
+  "x_status": "verified",
   "enums": {
     "fault": {"0x0002": "Uv1", "0x0003": "Uv2", "0x0004": "Uv3", "0x0005": "SC", "0x0006": "GF", "0x0007": "oC", "0x0008": "ov", "0x0009": "oH", "0x000A": "oH1", "0x000B": "oL1", "0x000C": "oL2", "0x000F": "rr", "0x0010": "rH", "0x0011": "EF3", "0x0012": "EF4", "0x0013": "EF5", "0x0014": "EF6", "0x0015": "EF7", "0x0016": "EF8", "0x0017": "FAn", "0x0018": "oS", "0x0019": "dEv", "0x001A": "PGo", "0x001B": "PF", "0x001C": "LF", "0x001D": "oH3", "0x001E": "oPr", "0x001F": "Err", "0x0020": "oH4", "0x0021": "CE", "0x0022": "bUS", "0x0025": "CF", "0x0026": "SvE", "0x0027": "EF0", "0x002C": "EF9", "0x002D": "EF10", "0x0030": "oFx (hardware fault)", "0x0038": "PGoH", "0x0039": "E5", "0x0042": "EF1", "0x0043": "EF2", "0x0046": "CoF", "0x004E": "rF", "0x004F": "boL", "0x0052": "nSE", "0x0071": "SE1", "0x0072": "SE2", "0x0073": "SE3", "0x0074": "SE4", "0x0075": "oL3", "0x0076": "oL4", "0x0077": "oL5", "0x0078": "oL6", "0x0083": "CPF02", "0x0084": "CPF03", "0x0087": "CPF06", "0x0088": "CPF07", "0x0089": "CPF08", "0x008C": "CPF11", "0x008D": "CPF12", "0x008E": "CPF13", "0x008F": "CPF14", "0x0091": "CPF16", "0x0092": "CPF17", "0x0093": "CPF18", "0x0094": "CPF19", "0x0095": "CPF20", "0x0096": "CPF21", "0x0097": "CPF22", "0x0098": "CPF23", "0x0099": "CPF24", "0x009A": "CPF25", "0x009B": "CPF26", "0x009C": "CPF27", "0x009D": "CPF28", "0x009E": "CPF29", "0x009F": "CPF30", "0x00A0": "CPF31", "0x00A1": "CPF32", "0x00A2": "CPF33", "0x00A3": "CPF34", "0x00A4": "CPF35", "0x00A5": "CPF36", "0x00A6": "CPF37", "0x00A7": "CPF38", "0x00A9": "CPF40", "0x00AA": "CPF41", "0x0112": "oFA11", "0x0113": "oFA12", "0x0114": "oFA13", "0x0115": "oFA14", "0x0116": "oFA15", "0x0117": "oFA16", "0x0118": "oFA17", "0x0131": "oFA30", "0x0132": "oFA31", "0x0133": "oFA32", "0x0134": "oFA33", "0x0135": "oFA34", "0x0136": "oFA35", "0x0137": "oFA36", "0x0138": "oFA37", "0x0139": "oFA38", "0x013A": "oFA39", "0x013B": "oFA40", "0x013C": "oFA41", "0x013D": "oFA42", "0x013E": "oFA43", "0x0201": "oFb00", "0x0202": "oFb01", "0x0203": "oFb02", "0x0206": "oFb05", "0x0207": "oFb06", "0x0211": "oFb10", "0x0212": "oFb11", "0x0213": "oFb12", "0x0214": "oFb13", "0x0215": "oFb14", "0x0216": "oFb15", "0x0217": "oFb16", "0x0218": "oFb17", "0x0231": "oFb30", "0x0232": "oFb31", "0x0233": "oFb32"},
     "ref_source": {"0": "Keypad", "1": "Terminals", "2": "Modbus communications", "3": "Option card"}
