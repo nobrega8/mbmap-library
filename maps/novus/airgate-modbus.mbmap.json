@@ -1,0 +1,145 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "AirGate-Modbus",
+  "models": [
+    "AirGate-Modbus"
+  ],
+  "vendor_website": "novus.com.br",
+  "description": "Gateway between a Modbus RTU RS485 network and an IEEE 802.15.4 wireless network (RHT-Air and other AirGates): operating mode, PAN ID, serial settings, link quality, per-child statistics and channel noise",
+  "revision": 1,
+  "revised": "2026-11-23",
+  "firmware": "V1.23 or later",
+  "firmware_min": "1.23",
+  "source": "Novus AirGate-Modbus manual V1.1x E (Portuguese), Modbus commands and holding register table",
+  "sources": [
+    {
+      "title": "AirGate-Modbus - Manual",
+      "version": "V1.1x E",
+      "url": "https://www.novus.com.br/downloads/Arquivos/manual_airgate-modbus_v11x_e_portugu%C3%AAs_a4.pdf",
+      "accessed": "2026-11-23",
+      "sha256": "aa6ba6b426d0d448be69fb94cd8866a3d397b00f80623fd488f1c412bc0a8760",
+      "note": "linked in issue #669; Comandos Modbus and Tabela de Registradores Retentivos"
+    }
+  ],
+  "notes": [
+    "Connection values are those of the configuration mode over USB (address 246, 115200 bit/s, no parity, 2 stop bits). In operation the gateway answers on the address in register 32 (factory 248) with the serial settings of registers 26-29; the manual does not give the factory values for those.",
+    "Functions 03 (read holding registers) and 06 (write single register), answered by the gateway itself from firmware V1.23. Requests for other addresses are forwarded to the slaves unchanged.",
+    "Not listed on purpose: the bootloader, factory-reset and restart commands (registers 0-2), the 16 security-key bytes (registers 10-25) and the protected MAC and timing registers from 1000 (except identity). DigiConfig uses them, and a wrong write can lock the device.",
+    "Changes are kept only after 1 is written to register 3; some need a restart.",
+    "Registers 36-48 and the channel noise registers are diagnostics for checking the wireless links; write the child's Modbus address to register 38 before reading registers 39-48.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 246,
+  "baudrate": 115200,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 2,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "baud_rate": {
+      "0": "1200",
+      "1": "2400",
+      "2": "4800",
+      "3": "9600",
+      "4": "19200",
+      "5": "38400",
+      "6": "57600",
+      "7": "115200"
+    },
+    "parity_stop": {
+      "0": "None, 1 stop bit",
+      "1": "None, 2 stop bits",
+      "2": "Even, 1 stop bit",
+      "3": "Odd, 1 stop bit"
+    },
+    "operating_mode": {
+      "0": "RS485-Master",
+      "1": "RS485-Slaves",
+      "2": "USB-Master",
+      "3": "Multi-Master"
+    },
+    "network_role": {
+      "0": "Router",
+      "1": "Coordinator"
+    },
+    "off_on": {
+      "0": "Disabled",
+      "1": "Enabled"
+    },
+    "tx_power": {
+      "0": "0 dBm",
+      "1": "2 dBm",
+      "2": "4 dBm",
+      "3": "6 dBm",
+      "4": "8 dBm",
+      "5": "10 dBm",
+      "6": "12 dBm",
+      "7": "14 dBm",
+      "8": "20 dBm"
+    },
+    "save_flash": {
+      "0": "Idle",
+      "1": "Save"
+    },
+    "product_code": {
+      "102": "AirGate-Modbus"
+    }
+  },
+  "registers": [
+    {"name": "Operating mode", "group": "Network", "area": "holding", "address": 5, "type": "uint16", "access": "RW", "enum": "operating_mode", "write_min": 0, "write_max": 3, "description": "Applied after the device restarts"},
+    {"name": "Network coordinator", "group": "Network", "area": "holding", "address": 4, "type": "uint16", "access": "R", "enum": "network_role", "description": "Only one coordinator per PAN ID"},
+    {"name": "PAN ID low byte", "group": "Network", "area": "holding", "address": 6, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 255},
+    {"name": "PAN ID high byte", "group": "Network", "area": "holding", "address": 7, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 255},
+    {"name": "CRC check", "group": "Network", "area": "holding", "address": 8, "type": "uint16", "access": "RW", "enum": "off_on", "write_min": 0, "write_max": 1, "description": "Check the CRC of packets received on RS485 and USB; packets with a bad CRC are not forwarded"},
+    {"name": "Encryption", "group": "Network", "area": "holding", "address": 9, "type": "uint16", "access": "RW", "enum": "off_on", "write_min": 0, "write_max": 1, "description": "All devices with the same PAN ID need the same security key (registers 10-25, not listed here)"},
+    {"name": "Wireless transmit power", "group": "Network", "area": "holding", "address": 34, "type": "uint16", "access": "RW", "enum": "tx_power", "write_min": 0, "write_max": 8},
+    {"name": "Multi-master time-out", "group": "Network", "area": "holding", "address": 33, "type": "uint16", "access": "RW", "unit": "ms", "write_min": 300, "write_max": 65535, "description": "Longest wait for a slave's answer in Multi-Master mode"},
+    {"name": "Modbus address", "group": "Communication", "area": "holding", "address": 32, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 254, "description": "Factory 248, which is not a valid Modbus address, so a new gateway never clashes with another device"},
+    {"name": "USB baud rate", "group": "Communication", "area": "holding", "address": 26, "type": "uint16", "access": "RW", "enum": "baud_rate", "write_min": 0, "write_max": 7},
+    {"name": "RS485 baud rate", "group": "Communication", "area": "holding", "address": 27, "type": "uint16", "access": "RW", "enum": "baud_rate", "write_min": 0, "write_max": 7},
+    {"name": "USB parity and stop bits", "group": "Communication", "area": "holding", "address": 28, "type": "uint16", "access": "RW", "enum": "parity_stop", "write_min": 0, "write_max": 3},
+    {"name": "RS485 parity and stop bits", "group": "Communication", "area": "holding", "address": 29, "type": "uint16", "access": "RW", "enum": "parity_stop", "write_min": 0, "write_max": 3, "description": "With no parity the device sends 2 stop bits and receives with 1"},
+    {"name": "USB interframe time", "group": "Communication", "area": "holding", "address": 30, "type": "uint16", "access": "RW", "write_min": 1749, "write_max": 40000, "description": "1749 follows the Modbus rule for the baud rate; raise it if the USB master has many errors"},
+    {"name": "RS485 interframe time", "group": "Communication", "area": "holding", "address": 31, "type": "uint16", "access": "RW", "write_min": 1749, "write_max": 40000, "description": "1749 follows the Modbus rule for the baud rate; raise it if an RS485 device has many errors"},
+    {"name": "Save settings to flash", "group": "Communication", "area": "holding", "address": 3, "type": "uint16", "access": "RW", "enum": "save_flash", "write_min": 0, "write_max": 1, "description": "Write 1 to keep the settings after a restart; unsaved changes are lost"},
+    {"name": "Operating channel", "group": "Diagnostics", "area": "holding", "address": 35, "type": "uint16", "access": "R", "description": "11 to 25; channel 11 is 2405 MHz and each channel adds 5 MHz"},
+    {"name": "Parent link quality (LQI)", "group": "Diagnostics", "area": "holding", "address": 36, "type": "int16", "access": "R", "unit": "dBm", "description": "-100 (worst) to -15 (best); 0 on USB or on the coordinator, which has no parent"},
+    {"name": "Number of children", "group": "Diagnostics", "area": "holding", "address": 37, "type": "uint16", "access": "R", "description": "AirGate-Modbus in RS485-Slaves mode plus RHT-Air devices, 0 to 43"},
+    {"name": "Child address", "group": "Diagnostics", "area": "holding", "address": 38, "type": "uint16", "access": "RW", "write_min": 0, "write_max": 255, "description": "Modbus address of the child that registers 39-48 describe"},
+    {"name": "Child link quality (LQI)", "group": "Diagnostics", "area": "holding", "address": 39, "type": "int16", "access": "R", "unit": "dBm", "description": "-100 (worst) to -15 (best), for the child chosen in register 38"},
+    {"name": "Child packets requested", "group": "Diagnostics", "area": "holding", "address": 40, "type": "uint16", "access": "R", "description": "Counts since power-up and wraps at 65535"},
+    {"name": "Child packets answered", "group": "Diagnostics", "area": "holding", "address": 41, "type": "uint16", "access": "R", "description": "Counts since power-up and wraps at 65535"},
+    {"name": "Child error rate", "group": "Diagnostics", "area": "holding", "address": 42, "type": "uint16", "access": "R", "scale": 0.01, "unit": "%"},
+    {"name": "Child last request size", "group": "Diagnostics", "area": "holding", "address": 43, "type": "uint16", "access": "R", "unit": "B"},
+    {"name": "Child last response size", "group": "Diagnostics", "area": "holding", "address": 44, "type": "uint16", "access": "R", "unit": "B"},
+    {"name": "Child throughput", "group": "Diagnostics", "area": "holding", "address": 45, "type": "uint16", "access": "R", "unit": "B/s"},
+    {"name": "Child response time", "group": "Diagnostics", "area": "holding", "address": 46, "type": "uint16", "access": "R", "unit": "ms"},
+    {"name": "Child route short MAC 0", "group": "Diagnostics", "area": "holding", "address": 47, "type": "uint16", "access": "R"},
+    {"name": "Child route short MAC 1", "group": "Diagnostics", "area": "holding", "address": 48, "type": "uint16", "access": "R"},
+    {"name": "Channel 11 noise", "group": "Channel noise", "area": "holding", "address": 49, "type": "int16", "access": "R", "unit": "dBm", "description": "2405 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 12 noise", "group": "Channel noise", "area": "holding", "address": 50, "type": "int16", "access": "R", "unit": "dBm", "description": "2410 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 13 noise", "group": "Channel noise", "area": "holding", "address": 51, "type": "int16", "access": "R", "unit": "dBm", "description": "2415 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 14 noise", "group": "Channel noise", "area": "holding", "address": 52, "type": "int16", "access": "R", "unit": "dBm", "description": "2420 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 15 noise", "group": "Channel noise", "area": "holding", "address": 53, "type": "int16", "access": "R", "unit": "dBm", "description": "2425 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 16 noise", "group": "Channel noise", "area": "holding", "address": 54, "type": "int16", "access": "R", "unit": "dBm", "description": "2430 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 17 noise", "group": "Channel noise", "area": "holding", "address": 55, "type": "int16", "access": "R", "unit": "dBm", "description": "2435 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 18 noise", "group": "Channel noise", "area": "holding", "address": 56, "type": "int16", "access": "R", "unit": "dBm", "description": "2440 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 19 noise", "group": "Channel noise", "area": "holding", "address": 57, "type": "int16", "access": "R", "unit": "dBm", "description": "2445 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 20 noise", "group": "Channel noise", "area": "holding", "address": 58, "type": "int16", "access": "R", "unit": "dBm", "description": "2450 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 21 noise", "group": "Channel noise", "area": "holding", "address": 59, "type": "int16", "access": "R", "unit": "dBm", "description": "2455 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 22 noise", "group": "Channel noise", "area": "holding", "address": 60, "type": "int16", "access": "R", "unit": "dBm", "description": "2460 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 23 noise", "group": "Channel noise", "area": "holding", "address": 61, "type": "int16", "access": "R", "unit": "dBm", "description": "2465 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 24 noise", "group": "Channel noise", "area": "holding", "address": 62, "type": "int16", "access": "R", "unit": "dBm", "description": "2470 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Channel 25 noise", "group": "Channel noise", "area": "holding", "address": 63, "type": "int16", "access": "R", "unit": "dBm", "description": "2475 MHz, measured when the network starts; -100 (clean) to -15 (noisy)"},
+    {"name": "Device label", "group": "Identity", "area": "holding", "address": 64, "type": "string", "access": "RW", "length": 5, "description": "User text to identify the device; one ASCII character per register"},
+    {"name": "Serial number", "group": "Identity", "area": "holding", "address": 1019, "type": "uint32", "access": "R", "role": "serial", "description": "High word in register 1019, low word in 1020 (protected registers)"},
+    {"name": "Product code", "group": "Identity", "area": "holding", "address": 1021, "type": "uint16", "access": "R", "role": "model", "enum": "product_code"},
+    {"name": "Firmware version", "group": "Identity", "area": "holding", "address": 1022, "type": "uint16", "access": "R", "role": "firmware", "description": "The manual gives no decimal point; the functions it describes need V1.23 or later"}
+  ]
+}

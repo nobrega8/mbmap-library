@@ -1,0 +1,94 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "RHT-485-LCD",
+  "models": [
+    "RHT-WM-485-LCD",
+    "RHT-DM-485-LCD",
+    "RHT-P10-485-LCD"
+  ],
+  "vendor_website": "novus.com.br",
+  "description": "Temperature and relative humidity transmitter with LCD (wall, duct and P10 versions) and Modbus RTU over RS485: temperature, humidity, dew point, unit, offsets, display mode and communication settings",
+  "revision": 1,
+  "revised": "2026-11-23",
+  "source": "Novus RHT-WM-485-LCD, RHT-DM-485-LCD and RHT-P10-485-LCD instruction manual V1.0x E (Portuguese), chapter 6",
+  "sources": [
+    {
+      "title": "Transmissores RHT-WM-485-LCD, RHT-DM-485-LCD e RHT-P10-485-LCD - Manual de Instruções",
+      "version": "V1.0x E",
+      "url": "https://www.novus.com.br/downloads/Arquivos/manual_transmissor_rht_wm_dm_p10_485_lcd_v10x_e_portugu%C3%AAs.pdf",
+      "accessed": "2026-11-23",
+      "sha256": "7f0913949c11071ebf4773d368458b8ee7d12f134a4f2303a2e1232c5329baae",
+      "note": "linked in issue #668; holding register table and sections 6.1 and 6.2"
+    }
+  ],
+  "notes": [
+    "Factory defaults: address 247, 1200 bit/s, even parity. The manual does not give the stop bits; 1 is assumed.",
+    "Functions 03 (read holding registers) and 06 (write single register).",
+    "Temperature, humidity, dew point and the offsets have one decimal place: 253 is 25.3. Temperature and dew point are in °C or °F, as set in register 10.",
+    "The error value (register 16, factory -9999) is what the measurements report while the sensor has a fault.",
+    "Settings can also be changed with the P button on the device; register 11 locks the communication settings against the button.",
+    "Registers 17-21 hold a user title of up to five characters; the manual does not say how the characters are packed. The model code in register 62 (0 to 11) is not described in the manual.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 247,
+  "baudrate": 1200,
+  "databits": 8,
+  "parity": "E",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "baud_rate": {
+      "0": "1200",
+      "1": "2400",
+      "2": "4800",
+      "3": "9600",
+      "4": "19200",
+      "5": "38400",
+      "6": "57600",
+      "7": "115200"
+    },
+    "parity": {
+      "0": "None",
+      "1": "Odd",
+      "2": "Even"
+    },
+    "display_mode": {
+      "0": "Temperature and relative humidity",
+      "1": "Temperature and dew point",
+      "2": "Relative humidity and dew point",
+      "3": "Temperature only"
+    },
+    "temperature_unit": {
+      "0": "°C",
+      "1": "°F"
+    },
+    "button_lock": {
+      "0": "Button can change the settings",
+      "1": "Communication settings locked"
+    }
+  },
+  "registers": [
+    {"name": "Temperature", "group": "Measurements", "area": "holding", "address": 7, "type": "int16", "scale": 0.1, "access": "R", "description": "°C or °F as set in register 10; sensor range -40.0 to 100.0 °C"},
+    {"name": "Relative humidity", "group": "Measurements", "area": "holding", "address": 8, "type": "int16", "scale": 0.1, "unit": "%", "access": "R"},
+    {"name": "Dew point", "group": "Measurements", "area": "holding", "address": 9, "type": "int16", "scale": 0.1, "access": "R", "description": "°C or °F as set in register 10"},
+    {"name": "Display mode", "group": "Configuration", "area": "holding", "address": 6, "type": "uint16", "access": "RW", "enum": "display_mode", "write_min": 0, "write_max": 3},
+    {"name": "Temperature unit", "group": "Configuration", "area": "holding", "address": 10, "type": "uint16", "access": "RW", "enum": "temperature_unit", "write_min": 0, "write_max": 1, "description": "Unit of the temperature and the dew point"},
+    {"name": "Temperature offset", "group": "Configuration", "area": "holding", "address": 12, "type": "int16", "scale": 0.1, "access": "RW", "write_min": -100, "write_max": 100, "description": "User correction added to the temperature, -10.0 to 10.0"},
+    {"name": "Humidity offset", "group": "Configuration", "area": "holding", "address": 14, "type": "int16", "scale": 0.1, "unit": "%", "access": "RW", "write_min": -100, "write_max": 100, "description": "User correction added to the relative humidity, -10.0 to 10.0"},
+    {"name": "Error value", "group": "Configuration", "area": "holding", "address": 16, "type": "int16", "access": "RW", "write_min": -9999, "write_max": 9999, "description": "Value reported while the sensor has a fault; factory -9999"},
+    {"name": "Baud rate", "group": "Communication", "area": "holding", "address": 2, "type": "uint16", "access": "RW", "enum": "baud_rate", "write_min": 0, "write_max": 7},
+    {"name": "Modbus address", "group": "Communication", "area": "holding", "address": 3, "type": "uint16", "access": "RW", "write_min": 1, "write_max": 247},
+    {"name": "Parity", "group": "Communication", "area": "holding", "address": 4, "type": "uint16", "access": "RW", "enum": "parity", "write_min": 0, "write_max": 2},
+    {"name": "Button lock", "group": "Communication", "area": "holding", "address": 11, "type": "uint16", "access": "RW", "enum": "button_lock", "write_min": 0, "write_max": 1},
+    {"name": "Serial number", "group": "Identity", "area": "holding", "address": 0, "type": "uint32", "access": "R", "role": "serial", "description": "High word in register 0, low word in register 1"},
+    {"name": "Firmware version", "group": "Identity", "area": "holding", "address": 5, "type": "uint16", "access": "R", "role": "firmware", "description": "0 to 999; the manual does not give the decimal point"},
+    {"name": "Model code", "group": "Identity", "area": "holding", "address": 62, "type": "uint16", "access": "R", "role": "model", "description": "0 to 11; the codes are not listed in the manual"},
+    {"name": "Title", "group": "Identity", "area": "holding", "address": 17, "type": "string", "length": 5, "access": "RW", "description": "User text that identifies the device"}
+  ]
+}
