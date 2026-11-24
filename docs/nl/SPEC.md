@@ -194,7 +194,7 @@ Elk item van `registers` is een object. `name`, `area`, `address` en `type` zijn
 | `role` | `"model"`, `"firmware"`, `"serial"` | | Dit register identificeert het apparaat (§4.7) |
 | `read_alone` | boolean | `false` | Het register wordt in een eigen verzoek gelezen (§4.9) |
 | `read_group` | non-empty string | | Het register wordt alleen samen met registers van dezelfde groep gelezen (§4.9) |
-| `parts` | array of objects | | Benoemt de waarden binnen een blokregister, zodat een hulpmiddel ze een voor een kan tonen en bewerken (§4.10) |
+| `parts` | array of objects | | Geeft namen aan de waarden in een blokregister of aan de bitvelden van een woordregister, zodat een tool ze één voor één kan tonen en bewerken (§4.10) |
 | `description` | string | | Vrije tekst |
 | `comment` | string | | Vrije notitie over het register, voor mensen die de kaart bewerken |
 
@@ -396,6 +396,35 @@ Sommige apparaten bewaren meerdere waarden in één blok en accepteren alleen he
 - `access` is dat van het register: delen kunnen niet beter beschrijfbaar zijn dan het blok.
 - `parts` beschrijft alleen wat er in een register zit en heeft dus geen nieuwe `mbmap`-versie nodig (§8). Lezers die het negeren, gedragen zich zoals voorheen.
 
+#### Bitvelden van een woord
+
+Sommige apparaten houden meerdere instellingen in één woord dat ze alleen **als geheel** accepteren: een schrijfactie die één bit zet, nult de andere. Dezelfde sleutel `parts` beschrijft dat woord bij een register van het type `uint16`, `uint32` of `uint64`. Het register blijft één gewoon getal, dus een lezer die `parts` niet kent, leest en schrijft het precies zoals voorheen.
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| Key | JSON type | Default | Betekenis |
+|---|---|---|---|
+| `name` | non-empty string | | Naam die aan mensen wordt getoond |
+| `bit` | integer ≥ 0 | | Laagste bit van het veld; 0 = minst significante bit van de waarde zoals gedecodeerd met `byte_order` en `word_order` van het register (§6) |
+| `bits` | integer ≥ 1 | `1` | Breedte van het veld |
+| `enum` | string | | Naam van een vertaaltabel (§4.1) voor de waarde van het veld |
+| `description` | string | | Vrije tekst |
+
+- `bit` + `bits` **MUST NOT** de breedte van het register (16, 32 of 64) overschrijden. Velden **MUST NOT** overlappen. Bits die geen veld dekt, zijn toegestaan: ze zijn ongebruikt of gereserveerd.
+- Een bitveld heeft geen `offset`, `length` of `type`: die horen bij de delen van een `string`-register, en de twee soorten worden niet in één register gemengd.
+- Een tool die `parts` kent, **SHOULD** elk veld apart tonen. Om te lezen haalt hij het veld uit de gedecodeerde waarde. Om te schrijven bouwt hij de **hele** waarde uit de velden (een niet ingesteld veld wordt als 0 verstuurd) en schrijft alle registers van het woord in één verzoek (FC16). Hij **MUST NOT** een schrijfactie versturen die maar enkele velden of registers dekt.
+- `access` is dat van het register. Alleen-lezen bitvelden in een leesbaar register blijven `bit` en `bits` op het register zelf gebruiken (§4.3); `parts` is voor woorden die als geheel geschreven moeten worden.
+- Registers met deze `parts` falen bij een oudere validator (`bad-parts`: vóór deze toevoeging was `parts` alleen voor strings), maar lezers die `parts` negeren, lezen het register zoals voorheen. Daarom is er geen nieuwe `mbmap`-versie nodig (§8).
+
 ## 5. Gebieden en adressen
 
 | `area` | Eenheid | Lezen | Schrijven | Toegestane `access` |
@@ -480,7 +509,7 @@ Lezers **SHOULD** elk probleem melden met een van de onderstaande codes en een [
 | `bad-source` | error | Een item van `sources` is geen object met een niet-lege `title`, of heeft een `version`, `date`, `url`, `note`, `accessed` of `sha256` van de verkeerde vorm |
 | `bad-role` | error | `role` is niet `"model"`, `"firmware"` of `"serial"`, is ingesteld op een register dat niet gelezen kan worden, of `"model"` of `"serial"` wordt meer dan eens gebruikt |
 | `bad-identify` | error | `identify` is ongeldig (§4.8): `function` is niet `17` of `43`, `fields` is leeg, of een veld mist een `name`, heeft een onbekende of voor `"model"` of `"serial"` herhaalde `role`, of overtreedt de regels van zijn functie (FC17: `offset` ontbreekt of is negatief, `type` ontbreekt of is onbekend, `string` zonder `length`, een `enum` die geen tabel noemt of geen geldige tabel is, een `object`; FC43: `object` ontbreekt of ligt buiten 0–255, een `offset`, `type`, `length` of `enum`) |
-| `bad-parts` | error | `parts` is leeg, is ingesteld op een register dat geen `string` met geldige `length` is, of een deel mist een `name` of `offset`, heeft een negatieve `offset`, een onbekend of `bool` `type`, een `string`-deel zonder `length`, een deel dat voorbij het blok gaat, of delen die elkaar overlappen (§4.10) |
+| `bad-parts` | error | `parts` is leeg, is ingesteld op een register dat geen `string` met geldige `length` is, of een deel mist een `name` of `offset`, heeft een negatieve `offset`, een onbekend of `bool` `type`, een `string`-deel zonder `length`, een deel dat voorbij het blok gaat, of delen die elkaar overlappen; bij een register `uint16`, `uint32` of `uint64` geldt de eerste voorwaarde niet en zijn de delen bitvelden: daar is het een deel zonder `bit`, met negatieve `bit`, met `bits` onder 1, met `offset`, `length` of `type`, een veld voorbij de breedte van het register of overlappende velden; een `enum` zonder tabel geeft `unknown-enum` (§4.10) |
 | `no-rows` | warning | `registers` is leeg |
 | `duplicate-name` | warning | Een `name` wordt meer dan eens gebruikt door registers waarvan de firmwarebereiken elkaar overlappen (§3.2) |
 | `model-list` | warning | `model` somt apparaten op gescheiden door “ / ”; geef de familienaam en som de apparaten op in `models` (§3.2) |

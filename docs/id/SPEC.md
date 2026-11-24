@@ -194,7 +194,7 @@ Setiap item `registers` adalah sebuah objek. `name`, `area`, `address`, dan `typ
 | `role` | `"model"`, `"firmware"`, `"serial"` | | Register ini mengidentifikasi perangkat (§4.7) |
 | `read_alone` | boolean | `false` | Register dibaca dalam permintaannya sendiri (§4.9) |
 | `read_group` | non-empty string | | Register hanya dibaca bersama register dari grup yang sama (§4.9) |
-| `parts` | array of objects | | Menamai nilai-nilai di dalam register blok, agar alat dapat menampilkan dan menyuntingnya satu per satu (§4.10) |
+| `parts` | array of objects | | Memberi nama pada nilai di dalam register blok, atau pada bit field register word, agar alat dapat menampilkan dan mengubahnya satu per satu (§4.10) |
 | `description` | string | | Teks bebas |
 | `comment` | string | | Catatan bebas tentang register, untuk orang yang menyunting peta |
 
@@ -396,6 +396,35 @@ Beberapa perangkat menyimpan beberapa nilai dalam satu blok dan hanya menerima b
 - `access` adalah milik register: bagian tidak dapat lebih dapat ditulis daripada blok.
 - `parts` hanya menggambarkan isi sebuah register, sehingga tidak memerlukan versi `mbmap` baru (§8). Pembaca yang mengabaikannya berperilaku seperti sebelumnya.
 
+#### Bit field dalam satu word
+
+Beberapa perangkat menyimpan beberapa pengaturan dalam satu word yang hanya diterima **utuh**: penulisan yang mengatur satu bit akan menjadikan bit lainnya 0. Kunci `parts` yang sama menjelaskan word itu pada register `uint16`, `uint32` atau `uint64`. Register tetap satu angka biasa, sehingga pembaca yang tidak mengenal `parts` membaca dan menulisnya persis seperti sebelumnya.
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| Key | JSON type | Default | Arti |
+|---|---|---|---|
+| `name` | non-empty string | | Nama yang ditampilkan kepada orang |
+| `bit` | integer ≥ 0 | | Bit terendah dari field; 0 = bit paling tidak signifikan dari nilai yang didekode dengan `byte_order` dan `word_order` register (§6) |
+| `bits` | integer ≥ 1 | `1` | Lebar field |
+| `enum` | string | | Nama tabel terjemahan (§4.1) untuk nilai field |
+| `description` | string | | Teks bebas |
+
+- `bit` + `bits` **MUST NOT** melebihi lebar register (16, 32 atau 64). Field **MUST NOT** tumpang tindih. Bit yang tidak dicakup field diperbolehkan: tidak dipakai atau dicadangkan.
+- Bit field tidak memiliki `offset`, `length` atau `type`: itu milik bagian register `string`, dan kedua jenis tidak dicampur dalam satu register.
+- Alat yang mengenal `parts` **SHOULD** menampilkan tiap field tersendiri. Untuk membaca, alat mengambil field dari nilai yang didekode. Untuk menulis, alat menyusun nilai **utuh** dari field (field yang tidak diisi dikirim sebagai 0) dan menulis semua register word dalam satu permintaan (FC16). Alat **MUST NOT** mengirim penulisan yang hanya mencakup sebagian field atau register.
+- `access` mengikuti register. Bit field baca-saja pada register yang dapat dibaca tetap memakai `bit` dan `bits` pada register itu sendiri (§4.3); `parts` untuk word yang harus ditulis utuh.
+- Register dengan `parts` ini gagal validasi pada validator lama (`bad-parts`: sebelumnya `parts` hanya untuk string), tetapi pembaca yang mengabaikan `parts` membaca register seperti sebelumnya. Karena itu tidak perlu versi `mbmap` baru (§8).
+
 ## 5. Area dan alamat
 
 | `area` | Satuan | Baca | Tulis | `access` yang diizinkan |
@@ -480,7 +509,7 @@ Pembaca **SHOULD** melaporkan setiap masalah dengan salah satu kode di bawah dan
 | `bad-source` | error | Item `sources` bukan objek dengan `title` tidak kosong, atau memiliki `version`, `date`, `url`, `note`, `accessed`, atau `sha256` dengan bentuk yang salah |
 | `bad-role` | error | `role` bukan `"model"`, `"firmware"`, atau `"serial"`, ditetapkan pada register yang tidak dapat dibaca, atau `"model"` atau `"serial"` dipakai lebih dari sekali |
 | `bad-identify` | error | `identify` tidak valid (§4.8): `function` bukan `17` atau `43`, `fields` kosong, atau sebuah bidang tidak memiliki `name`, memiliki `role` yang tidak dikenal atau berulang untuk `"model"` atau `"serial"`, atau melanggar aturan fungsinya (FC17: `offset` hilang atau negatif, `type` hilang atau tidak dikenal, `string` tanpa `length`, `enum` yang tidak menamai tabel atau bukan tabel yang valid, sebuah `object`; FC43: `object` hilang atau di luar 0–255, sebuah `offset`, `type`, `length`, atau `enum`) |
-| `bad-parts` | error | `parts` kosong, ditetapkan pada register yang bukan `string` dengan `length` valid, atau sebuah bagian tidak memiliki `name` atau `offset`, memiliki `offset` negatif, `type` yang tidak dikenal atau `bool`, bagian `string` tanpa `length`, bagian yang melewati blok, atau bagian yang tumpang tindih (§4.10) |
+| `bad-parts` | error | `parts` kosong, ditetapkan pada register yang bukan `string` dengan `length` valid, atau sebuah bagian tidak memiliki `name` atau `offset`, memiliki `offset` negatif, `type` yang tidak dikenal atau `bool`, bagian `string` tanpa `length`, bagian yang melewati blok, atau bagian yang tumpang tindih; pada register `uint16`, `uint32` atau `uint64` kondisi pertama tidak berlaku dan bagiannya adalah bit field: di sana berupa bagian tanpa `bit`, dengan `bit` negatif, dengan `bits` di bawah 1, dengan `offset`, `length` atau `type`, field yang melewati lebar register, atau field yang tumpang tindih; `enum` tanpa tabel adalah `unknown-enum` (§4.10) |
 | `no-rows` | warning | `registers` kosong |
 | `duplicate-name` | warning | Sebuah `name` dipakai lebih dari sekali oleh register yang rentang firmware-nya tumpang tindih (§3.2) |
 | `model-list` | warning | `model` mencantumkan perangkat yang dipisahkan “ / ”; berikan nama keluarga dan cantumkan perangkat di `models` (§3.2) |

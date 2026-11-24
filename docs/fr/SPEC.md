@@ -194,7 +194,7 @@ Chaque élément de `registers` est un objet. `name`, `area`, `address` et `type
 | `role` | `"model"`, `"firmware"`, `"serial"` | | Ce registre identifie le périphérique (4.7) |
 | `read_alone` | booléen | `false` | Le registre est lu dans une requête à part (4.9) |
 | `read_group` | chaîne non vide | | Le registre n’est lu qu’avec des registres du même groupe (4.9) |
-| `parts` | tableau d’objets | | Nomme les valeurs à l’intérieur d’un registre de bloc, pour qu’un outil puisse les afficher et les modifier une à une (4.10) |
+| `parts` | tableau d’objets | | Nomme les valeurs à l’intérieur d’un registre de bloc, ou les champs de bits d’un registre de mot, pour qu’un outil puisse les afficher et les modifier un à un (4.10) |
 | `description` | chaîne | | Texte libre |
 | `comment` | chaîne | | Note libre sur le registre, pour ceux qui modifient la carte |
 
@@ -396,6 +396,35 @@ Certains périphériques gardent plusieurs valeurs dans un bloc et n’acceptent
 - `access` est celui du registre : les parties ne peuvent pas être plus inscriptibles que le bloc.
 - `parts` ne décrit que ce qu’un registre contient ; il n’exige donc pas de nouvelle version de `mbmap` (section 8). Les lecteurs qui l’ignorent se comportent comme avant.
 
+#### Champs de bits d’un mot
+
+Certains périphériques gardent plusieurs réglages dans un mot qu’ils n’acceptent qu’**entier** : une écriture qui met un bit à 1 met les autres à 0. La même clé `parts` décrit ce mot sur un registre `uint16`, `uint32` ou `uint64`. Le registre reste un nombre ordinaire : un lecteur qui ne connaît pas `parts` le lit et l’écrit exactement comme avant.
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| Clé | Type JSON | Par défaut | Signification |
+|---|---|---|---|
+| `name` | chaîne non vide | | Nom affiché aux personnes |
+| `bit` | entier ≥ 0 | | Bit le plus bas du champ ; 0 = bit de poids faible de la valeur décodée avec le `byte_order` et le `word_order` du registre (6) |
+| `bits` | entier ≥ 1 | `1` | Largeur du champ |
+| `enum` | chaîne | | Nom d’une table de traduction (4.1) pour la valeur du champ |
+| `description` | chaîne | | Texte libre |
+
+- `bit` + `bits` **MUST NOT** dépasser la largeur du registre (16, 32 ou 64). Les champs **MUST NOT** se chevaucher. Les bits qu’aucun champ ne couvre sont permis : ils sont inutilisés ou réservés.
+- Un champ de bits n’a ni `offset`, ni `length`, ni `type` : ils appartiennent aux parties d’un registre `string`, et les deux sortes ne se mélangent pas dans un même registre.
+- Un outil qui connaît `parts` **SHOULD** afficher chaque champ séparément. Pour lire, il extrait le champ de la valeur décodée. Pour écrire, il construit la valeur **entière** à partir des champs (un champ non renseigné est envoyé à 0) et écrit tous les registres du mot en une seule requête (FC16). Il **MUST NOT** envoyer une écriture qui ne couvre que certains champs ou registres.
+- `access` est celui du registre. Les champs de bits en lecture seule d’un registre lisible continuent d’utiliser `bit` et `bits` sur le registre lui-même (4.3) ; `parts` sert aux mots qui doivent être écrits entiers.
+- Les registres qui utilisent ces `parts` échouent à la validation d’un ancien validateur (`bad-parts` : avant cet ajout, `parts` ne servait que pour les chaînes), mais les lecteurs qui ignorent `parts` lisent le registre comme avant. C’est pourquoi il ne faut pas de nouvelle version de `mbmap` (8).
+
 ## 5. Zones et adresses
 
 | `area` | Unité | Lecture | Écriture | `access` autorisé |
@@ -480,7 +509,7 @@ Les lecteurs **SHOULD** signaler chaque problème avec l’un des codes ci-desso
 | `bad-source` | error | Un élément de `sources` n’est pas un objet avec un `title` non vide, ou a un `version`, `date`, `url`, `note`, `accessed` ou `sha256` de forme incorrecte |
 | `bad-role` | error | `role` n’est ni `"model"`, ni `"firmware"`, ni `"serial"`, est défini sur un registre qui ne peut pas être lu, ou `"model"` ou `"serial"` est utilisé plus d’une fois |
 | `bad-identify` | error | `identify` n’est pas valide (4.8) : `function` n’est ni `17` ni `43`, `fields` est vide, ou un champ n’a pas de `name`, a un `role` inconnu ou répété pour `"model"` ou `"serial"`, ou enfreint les règles de sa fonction (FC17 : `offset` manquant ou négatif, `type` manquant ou inconnu, `string` sans `length`, un `enum` qui ne nomme aucune table ou n’est pas une table valide, un `object` ; FC43 : `object` manquant ou hors de 0–255, un `offset`, `type`, `length` ou `enum`) |
-| `bad-parts` | error | `parts` est vide, est défini sur un registre qui n’est pas une `string` avec un `length` valide, ou a une partie sans `name` ou `offset`, avec un `offset` négatif, un `type` inconnu ou `bool`, une partie `string` sans `length`, une partie qui dépasse le bloc, ou des parties qui se chevauchent (4.10) |
+| `bad-parts` | error | `parts` est vide, est défini sur un registre qui n’est pas une `string` avec un `length` valide, ou a une partie sans `name` ou `offset`, avec un `offset` négatif, un `type` inconnu ou `bool`, une partie `string` sans `length`, une partie qui dépasse le bloc, ou des parties qui se chevauchent; sur un registre `uint16`, `uint32` ou `uint64`, la première condition ne s’applique pas et les parties sont des champs de bits : c’est alors une partie sans `bit`, avec un `bit` négatif, avec `bits` inférieur à 1, avec `offset`, `length` ou `type`, un champ qui dépasse la largeur du registre ou des champs qui se chevauchent ; un `enum` sans table donne `unknown-enum` (4.10) |
 | `no-rows` | warning | `registers` est vide |
 | `duplicate-name` | warning | Un `name` est utilisé plus d’une fois par des registres dont les plages de firmware se chevauchent (3.2) |
 | `model-list` | warning | `model` liste des périphériques séparés par « / » ; donnez le nom de la famille et listez les périphériques dans `models` (3.2) |

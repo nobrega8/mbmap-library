@@ -194,7 +194,7 @@ Farklar büyük olduğunda (çoğu adres veya bağlantı ayarları değişir), a
 | `role` | `"model"`, `"firmware"`, `"serial"` | | Bu register cihazı tanımlar (§4.7) |
 | `read_alone` | boolean | `false` | Register kendi isteğinde okunur (§4.9) |
 | `read_group` | non-empty string | | Register yalnızca aynı gruptaki register'larla birlikte okunur (§4.9) |
-| `parts` | array of objects | | Bir blok register'ı içindeki değerleri adlandırır; böylece bir araç bunları tek tek gösterip düzenleyebilir (§4.10) |
+| `parts` | array of objects | | Bir blok register'ının içindeki değerleri veya bir kelime register'ının bit alanlarını adlandırır; böylece bir araç bunları tek tek gösterip düzenleyebilir (§4.10) |
 | `description` | string | | Serbest metin |
 | `comment` | string | | Haritayı düzenleyen insanlar için register hakkında serbest not |
 
@@ -396,6 +396,35 @@ Bazı cihazlar bir blokta birkaç değer tutar ve yalnızca bloğu bütün olara
 - `access` register'ınkidir: parçalar bloktan daha yazılabilir olamaz.
 - `parts` yalnızca bir register'ın içinde ne olduğunu tanımlar; bu yüzden yeni bir `mbmap` sürümü gerektirmez (§8). Onu yok sayan okuyucular eskisi gibi davranır.
 
+#### Bir kelimenin bit alanları
+
+Bazı cihazlar birkaç ayarı, yalnızca **bütün olarak** kabul ettikleri tek bir kelimede tutar: bir biti ayarlayan yazma diğerlerini sıfırlar. Aynı `parts` anahtarı bu kelimeyi `uint16`, `uint32` veya `uint64` register'ında tanımlar. Register tek bir sıradan sayı olarak kalır; bu yüzden `parts`'ı bilmeyen bir okuyucu onu eskisi gibi okur ve yazar.
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| Key | JSON type | Default | Anlamı |
+|---|---|---|---|
+| `name` | non-empty string | | İnsanlara gösterilen ad |
+| `bit` | integer ≥ 0 | | Alanın en düşük biti; 0 = register'ın `byte_order` ve `word_order` değerleriyle çözülen değerin en düşük anlamlı biti (§6) |
+| `bits` | integer ≥ 1 | `1` | Alanın genişliği |
+| `enum` | string | | Alanın değeri için bir çeviri tablosunun adı (§4.1) |
+| `description` | string | | Serbest metin |
+
+- `bit` + `bits` register genişliğini (16, 32 veya 64) aşmamalıdır (**MUST NOT**). Alanlar çakışmamalıdır (**MUST NOT**). Hiçbir alanın kapsamadığı bitlere izin verilir: kullanılmaz veya ayrılmıştır.
+- Bit alanının `offset`, `length` veya `type` anahtarı yoktur: bunlar `string` register'ının parçalarına aittir ve iki tür aynı register'da karıştırılmaz.
+- `parts`'ı bilen bir araç her alanı ayrı göstermelidir (**SHOULD**). Okumak için alanı çözülmüş değerden çıkarır. Yazmak için alanlardan **bütün** değeri oluşturur (ayarlanmamış alan 0 olarak gönderilir) ve kelimenin tüm register'larını tek istekte yazar (FC16). Yalnızca bazı alanları veya register'ları kapsayan bir yazma göndermemelidir (**MUST NOT**).
+- `access` register'ınkidir. Okunabilir bir register'daki salt okunur bit alanları `bit` ve `bits` anahtarlarını register'ın kendisinde kullanmaya devam eder (§4.3); `parts` bütün olarak yazılması gereken kelimeler içindir.
+- Bu `parts`'ı kullanan register'lar eski bir doğrulayıcıda hata verir (`bad-parts`: bu eklemeden önce `parts` yalnızca string içindi), ancak `parts`'ı yok sayan okuyucular register'ı eskisi gibi okur. Bu yüzden yeni bir `mbmap` sürümü gerekmez (§8).
+
 ## 5. Alanlar ve adresler
 
 | `area` | Birim | Okuma | Yazma | İzin verilen `access` |
@@ -480,7 +509,7 @@ Okuyucular her sorunu aşağıdaki kodlardan biriyle ve değere bir [JSON Pointe
 | `bad-source` | error | `sources` öğesi boş olmayan bir `title`'ı olan bir nesne değil ya da yanlış biçimde bir `version`, `date`, `url`, `note`, `accessed` veya `sha256`'sı var |
 | `bad-role` | error | `role` `"model"`, `"firmware"` veya `"serial"` değil, okunamayan bir register'da ayarlı, ya da `"model"` veya `"serial"` birden fazla kez kullanılıyor |
 | `bad-identify` | error | `identify` geçerli değil (§4.8): `function` `17` veya `43` değil, `fields` boş, ya da bir alanın `name`'i yok, `"model"` veya `"serial"` için bilinmeyen ya da yinelenen bir `role`'ü var, veya fonksiyonunun kurallarını çiğniyor (FC17: `offset` eksik veya negatif, `type` eksik veya bilinmeyen, `length`'siz `string`, hiçbir tabloyu adlandırmayan ya da geçerli bir tablo olmayan bir `enum`, bir `object`; FC43: `object` eksik veya 0–255 dışında, bir `offset`, `type`, `length` ya da `enum`) |
-| `bad-parts` | error | `parts` boş, geçerli bir `length`'i olan bir `string` olmayan register'da ayarlı, ya da bir parçanın `name` veya `offset`'i yok, negatif bir `offset`'i, bilinmeyen veya `bool` bir `type`'ı var, `length`'siz bir `string` parçası, bloğu aşan bir parça veya çakışan parçalar var (§4.10) |
+| `bad-parts` | error | `parts` boş, geçerli bir `length`'i olan bir `string` olmayan register'da ayarlı, ya da bir parçanın `name` veya `offset`'i yok, negatif bir `offset`'i, bilinmeyen veya `bool` bir `type`'ı var, `length`'siz bir `string` parçası, bloğu aşan bir parça veya çakışan parçalar var; `uint16`, `uint32` veya `uint64` register'ında ilk koşul geçerli değildir ve parçalar bit alanlarıdır: orada `bit`siz bir parça, negatif `bit`, 1'in altında `bits`, `offset`, `length` veya `type`, register genişliğini aşan bir alan ya da çakışan alanlar hatadır; tablosu olmayan `enum` `unknown-enum` verir (§4.10) |
 | `no-rows` | warning | `registers` boş |
 | `duplicate-name` | warning | Bir `name`, donanım yazılımı aralıkları çakışan register'lar tarafından birden fazla kez kullanılıyor (§3.2) |
 | `model-list` | warning | `model` cihazları “ / ” ile ayırarak listeliyor; aile adını verin ve cihazları `models` içinde listeleyin (§3.2) |

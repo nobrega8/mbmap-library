@@ -194,7 +194,7 @@ Cada elemento de `registers` es un objeto. `name`, `area`, `address` y `type` so
 | `role` | `"model"`, `"firmware"`, `"serial"` | | Este registro identifica el dispositivo (4.7) |
 | `read_alone` | booleano | `false` | El registro se lee en una petición propia (4.9) |
 | `read_group` | cadena no vacía | | El registro se lee solo junto con registros del mismo grupo (4.9) |
-| `parts` | matriz de objetos | | Da nombre a los valores dentro de un registro de bloque, para que una herramienta pueda mostrarlos y editarlos uno a uno (4.10) |
+| `parts` | matriz de objetos | | Da nombre a los valores dentro de un registro de bloque, o a los campos de bits de un registro de palabra, para que una herramienta pueda mostrarlos y editarlos uno a uno (4.10) |
 | `description` | cadena | | Texto libre |
 | `comment` | cadena | | Nota libre sobre el registro, para quien edita el mapa |
 
@@ -396,6 +396,35 @@ Algunos dispositivos guardan varios valores en un bloque y solo aceptan el bloqu
 - `access` es el del registro: las partes no pueden ser más escribibles que el bloque.
 - `parts` solo describe lo que hay dentro de un registro, así que no necesita una nueva versión de `mbmap` (sección 8). Los lectores que lo ignoran se comportan como antes.
 
+#### Campos de bits de una palabra
+
+Algunos dispositivos guardan varios ajustes en una palabra que solo aceptan **entera**: una escritura que pone un bit a 1 pone a 0 los demás. La misma clave `parts` describe esa palabra en un registro `uint16`, `uint32` o `uint64`. El registro sigue siendo un número normal, así que un lector que no conoce `parts` lo lee y lo escribe exactamente como antes.
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| Clave | Tipo JSON | Por defecto | Significado |
+|---|---|---|---|
+| `name` | cadena no vacía | | Nombre que se muestra a las personas |
+| `bit` | entero ≥ 0 | | Bit más bajo del campo; 0 = bit menos significativo del valor decodificado con el `byte_order` y el `word_order` del registro (6) |
+| `bits` | entero ≥ 1 | `1` | Anchura del campo |
+| `enum` | cadena | | Nombre de una tabla de traducción (4.1) para el valor del campo |
+| `description` | cadena | | Texto libre |
+
+- `bit` + `bits` **MUST NOT** superar la anchura del registro (16, 32 o 64). Los campos **MUST NOT** solaparse. Se permiten bits que ningún campo cubra: no se usan o están reservados.
+- Un campo de bits no tiene `offset`, `length` ni `type`: eso es de las partes de un registro `string`, y los dos tipos no se mezclan en un mismo registro.
+- Una herramienta que conozca `parts` **SHOULD** mostrar cada campo por separado. Para leer, extrae el campo del valor decodificado. Para escribir, construye el valor **entero** a partir de los campos (un campo sin definir se envía como 0) y escribe todos los registros de la palabra en una sola petición (FC16). **MUST NOT** enviar una escritura que cubra solo algunos campos o registros.
+- `access` es el del registro. Los campos de bits de solo lectura en un registro legible siguen usando `bit` y `bits` en el propio registro (4.3); `parts` es para palabras que deben escribirse enteras.
+- Los registros con estas `parts` no pasan un validador anterior (`bad-parts`: antes `parts` era solo para cadenas), pero los lectores que ignoran `parts` leen el registro como antes. Por eso no hace falta una nueva versión de `mbmap` (8).
+
 ## 5. Áreas y direcciones
 
 | `area` | Unidad | Lectura | Escritura | `access` permitido |
@@ -480,7 +509,7 @@ Los lectores **SHOULD** informar de cada problema con uno de los códigos siguie
 | `bad-source` | error | Un elemento de `sources` no es un objeto con un `title` no vacío, o tiene un `version`, `date`, `url`, `note`, `accessed` o `sha256` de forma incorrecta |
 | `bad-role` | error | `role` no es `"model"`, `"firmware"` ni `"serial"`, está definido en un registro que no puede leerse, o `"model"` o `"serial"` se usa más de una vez |
 | `bad-identify` | error | `identify` no es válido (4.8): `function` no es `17` ni `43`, `fields` está vacío, o un campo carece de `name`, tiene un `role` desconocido o repetido para `"model"` o `"serial"`, o incumple las reglas de su función (FC17: `offset` ausente o negativo, `type` ausente o desconocido, `string` sin `length`, un `enum` que no nombra ninguna tabla o no es una tabla válida, un `object`; FC43: `object` ausente o fuera de 0–255, un `offset`, `type`, `length` o `enum`) |
-| `bad-parts` | error | `parts` está vacío, está definido en un registro que no es una `string` con un `length` válido, o tiene una parte sin `name` o `offset`, con un `offset` negativo, un `type` desconocido o `bool`, una parte `string` sin `length`, una parte que sobrepasa el bloque, o partes que se solapan (4.10) |
+| `bad-parts` | error | `parts` está vacío, está definido en un registro que no es una `string` con un `length` válido, o tiene una parte sin `name` o `offset`, con un `offset` negativo, un `type` desconocido o `bool`, una parte `string` sin `length`, una parte que sobrepasa el bloque, o partes que se solapan; en un registro `uint16`, `uint32` o `uint64` la primera condición no se aplica y las partes son campos de bits: allí es una parte sin `bit`, con `bit` negativo, con `bits` menor que 1, con `offset`, `length` o `type`, un campo que sobrepasa la anchura del registro o campos que se solapan; un `enum` sin tabla es `unknown-enum` (4.10) |
 | `no-rows` | warning | `registers` está vacío |
 | `duplicate-name` | warning | Un `name` lo usan más de una vez registros cuyos rangos de firmware se solapan (3.2) |
 | `model-list` | warning | `model` enumera dispositivos separados por « / »; da el nombre de la familia y enumera los dispositivos en `models` (3.2) |

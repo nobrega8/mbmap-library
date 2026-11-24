@@ -194,7 +194,7 @@ Each item of `registers` is an object. `name`, `area`, `address` and `type` are 
 | `role` | `"model"`, `"firmware"`, `"serial"` | | This register identifies the device (§4.7) |
 | `read_alone` | boolean | `false` | The register is read in a request of its own (§4.9) |
 | `read_group` | non-empty string | | The register is read only together with registers of the same group (§4.9) |
-| `parts` | array of objects | | Names the values inside a block register, so a tool can show and edit them one by one (§4.10) |
+| `parts` | array of objects | | Names the values inside a block register, or the bit fields of a word register, so a tool can show and edit them one by one (§4.10) |
 | `description` | string | | Free text |
 | `comment` | string | | Free note about the register, for people editing the map |
 
@@ -396,6 +396,35 @@ Some devices keep several values in one block and only accept the block as a who
 - `access` is the register's: parts cannot be more writable than the block.
 - `parts` only describes what is inside a register, so it needs no new `mbmap` version (§8). Readers that ignore it behave as before.
 
+#### Bit fields of a word
+
+Some devices keep several settings in one word that they only accept **whole**: a write that sets one bit zeroes the others. The same `parts` key describes that word on a `uint16`, `uint32` or `uint64` register. The register stays one ordinary number, so a reader that does not know `parts` reads and writes it exactly as before.
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| Key | JSON type | Default | Meaning |
+|---|---|---|---|
+| `name` | non-empty string | | Name shown to people |
+| `bit` | integer ≥ 0 | | Lowest bit of the field, 0 = least significant bit of the value as decoded with the register's `byte_order` and `word_order` (§6) |
+| `bits` | integer ≥ 1 | `1` | Width of the field |
+| `enum` | string | | Name of a translation table (§4.1) for the value of the field |
+| `description` | string | | Free text |
+
+- `bit` + `bits` **MUST NOT** exceed the width of the register (16, 32 or 64). Fields **MUST NOT** overlap. Bits that no field covers are allowed: they are unused or reserved.
+- A bit field has no `offset`, `length` or `type`: those belong to the parts of a `string` register, and the two kinds are not mixed in one register.
+- A tool that knows `parts` **SHOULD** show each field of its own. To read, it extracts the field from the decoded value. To write, it builds the **whole** value from the fields (a field the user left unset is sent as 0) and writes all the registers of the word in one request (FC16). It **MUST NOT** send a write that covers only some fields or registers.
+- `access` is the register's. Read-only bit fields in a register that can be read keep using `bit` and `bits` on the register itself (§4.3); `parts` is for words that must be written whole.
+- Registers that use these `parts` fail validation in an older validator (`bad-parts`: before this addition `parts` was only for strings), but readers that ignore `parts` read the register as before. That is why it needs no new `mbmap` version (§8).
+
 ## 5. Areas and addresses
 
 | `area` | Unit | Read | Write | Allowed `access` |
@@ -480,7 +509,7 @@ Readers **SHOULD** report every problem with one of the codes below and a [JSON 
 | `bad-source` | error | An item of `sources` is not an object with a non-empty `title`, or has a `version`, `date`, `url`, `note`, `accessed` or `sha256` of the wrong form |
 | `bad-role` | error | `role` is not `"model"`, `"firmware"` or `"serial"`, is set on a register that cannot be read, or `"model"` or `"serial"` is used more than once |
 | `bad-identify` | error | `identify` is not valid (§4.8): `function` is not `17` or `43`, `fields` is empty, or a field lacks a `name`, has a `role` that is unknown or repeated for `"model"` or `"serial"`, or breaks the rules of its function (FC17: `offset` missing or negative, `type` missing or unknown, `string` without `length`, an `enum` that names no table or is not a valid table, an `object`; FC43: `object` missing or outside 0–255, an `offset`, `type`, `length` or `enum`) |
-| `bad-parts` | error | `parts` is empty, is set on a register that is not a `string` with a valid `length`, or has a part without a `name` or `offset`, with a negative `offset`, an unknown or `bool` `type`, a `string` part without `length`, a part that goes beyond the block, or parts that overlap (§4.10) |
+| `bad-parts` | error | `parts` is empty, is set on a register that is neither a `string` with a valid `length` nor a `uint16`, `uint32` or `uint64`, or has a part without a `name` or `offset`, with a negative `offset`, an unknown or `bool` `type`, a `string` part without `length`, a part that goes beyond the block, or parts that overlap. On a `uint16`, `uint32` or `uint64` register the parts are bit fields, and it is a part without a `bit`, with a negative `bit`, with `bits` below 1, with an `offset`, `length` or `type`, a field beyond the width of the register, or fields that overlap; an `enum` that names no table is `unknown-enum` (§4.10) |
 | `no-rows` | warning | `registers` is empty |
 | `duplicate-name` | warning | A `name` is used more than once by registers whose firmware ranges overlap (§3.2) |
 | `model-list` | warning | `model` lists devices separated by " / "; give the family name and list the devices in `models` (§3.2) |

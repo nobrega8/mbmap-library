@@ -450,17 +450,74 @@ def check_identify(ck: Checker, at: str, value: object, meta: dict[str, str]) ->
             ck.error(child(here, "enum"), "bad-identify", "enum must be a table name or an object")
 
 
-def check_parts(ck: Checker, at: str, value: object, row: dict[str, str]) -> None:
-    """The parts of a string register (SPEC.md 4.10): named values inside one block."""
+PART_BIT_WIDTHS = {"uint16": 16, "uint32": 32, "uint64": 64}
+
+
+def check_bit_parts(ck: Checker, at: str, value: list, width: int, meta: dict[str, str]) -> None:
+    """The parts of an unsigned integer register (SPEC.md 4.10): bit fields of one word."""
+    used: list[tuple[int, int, str]] = []  # first bit, end bit, name
+    for i, part in enumerate(value):
+        here = child(at, i)
+        if not isinstance(part, dict):
+            ck.error(here, "bad-json-type", f"expected an object, found {json_kind(part)}")
+            continue
+        name = part.get("name")
+        if not isinstance(name, str):
+            ck.error(child(here, "name"), "bad-json-type" if "name" in part else "bad-parts",
+                     "a part needs a name" if "name" not in part else f"expected a string, found {json_kind(name)}")
+            continue
+        if not name.strip():
+            ck.error(child(here, "name"), "bad-parts", "a part needs a non-empty name")
+        stray = next((k for k in ("offset", "length", "type") if k in part), None)
+        if stray is not None:
+            ck.error(child(here, stray), "bad-parts", f"a part of a numeric register is a bit field and has no {stray!r}")
+            continue
+        if "bit" not in part:
+            ck.error(here, "bad-parts", f"part {name!r} needs a bit")
+            continue
+        fields: dict[str, int] = {}
+        for key, default in (("bit", None), ("bits", 1)):
+            raw = part.get(key, default)
+            if not is_json_number(raw):
+                ck.error(child(here, key), "bad-json-type", f"expected an integer, found {json_kind(raw)}")
+                break
+            if not isinstance(raw, int) or isinstance(raw, bool) or raw < (0 if key == "bit" else 1):
+                ck.error(child(here, key), "bad-parts", f"{key} must be a whole number from {0 if key == 'bit' else 1}, not {raw!r}")
+                break
+            fields[key] = raw
+        else:
+            first, count = fields["bit"], fields["bits"]
+            enum = part.get("enum")
+            if enum is not None:
+                if not isinstance(enum, str):
+                    ck.error(child(here, "enum"), "bad-json-type", f"expected a table name, found {json_kind(enum)}")
+                elif f"enum_{enum}" not in meta:
+                    ck.error(child(here, "enum"), "unknown-enum", f"no enum table named {enum!r}")
+            if first + count > width:
+                ck.error(here, "bad-parts", f"part {name!r} ends at bit {first + count}, beyond the {width} bits of the register")
+                continue
+            clash = next((n for s0, e0, n in used if first < e0 and s0 < first + count), None)
+            if clash is not None:
+                ck.error(here, "bad-parts", f"part {name!r} overlaps part {clash!r}")
+                continue
+            used.append((first, first + count, name))
+
+
+def check_parts(ck: Checker, at: str, value: object, row: dict[str, str], meta: dict[str, str]) -> None:
+    """The parts of a register (SPEC.md 4.10): named values inside one block or one word."""
     if not isinstance(value, list):
         ck.error(at, "bad-json-type", f"expected an array of objects, found {json_kind(value)}")
         return
     if not value:
         ck.error(at, "bad-parts", "parts cannot be empty")
         return
-    size = parse_int(row.get("length", "")) if row.get("type", "").lower() == "string" else None
+    reg_type = row.get("type", "").lower()
+    if reg_type in PART_BIT_WIDTHS:
+        check_bit_parts(ck, at, value, PART_BIT_WIDTHS[reg_type], meta)
+        return
+    size = parse_int(row.get("length", "")) if reg_type == "string" else None
     if size is None or size < 1:
-        ck.error(at, "bad-parts", "parts are only for a string register with a valid length")
+        ck.error(at, "bad-parts", "parts are only for a string register with a valid length, or an unsigned integer register")
         return
     used: list[tuple[int, int, str]] = []  # start, end, name
     for i, part in enumerate(value):
@@ -725,7 +782,7 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
                     ck.warn(here, "unknown-column", f"unknown key {key!r} (custom keys should start with 'x_')")
                 row[key] = as_text(value)
         if "parts" in reg:
-            check_parts(ck, child(at, "parts"), reg["parts"], row)
+            check_parts(ck, child(at, "parts"), reg["parts"], row, meta)
         if reg_order:
             row["byte_order"] = JOIN_ORDER[
                 reg_order.get("byte_order", order["byte_order"]),

@@ -194,7 +194,7 @@
 | `role` | `"model"`、`"firmware"`、`"serial"` | | 此寄存器用于识别设备（4.7） |
 | `read_alone` | 布尔值 | `false` | 此寄存器在单独的请求中读取（4.9） |
 | `read_group` | 非空字符串 | | 此寄存器只与同一分组的寄存器一起读取（4.9） |
-| `parts` | 对象数组 | | 为块寄存器内部的值命名，使工具可以逐个显示和编辑（4.10） |
+| `parts` | 对象数组 | | 给块寄存器内的值，或字寄存器的位字段命名，使工具能逐个显示和编辑（4.10） |
 | `description` | 字符串 | | 自由文本 |
 | `comment` | 字符串 | | 关于该寄存器的自由备注，供编辑映射表的人阅读 |
 
@@ -396,6 +396,35 @@
 - `access` 沿用该寄存器的：各部分不能比块更可写。
 - `parts` 只描述寄存器内部的内容，因此不需要新的 `mbmap` 版本（第 8 节）。忽略它的读取方行为与以前相同。
 
+#### 字的位字段
+
+有些设备把多个设置放在一个字里，并且只接受**整个**字：只设置一位的写入会把其他位清零。同一个 `parts` 键用来描述 `uint16`、`uint32` 或 `uint64` 寄存器上的这种字。寄存器仍然是一个普通数字，所以不认识 `parts` 的读取方会像以前一样读写它。
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| 键 | JSON 类型 | 默认值 | 含义 |
+|---|---|---|---|
+| `name` | 非空字符串 | | 面向用户显示的名称 |
+| `bit` | 整数 ≥ 0 | | 字段的最低位；0 = 按寄存器的 `byte_order` 和 `word_order` 解码后的值的最低有效位（6） |
+| `bits` | 整数 ≥ 1 | `1` | 字段的宽度 |
+| `enum` | 字符串 | | 字段值所用转换表的名称（4.1） |
+| `description` | 字符串 | | 自由文本 |
+
+- `bit` + `bits` **MUST NOT** 超过寄存器的宽度（16、32 或 64）。字段 **MUST NOT** 重叠。允许存在没有字段覆盖的位：它们未使用或为保留位。
+- 位字段没有 `offset`、`length` 和 `type`：这些属于 `string` 寄存器的各部分，两种不会在同一个寄存器里混用。
+- 认识 `parts` 的工具 **SHOULD** 把每个字段单独显示。读取时，从解码后的值中取出字段。写入时，用各字段组成**整个**值（未设置的字段按 0 发送），并用一个请求（FC16）写入该字的所有寄存器。它 **MUST NOT** 发送只覆盖部分字段或寄存器的写入。
+- `access` 与寄存器相同。可读寄存器中的只读位字段仍在寄存器本身使用 `bit` 和 `bits`（4.3）；`parts` 用于必须整体写入的字。
+- 使用这类 `parts` 的寄存器在旧版验证器中会失败（`bad-parts`：此前 `parts` 只用于字符串），但忽略 `parts` 的读取方仍像以前一样读取该寄存器。因此不需要新的 `mbmap` 版本（8）。
+
 ## 5. 区域和地址
 
 | `area` | 单位 | 读取 | 写入 | 允许的 `access` |
@@ -480,7 +509,7 @@
 | `bad-source` | error | `sources` 中的某一项不是带有非空 `title` 的对象，或者其 `version`、`date`、`url`、`note`、`accessed` 或 `sha256` 的格式有误 |
 | `bad-role` | error | `role` 不是 `"model"`、`"firmware"` 或 `"serial"`，设置在无法读取的寄存器上，或者 `"model"` 或 `"serial"` 被使用了多次 |
 | `bad-identify` | error | `identify` 无效（4.8）：`function` 不是 `17` 或 `43`，`fields` 为空，或者某个字段缺少 `name`、其 `role` 未知或 `"model"`、`"serial"` 重复，或者违反其功能的规则（FC17：`offset` 缺失或为负，`type` 缺失或未知，`string` 没有 `length`，`enum` 指明的表不存在或不是有效的表，带有 `object`；FC43：`object` 缺失或超出 0–255，带有 `offset`、`type`、`length` 或 `enum`） |
-| `bad-parts` | error | `parts` 为空，设置在不是带有效 `length` 的 `string` 的寄存器上，或者某个部分没有 `name` 或 `offset`、`offset` 为负、`type` 未知或为 `bool`、`string` 部分没有 `length`、某个部分超出块的范围，或者各部分重叠（4.10） |
+| `bad-parts` | error | `parts` 为空，设置在不是带有效 `length` 的 `string` 的寄存器上，或者某个部分没有 `name` 或 `offset`、`offset` 为负、`type` 未知或为 `bool`、`string` 部分没有 `length`、某个部分超出块的范围，或者各部分重叠；对 `uint16`、`uint32` 或 `uint64` 寄存器，第一个条件不适用，各部分是位字段：此时的错误是没有 `bit` 的部分、负的 `bit`、小于 1 的 `bits`、带有 `offset`、`length` 或 `type`、超出寄存器宽度的字段，或重叠的字段；`enum` 没有对应的表则为 `unknown-enum`（4.10） |
 | `no-rows` | warning | `registers` 为空 |
 | `duplicate-name` | warning | 同一个 `name` 被固件范围重叠的多个寄存器使用（3.2） |
 | `model-list` | warning | `model` 用“ / ”分隔列出了多台设备；请给出系列名称，并在 `models` 中列出这些设备（3.2） |

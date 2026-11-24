@@ -194,7 +194,7 @@ Jedes Element von `registers` ist ein Objekt. `name`, `area`, `address` und `typ
 | `role` | `"model"`, `"firmware"`, `"serial"` | | Dieses Register identifiziert das Gerät (§4.7) |
 | `read_alone` | boolean | `false` | Das Register wird in einer eigenen Anfrage gelesen (§4.9) |
 | `read_group` | non-empty string | | Das Register wird nur zusammen mit Registern derselben Gruppe gelesen (§4.9) |
-| `parts` | array of objects | | Benennt die Werte innerhalb eines Blockregisters, damit ein Werkzeug sie einzeln anzeigen und bearbeiten kann (§4.10) |
+| `parts` | array of objects | | Benennt die Werte in einem Blockregister oder die Bitfelder eines Wortregisters, damit ein Werkzeug sie einzeln anzeigen und bearbeiten kann (§4.10) |
 | `description` | string | | Freitext |
 | `comment` | string | | Freier Hinweis zum Register für Menschen, die die Map bearbeiten |
 
@@ -396,6 +396,35 @@ Manche Geräte halten mehrere Werte in einem Block und akzeptieren nur den Block
 - `access` ist das des Registers: Teile können nicht stärker beschreibbar sein als der Block.
 - `parts` beschreibt nur, was in einem Register steckt, und braucht daher keine neue `mbmap`-Version (§8). Leser, die es ignorieren, verhalten sich wie bisher.
 
+#### Bitfelder eines Wortes
+
+Manche Geräte halten mehrere Einstellungen in einem Wort, das sie nur **ganz** akzeptieren: Ein Schreibvorgang, der ein Bit setzt, setzt die anderen auf 0. Derselbe Schlüssel `parts` beschreibt dieses Wort bei einem Register vom Typ `uint16`, `uint32` oder `uint64`. Das Register bleibt eine gewöhnliche Zahl; ein Leser, der `parts` nicht kennt, liest und schreibt es genau wie bisher.
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| Key | JSON type | Default | Bedeutung |
+|---|---|---|---|
+| `name` | non-empty string | | Name, der Menschen angezeigt wird |
+| `bit` | integer ≥ 0 | | Niedrigstes Bit des Feldes; 0 = niedrigstwertiges Bit des Wertes, wie er mit `byte_order` und `word_order` des Registers dekodiert wird (§6) |
+| `bits` | integer ≥ 1 | `1` | Breite des Feldes |
+| `enum` | string | | Name einer Übersetzungstabelle (§4.1) für den Wert des Feldes |
+| `description` | string | | Freitext |
+
+- `bit` + `bits` **MUST NOT** die Breite des Registers (16, 32 oder 64) überschreiten. Felder **MUST NOT** sich überlappen. Bits, die kein Feld abdeckt, sind erlaubt: Sie sind unbenutzt oder reserviert.
+- Ein Bitfeld hat kein `offset`, `length` und `type`: Diese gehören zu den Teilen eines `string`-Registers, und beide Arten werden in einem Register nicht gemischt.
+- Ein Werkzeug, das `parts` kennt, **SHOULD** jedes Feld einzeln anzeigen. Zum Lesen extrahiert es das Feld aus dem dekodierten Wert. Zum Schreiben baut es den **ganzen** Wert aus den Feldern (ein nicht gesetztes Feld wird als 0 gesendet) und schreibt alle Register des Wortes in einer Anfrage (FC16). Es **MUST NOT** einen Schreibvorgang senden, der nur einige Felder oder Register abdeckt.
+- `access` ist das des Registers. Schreibgeschützte Bitfelder in einem lesbaren Register verwenden weiter `bit` und `bits` am Register selbst (§4.3); `parts` ist für Wörter, die ganz geschrieben werden müssen.
+- Register mit diesen `parts` bestehen die Validierung eines älteren Validators nicht (`bad-parts`: vorher war `parts` nur für Strings), aber Leser, die `parts` ignorieren, lesen das Register wie bisher. Deshalb braucht es keine neue `mbmap`-Version (§8).
+
 ## 5. Bereiche und Adressen
 
 | `area` | Einheit | Lesen | Schreiben | Erlaubter `access` |
@@ -480,7 +509,7 @@ Leser **SHOULD** jedes Problem mit einem der folgenden Codes und einem [JSON Poi
 | `bad-source` | error | Ein Element von `sources` ist kein Objekt mit nicht leerem `title` oder hat `version`, `date`, `url`, `note`, `accessed` oder `sha256` in falscher Form |
 | `bad-role` | error | `role` ist nicht `"model"`, `"firmware"` oder `"serial"`, ist bei einem nicht lesbaren Register gesetzt, oder `"model"` oder `"serial"` wird mehr als einmal verwendet |
 | `bad-identify` | error | `identify` ist ungültig (§4.8): `function` ist nicht `17` oder `43`, `fields` ist leer, oder einem Feld fehlt `name`, es hat eine unbekannte oder für `"model"` oder `"serial"` wiederholte `role` oder verletzt die Regeln seiner Funktion (FC17: `offset` fehlt oder ist negativ, `type` fehlt oder ist unbekannt, `string` ohne `length`, ein `enum`, das keine Tabelle nennt oder keine gültige Tabelle ist, ein `object`; FC43: `object` fehlt oder liegt außerhalb von 0–255, ein `offset`, `type`, `length` oder `enum`) |
-| `bad-parts` | error | `parts` ist leer, ist bei einem Register gesetzt, das kein `string` mit gültiger `length` ist, oder ein Teil hat kein `name` oder `offset`, einen negativen `offset`, einen unbekannten oder `bool`-`type`, ein `string`-Teil hat keine `length`, ein Teil geht über den Block hinaus oder Teile überschneiden sich (§4.10) |
+| `bad-parts` | error | `parts` ist leer, ist bei einem Register gesetzt, das kein `string` mit gültiger `length` ist, oder ein Teil hat kein `name` oder `offset`, einen negativen `offset`, einen unbekannten oder `bool`-`type`, ein `string`-Teil hat keine `length`, ein Teil geht über den Block hinaus oder Teile überschneiden sich; bei einem Register `uint16`, `uint32` oder `uint64` gilt die erste Bedingung nicht, und die Teile sind Bitfelder: Dort ist es ein Teil ohne `bit`, mit negativem `bit`, mit `bits` unter 1, mit `offset`, `length` oder `type`, ein Feld über die Breite des Registers hinaus oder sich überlappende Felder; ein `enum` ohne Tabelle ist `unknown-enum` (§4.10) |
 | `no-rows` | warning | `registers` ist leer |
 | `duplicate-name` | warning | Ein `name` wird mehrfach von Registern verwendet, deren Firmware-Bereiche sich überschneiden (§3.2) |
 | `model-list` | warning | `model` listet Geräte durch „ / “ getrennt auf; geben Sie den Familiennamen an und listen Sie die Geräte in `models` (§3.2) |

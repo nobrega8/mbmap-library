@@ -194,7 +194,7 @@ A `registers` minden eleme egy objektum. A `name`, az `area`, az `address` és a
 | `role` | `"model"`, `"firmware"`, `"serial"` | | Ez a regiszter azonosítja az eszközt (§4.7) |
 | `read_alone` | boolean | `false` | A regiszter saját kérésben olvasódik (§4.9) |
 | `read_group` | non-empty string | | A regiszter csak az azonos csoport regisztereivel együtt olvasódik (§4.9) |
-| `parts` | array of objects | | Megnevezi egy blokkregiszteren belüli értékeket, hogy egy eszköz egyenként megjeleníthesse és szerkeszthesse őket (§4.10) |
+| `parts` | array of objects | | Elnevezi a blokkregiszteren belüli értékeket vagy egy szóregiszter bitmezőit, hogy az eszköz egyenként megjeleníthesse és szerkeszthesse őket (§4.10) |
 | `description` | string | | Szabad szöveg |
 | `comment` | string | | Szabad jegyzet a regiszterről a térképet szerkesztő embereknek |
 
@@ -396,6 +396,35 @@ Egyes eszközök több értéket tartanak egy blokkban, és csak az egész blokk
 - Az `access` a regiszteré: a részek nem lehetnek írhatóbbak a blokknál.
 - A `parts` csak azt írja le, mi van egy regiszterben, ezért nincs szüksége új `mbmap` verzióra (§8). A figyelmen kívül hagyó olvasók a korábbiak szerint viselkednek.
 
+#### Egy szó bitmezői
+
+Egyes eszközök több beállítást tartanak egy szóban, amelyet csak **egészében** fogadnak el: az az írás, amely egy bitet állít be, a többit nullázza. Ugyanez a `parts` kulcs írja le ezt a szót `uint16`, `uint32` vagy `uint64` regiszteren. A regiszter továbbra is egyetlen szokásos szám, ezért a `parts`-ot nem ismerő olvasó pontosan úgy olvassa és írja, mint korábban.
+
+```json
+{
+  "name": "Control word", "area": "holding", "address": 2001, "type": "uint32", "access": "RW",
+  "parts": [
+    {"name": "Command", "bit": 0, "bits": 4, "enum": "command", "description": "Play, ready or stop"},
+    {"name": "Error acknowledge", "bit": 4},
+    {"name": "Enable unit 1", "bit": 21}
+  ]
+}
+```
+
+| Key | JSON type | Default | Jelentés |
+|---|---|---|---|
+| `name` | non-empty string | | Az embereknek megjelenő név |
+| `bit` | integer ≥ 0 | | A mező legalacsonyabb bitje; 0 = a regiszter `byte_order` és `word_order` szerint dekódolt értékének legkisebb helyiértékű bitje (§6) |
+| `bits` | integer ≥ 1 | `1` | A mező szélessége |
+| `enum` | sztring | | A mező értékéhez tartozó fordítási tábla neve (§4.1) |
+| `description` | string | | Szabad szöveg |
+
+- A `bit` + `bits` **MUST NOT** haladja meg a regiszter szélességét (16, 32 vagy 64). A mezők **MUST NOT** fedjék át egymást. Olyan bitek, amelyeket nem fed mező, megengedettek: használatlanok vagy fenntartottak.
+- A bitmezőnek nincs `offset`, `length` vagy `type` kulcsa: ezek a `string` regiszter részeihez tartoznak, és a két fajta nem keveredik egy regiszterben.
+- A `parts`-ot ismerő eszköz **SHOULD** minden mezőt külön mutasson. Olvasáskor kivonja a mezőt a dekódolt értékből. Íráskor a mezőkből az **egész** értéket építi fel (a nem megadott mező 0-ként megy), és a szó összes regiszterét egy kéréssel írja (FC16). **MUST NOT** olyan írást küldeni, amely csak néhány mezőt vagy regisztert fed le.
+- Az `access` a regiszteré. Az olvasható regiszter csak olvasható bitmezői továbbra is a regiszter saját `bit` és `bits` kulcsát használják (§4.3); a `parts` azokra a szavakra való, amelyeket egészében kell írni.
+- Az ilyen `parts`-ot használó regiszterek megbuknak egy régebbi validátoron (`bad-parts`: e kiegészítés előtt a `parts` csak sztringekre szólt), de a `parts`-ot figyelmen kívül hagyó olvasók a regisztert a régi módon olvassák. Ezért nem kell új `mbmap` verzió (§8).
+
 ## 5. Területek és címek
 
 | `area` | Egység | Olvasás | Írás | Megengedett `access` |
@@ -480,7 +509,7 @@ Az olvasóknak minden problémát az alábbi kódok egyikével és az értékre 
 | `bad-source` | error | A `sources` egy eleme nem objektum nem üres `title`-lel, vagy a `version`, `date`, `url`, `note`, `accessed` vagy `sha256` rossz formájú |
 | `bad-role` | error | A `role` nem `"model"`, `"firmware"` vagy `"serial"`, nem olvasható regiszteren van beállítva, vagy a `"model"` vagy `"serial"` egynél többször szerepel |
 | `bad-identify` | error | Az `identify` érvénytelen (§4.8): a `function` nem `17` vagy `43`, a `fields` üres, vagy egy mezőnek nincs `name`, ismeretlen vagy a `"model"`/`"serial"` esetén ismétlődő `role`-ja van, vagy megszegi a függvénye szabályait (FC17: hiányzó vagy negatív `offset`, hiányzó vagy ismeretlen `type`, `length` nélküli `string`, olyan `enum`, amely nem nevez meg táblázatot vagy nem érvényes táblázat, egy `object`; FC43: hiányzó vagy a 0–255 tartományon kívüli `object`, egy `offset`, `type`, `length` vagy `enum`) |
-| `bad-parts` | error | A `parts` üres, nem érvényes `length`-ű `string` regiszteren van beállítva, vagy egy résznek nincs `name` vagy `offset` értéke, negatív `offset`-je, ismeretlen vagy `bool` `type`-ja van, egy `string` résznek nincs `length`-je, egy rész túllóg a blokkon, vagy a részek átfedik egymást (§4.10) |
+| `bad-parts` | error | A `parts` üres, nem érvényes `length`-ű `string` regiszteren van beállítva, vagy egy résznek nincs `name` vagy `offset` értéke, negatív `offset`-je, ismeretlen vagy `bool` `type`-ja van, egy `string` résznek nincs `length`-je, egy rész túllóg a blokkon, vagy a részek átfedik egymást; `uint16`, `uint32` vagy `uint64` regiszteren az első feltétel nem érvényes, és a részek bitmezők: ott hiba a `bit` nélküli rész, a negatív `bit`, az 1 alatti `bits`, az `offset`, `length` vagy `type` megadása, a regiszter szélességén túlnyúló mező vagy az átfedő mezők; tábla nélküli `enum` esetén `unknown-enum` (§4.10) |
 | `no-rows` | warning | A `registers` üres |
 | `duplicate-name` | warning | Egy `name` többször szerepel olyan regisztereknél, amelyek firmware-tartományai átfedik egymást (§3.2) |
 | `model-list` | warning | A `model` eszközöket sorol fel „ / ” jellel elválasztva; adja meg a családnevet, és az eszközöket a `models`-ben sorolja fel (§3.2) |
