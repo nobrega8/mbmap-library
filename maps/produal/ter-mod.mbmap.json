@@ -16,7 +16,7 @@
   ],
   "vendor_website": "produal.com",
   "description": "Active room temperature sensor and controller with Modbus RTU: temperature, optional light level, occupancy, setpoint, resistive and digital inputs, three 0-10 V outputs, two triac outputs and a temperature or light control loop",
-  "revision": 1,
+  "revision": 2,
   "revised": "2026-11-24",
   "source": "SyxthSense TER-MOD datasheet SN1.416 (07/2024), Modbus registers",
   "sources": [
@@ -38,9 +38,11 @@
     "Changes made over the network are not stored automatically: write 1 to holding 101 (non volatile memory update). Address and baud rate changes also need a restart.",
     "Temperature, light and the resistive inputs depend on the fitted options (-LCD, -SP, -SPB, -LL, -PB, -PB2, -DI2, -RI2). Temperature values are in degrees Celsius unless holding 39 selects Fahrenheit.",
     "The datasheet gives a value range that does not agree with the configuration tool: the display mode lists setpoint only in the tool, not in the register table. The ranges used are the ones of the register table.",
-    "Registers 301-315 repeat the input registers (plus the 0-10 V inputs 314 and 315) and are read only, from firmware 2.25.",
-    "The 2015 issue of the datasheet listed coil 7 (reset SPA) and fewer push button registers; the 2018 and 2024 issues, which have the same registers, do not list coil 7. Registers 30002 and 40003 are not listed.",
-    "The firmware version register (input 100) has no format in the datasheet."
+    "Registers 301-315 repeat the input registers (plus the 0-10 V inputs 314 and 315). They are holding registers (FC03), read only, from firmware 2.25.",
+    "The 2015 issue of the datasheet listed coil 7 (reset SPA) and fewer push button registers; the 2018 and 2024 issues, which have the same registers, do not list coil 7, but devices with firmware 2.29 and 2.33 answer it.",
+    "The firmware version register (input 100) has no format in the datasheet; devices report 229 and 233 for firmware 2.29 and 2.33, so it is read as the version times 100.",
+    "Not tested yet: coils 8 to 11, discrete input 7, holding register 69 and the registers 301-315.",
+    "Tested on TER-MOD, firmware 2.29 and 2.33, November 2026."
   ],
   "protocol": "rtu",
   "unit_id": 1,
@@ -51,7 +53,7 @@
   "byte_order": "big",
   "word_order": "big",
   "address_base": 0,
-  "x_status": "official",
+  "x_status": "verified",
   "enums": {
     "alarm_status": {
       "1": "Normal",
@@ -159,6 +161,15 @@
       "type": "bool",
       "access": "RW",
       "description": "Network write; effective when DO2 mode is network value"
+    },
+    {
+      "name": "Reset SPA",
+      "group": "Setpoint",
+      "area": "coil",
+      "address": 7,
+      "type": "bool",
+      "access": "RW",
+      "description": "Resets the setpoint adjustment (SPA) to zero; listed in the 2015 datasheet, not in the 2018 and 2024 ones, but answered by devices with firmware 2.29 and 2.33"
     },
     {
       "name": "Push button 1 LED override",
@@ -377,7 +388,7 @@
       "access": "R",
       "scale": 0.1,
       "unit": "°C",
-      "description": "Resistive input 1 in NTC mode (default); -40.0 to 150.0 °C or -40.0 to 302.0 °F, as set in holding 39"
+      "description": "Resistive input 1 in NTC mode (default); -40.0 to 150.0 °C or -40.0 to 302.0 °F, as set in holding 39; reads -50.0 when nothing is connected"
     },
     {
       "name": "NTC10 input 2",
@@ -388,7 +399,7 @@
       "access": "R",
       "scale": 0.1,
       "unit": "°C",
-      "description": "Resistive input 2 in NTC mode (default); needs the -RI2 option"
+      "description": "Resistive input 2 in NTC mode (default); needs the -RI2 option; reads -50.0 when nothing is connected"
     },
     {
       "name": "Firmware version",
@@ -397,12 +408,14 @@
       "address": 100,
       "type": "uint16",
       "access": "R",
-      "description": "The guide gives no format for this value"
+      "description": "Version times 100 (229 is 2.29)",
+      "scale": 0.01,
+      "role": "firmware"
     },
     {
       "name": "Temperature (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 301,
       "type": "int16",
       "access": "R",
@@ -414,7 +427,7 @@
     {
       "name": "Light level (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 303,
       "type": "uint16",
       "access": "R",
@@ -425,7 +438,7 @@
     {
       "name": "Resistive input 1 (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 304,
       "type": "uint16",
       "access": "R",
@@ -436,7 +449,7 @@
     {
       "name": "Resistive input 2 (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 305,
       "type": "uint16",
       "access": "R",
@@ -447,7 +460,7 @@
     {
       "name": "Current setpoint (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 306,
       "type": "int16",
       "access": "R",
@@ -458,7 +471,7 @@
     {
       "name": "Analogue output Y1 (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 307,
       "type": "uint16",
       "access": "R",
@@ -470,7 +483,7 @@
     {
       "name": "Analogue output Y2 (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 308,
       "type": "uint16",
       "access": "R",
@@ -482,7 +495,7 @@
     {
       "name": "Analogue output Y3 (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 309,
       "type": "uint16",
       "access": "R",
@@ -494,7 +507,7 @@
     {
       "name": "Alarm status (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 311,
       "type": "uint16",
       "access": "R",
@@ -505,7 +518,7 @@
     {
       "name": "NTC10 input 1 (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 312,
       "type": "int16",
       "access": "R",
@@ -517,7 +530,7 @@
     {
       "name": "NTC10 input 2 (mirror)",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 313,
       "type": "int16",
       "access": "R",
@@ -529,7 +542,7 @@
     {
       "name": "0-10 V input 1",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 314,
       "type": "uint16",
       "access": "R",
@@ -541,7 +554,7 @@
     {
       "name": "0-10 V input 2",
       "group": "Measurements",
-      "area": "input",
+      "area": "holding",
       "address": 315,
       "type": "uint16",
       "access": "R",
@@ -779,7 +792,7 @@
       "access": "RW",
       "write_min": 0,
       "write_max": 5000,
-      "description": "Default 750; in the unit of the alarm source"
+      "description": "Default 750. In the unit of the alarm source; with the temperature source the value is in whole degrees (30 is 30 °C)"
     },
     {
       "name": "Red alarm LED switching point",
@@ -790,7 +803,7 @@
       "access": "RW",
       "write_min": 0,
       "write_max": 5000,
-      "description": "Default 1250; in the unit of the alarm source"
+      "description": "Default 1250. In the unit of the alarm source; with the temperature source the value is in whole degrees (30 is 30 °C)"
     },
     {
       "name": "Alarm LED hysteresis",
@@ -801,7 +814,7 @@
       "access": "RW",
       "write_min": 0,
       "write_max": 5000,
-      "description": "Default 50"
+      "description": "Default 50. In the unit of the alarm source; with the temperature source the value is in whole degrees (30 is 30 °C)"
     },
     {
       "name": "Alarm LED source",

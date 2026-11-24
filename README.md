@@ -52,8 +52,8 @@ The maps in this library say how far they can be trusted in `x_status`. It is no
 ```mermaid
 pie showData
     title Maps by status
-    "Verified" : 25
-    "Official" : 679
+    "Verified" : 26
+    "Official" : 678
     "Unofficial" : 76
 ```
 <!-- status-chart:end -->

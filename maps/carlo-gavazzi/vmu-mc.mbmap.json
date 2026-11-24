@@ -8,8 +8,8 @@
   ],
   "vendor_website": "gavazziautomation.com",
   "description": "Pulse concentrator (2 S0 inputs, up to 3 VMU-OC input modules) with RS-485 Modbus RTU",
-  "revision": 1,
-  "revised": "2026-10-14",
+  "revision": 2,
+  "revised": "2026-11-24",
   "source": "Carlo Gavazzi, VMU-MC communication protocol, version 1 revision 2 (2018-02-15)",
   "sources": [
     {
@@ -24,7 +24,8 @@
     "FC03 and FC04 return the same values; settings are written with FC06 or FC16.",
     "32-bit values are sent low word first.",
     "Totalizers are raw counts: the decimal point and base unit registers say how to read them (they are only for interpretation; the device does not apply them).",
-    "VMU-OC totalizers only have values when the corresponding input module is connected and configured."
+    "VMU-OC totalizers only have values when the corresponding input module is connected and configured.",
+    "On one device with the input configuration set to counters (0), reads of the tariff set via serial register (8704) and of the totalizer reset registers (16384-16388) were refused with an illegal data address, although the protocol lists the resets as read and write and the tariff register as valid only when the input configuration is 3."
   ],
   "protocol": "rtu",
   "unit_id": 1,
@@ -41,7 +42,7 @@
     {"name": "VMU-OC pos. 1 In2 total", "group": "Totalizers", "area": "holding", "address": 6, "type": "uint32", "description": "Raw count; divide by 10^(decimal point setting of this input); unit from the base unit setting"},
     {"name": "VMU-OC pos. 1 In3 total", "group": "Totalizers", "area": "holding", "address": 8, "type": "uint32", "description": "Raw count; divide by 10^(decimal point setting of this input); unit from the base unit setting"},
     {"name": "VMU-OC pos. 2 In1 total", "group": "Totalizers", "area": "holding", "address": 10, "type": "uint32", "description": "Raw count; divide by 10^(decimal point setting of this input); unit from the base unit setting"},
-    {"name": "Carlo Gavazzi identification code", "group": "Info", "area": "holding", "address": 11, "type": "uint16", "reference": 105, "description": "Must be read on its own (one register)"},
+    {"name": "Carlo Gavazzi identification code", "group": "Info", "area": "holding", "address": 11, "type": "uint16", "reference": 105, "read_alone": true, "description": "Must be read on its own (one register); the protocol places it inside the totalizer of VMU-OC pos. 2 In1, so inside a block read it returns that totalizer's high word"},
     {"name": "VMU-OC pos. 2 In2 total", "group": "Totalizers", "area": "holding", "address": 12, "type": "uint32", "description": "Raw count; divide by 10^(decimal point setting of this input); unit from the base unit setting"},
     {"name": "VMU-OC pos. 2 In3 total", "group": "Totalizers", "area": "holding", "address": 14, "type": "uint32", "description": "Raw count; divide by 10^(decimal point setting of this input); unit from the base unit setting"},
     {"name": "VMU-OC pos. 3 In1 total", "group": "Totalizers", "area": "holding", "address": 16, "type": "uint32", "description": "Raw count; divide by 10^(decimal point setting of this input); unit from the base unit setting"},
