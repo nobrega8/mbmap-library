@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Produal",
+  "model": "TE-M temperature transmitters",
+  "models": ["TEKY4-M", "TEKY6-M", "TEKY6S-M", "TEPK-M", "TEU-M", "TEV-M"],
+  "vendor_website": "produal.com",
+  "description": "Temperature transmitters with Modbus RTU over RS-485, a 0-10 V output and a built-in P/PI controller: temperature, controller settings, output range and fixed output override",
+  "revision": 1,
+  "revised": "2026-11-24",
+  "firmware_min": "1.1.7",
+  "source": "Produal TEKY4-M, TEKY6-M, TEKY6S-M, TEPK-M, TEU-M, TEV-M user guide V1.1.7 (03.05.2019), Modbus section",
+  "sources": [
+    {
+      "title": "TEKY4-M, TEKY6-M, TEKY6S-M, TEPK-M, TEU-M, TEV-M user guide",
+      "version": "V1.1.7",
+      "date": "2019-05-03",
+      "note": "Modbus bus properties and register tables (page 4 and 5)",
+      "accessed": "2026-11-24",
+      "sha256": "45d3b0d950508d0be0d19d82e66044b029fc9890ebaa5acc6a335e95fcaa3380"
+    }
+  ],
+  "notes": [
+    "Written from the manufacturer's user guide; not tested on a device. For devices with software version 1.1.7 or newer.",
+    "Factory defaults: Modbus ID 1, 9.6 kBaud, no parity, 1 stop bit (from the guide's menu). The ID can be set to OFF or 1-247 and the speed to 9.6, 19.2, 38.4, 56.0, 57.6, 76.8 or 115.2 kBaud with the ML-SER tool.",
+    "Register numbers start at 1 (coil 1, input 30001, holding 40001), so address_base is 1.",
+    "Temperature, offset, set point and proportional band have one decimal place: -500 to 1500 is -50.0 to 150.0 °C.",
+    "The measurement range is chosen with the jumpers S1 and S2 (0-50, 0-100, -50-50 or -50-150 °C); the guide does not say that the registers report it.",
+    "Registers marked with * in the guide (output overdrive value, fixed control output value, fixed control output timer and time left) are kept in volatile memory and return to their defaults after a power failure.",
+    "To set the fixed output time more exactly, write the output value to holding register 9 and the time in minutes to holding register 11.",
+    "While the ML-SER tool is connected the device is disconnected from the Modbus network."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 1,
+  "x_status": "official",
+  "enums": {
+    "output_function": {"0": "Cooling", "1": "Heating"},
+    "control_mode": {"0": "Off", "1": "P", "2": "PI"},
+    "output_range": {"0": "0-10 V", "1": "2-10 V", "2": "0-5 V"},
+    "fixed_output_value": {"0": "Off", "1": "100 %", "2": "75 %", "3": "50 %", "4": "25 %", "5": "0 %"},
+    "fixed_output_timer": {"0": "6 h", "1": "12 h", "2": "24 h", "3": "Off"}
+  },
+  "registers": [
+    {"name": "Temperature", "group": "Measurements", "area": "input", "address": 1, "type": "int16", "scale": 0.1, "unit": "°C", "access": "R", "description": "Measured temperature, -50.0 to 150.0 °C"},
+    {"name": "Analogue output voltage", "group": "Measurements", "area": "input", "address": 2, "type": "uint16", "unit": "%", "access": "R", "description": "Output level, 0 to 100 % of the output range"},
+    {"name": "Offset (one point field calibration)", "group": "Settings", "area": "holding", "address": 1, "type": "int16", "scale": 0.1, "unit": "°C", "access": "RW", "write_min": -30, "write_max": 30, "description": "Temperature calibration offset, -3.0 to 3.0 °C; default 0"},
+    {"name": "Control mode", "group": "Controller", "area": "holding", "address": 2, "type": "int16", "access": "RW", "enum": "control_mode", "write_min": 0, "write_max": 2, "description": "Default 0 (off)"},
+    {"name": "Set point", "group": "Controller", "area": "holding", "address": 3, "type": "int16", "scale": 0.1, "unit": "°C", "access": "RW", "write_min": -500, "write_max": 1500, "description": "-50.0 to 150.0 °C; default 23.0 °C"},
+    {"name": "Proportional band", "group": "Controller", "area": "holding", "address": 4, "type": "int16", "scale": 0.1, "unit": "°C", "access": "RW", "write_min": 10, "write_max": 320, "description": "1.0 to 32.0 °C; default 2.0 °C"},
+    {"name": "Integration time", "group": "Controller", "area": "holding", "address": 5, "type": "int16", "unit": "s", "access": "RW", "write_min": 50, "write_max": 5000, "description": "50 to 5000 s; default 300 s"},
+    {"name": "Output overdrive value", "group": "Output", "area": "holding", "address": 6, "type": "int16", "scale": 0.1, "unit": "%", "access": "RW", "write_min": 0, "write_max": 1000, "description": "0 to 100.0 % of the output range; volatile, default 0"},
+    {"name": "Output range", "group": "Output", "area": "holding", "address": 8, "type": "int16", "access": "RW", "enum": "output_range", "write_min": 0, "write_max": 2, "description": "Default 0 (0-10 V)"},
+    {"name": "Fixed control output value", "group": "Output", "area": "holding", "address": 9, "type": "int16", "access": "RW", "enum": "fixed_output_value", "write_min": 0, "write_max": 5, "description": "Volatile; default 0 (off)"},
+    {"name": "Fixed control output timer", "group": "Output", "area": "holding", "address": 10, "type": "int16", "access": "RW", "enum": "fixed_output_timer", "write_min": 0, "write_max": 3, "description": "Volatile; default 1 (12 h)"},
+    {"name": "Fixed control time left", "group": "Output", "area": "holding", "address": 11, "type": "int16", "unit": "min", "access": "RW", "write_min": 0, "write_max": 1440, "description": "0 to 1440 min; volatile, default 0"},
+    {"name": "Controller output function", "group": "Controller", "area": "coil", "address": 1, "type": "bool", "access": "RW", "enum": "output_function", "description": "Default 0 (cooling)"},
+    {"name": "Output overdrive activation", "group": "Output", "area": "coil", "address": 4, "type": "bool", "access": "RW", "description": "0 = off, 1 = on; default 0"}
+  ]
+}
