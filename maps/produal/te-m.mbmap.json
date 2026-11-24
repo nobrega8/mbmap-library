@@ -3,13 +3,13 @@
   "mbmap": 2,
   "vendor": "Produal",
   "model": "TE-M temperature transmitters",
-  "models": ["TEKY4-M", "TEKY6-M", "TEKY6S-M", "TEPK-M", "TEU-M", "TEV-M"],
+  "models": ["TEKY4-M", "TEKY6-M", "TEKY6S-M", "TEPK-M", "TEU-M", "TEV-M", "TEAT-M", "TEKA-M", "TEKA-M-500", "TEKV-M", "TENA-M", "TEK-M", "TEP-M"],
   "vendor_website": "produal.com",
   "description": "Temperature transmitters with Modbus RTU over RS-485, a 0-10 V output and a built-in P/PI controller: temperature, controller settings, output range and fixed output override",
-  "revision": 1,
+  "revision": 2,
   "revised": "2026-11-24",
   "firmware_min": "1.1.7",
-  "source": "Produal TEKY4-M, TEKY6-M, TEKY6S-M, TEPK-M, TEU-M, TEV-M user guide V1.1.7 (03.05.2019), Modbus section",
+  "source": "Produal TEKY4-M, TEKY6-M, TEKY6S-M, TEPK-M, TEU-M, TEV-M user guide V1.1.7 (03.05.2019) and TEx LU / TEx-M user guide V1.1.7 (03.05.2019), Modbus sections",
   "sources": [
     {
       "title": "TEKY4-M, TEKY6-M, TEKY6S-M, TEPK-M, TEU-M, TEV-M user guide",
@@ -18,10 +18,20 @@
       "note": "Modbus bus properties and register tables (page 4 and 5)",
       "accessed": "2026-11-24",
       "sha256": "45d3b0d950508d0be0d19d82e66044b029fc9890ebaa5acc6a335e95fcaa3380"
+    },
+    {
+      "title": "TEx LU / TEx-M user guide",
+      "version": "V1.1.7",
+      "date": "2019-05-03",
+      "note": "Same register tables for TEAT-M, TEKA-M, TEKA-M-500, TEKV-M, TENA-M, TEK-M and TEP-M (page 4 to 6); the LU models in this guide have no Modbus",
+      "url": "https://produal-pim.rockon.io/rockon/api/v1/int/extmedia/openFile/01TGWJBKBBIO2T7MZDFRGZG2RUF67IUM26",
+      "accessed": "2026-11-24",
+      "sha256": "5cb219ee1545344d563888c65a6b5219c5b159eb0a7846ca4ade208e84e7cd53"
     }
   ],
   "notes": [
-    "Written from the manufacturer's user guide; not tested on a device. For devices with software version 1.1.7 or newer.",
+    "Written from the manufacturer's user guides for devices with software version 1.1.7 or newer.",
+    "Tested on TEU-M and TEP-M, November 2026, over RTU. The TEU-M answered every register in the map, and its values matched the guide's defaults. The TEP-M matched on temperature, analogue output, offset, control mode, set point, proportional band, integration time and controller output function, but does not have holding registers 6 and 8-11 (output overdrive value, output range, fixed control output value, timer and time left) or coil 4 (output overdrive activation): it answers illegal data address, so these registers depend on the model. Writes were not tested. Neither device supports FC17 or FC43 identification, so the firmware version could not be read.",
     "Factory defaults: Modbus ID 1, 9.6 kBaud, no parity, 1 stop bit (from the guide's menu). The ID can be set to OFF or 1-247 and the speed to 9.6, 19.2, 38.4, 56.0, 57.6, 76.8 or 115.2 kBaud with the ML-SER tool.",
     "Register numbers start at 1 (coil 1, input 30001, holding 40001), so address_base is 1.",
     "Temperature, offset, set point and proportional band have one decimal place: -500 to 1500 is -50.0 to 150.0 °C.",
@@ -39,7 +49,7 @@
   "byte_order": "big",
   "word_order": "big",
   "address_base": 1,
-  "x_status": "official",
+  "x_status": "verified",
   "enums": {
     "output_function": {"0": "Cooling", "1": "Heating"},
     "control_mode": {"0": "Off", "1": "P", "2": "PI"},
