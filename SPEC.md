@@ -91,6 +91,7 @@ A **table** maps raw values to labels: an object whose keys are integers written
 | `enums` | object: name → table | | Named translation tables (§4.1). Names use `a`–`z`, `0`–`9` and `_` |
 | `sentinels` | object: type → table | | Reserved raw values per integer type (§4.2) |
 | `identify` | object | | How to read the device identity with Report Slave ID (FC17) or Read Device Identification (FC43) (§4.8) |
+| `function_reads` | array of function read objects | | Reads made with a function code outside the four data areas (§4.11) |
 | `registers` | array of register objects | | The registers (§4) |
 
 Connection values are **defaults**: the user can still change them when connecting.
@@ -425,6 +426,53 @@ Some devices keep several settings in one word that they only accept **whole**: 
 - `access` is the register's. Read-only bit fields in a register that can be read keep using `bit` and `bits` on the register itself (§4.3); `parts` is for words that must be written whole.
 - Registers that use these `parts` fail validation in an older validator (`bad-parts`: before this addition `parts` was only for strings), but readers that ignore `parts` read the register as before. That is why it needs no new `mbmap` version (§8).
 
+### 4.11 Reads with other function codes
+
+Some devices give part of their live state only through a function that does not read one of the four areas (§5), for example a status byte read with Read Exception Status (FC07). `function_reads` lists such reads. It is a top-level key, a non-empty array:
+
+```json
+"function_reads": [
+  {
+    "name": "Controller status",
+    "function": 7,
+    "fields": [
+      {"name": "Alarm", "bit": 0},
+      {"name": "Fan speed", "bit": 1, "bits": 2, "enum": {"0": "Stopped", "1": "Low", "2": "High"}}
+    ]
+  }
+]
+```
+
+| Key | JSON type | Default | Meaning |
+|---|---|---|---|
+| `name` | non-empty string, required | | Name shown to people |
+| `function` | integer, required | | The function code, one of the table below |
+| `description` | string | | Free text |
+| `fields` | non-empty array of field objects, required | | The values to take from the answer |
+
+| `function` | Name | Request data | Answer |
+|---|---|---|---|
+| `7` | Read Exception Status | none | one status byte |
+
+Each field is a value of the status byte:
+
+| Key | JSON type | Default | Meaning |
+|---|---|---|---|
+| `name` | non-empty string, required | | Name shown to people |
+| `bit` | integer `0`–`7` | | Lowest bit of the value, 0 = least significant. Without `bit`, the value is the whole byte, from 0 to 255 |
+| `bits` | integer `1`–`8` | `1` | Width of the value. Needs `bit`, and `bit` + `bits` **MUST NOT** exceed 8 |
+| `enum` | table name or inline table | | Translates the value into a label (§4.1) |
+| `description` | string | | Free text |
+
+- **The list of functions is closed.** A map is data written by someone else, and a tool reads it without asking about each request, while a function code that a tool does not understand may change or restart the device. So a map cannot name any other function, public or user-defined, and cannot give request data. A function is added to this specification only when it does nothing but read, with its request and its answer defined here.
+- A tool **MUST NOT** send a function that the table of its version of this specification does not list, even if the user would confirm it. It skips that entry and reads the rest of the map.
+- The request is the function code alone. A map holds at most one entry for each function.
+- These values are read only: a field cannot be written.
+- A device answers on a unit id, not on a register address, so `address_base` does not apply.
+- **No value:** an exception answer, no answer, an answer that is not one status byte, or a device or gateway that does not support the function gives no value. It is not an error in the map, and the registers are read as usual. Modbus defines FC07 for serial lines, so a Modbus TCP gateway may refuse it.
+- The meaning of each bit of the FC07 byte depends on the device.
+- `function_reads` adds values and changes nothing else, so a reader that ignores it behaves as before and it needs no new `mbmap` version (§8).
+
 ## 5. Areas and addresses
 
 | `area` | Unit | Read | Write | Allowed `access` |
@@ -510,6 +558,7 @@ Readers **SHOULD** report every problem with one of the codes below and a [JSON 
 | `bad-role` | error | `role` is not `"model"`, `"firmware"` or `"serial"`, is set on a register that cannot be read, or `"model"` or `"serial"` is used more than once |
 | `bad-identify` | error | `identify` is not valid (§4.8): `function` is not `17` or `43`, `fields` is empty, or a field lacks a `name`, has a `role` that is unknown or repeated for `"model"` or `"serial"`, or breaks the rules of its function (FC17: `offset` missing or negative, `type` missing or unknown, `string` without `length`, an `enum` that names no table or is not a valid table, an `object`; FC43: `object` missing or outside 0–255, an `offset`, `type`, `length` or `enum`) |
 | `bad-parts` | error | `parts` is empty, is set on a register that is neither a `string` with a valid `length` nor a `uint16`, `uint32` or `uint64`, or has a part without a `name` or `offset`, with a negative `offset`, an unknown or `bool` `type`, a `string` part without `length`, a part that goes beyond the block, or parts that overlap. On a `uint16`, `uint32` or `uint64` register the parts are bit fields, and it is a part without a `bit`, with a negative `bit`, with `bits` below 1, with an `offset`, `length` or `type`, a field beyond the width of the register, or fields that overlap; an `enum` that names no table is `unknown-enum` (§4.10) |
+| `bad-function-read` | error | `function_reads` is not valid (§4.11): it is empty, or an entry is not an object, lacks a `name`, has a `function` that is not in the table of §4.11 or is used twice, has a `request`, or has no `fields`; or a field is not an object, lacks a `name`, has a `bit` outside `0`–`7`, `bits` without a `bit` or beyond the 8 bits of the byte, or an `enum` that names no table or is not a valid table; or a `description` is not a string |
 | `no-rows` | warning | `registers` is empty |
 | `duplicate-name` | warning | A `name` is used more than once by registers whose firmware ranges overlap (§3.2) |
 | `model-list` | warning | `model` lists devices separated by " / "; give the family name and list the devices in `models` (§3.2) |

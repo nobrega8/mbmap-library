@@ -91,6 +91,7 @@ Bir **tablo** ham değerleri etiketlere eşler: anahtarları metin olarak yazıl
 | `enums` | object: name → table | | Adlandırılmış çeviri tabloları (§4.1). Adlar `a`–`z`, `0`–`9` ve `_` kullanır |
 | `sentinels` | object: type → table | | Tam sayı türü başına ayrılmış ham değerler (§4.2) |
 | `identify` | object | | Cihaz kimliğinin Report Slave ID (FC17) veya Read Device Identification (FC43) ile nasıl okunacağı (§4.8) |
+| `function_reads` | okuma nesneleri dizisi | | Dört veri alanının dışındaki bir işlev koduyla yapılan okumalar (4.11) |
 | `registers` | array of register objects | | Register'lar (§4) |
 
 Bağlantı değerleri **varsayılanlardır**: kullanıcı bağlanırken yine de değiştirebilir.
@@ -425,6 +426,53 @@ Bazı cihazlar birkaç ayarı, yalnızca **bütün olarak** kabul ettikleri tek 
 - `access` register'ınkidir. Okunabilir bir register'daki salt okunur bit alanları `bit` ve `bits` anahtarlarını register'ın kendisinde kullanmaya devam eder (§4.3); `parts` bütün olarak yazılması gereken kelimeler içindir.
 - Bu `parts`'ı kullanan register'lar eski bir doğrulayıcıda hata verir (`bad-parts`: bu eklemeden önce `parts` yalnızca string içindi), ancak `parts`'ı yok sayan okuyucular register'ı eskisi gibi okur. Bu yüzden yeni bir `mbmap` sürümü gerekmez (§8).
 
+### 4.11 Başka işlev kodlarıyla okuma
+
+Bazı cihazlar anlık durumlarının bir kısmını yalnızca dört alandan (bölüm 5) hiçbirini okumayan bir işlevle verir; örneğin Read Exception Status (FC07) ile okunan bir durum baytı. `function_reads` bu tür okumaları listeler. Üst düzey bir anahtardır ve boş olmayan bir dizidir:
+
+```json
+"function_reads": [
+  {
+    "name": "Controller status",
+    "function": 7,
+    "fields": [
+      {"name": "Alarm", "bit": 0},
+      {"name": "Fan speed", "bit": 1, "bits": 2, "enum": {"0": "Stopped", "1": "Low", "2": "High"}}
+    ]
+  }
+]
+```
+
+| Key | JSON type | Default | Anlamı |
+|---|---|---|---|
+| `name` | boş olmayan dize, zorunlu | | İnsanlara gösterilen ad |
+| `function` | tam sayı, zorunlu | | İşlev kodu, aşağıdaki tablodakilerden biri |
+| `description` | dize | | Serbest metin |
+| `fields` | alan nesnelerinden oluşan boş olmayan dizi, zorunlu | | Yanıttan alınacak değerler |
+
+| `function` | Ad | İstek verisi | Yanıt |
+|---|---|---|---|
+| `7` | Read Exception Status | yok | bir durum baytı |
+
+Her alan, durum baytının bir değeridir:
+
+| Key | JSON type | Default | Anlamı |
+|---|---|---|---|
+| `name` | boş olmayan dize, zorunlu | | İnsanlara gösterilen ad |
+| `bit` | tam sayı `0`–`7` | | Değerin en düşük biti, 0 = en az anlamlı. `bit` yoksa değer 0 ile 255 arasında baytın tamamıdır |
+| `bits` | tam sayı `1`–`8` | `1` | Değerin genişliği. `bit` gerektirir ve `bit` + `bits` 8 değerini **MUST NOT** aşmasın |
+| `enum` | tablo adı veya satır içi tablo | | Değeri bir etikete çevirir (4.1) |
+| `description` | dize | | Serbest metin |
+
+- **İşlev listesi kapalıdır.** Harita başkasının yazdığı bir veridir ve araç onu her istek için sormadan okur; oysa aracın tanımadığı bir işlev kodu cihazı değiştirebilir veya yeniden başlatabilir. Bu nedenle harita, ister genel ister kullanıcı tanımlı olsun, başka bir işlev belirtemez ve istek verisi veremez. Bir işlev bu belirtime yalnızca okumaktan başka bir şey yapmıyorsa ve isteği ile yanıtı burada tanımlanarak eklenir.
+- Bir araç, kullandığı belirtim sürümünün tablosunda yer almayan bir işlevi, kullanıcı onaylayacak olsa bile **MUST NOT** göndermesin. O girdiyi atlar ve haritanın geri kalanını okur.
+- İstek yalnızca işlev kodundan oluşur. Bir harita her işlev için en fazla bir girdi içerir.
+- Bu değerler salt okunurdur: bir alana yazılamaz.
+- Cihaz bir register adresine değil bir unit id değerine yanıt verir, bu yüzden `address_base` uygulanmaz.
+- **Değer yok:** bir istisna yanıtı, yanıt gelmemesi, tek bir durum baytı olmayan bir yanıt ya da işlevi desteklemeyen bir cihaz veya ağ geçidi değer vermez. Bu, haritada bir hata değildir ve registerlar her zamanki gibi okunur. Modbus FC07 işlevini seri hatlar için tanımlar, bu yüzden bir Modbus TCP ağ geçidi onu reddedebilir.
+- FC07 baytındaki her bitin anlamı cihaza bağlıdır.
+- `function_reads` değer ekler ve başka hiçbir şeyi değiştirmez; onu yok sayan bir okuyucu eskisi gibi davranır, bu yüzden yeni bir `mbmap` sürümü gerekmez (8).
+
 ## 5. Alanlar ve adresler
 
 | `area` | Birim | Okuma | Yazma | İzin verilen `access` |
@@ -510,6 +558,7 @@ Okuyucular her sorunu aşağıdaki kodlardan biriyle ve değere bir [JSON Pointe
 | `bad-role` | error | `role` `"model"`, `"firmware"` veya `"serial"` değil, okunamayan bir register'da ayarlı, ya da `"model"` veya `"serial"` birden fazla kez kullanılıyor |
 | `bad-identify` | error | `identify` geçerli değil (§4.8): `function` `17` veya `43` değil, `fields` boş, ya da bir alanın `name`'i yok, `"model"` veya `"serial"` için bilinmeyen ya da yinelenen bir `role`'ü var, veya fonksiyonunun kurallarını çiğniyor (FC17: `offset` eksik veya negatif, `type` eksik veya bilinmeyen, `length`'siz `string`, hiçbir tabloyu adlandırmayan ya da geçerli bir tablo olmayan bir `enum`, bir `object`; FC43: `object` eksik veya 0–255 dışında, bir `offset`, `type`, `length` ya da `enum`) |
 | `bad-parts` | error | `parts` boş, geçerli bir `length`'i olan bir `string` olmayan register'da ayarlı, ya da bir parçanın `name` veya `offset`'i yok, negatif bir `offset`'i, bilinmeyen veya `bool` bir `type`'ı var, `length`'siz bir `string` parçası, bloğu aşan bir parça veya çakışan parçalar var; `uint16`, `uint32` veya `uint64` register'ında ilk koşul geçerli değildir ve parçalar bit alanlarıdır: orada `bit`siz bir parça, negatif `bit`, 1'in altında `bits`, `offset`, `length` veya `type`, register genişliğini aşan bir alan ya da çakışan alanlar hatadır; tablosu olmayan `enum` `unknown-enum` verir (§4.10) |
+| `bad-function-read` | error | `function_reads` geçerli değil (§4.11): boş, ya da bir girdi nesne değil, `name` içermiyor, §4.11 tablosunda olmayan veya iki kez kullanılan bir `function` içeriyor, `request` içeriyor veya `fields` içermiyor; ya da bir alan nesne değil, `name` içermiyor, `0`–`7` dışında bir `bit`, `bit` olmadan veya baytın 8 bitini aşan `bits`, ya da tablo adı vermeyen veya geçerli bir tablo olmayan bir `enum` içeriyor; ya da bir `description` dize değil |
 | `no-rows` | warning | `registers` boş |
 | `duplicate-name` | warning | Bir `name`, donanım yazılımı aralıkları çakışan register'lar tarafından birden fazla kez kullanılıyor (§3.2) |
 | `model-list` | warning | `model` cihazları “ / ” ile ayırarak listeliyor; aile adını verin ve cihazları `models` içinde listeleyin (§3.2) |

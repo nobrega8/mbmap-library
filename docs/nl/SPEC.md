@@ -91,6 +91,7 @@ Een **tabel** koppelt ruwe waarden aan labels: een object waarvan de sleutels al
 | `enums` | object: name → table | | Benoemde vertaaltabellen (§4.1). Namen gebruiken `a`–`z`, `0`–`9` en `_` |
 | `sentinels` | object: type → table | | Gereserveerde ruwe waarden per geheel type (§4.2) |
 | `identify` | object | | Hoe de identiteit van het apparaat wordt gelezen met Report Slave ID (FC17) of Read Device Identification (FC43) (§4.8) |
+| `function_reads` | array van leesobjecten | | Leesacties met een functiecode buiten de vier gegevensgebieden (4.11) |
 | `registers` | array of register objects | | De registers (§4) |
 
 Verbindingswaarden zijn **standaardwaarden**: de gebruiker kan ze bij het verbinden nog altijd wijzigen.
@@ -425,6 +426,53 @@ Sommige apparaten houden meerdere instellingen in één woord dat ze alleen **al
 - `access` is dat van het register. Alleen-lezen bitvelden in een leesbaar register blijven `bit` en `bits` op het register zelf gebruiken (§4.3); `parts` is voor woorden die als geheel geschreven moeten worden.
 - Registers met deze `parts` falen bij een oudere validator (`bad-parts`: vóór deze toevoeging was `parts` alleen voor strings), maar lezers die `parts` negeren, lezen het register zoals voorheen. Daarom is er geen nieuwe `mbmap`-versie nodig (§8).
 
+### 4.11 Lezen met andere functiecodes
+
+Sommige apparaten geven een deel van hun actuele toestand alleen via een functie die geen van de vier gebieden (sectie 5) leest, bijvoorbeeld een statusbyte dat met Read Exception Status (FC07) wordt gelezen. `function_reads` somt zulke leesacties op. Het is een sleutel op het hoogste niveau, een niet-lege array:
+
+```json
+"function_reads": [
+  {
+    "name": "Controller status",
+    "function": 7,
+    "fields": [
+      {"name": "Alarm", "bit": 0},
+      {"name": "Fan speed", "bit": 1, "bits": 2, "enum": {"0": "Stopped", "1": "Low", "2": "High"}}
+    ]
+  }
+]
+```
+
+| Key | JSON type | Default | Betekenis |
+|---|---|---|---|
+| `name` | niet-lege tekenreeks, verplicht | | Naam die aan mensen wordt getoond |
+| `function` | geheel getal, verplicht | | De functiecode, een uit de tabel hieronder |
+| `description` | tekenreeks | | Vrije tekst |
+| `fields` | niet-lege array van veldobjecten, verplicht | | De waarden die uit het antwoord worden gehaald |
+
+| `function` | Naam | Gegevens van het verzoek | Antwoord |
+|---|---|---|---|
+| `7` | Read Exception Status | geen | één statusbyte |
+
+Elk veld is een waarde uit het statusbyte:
+
+| Key | JSON type | Default | Betekenis |
+|---|---|---|---|
+| `name` | niet-lege tekenreeks, verplicht | | Naam die aan mensen wordt getoond |
+| `bit` | geheel getal `0`–`7` | | Laagste bit van de waarde, 0 = minst significant. Zonder `bit` is de waarde het hele byte, van 0 tot 255 |
+| `bits` | geheel getal `1`–`8` | `1` | Breedte van de waarde. Vereist `bit`, en `bit` + `bits` **MUST NOT** groter zijn dan 8 |
+| `enum` | tabelnaam of inline tabel | | Vertaalt de waarde naar een label (4.1) |
+| `description` | tekenreeks | | Vrije tekst |
+
+- **De lijst met functies is gesloten.** Een kaart bestaat uit gegevens die iemand anders heeft geschreven, en een hulpmiddel leest ze zonder bij elk verzoek iets te vragen, terwijl een functiecode die het hulpmiddel niet kent het apparaat kan wijzigen of herstarten. Daarom kan een kaart geen andere functie noemen, openbaar of door de gebruiker gedefinieerd, en geen verzoekgegevens opgeven. Een functie wordt alleen aan deze specificatie toegevoegd als ze niets anders doet dan lezen, en met haar verzoek en antwoord hier vastgelegd.
+- Een hulpmiddel **MUST NOT** een functie versturen die niet in de tabel van zijn versie van deze specificatie staat, ook niet als de gebruiker het zou bevestigen. Het slaat die vermelding over en leest de rest van de kaart.
+- Het verzoek bestaat alleen uit de functiecode. Een kaart bevat hoogstens één vermelding per functie.
+- Deze waarden zijn alleen-lezen: een veld kan niet worden geschreven.
+- Een apparaat antwoordt op een unit-id, niet op een registeradres, dus `address_base` is niet van toepassing.
+- **Geen waarde:** een uitzonderingsantwoord, geen antwoord, een antwoord dat niet uit één statusbyte bestaat, of een apparaat of gateway dat de functie niet ondersteunt, levert geen waarde op. Het is geen fout in de kaart, en de registers worden zoals gewoonlijk gelezen. Modbus definieert FC07 voor seriële lijnen, dus een Modbus TCP-gateway kan het weigeren.
+- De betekenis van elk bit van het FC07-byte hangt van het apparaat af.
+- `function_reads` voegt waarden toe en verandert verder niets; een lezer die het negeert gedraagt zich als voorheen, dus is geen nieuwe `mbmap`-versie nodig (8).
+
 ## 5. Gebieden en adressen
 
 | `area` | Eenheid | Lezen | Schrijven | Toegestane `access` |
@@ -510,6 +558,7 @@ Lezers **SHOULD** elk probleem melden met een van de onderstaande codes en een [
 | `bad-role` | error | `role` is niet `"model"`, `"firmware"` of `"serial"`, is ingesteld op een register dat niet gelezen kan worden, of `"model"` of `"serial"` wordt meer dan eens gebruikt |
 | `bad-identify` | error | `identify` is ongeldig (§4.8): `function` is niet `17` of `43`, `fields` is leeg, of een veld mist een `name`, heeft een onbekende of voor `"model"` of `"serial"` herhaalde `role`, of overtreedt de regels van zijn functie (FC17: `offset` ontbreekt of is negatief, `type` ontbreekt of is onbekend, `string` zonder `length`, een `enum` die geen tabel noemt of geen geldige tabel is, een `object`; FC43: `object` ontbreekt of ligt buiten 0–255, een `offset`, `type`, `length` of `enum`) |
 | `bad-parts` | error | `parts` is leeg, is ingesteld op een register dat geen `string` met geldige `length` is, of een deel mist een `name` of `offset`, heeft een negatieve `offset`, een onbekend of `bool` `type`, een `string`-deel zonder `length`, een deel dat voorbij het blok gaat, of delen die elkaar overlappen; bij een register `uint16`, `uint32` of `uint64` geldt de eerste voorwaarde niet en zijn de delen bitvelden: daar is het een deel zonder `bit`, met negatieve `bit`, met `bits` onder 1, met `offset`, `length` of `type`, een veld voorbij de breedte van het register of overlappende velden; een `enum` zonder tabel geeft `unknown-enum` (§4.10) |
+| `bad-function-read` | error | `function_reads` is ongeldig (§4.11): het is leeg, of een vermelding is geen object, heeft geen `name`, heeft een `function` die niet in de tabel van §4.11 staat of twee keer voorkomt, heeft een `request`, of heeft geen `fields`; of een veld is geen object, heeft geen `name`, heeft een `bit` buiten `0`–`7`, `bits` zonder `bit` of voorbij de 8 bits van het byte, of een `enum` die geen tabel noemt of geen geldige tabel is; of een `description` is geen tekenreeks |
 | `no-rows` | warning | `registers` is leeg |
 | `duplicate-name` | warning | Een `name` wordt meer dan eens gebruikt door registers waarvan de firmwarebereiken elkaar overlappen (§3.2) |
 | `model-list` | warning | `model` somt apparaten op gescheiden door “ / ”; geef de familienaam en som de apparaten op in `models` (§3.2) |

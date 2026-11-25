@@ -450,6 +450,74 @@ def check_identify(ck: Checker, at: str, value: object, meta: dict[str, str]) ->
             ck.error(child(here, "enum"), "bad-identify", "enum must be a table name or an object")
 
 
+# The functions `function_reads` may use. Each one only reads, takes no request
+# data and has an answer whose length SPEC.md fixes. Add one only with all three.
+READ_FUNCTIONS = {7: "Read Exception Status"}
+
+
+def check_function_reads(ck: Checker, at: str, value: object, meta: dict[str, str]) -> None:
+    """The `function_reads` list: reads with other function codes, SPEC.md 4.11."""
+    code = "bad-function-read"
+    if not isinstance(value, list):
+        ck.error(at, "bad-json-type", f"expected an array, found {json_kind(value)}")
+        return
+    if not value:
+        ck.error(at, code, "function_reads cannot be empty; leave it out")
+        return
+    seen: set[int] = set()
+
+    def check_texts(here: str, item: dict, what: str) -> None:
+        name = item.get("name")
+        if not isinstance(name, str) or not name.strip():
+            ck.error(child(here, "name"), code, f"{what} needs a non-empty name")
+        if "description" in item and not isinstance(item["description"], str):
+            ck.error(child(here, "description"), code, "description must be a string")
+
+    for i, read in enumerate(value):
+        here = child(at, i)
+        if not isinstance(read, dict):
+            ck.error(here, code, "a read must be an object")
+            continue
+        check_texts(here, read, "a read")
+        function = read.get("function")
+        if not is_whole(function, 0) or function not in READ_FUNCTIONS:
+            ck.error(child(here, "function"), code, "function must be 7 (Read Exception Status)")
+        elif function in seen:
+            ck.error(child(here, "function"), code, f"function {function} is listed twice")
+        else:
+            seen.add(function)
+        if "request" in read:
+            ck.error(child(here, "request"), code, "a read takes no request data")
+        fields = read.get("fields")
+        if not isinstance(fields, list) or not fields:
+            ck.error(child(here, "fields"), code, "fields must be a non-empty array")
+            continue
+        for j, field in enumerate(fields):
+            there = child(child(here, "fields"), j)
+            if not isinstance(field, dict):
+                ck.error(there, code, "a field must be an object")
+                continue
+            check_texts(there, field, "a field")
+            bit = field.get("bit")
+            if "bit" in field and not is_whole(bit, 0, 7):
+                ck.error(child(there, "bit"), code, "bit must be a whole number from 0 to 7")
+            if "bits" in field:
+                bits = field["bits"]
+                if "bit" not in field:
+                    ck.error(child(there, "bits"), code, "bits needs a bit")
+                elif not is_whole(bits, 1, 8) or (is_whole(bit, 0, 7) and bit + bits > 8):
+                    ck.error(child(there, "bits"), code, "bit + bits must stay within the 8 bits of the byte")
+            if "enum" in field:
+                enum = field["enum"]
+                if isinstance(enum, str):
+                    if f"enum_{enum}" not in meta:
+                        ck.error(child(there, "enum"), code, f"no enum table named {enum!r}")
+                elif isinstance(enum, dict):
+                    v2_table(ck, child(there, "enum"), enum, code)
+                else:
+                    ck.error(child(there, "enum"), code, "enum must be a table name or an object")
+
+
 PART_BIT_WIDTHS = {"uint16": 16, "uint32": 32, "uint64": 64}
 
 
@@ -684,13 +752,15 @@ def read_v2(text: str, ck: Checker) -> tuple[dict[str, str], list[Row]] | None:
         elif key == "registers":
             if not isinstance(value, list):
                 wrong_type(at, "an array", value)
-        elif key == "identify":
+        elif key in ("identify", "function_reads"):
             pass  # checked after the loop, once every enum table is known
         else:
             meta[key] = as_text(value)  # x_ and unknown keys
     meta["byte_order"] = JOIN_ORDER[order["byte_order"], order["word_order"]]
     if "identify" in doc:
         check_identify(ck, "/identify", doc["identify"], meta)
+    if "function_reads" in doc:
+        check_function_reads(ck, "/function_reads", doc["function_reads"], meta)
     lo, hi = (parse_version(meta.get(k, "")) for k in V2_VERSION_KEYS)
     if lo and hi and max_before_min(hi, lo):
         ck.error("/firmware_min", "bad-firmware-range",

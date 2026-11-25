@@ -91,6 +91,7 @@ A `mbmap`, a `vendor`, a `model` és a `registers` kötelező. Minden más kulcs
 | `enums` | object: name → table | | Elnevezett fordítótáblák (§4.1). A nevek `a`–`z`, `0`–`9` és `_` karaktereket használnak |
 | `sentinels` | object: type → table | | Fenntartott nyers értékek egész típusonként (§4.2) |
 | `identify` | object | | Hogyan olvasható az eszköz azonosítója a Report Slave ID (FC17) vagy a Read Device Identification (FC43) segítségével (§4.8) |
+| `function_reads` | olvasási objektumok tömbje | | A négy adatterületen kívüli funkciókóddal végzett olvasások (4.11) |
 | `registers` | array of register objects | | A regiszterek (§4) |
 
 A kapcsolati értékek **alapértelmezések**: a felhasználó csatlakozáskor továbbra is megváltoztathatja őket.
@@ -425,6 +426,53 @@ Egyes eszközök több beállítást tartanak egy szóban, amelyet csak **egész
 - Az `access` a regiszteré. Az olvasható regiszter csak olvasható bitmezői továbbra is a regiszter saját `bit` és `bits` kulcsát használják (§4.3); a `parts` azokra a szavakra való, amelyeket egészében kell írni.
 - Az ilyen `parts`-ot használó regiszterek megbuknak egy régebbi validátoron (`bad-parts`: e kiegészítés előtt a `parts` csak sztringekre szólt), de a `parts`-ot figyelmen kívül hagyó olvasók a regisztert a régi módon olvassák. Ezért nem kell új `mbmap` verzió (§8).
 
+### 4.11 Olvasás más funkciókódokkal
+
+Egyes eszközök az aktuális állapotuk egy részét csak olyan funkción keresztül adják meg, amely a négy terület (5. szakasz) egyikét sem olvassa, például egy Read Exception Status (FC07) funkcióval olvasott állapotbájtot. A `function_reads` az ilyen olvasásokat sorolja fel. Legfelső szintű kulcs, nem üres tömb:
+
+```json
+"function_reads": [
+  {
+    "name": "Controller status",
+    "function": 7,
+    "fields": [
+      {"name": "Alarm", "bit": 0},
+      {"name": "Fan speed", "bit": 1, "bits": 2, "enum": {"0": "Stopped", "1": "Low", "2": "High"}}
+    ]
+  }
+]
+```
+
+| Key | JSON type | Default | Jelentés |
+|---|---|---|---|
+| `name` | nem üres karakterlánc, kötelező | | Az embereknek megjelenített név |
+| `function` | egész szám, kötelező | | A funkciókód, az alábbi táblázat egyike |
+| `description` | karakterlánc | | Szabad szöveg |
+| `fields` | mezőobjektumok nem üres tömbje, kötelező | | A válaszból kiveendő értékek |
+
+| `function` | Név | A kérés adatai | Válasz |
+|---|---|---|---|
+| `7` | Read Exception Status | nincs | egy állapotbájt |
+
+Minden mező az állapotbájt egy értéke:
+
+| Key | JSON type | Default | Jelentés |
+|---|---|---|---|
+| `name` | nem üres karakterlánc, kötelező | | Az embereknek megjelenített név |
+| `bit` | egész szám `0`–`7` | | Az érték legalacsonyabb bitje, 0 = a legkisebb helyiértékű. `bit` nélkül az érték a teljes bájt, 0-tól 255-ig |
+| `bits` | egész szám `1`–`8` | `1` | Az érték szélessége. `bit` szükséges hozzá, és `bit` + `bits` **MUST NOT** haladja meg a 8-at |
+| `enum` | táblanév vagy beágyazott tábla | | Az értéket címkévé alakítja (4.1) |
+| `description` | karakterlánc | | Szabad szöveg |
+
+- **A funkciók listája zárt.** A térkép más által írt adat, és az eszközprogram úgy olvassa, hogy nem kérdez rá minden kérésre, miközben egy számára ismeretlen funkciókód módosíthatja vagy újraindíthatja az eszközt. Ezért egy térkép nem nevezhet meg más funkciót, sem nyilvánosat, sem felhasználó által meghatározottat, és nem adhat meg kérésadatot. Funkció csak akkor kerül be ebbe a specifikációba, ha kizárólag olvas, és a kérése és a válasza itt meg van határozva.
+- Egy eszközprogram **MUST NOT** küldjön olyan funkciót, amely nem szerepel az általa követett specifikációverzió táblázatában, akkor sem, ha a felhasználó megerősítené. Az adott bejegyzést kihagyja, és beolvassa a térkép többi részét.
+- A kérés csak a funkciókódból áll. Egy térkép funkciónként legfeljebb egy bejegyzést tartalmaz.
+- Ezek az értékek csak olvashatók: mezőbe nem lehet írni.
+- Az eszköz unit id-re válaszol, nem regisztercímre, ezért az `address_base` nem érvényes.
+- **Nincs érték:** a kivételválasz, a válasz hiánya, a nem egyetlen állapotbájtból álló válasz, illetve a funkciót nem támogató eszköz vagy átjáró nem ad értéket. Ez nem a térkép hibája, és a regiszterek a szokásos módon olvasódnak be. A Modbus az FC07-et soros vonalakra határozza meg, ezért egy Modbus TCP átjáró elutasíthatja.
+- Az FC07 bájt egyes bitjeinek jelentése az eszköztől függ.
+- A `function_reads` értékeket ad hozzá, mást nem változtat, így az a beolvasó, amely figyelmen kívül hagyja, a korábbiak szerint működik, ezért nem kell új `mbmap` verzió (8).
+
 ## 5. Területek és címek
 
 | `area` | Egység | Olvasás | Írás | Megengedett `access` |
@@ -510,6 +558,7 @@ Az olvasóknak minden problémát az alábbi kódok egyikével és az értékre 
 | `bad-role` | error | A `role` nem `"model"`, `"firmware"` vagy `"serial"`, nem olvasható regiszteren van beállítva, vagy a `"model"` vagy `"serial"` egynél többször szerepel |
 | `bad-identify` | error | Az `identify` érvénytelen (§4.8): a `function` nem `17` vagy `43`, a `fields` üres, vagy egy mezőnek nincs `name`, ismeretlen vagy a `"model"`/`"serial"` esetén ismétlődő `role`-ja van, vagy megszegi a függvénye szabályait (FC17: hiányzó vagy negatív `offset`, hiányzó vagy ismeretlen `type`, `length` nélküli `string`, olyan `enum`, amely nem nevez meg táblázatot vagy nem érvényes táblázat, egy `object`; FC43: hiányzó vagy a 0–255 tartományon kívüli `object`, egy `offset`, `type`, `length` vagy `enum`) |
 | `bad-parts` | error | A `parts` üres, nem érvényes `length`-ű `string` regiszteren van beállítva, vagy egy résznek nincs `name` vagy `offset` értéke, negatív `offset`-je, ismeretlen vagy `bool` `type`-ja van, egy `string` résznek nincs `length`-je, egy rész túllóg a blokkon, vagy a részek átfedik egymást; `uint16`, `uint32` vagy `uint64` regiszteren az első feltétel nem érvényes, és a részek bitmezők: ott hiba a `bit` nélküli rész, a negatív `bit`, az 1 alatti `bits`, az `offset`, `length` vagy `type` megadása, a regiszter szélességén túlnyúló mező vagy az átfedő mezők; tábla nélküli `enum` esetén `unknown-enum` (§4.10) |
+| `bad-function-read` | error | A `function_reads` érvénytelen (§4.11): üres, vagy egy bejegyzés nem objektum, nincs `name` kulcsa, a `function` értéke nem szerepel a §4.11 táblázatában vagy kétszer fordul elő, van `request` kulcsa, vagy nincs `fields` kulcsa; vagy egy mező nem objektum, nincs `name` kulcsa, a `bit` a `0`–`7` tartományon kívüli, a `bits` `bit` nélkül szerepel vagy túlnyúlik a bájt 8 bitjén, vagy az `enum` nem nevez meg táblát, illetve nem érvényes tábla; vagy egy `description` nem karakterlánc |
 | `no-rows` | warning | A `registers` üres |
 | `duplicate-name` | warning | Egy `name` többször szerepel olyan regisztereknél, amelyek firmware-tartományai átfedik egymást (§3.2) |
 | `model-list` | warning | A `model` eszközöket sorol fel „ / ” jellel elválasztva; adja meg a családnevet, és az eszközöket a `models`-ben sorolja fel (§3.2) |

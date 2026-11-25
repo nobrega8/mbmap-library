@@ -91,6 +91,7 @@ Uma **tabela** faz corresponder valores em bruto a etiquetas: um objeto cujas ch
 | `enums` | objeto: nome → tabela | | Tabelas de tradução com nome (4.1). Os nomes usam `a`–`z`, `0`–`9` e `_` |
 | `sentinels` | objeto: tipo → tabela | | Valores em bruto reservados por tipo inteiro (4.2) |
 | `identify` | objeto | | Como ler a identidade do dispositivo com Report Slave ID (FC17) ou Read Device Identification (FC43) (4.8) |
+| `function_reads` | matriz de objetos de leitura | | Leituras feitas com um código de função fora das quatro áreas de dados (4.11) |
 | `registers` | matriz de objetos de registo | | Os registos (secção 4) |
 
 Os valores de ligação são **valores por omissão**: o utilizador pode alterá-los ao ligar.
@@ -425,6 +426,53 @@ Alguns dispositivos guardam várias definições numa palavra que só aceitam **
 - `access` é o do registo. Os campos de bits só de leitura num registo legível continuam a usar `bit` e `bits` no próprio registo (4.3); `parts` serve para palavras que têm de ser escritas inteiras.
 - Os registos com estas `parts` falham a validação de um validador antigo (`bad-parts`: antes `parts` era só para strings), mas os leitores que ignoram `parts` leem o registo como antes. Por isso não é preciso uma nova versão do `mbmap` (8).
 
+### 4.11 Leituras com outros códigos de função
+
+Alguns dispositivos só dão parte do seu estado atual através de uma função que não lê nenhuma das quatro áreas (secção 5), por exemplo um byte de estado lido com Read Exception Status (FC07). `function_reads` lista essas leituras. É uma chave de topo, uma matriz não vazia:
+
+```json
+"function_reads": [
+  {
+    "name": "Controller status",
+    "function": 7,
+    "fields": [
+      {"name": "Alarm", "bit": 0},
+      {"name": "Fan speed", "bit": 1, "bits": 2, "enum": {"0": "Stopped", "1": "Low", "2": "High"}}
+    ]
+  }
+]
+```
+
+| Chave | Tipo JSON | Por omissão | Significado |
+|---|---|---|---|
+| `name` | cadeia não vazia, obrigatória | | Nome mostrado às pessoas |
+| `function` | inteiro, obrigatório | | O código de função, um dos da tabela abaixo |
+| `description` | cadeia | | Texto livre |
+| `fields` | matriz não vazia de objetos de campo, obrigatória | | Os valores a retirar da resposta |
+
+| `function` | Nome | Dados do pedido | Resposta |
+|---|---|---|---|
+| `7` | Read Exception Status | nenhum | um byte de estado |
+
+Cada campo é um valor do byte de estado:
+
+| Chave | Tipo JSON | Por omissão | Significado |
+|---|---|---|---|
+| `name` | cadeia não vazia, obrigatória | | Nome mostrado às pessoas |
+| `bit` | inteiro `0`–`7` | | Bit mais baixo do valor, 0 = menos significativo. Sem `bit`, o valor é o byte inteiro, de 0 a 255 |
+| `bits` | inteiro `1`–`8` | `1` | Largura do valor. Precisa de `bit`, e `bit` + `bits` **MUST NOT** ultrapassar 8 |
+| `enum` | nome de tabela ou tabela em linha | | Traduz o valor numa etiqueta (4.1) |
+| `description` | cadeia | | Texto livre |
+
+- **A lista de funções é fechada.** Um mapa são dados escritos por outra pessoa, e uma ferramenta lê-o sem perguntar nada sobre cada pedido, ao passo que um código de função que a ferramenta não conhece pode alterar ou reiniciar o dispositivo. Por isso um mapa não pode indicar nenhuma outra função, pública ou definida pelo fabricante, nem pode dar dados para o pedido. Uma função só é acrescentada a esta especificação quando não faz mais do que ler, e com o pedido e a resposta definidos aqui.
+- Uma ferramenta **MUST NOT** enviar uma função que a tabela da sua versão desta especificação não liste, mesmo que o utilizador o confirmasse. Ignora essa entrada e lê o resto do mapa.
+- O pedido é apenas o código de função. Um mapa tem no máximo uma entrada por função.
+- Estes valores são só de leitura: não se pode escrever num campo.
+- Um dispositivo responde por um unit id, não por um endereço de registo, por isso `address_base` não se aplica.
+- **Sem valor:** uma resposta de exceção, a falta de resposta, uma resposta que não seja um byte de estado, ou um dispositivo ou gateway que não suporte a função não dão valor. Não é um erro do mapa, e os registos são lidos como habitualmente. O Modbus define o FC07 para linhas série, por isso um gateway Modbus TCP pode recusá-lo.
+- O significado de cada bit do byte do FC07 depende do dispositivo.
+- `function_reads` acrescenta valores e não altera mais nada, por isso um leitor que o ignore comporta-se como antes e não é preciso uma nova versão do `mbmap` (8).
+
 ## 5. Áreas e endereços
 
 | `area` | Unidade | Leitura | Escrita | `access` permitido |
@@ -510,6 +558,7 @@ Os leitores **SHOULD** comunicar cada problema com um dos códigos abaixo e um [
 | `bad-role` | error | `role` não é `"model"`, `"firmware"` nem `"serial"`, está definido num registo que não pode ser lido, ou `"model"` ou `"serial"` é usado mais de uma vez |
 | `bad-identify` | error | `identify` não é válido (4.8): `function` não é `17` nem `43`, `fields` está vazio, ou um campo não tem `name`, tem um `role` desconhecido ou repetido para `"model"` ou `"serial"`, ou quebra as regras da sua função (FC17: `offset` em falta ou negativo, `type` em falta ou desconhecido, `string` sem `length`, um `enum` que não indica nenhuma tabela ou não é uma tabela válida, um `object`; FC43: `object` em falta ou fora de 0–255, um `offset`, `type`, `length` ou `enum`) |
 | `bad-parts` | error | `parts` está vazio, está definido num registo que não é uma `string` com um `length` válido, ou tem uma parte sem `name` ou `offset`, com um `offset` negativo, um `type` desconhecido ou `bool`, uma parte `string` sem `length`, uma parte que ultrapassa o bloco, ou partes que se sobrepõem; num registo `uint16`, `uint32` ou `uint64` a primeira condição não se aplica e as partes são campos de bits: aí é uma parte sem `bit`, com `bit` negativo, com `bits` abaixo de 1, com `offset`, `length` ou `type`, um campo que ultrapassa a largura do registo ou campos que se sobrepõem; um `enum` sem tabela dá `unknown-enum` (4.10) |
+| `bad-function-read` | error | `function_reads` não é válido (4.11): está vazio, ou uma entrada não é um objeto, não tem `name`, tem uma `function` que não está na tabela de 4.11 ou é usada duas vezes, tem um `request`, ou não tem `fields`; ou um campo não é um objeto, não tem `name`, tem um `bit` fora de `0`–`7`, `bits` sem `bit` ou para lá dos 8 bits do byte, ou um `enum` que não indica nenhuma tabela ou não é uma tabela válida; ou uma `description` não é uma cadeia |
 | `no-rows` | warning | `registers` está vazio |
 | `duplicate-name` | warning | Um `name` é usado mais de uma vez por registos cujos intervalos de firmware se sobrepõem (3.2) |
 | `model-list` | warning | `model` lista dispositivos separados por “ / ”; dê o nome da família e liste os dispositivos em `models` (3.2) |

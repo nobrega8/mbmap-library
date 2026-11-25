@@ -91,6 +91,7 @@ Une **table** associe des valeurs brutes à des libellés : un objet dont les cl
 | `enums` | objet : nom → table | | Tables de traduction nommées (4.1). Les noms utilisent `a`–`z`, `0`–`9` et `_` |
 | `sentinels` | objet : type → table | | Valeurs brutes réservées par type entier (4.2) |
 | `identify` | objet | | Comment lire l’identité du périphérique avec Report Slave ID (FC17) ou Read Device Identification (FC43) (4.8) |
+| `function_reads` | tableau d’objets de lecture | | Lectures faites avec un code de fonction en dehors des quatre zones de données (4.11) |
 | `registers` | tableau d’objets registre | | Les registres (section 4) |
 
 Les valeurs de connexion sont des **valeurs par défaut** : l’utilisateur peut toujours les modifier à la connexion.
@@ -425,6 +426,53 @@ Certains périphériques gardent plusieurs réglages dans un mot qu’ils n’ac
 - `access` est celui du registre. Les champs de bits en lecture seule d’un registre lisible continuent d’utiliser `bit` et `bits` sur le registre lui-même (4.3) ; `parts` sert aux mots qui doivent être écrits entiers.
 - Les registres qui utilisent ces `parts` échouent à la validation d’un ancien validateur (`bad-parts` : avant cet ajout, `parts` ne servait que pour les chaînes), mais les lecteurs qui ignorent `parts` lisent le registre comme avant. C’est pourquoi il ne faut pas de nouvelle version de `mbmap` (8).
 
+### 4.11 Lectures avec d’autres codes de fonction
+
+Certains périphériques ne donnent une partie de leur état courant que par une fonction qui ne lit aucune des quatre zones (section 5), par exemple un octet d’état lu avec Read Exception Status (FC07). `function_reads` énumère ces lectures. C’est une clé de premier niveau, un tableau non vide :
+
+```json
+"function_reads": [
+  {
+    "name": "Controller status",
+    "function": 7,
+    "fields": [
+      {"name": "Alarm", "bit": 0},
+      {"name": "Fan speed", "bit": 1, "bits": 2, "enum": {"0": "Stopped", "1": "Low", "2": "High"}}
+    ]
+  }
+]
+```
+
+| Clé | Type JSON | Par défaut | Signification |
+|---|---|---|---|
+| `name` | chaîne non vide, obligatoire | | Nom affiché aux personnes |
+| `function` | entier, obligatoire | | Le code de fonction, l’un de ceux du tableau ci-dessous |
+| `description` | chaîne | | Texte libre |
+| `fields` | tableau non vide d’objets champ, obligatoire | | Les valeurs à extraire de la réponse |
+
+| `function` | Nom | Données de la requête | Réponse |
+|---|---|---|---|
+| `7` | Read Exception Status | aucune | un octet d’état |
+
+Chaque champ est une valeur de l’octet d’état :
+
+| Clé | Type JSON | Par défaut | Signification |
+|---|---|---|---|
+| `name` | chaîne non vide, obligatoire | | Nom affiché aux personnes |
+| `bit` | entier `0`–`7` | | Bit de poids le plus faible de la valeur, 0 = le moins significatif. Sans `bit`, la valeur est l’octet entier, de 0 à 255 |
+| `bits` | entier `1`–`8` | `1` | Largeur de la valeur. Nécessite `bit`, et `bit` + `bits` **MUST NOT** dépasser 8 |
+| `enum` | nom de table ou table en ligne | | Traduit la valeur en un libellé (4.1) |
+| `description` | chaîne | | Texte libre |
+
+- **La liste des fonctions est fermée.** Une carte est une donnée écrite par quelqu’un d’autre, et un outil la lit sans poser de question pour chaque requête, alors qu’un code de fonction que l’outil ne connaît pas peut modifier ou redémarrer le périphérique. Une carte ne peut donc indiquer aucune autre fonction, publique ou définie par l’utilisateur, ni donner de données pour la requête. Une fonction n’est ajoutée à cette spécification que si elle ne fait que lire, avec sa requête et sa réponse définies ici.
+- Un outil **MUST NOT** envoyer une fonction que le tableau de sa version de cette spécification n’énumère pas, même si l’utilisateur le confirmait. Il ignore cette entrée et lit le reste de la carte.
+- La requête se réduit au code de fonction. Une carte contient au plus une entrée par fonction.
+- Ces valeurs sont en lecture seule : on ne peut pas écrire dans un champ.
+- Un périphérique répond à un unit id, pas à une adresse de registre ; `address_base` ne s’applique donc pas.
+- **Pas de valeur :** une réponse d’exception, l’absence de réponse, une réponse qui n’est pas un octet d’état, ou un périphérique ou une passerelle qui ne prend pas en charge la fonction ne donnent aucune valeur. Ce n’est pas une erreur de la carte, et les registres sont lus comme d’habitude. Modbus définit FC07 pour les liaisons série ; une passerelle Modbus TCP peut donc la refuser.
+- La signification de chaque bit de l’octet FC07 dépend du périphérique.
+- `function_reads` ajoute des valeurs et ne change rien d’autre ; un lecteur qui l’ignore se comporte comme avant, et aucune nouvelle version de `mbmap` n’est nécessaire (8).
+
 ## 5. Zones et adresses
 
 | `area` | Unité | Lecture | Écriture | `access` autorisé |
@@ -510,6 +558,7 @@ Les lecteurs **SHOULD** signaler chaque problème avec l’un des codes ci-desso
 | `bad-role` | error | `role` n’est ni `"model"`, ni `"firmware"`, ni `"serial"`, est défini sur un registre qui ne peut pas être lu, ou `"model"` ou `"serial"` est utilisé plus d’une fois |
 | `bad-identify` | error | `identify` n’est pas valide (4.8) : `function` n’est ni `17` ni `43`, `fields` est vide, ou un champ n’a pas de `name`, a un `role` inconnu ou répété pour `"model"` ou `"serial"`, ou enfreint les règles de sa fonction (FC17 : `offset` manquant ou négatif, `type` manquant ou inconnu, `string` sans `length`, un `enum` qui ne nomme aucune table ou n’est pas une table valide, un `object` ; FC43 : `object` manquant ou hors de 0–255, un `offset`, `type`, `length` ou `enum`) |
 | `bad-parts` | error | `parts` est vide, est défini sur un registre qui n’est pas une `string` avec un `length` valide, ou a une partie sans `name` ou `offset`, avec un `offset` négatif, un `type` inconnu ou `bool`, une partie `string` sans `length`, une partie qui dépasse le bloc, ou des parties qui se chevauchent; sur un registre `uint16`, `uint32` ou `uint64`, la première condition ne s’applique pas et les parties sont des champs de bits : c’est alors une partie sans `bit`, avec un `bit` négatif, avec `bits` inférieur à 1, avec `offset`, `length` ou `type`, un champ qui dépasse la largeur du registre ou des champs qui se chevauchent ; un `enum` sans table donne `unknown-enum` (4.10) |
+| `bad-function-read` | error | `function_reads` n’est pas valide (4.11) : il est vide, ou une entrée n’est pas un objet, n’a pas de `name`, a une `function` absente du tableau de 4.11 ou utilisée deux fois, a un `request`, ou n’a pas de `fields` ; ou un champ n’est pas un objet, n’a pas de `name`, a un `bit` hors de `0`–`7`, des `bits` sans `bit` ou au-delà des 8 bits de l’octet, ou un `enum` qui ne désigne aucune table ou n’est pas une table valide ; ou une `description` n’est pas une chaîne |
 | `no-rows` | warning | `registers` est vide |
 | `duplicate-name` | warning | Un `name` est utilisé plus d’une fois par des registres dont les plages de firmware se chevauchent (3.2) |
 | `model-list` | warning | `model` liste des périphériques séparés par « / » ; donnez le nom de la famille et listez les périphériques dans `models` (3.2) |

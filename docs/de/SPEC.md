@@ -91,6 +91,7 @@ Eine **Tabelle** ordnet Rohwerten Beschriftungen zu: ein Objekt, dessen Schlüss
 | `enums` | object: name → table | | Benannte Übersetzungstabellen (§4.1). Namen verwenden `a`–`z`, `0`–`9` und `_` |
 | `sentinels` | object: type → table | | Reservierte Rohwerte pro Ganzzahltyp (§4.2) |
 | `identify` | object | | Wie die Geräteidentität mit Report Slave ID (FC17) oder Read Device Identification (FC43) gelesen wird (§4.8) |
+| `function_reads` | Array von Leseobjekten | | Lesezugriffe mit einem Funktionscode außerhalb der vier Datenbereiche (4.11) |
 | `registers` | array of register objects | | Die Register (§4) |
 
 Verbindungswerte sind **Standardwerte**: Der Anwender kann sie beim Verbinden weiterhin ändern.
@@ -425,6 +426,53 @@ Manche Geräte halten mehrere Einstellungen in einem Wort, das sie nur **ganz** 
 - `access` ist das des Registers. Schreibgeschützte Bitfelder in einem lesbaren Register verwenden weiter `bit` und `bits` am Register selbst (§4.3); `parts` ist für Wörter, die ganz geschrieben werden müssen.
 - Register mit diesen `parts` bestehen die Validierung eines älteren Validators nicht (`bad-parts`: vorher war `parts` nur für Strings), aber Leser, die `parts` ignorieren, lesen das Register wie bisher. Deshalb braucht es keine neue `mbmap`-Version (§8).
 
+### 4.11 Lesen mit anderen Funktionscodes
+
+Manche Geräte geben einen Teil ihres aktuellen Zustands nur über eine Funktion aus, die keinen der vier Bereiche (Abschnitt 5) liest, zum Beispiel ein Statusbyte, das mit Read Exception Status (FC07) gelesen wird. `function_reads` listet solche Lesezugriffe auf. Es ist ein Schlüssel der obersten Ebene, ein nicht leeres Array:
+
+```json
+"function_reads": [
+  {
+    "name": "Controller status",
+    "function": 7,
+    "fields": [
+      {"name": "Alarm", "bit": 0},
+      {"name": "Fan speed", "bit": 1, "bits": 2, "enum": {"0": "Stopped", "1": "Low", "2": "High"}}
+    ]
+  }
+]
+```
+
+| Key | JSON type | Default | Bedeutung |
+|---|---|---|---|
+| `name` | nicht leere Zeichenkette, erforderlich | | Name, der Menschen angezeigt wird |
+| `function` | Ganzzahl, erforderlich | | Der Funktionscode, einer aus der folgenden Tabelle |
+| `description` | Zeichenkette | | Freitext |
+| `fields` | nicht leeres Array von Feldobjekten, erforderlich | | Die Werte, die aus der Antwort entnommen werden |
+
+| `function` | Name | Daten der Anfrage | Antwort |
+|---|---|---|---|
+| `7` | Read Exception Status | keine | ein Statusbyte |
+
+Jedes Feld ist ein Wert des Statusbytes:
+
+| Key | JSON type | Default | Bedeutung |
+|---|---|---|---|
+| `name` | nicht leere Zeichenkette, erforderlich | | Name, der Menschen angezeigt wird |
+| `bit` | Ganzzahl `0`–`7` | | Niedrigstes Bit des Werts, 0 = niederwertigstes. Ohne `bit` ist der Wert das ganze Byte, von 0 bis 255 |
+| `bits` | Ganzzahl `1`–`8` | `1` | Breite des Werts. Braucht `bit`, und `bit` + `bits` **MUST NOT** 8 überschreiten |
+| `enum` | Tabellenname oder Inline-Tabelle | | Übersetzt den Wert in eine Bezeichnung (4.1) |
+| `description` | Zeichenkette | | Freitext |
+
+- **Die Liste der Funktionen ist abgeschlossen.** Eine Map besteht aus Daten, die jemand anderes geschrieben hat, und ein Werkzeug liest sie, ohne zu jeder Anfrage nachzufragen, während ein Funktionscode, den das Werkzeug nicht kennt, das Gerät verändern oder neu starten kann. Deshalb kann eine Map keine andere Funktion nennen, weder eine öffentliche noch eine benutzerdefinierte, und keine Anfragedaten vorgeben. Eine Funktion wird nur dann in diese Spezifikation aufgenommen, wenn sie ausschließlich liest und ihre Anfrage und Antwort hier definiert sind.
+- Ein Werkzeug **MUST NOT** eine Funktion senden, die die Tabelle seiner Version dieser Spezifikation nicht enthält, auch dann nicht, wenn der Benutzer es bestätigen würde. Es überspringt diesen Eintrag und liest den Rest der Map.
+- Die Anfrage besteht nur aus dem Funktionscode. Eine Map enthält höchstens einen Eintrag je Funktion.
+- Diese Werte sind nur lesbar: In ein Feld kann nicht geschrieben werden.
+- Ein Gerät antwortet auf eine Unit-ID, nicht auf eine Registeradresse, daher gilt `address_base` nicht.
+- **Kein Wert:** Eine Ausnahmeantwort, keine Antwort, eine Antwort, die nicht aus einem Statusbyte besteht, oder ein Gerät oder Gateway, das die Funktion nicht unterstützt, liefert keinen Wert. Das ist kein Fehler der Map, und die Register werden wie gewohnt gelesen. Modbus definiert FC07 für serielle Leitungen, deshalb kann ein Modbus-TCP-Gateway sie ablehnen.
+- Die Bedeutung der einzelnen Bits des FC07-Bytes hängt vom Gerät ab.
+- `function_reads` fügt Werte hinzu und ändert sonst nichts; ein Leser, der es ignoriert, verhält sich wie bisher, daher braucht es keine neue `mbmap`-Version (8).
+
 ## 5. Bereiche und Adressen
 
 | `area` | Einheit | Lesen | Schreiben | Erlaubter `access` |
@@ -510,6 +558,7 @@ Leser **SHOULD** jedes Problem mit einem der folgenden Codes und einem [JSON Poi
 | `bad-role` | error | `role` ist nicht `"model"`, `"firmware"` oder `"serial"`, ist bei einem nicht lesbaren Register gesetzt, oder `"model"` oder `"serial"` wird mehr als einmal verwendet |
 | `bad-identify` | error | `identify` ist ungültig (§4.8): `function` ist nicht `17` oder `43`, `fields` ist leer, oder einem Feld fehlt `name`, es hat eine unbekannte oder für `"model"` oder `"serial"` wiederholte `role` oder verletzt die Regeln seiner Funktion (FC17: `offset` fehlt oder ist negativ, `type` fehlt oder ist unbekannt, `string` ohne `length`, ein `enum`, das keine Tabelle nennt oder keine gültige Tabelle ist, ein `object`; FC43: `object` fehlt oder liegt außerhalb von 0–255, ein `offset`, `type`, `length` oder `enum`) |
 | `bad-parts` | error | `parts` ist leer, ist bei einem Register gesetzt, das kein `string` mit gültiger `length` ist, oder ein Teil hat kein `name` oder `offset`, einen negativen `offset`, einen unbekannten oder `bool`-`type`, ein `string`-Teil hat keine `length`, ein Teil geht über den Block hinaus oder Teile überschneiden sich; bei einem Register `uint16`, `uint32` oder `uint64` gilt die erste Bedingung nicht, und die Teile sind Bitfelder: Dort ist es ein Teil ohne `bit`, mit negativem `bit`, mit `bits` unter 1, mit `offset`, `length` oder `type`, ein Feld über die Breite des Registers hinaus oder sich überlappende Felder; ein `enum` ohne Tabelle ist `unknown-enum` (§4.10) |
+| `bad-function-read` | error | `function_reads` ist ungültig (§4.11): Es ist leer, oder ein Eintrag ist kein Objekt, hat keinen `name`, hat eine `function`, die nicht in der Tabelle von §4.11 steht oder doppelt vorkommt, hat ein `request` oder keine `fields`; oder ein Feld ist kein Objekt, hat keinen `name`, hat ein `bit` außerhalb von `0`–`7`, `bits` ohne `bit` oder über die 8 Bits des Bytes hinaus, oder ein `enum`, das keine Tabelle nennt oder keine gültige Tabelle ist; oder eine `description` ist keine Zeichenkette |
 | `no-rows` | warning | `registers` ist leer |
 | `duplicate-name` | warning | Ein `name` wird mehrfach von Registern verwendet, deren Firmware-Bereiche sich überschneiden (§3.2) |
 | `model-list` | warning | `model` listet Geräte durch „ / “ getrennt auf; geben Sie den Familiennamen an und listen Sie die Geräte in `models` (§3.2) |

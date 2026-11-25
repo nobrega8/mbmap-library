@@ -91,6 +91,7 @@ Sebuah **tabel** memetakan nilai mentah ke label: objek yang kuncinya adalah bil
 | `enums` | object: name → table | | Tabel terjemahan bernama (§4.1). Nama menggunakan `a`–`z`, `0`–`9`, dan `_` |
 | `sentinels` | object: type → table | | Nilai mentah yang dicadangkan per tipe bilangan bulat (§4.2) |
 | `identify` | object | | Cara membaca identitas perangkat dengan Report Slave ID (FC17) atau Read Device Identification (FC43) (§4.8) |
+| `function_reads` | array objek pembacaan | | Pembacaan dengan kode fungsi di luar empat area data (4.11) |
 | `registers` | array of register objects | | Register (§4) |
 
 Nilai koneksi adalah **nilai bawaan**: pengguna tetap dapat mengubahnya saat menghubungkan.
@@ -425,6 +426,53 @@ Beberapa perangkat menyimpan beberapa pengaturan dalam satu word yang hanya dite
 - `access` mengikuti register. Bit field baca-saja pada register yang dapat dibaca tetap memakai `bit` dan `bits` pada register itu sendiri (§4.3); `parts` untuk word yang harus ditulis utuh.
 - Register dengan `parts` ini gagal validasi pada validator lama (`bad-parts`: sebelumnya `parts` hanya untuk string), tetapi pembaca yang mengabaikan `parts` membaca register seperti sebelumnya. Karena itu tidak perlu versi `mbmap` baru (§8).
 
+### 4.11 Pembacaan dengan kode fungsi lain
+
+Sebagian perangkat memberikan sebagian keadaan terkininya hanya melalui fungsi yang tidak membaca salah satu dari empat area (bagian 5), misalnya satu byte status yang dibaca dengan Read Exception Status (FC07). `function_reads` mencantumkan pembacaan semacam itu. Ini adalah kunci tingkat atas berupa array tidak kosong:
+
+```json
+"function_reads": [
+  {
+    "name": "Controller status",
+    "function": 7,
+    "fields": [
+      {"name": "Alarm", "bit": 0},
+      {"name": "Fan speed", "bit": 1, "bits": 2, "enum": {"0": "Stopped", "1": "Low", "2": "High"}}
+    ]
+  }
+]
+```
+
+| Key | JSON type | Default | Arti |
+|---|---|---|---|
+| `name` | string tidak kosong, wajib | | Nama yang ditampilkan kepada orang |
+| `function` | bilangan bulat, wajib | | Kode fungsi, salah satu dari tabel di bawah |
+| `description` | string | | Teks bebas |
+| `fields` | array tidak kosong berisi objek bidang, wajib | | Nilai yang diambil dari jawaban |
+
+| `function` | Nama | Data permintaan | Jawaban |
+|---|---|---|---|
+| `7` | Read Exception Status | tidak ada | satu byte status |
+
+Setiap bidang adalah satu nilai dari byte status:
+
+| Key | JSON type | Default | Arti |
+|---|---|---|---|
+| `name` | string tidak kosong, wajib | | Nama yang ditampilkan kepada orang |
+| `bit` | bilangan bulat `0`–`7` | | Bit terendah dari nilai, 0 = paling tidak signifikan. Tanpa `bit`, nilainya adalah seluruh byte, dari 0 sampai 255 |
+| `bits` | bilangan bulat `1`–`8` | `1` | Lebar nilai. Memerlukan `bit`, dan `bit` + `bits` **MUST NOT** melebihi 8 |
+| `enum` | nama tabel atau tabel sebaris | | Menerjemahkan nilai menjadi label (4.1) |
+| `description` | string | | Teks bebas |
+
+- **Daftar fungsinya tertutup.** Peta adalah data yang ditulis orang lain, dan alat membacanya tanpa bertanya untuk setiap permintaan, sedangkan kode fungsi yang tidak dipahami alat bisa mengubah atau memulai ulang perangkat. Karena itu peta tidak dapat menyebut fungsi lain, baik publik maupun buatan pengguna, dan tidak dapat memberikan data permintaan. Sebuah fungsi hanya ditambahkan ke spesifikasi ini jika fungsi itu hanya membaca, dengan permintaan dan jawabannya ditetapkan di sini.
+- Alat **MUST NOT** mengirim fungsi yang tidak tercantum dalam tabel pada versi spesifikasi yang dipakainya, sekalipun pengguna mau mengonfirmasinya. Alat melewati entri itu dan membaca sisa peta.
+- Permintaan hanya berisi kode fungsi. Peta memuat paling banyak satu entri untuk setiap fungsi.
+- Nilai-nilai ini hanya dapat dibaca: bidang tidak dapat ditulis.
+- Perangkat menjawab pada unit id, bukan pada alamat register, sehingga `address_base` tidak berlaku.
+- **Tanpa nilai:** jawaban pengecualian, tidak ada jawaban, jawaban yang bukan satu byte status, atau perangkat atau gateway yang tidak mendukung fungsi itu tidak memberikan nilai. Itu bukan kesalahan pada peta, dan register dibaca seperti biasa. Modbus mendefinisikan FC07 untuk jalur serial, sehingga gateway Modbus TCP bisa menolaknya.
+- Arti setiap bit dari byte FC07 bergantung pada perangkat.
+- `function_reads` menambahkan nilai dan tidak mengubah hal lain, sehingga pembaca yang mengabaikannya berperilaku seperti sebelumnya dan tidak diperlukan versi `mbmap` baru (8).
+
 ## 5. Area dan alamat
 
 | `area` | Satuan | Baca | Tulis | `access` yang diizinkan |
@@ -510,6 +558,7 @@ Pembaca **SHOULD** melaporkan setiap masalah dengan salah satu kode di bawah dan
 | `bad-role` | error | `role` bukan `"model"`, `"firmware"`, atau `"serial"`, ditetapkan pada register yang tidak dapat dibaca, atau `"model"` atau `"serial"` dipakai lebih dari sekali |
 | `bad-identify` | error | `identify` tidak valid (§4.8): `function` bukan `17` atau `43`, `fields` kosong, atau sebuah bidang tidak memiliki `name`, memiliki `role` yang tidak dikenal atau berulang untuk `"model"` atau `"serial"`, atau melanggar aturan fungsinya (FC17: `offset` hilang atau negatif, `type` hilang atau tidak dikenal, `string` tanpa `length`, `enum` yang tidak menamai tabel atau bukan tabel yang valid, sebuah `object`; FC43: `object` hilang atau di luar 0–255, sebuah `offset`, `type`, `length`, atau `enum`) |
 | `bad-parts` | error | `parts` kosong, ditetapkan pada register yang bukan `string` dengan `length` valid, atau sebuah bagian tidak memiliki `name` atau `offset`, memiliki `offset` negatif, `type` yang tidak dikenal atau `bool`, bagian `string` tanpa `length`, bagian yang melewati blok, atau bagian yang tumpang tindih; pada register `uint16`, `uint32` atau `uint64` kondisi pertama tidak berlaku dan bagiannya adalah bit field: di sana berupa bagian tanpa `bit`, dengan `bit` negatif, dengan `bits` di bawah 1, dengan `offset`, `length` atau `type`, field yang melewati lebar register, atau field yang tumpang tindih; `enum` tanpa tabel adalah `unknown-enum` (§4.10) |
+| `bad-function-read` | error | `function_reads` tidak valid (§4.11): kosong, atau sebuah entri bukan objek, tidak punya `name`, punya `function` yang tidak ada dalam tabel §4.11 atau dipakai dua kali, punya `request`, atau tidak punya `fields`; atau sebuah bidang bukan objek, tidak punya `name`, punya `bit` di luar `0`–`7`, `bits` tanpa `bit` atau melewati 8 bit byte tersebut, atau `enum` yang tidak menyebut tabel apa pun atau bukan tabel yang valid; atau `description` bukan string |
 | `no-rows` | warning | `registers` kosong |
 | `duplicate-name` | warning | Sebuah `name` dipakai lebih dari sekali oleh register yang rentang firmware-nya tumpang tindih (§3.2) |
 | `model-list` | warning | `model` mencantumkan perangkat yang dipisahkan “ / ”; berikan nama keluarga dan cantumkan perangkat di `models` (§3.2) |
