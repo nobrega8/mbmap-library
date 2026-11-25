@@ -6,21 +6,28 @@
   "models": ["DCRG8"],
   "vendor_website": "lovatoelectric.com",
   "description": "Digital power factor controller (DCRG8 series). Values marked single/three phase depend on how the controller is wired and programmed",
-  "revision": 5,
+  "revision": 6,
   "revised": "2026-11-25",
-  "source": "Lovato Electric, \"DCRG8 Series Modbus Communication Protocol\", doc. I432IGB05_20 (2020-05-20), tables 2-9; from firmware revision 4",
+  "firmware_min": "4",
+  "source": "Lovato Electric, \"DCRG8 Series Modbus Communication Protocol\", doc. I432IGB05_20 (2020-05-20), tables 2-9, FC07 and FC17; from firmware revision 4",
+  "sources": [
+    {"title": "DCRG8 Series Modbus Communication Protocol", "version": "I432IGB05_20", "date": "2020-05-20", "url": "https://datasheet.lovatoelectric.com/DOWNLOAD/Technical/TechInstructions/30.%20REGOLATORI%20DI%20RIFASAMENTO%20E%20MODULI%20A%20TIRISTORI/I432IGB05_20.pdf", "note": "Registers (tables 2-9), FC07 and FC17", "accessed": "2026-11-25", "sha256": "86155198511d5f49da4a3723f88899b4f6424b0dfdef361fcd490a391d358e17"},
+    {"title": "DCRG8 Automatic Power Factor Controller, instructions manual", "version": "I340GB06_24", "url": "https://datasheet.lovatoelectric.com/DOWNLOAD/Technical/TechInstructions/30.%20REGOLATORI%20DI%20RIFASAMENTO%20E%20MODULI%20A%20TIRISTORI/I340GB06_24.pdf", "note": "Parameter P02.13 and operating modes", "accessed": "2026-11-25", "sha256": "72afe6c9f9abf4a57508d16c46f93e7181dad7c78e7fc1aa6b8916d95432db8a"}
+  ],
   "notes": [
     "Lovato Electric DCRG8 digital power factor controller.",
     "Addresses are as in the protocol tables; the wire address is one less.",
     "FC06 and FC16 work only on addresses above 1000H.",
     "Tested on a DCRG8, October 2026, over an RS-485 to RTU-over-TCP gateway (firmware not recorded).",
-    "A second DCRG8 was read in November 2026 over RS-485 at 9600 baud, 8N1, with the controller under load (about 387 A, 416 V line to line, single current input): 538 of 541 registers read. Checked: both measure sets (the single-phase set and the per-phase set read as zero for the unused phases, as table 2 says), power, energies, the average weekly power factor, temperatures, the counters, the limits, inputs and outputs, the alarm word with its bits (the step failure bit was set and matched the outputs), the event pointer, the clock, the harmonics and the step data. The three parameter value registers at 5004H were refused, as expected before a menu and parameter are selected. FC17 answered with the build date and time of the firmware (Feb 15 2018, 09:31:31) after 8 bytes the protocol document does not describe, and FC43 was refused (illegal function).",
+    "A second DCRG8 was read in November 2026 over RS-485 at 9600 baud, 8N1, with the controller under load (about 387 A, 416 V line to line, single current input): 538 of 541 registers read. Checked: both measure sets (the single-phase set and the per-phase set read as zero for the unused phases, as table 2 says), power, energies, the average weekly power factor, temperatures, the counters, the limits, inputs and outputs, the alarm word with its bits (the step failure bit was set and matched the outputs), the event pointer, the clock, the harmonics and the step data. The three parameter value registers at 5004H were refused, as expected before a menu and parameter are selected. FC17 answered with more bytes than the protocol document describes, among them the build date and time of the firmware (Feb 15 2018, 09:31:31) from byte 8, and FC43 was refused (illegal function).",
     "Tested on a DCRG8, firmware built Jan 29 2025, November 2026, over RS-485 at 9600 baud, 8N1: 538 of 541 registers read; writes were not tested. The three parameter value registers at 5004H were refused (exception code 0). With one current input wired, the L2 and L3 currents, the per-phase powers and cos phi read 0, but the per-phase voltages (0040H-0044H, 004CH-0050H) were not all 0: use the equivalent values. Voltage harmonics were filled in the L1-L2 set and read 0 in the L1 set.",
-    "FC17 (identify): the first byte was 48H on the firmware of Jan 29 2025; the build date starts at byte 8 and the time at byte 19. The protocol document does not describe the answer, and 48H as the DCRG8 type code comes from that one reading.",
+    "FC17 (identify): the protocol document describes 4 bytes: type (48H = DCRG8), software revision, hardware revision and parameter revision. On the firmware of Jan 29 2025 the answer was longer: those four read 48H, 15, 0 and 10, and the build date started at byte 8 and the time at byte 19.",
+    "FC07 (function_reads): the status bits are from the protocol document (bit 0 is not used) and have not been tested on a controller. The document introduces the function as the status of an automatic transfer switch, which looks copied from another product.",
     "Total cos phi (0000H, signed long, value/1000) is not in this map: its wire address is FFFFH, which a map cannot hold. Read it with FC04 from address 65535, 2 registers. A read of wire address 0 alone is refused (illegal data address).",
     "Table 2: with one voltage and one current wired, the controller returns the first measure (0000H-0010H); with three voltages and three currents, the second (0040H-0062H, 1500H-150EH). The other one reads ND.",
     "Writing a parameter, as in the manual's example (P02.01 CT primary = 200): FC06 value 2 at 5000H (menu), FC06 value 1 at 5002H (parameter), FC16 value 200 at 5004H, FC06 value 1 at 2F03H (save EEPROM), then FC06 value 4 at 2F03H (reboot). The controller does not answer the last two. To read a parameter, select the menu and parameter the same way, then read 5004H with FC04.",
-    "Cos phi setpoint (3004H) is not in the protocol document. It comes from Node-RED flows that have run for years on several DCRG8 controllers (FC04 read, FC06 write, value x 100, read back after the write). Which setpoint it changes and whether the change survives a power cycle without an EEPROM save (2F03H = 1) are not known. The documented way is the parameter access above with P02.13 (Setpoint cosphi 1, 0.50 IND to 0.50 CAP, instruction manual I340GB06_24)."
+    "Cos phi setpoint (3004H) is not in the protocol document. It comes from Node-RED flows that have run for years on several DCRG8 controllers (FC04 read, FC06 write, value x 100, read back after the write). Which setpoint it changes and whether the change survives a power cycle without an EEPROM save (2F03H = 1) are not known. The documented way is the parameter access above with P02.13 (Setpoint cosphi 1, 0.50 IND to 0.50 CAP, default 0.95 IND, instruction manual I340GB06_24).",
+    "Cos phi setpoint values above 100 are capacitive: the cos phi is (200 - raw) / 100, so 101 is 0.99 capacitive. Values above 100 have been written on a controller. The map allows writes from 80 (0.80 inductive) to 150 (0.50 capacitive, the end of the P02.13 range)."
   ],
   "protocol": "tcp+rtu",
   "unit_id": 1,
@@ -37,10 +44,26 @@
     "function": 17,
     "fields": [
       {"name": "Type", "offset": 0, "type": "uint8", "role": "model", "enum": {"0x48": "DCRG8"}},
+      {"name": "Software revision", "offset": 1, "type": "uint8", "role": "firmware"},
+      {"name": "Hardware revision", "offset": 2, "type": "uint8"},
+      {"name": "Parameter revision", "offset": 3, "type": "uint8"},
       {"name": "Firmware build date", "offset": 8, "type": "string", "length": 11},
       {"name": "Firmware build time", "offset": 19, "type": "string", "length": 8}
     ]
   },
+  "function_reads": [
+    {
+      "name": "Controller status",
+      "function": 7,
+      "description": "Operating mode and error state. The operating mode is changed at 2F00H. Not tested on a controller (see notes)",
+      "fields": [
+        {"name": "Manual mode", "bit": 1},
+        {"name": "Automatic mode", "bit": 2},
+        {"name": "User test", "bit": 3},
+        {"name": "Error", "bit": 4}
+      ]
+    }
+  ],
   "enums": {
     "step_status": {"0": "Not inserted", "1": "Inserted", "2": "Not configured", "3": "Moving"},
     "cap_ind": {"0": "Capacitive", "1": "Inductive"},
@@ -577,7 +600,7 @@
     {"name": "Event counter", "group": "Events", "area": "holding", "address": 20528, "type": "uint16", "bit": 8, "bits": 8, "access": "R", "description": "Total events stored (max 250)"},
     {"name": "Event record", "group": "Events", "area": "holding", "address": 20530, "type": "string", "length": 43, "access": "R", "description": "86 bytes: date (10), separator, time (12-19), separator, event text from byte 21. The text is in the controller's language, with one byte per accented letter (CDH for Í), which a tool that reads ASCII or UTF-8 does not show correctly"},
     {"name": "Command", "group": "Commands", "area": "holding", "address": 12272, "type": "uint16", "access": "W", "enum": "command", "description": "After Setup to default or Restore parameters, send the reboot command (2F03H = 04)", "comment": "Table 3 - commands (FC06)"},
-    {"name": "Cos phi setpoint", "group": "Commands", "area": "holding", "address": 12292, "type": "uint16", "scale": 0.01, "access": "RW", "write_min": 0.8, "write_max": 1.0, "description": "Target power factor, inductive; 0.98 is 98. Not in the protocol document (see notes); only 0.80-1.00 has been written. One controller read 101 (1.01), whose meaning is not confirmed"},
+    {"name": "Cos phi setpoint", "group": "Commands", "area": "holding", "address": 12292, "type": "uint16", "scale": 0.01, "access": "RW", "write_min": 0.8, "write_max": 1.5, "description": "Target power factor. Up to 1.00 it is inductive (0.98 is raw 98); above 1.00 it is capacitive, as 2.00 minus the value (1.01, raw 101, is 0.99 capacitive). Not in the protocol document (see notes). Values above 1.00 have also been written"},
     {"name": "Step activation", "group": "Commands", "area": "holding", "address": 12293, "type": "uint16", "access": "W", "description": "Write the number of the step to activate; ignored during its reconnection time"},
     {"name": "Step de-activation", "group": "Commands", "area": "holding", "address": 12294, "type": "uint16", "access": "W", "description": "Write the number of the step to de-activate"},
     {"name": "Clock year", "group": "Clock", "area": "holding", "address": 10480, "type": "uint16", "access": "RW", "comment": "Table 8 - real time clock"},
