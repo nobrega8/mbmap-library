@@ -55,7 +55,7 @@ Los mapas de esta biblioteca indican en `x_status` hasta qué punto se puede con
 pie showData
     title Mapas por estado
     "Verificado" : 28
-    "Oficial" : 678
+    "Oficial" : 679
     "No oficial" : 76
 ```
 <!-- status-chart:end -->
