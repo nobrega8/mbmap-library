@@ -1,0 +1,282 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "N320 series",
+  "models": [
+    "N320",
+    "N321",
+    "N322",
+    "N323"
+  ],
+  "vendor_website": "novus.com.br",
+  "description": "Temperature controllers with optional RS485 Modbus RTU: process value, setpoints, hysteresis, output and display status",
+  "revision": 1,
+  "revised": "2026-11-26",
+  "source": "Novus N320 line communication protocol 5001292 V2.0",
+  "sources": [
+    {
+      "title": "Line N320 Communication Protocol",
+      "version": "5001292 V2.0",
+      "url": "https://github.com/user-attachments/files/35246322/doc.2.pdf",
+      "note": "table 1 and its notes",
+      "accessed": "2026-11-26",
+      "sha256": "50fffb18767aec1471e538239e97ee113807eae42180263185085e4917aa0605"
+    }
+  ],
+  "notes": [
+    "Modbus RTU needs the optional RS485 interface. Functions 03 and 06; broadcast (address 0) writes only. 9600 bit/s, 8 data bits, no parity, 1 stop bit; the address is set with Addr.",
+    "Registers by model: N320 0 to 7 (0 and 1 both give the process value), N321 0 to 8, N322 0 to 12, N323 0 to 15. A read above the last register of a model returns an exception.",
+    "Setpoints, process value and hysteresis are sent multiplied by 10.",
+    "A write outside the allowed range stores the nearest limit and returns it.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Setpoint 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 0,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "Control output setpoint, limited by SPL and SPH. On the N320 it reads the process value"
+    },
+    {
+      "name": "Process value",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "OUT1 LED",
+      "group": "Status",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "OUT2 LED",
+      "group": "Status",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Decimal point shown",
+      "group": "Status",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Negative sign shown",
+      "group": "Status",
+      "area": "holding",
+      "address": 2,
+      "type": "bool",
+      "access": "R",
+      "bit": 12
+    },
+    {
+      "name": "Input underflow",
+      "group": "Status",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Input overflow",
+      "group": "Status",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Output 1 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Defrost",
+      "group": "Status",
+      "area": "holding",
+      "address": 3,
+      "type": "bool",
+      "access": "R",
+      "bit": 13
+    },
+    {
+      "name": "Displayed value",
+      "group": "Device",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "R",
+      "description": "Value of the parameter on the display"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Device",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "role": "firmware",
+      "description": "High byte"
+    },
+    {
+      "name": "Displayed parameter number",
+      "group": "Device",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "Serial number (high)",
+      "group": "Device",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "description": "First 3 digits"
+    },
+    {
+      "name": "Serial number (low)",
+      "group": "Device",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "description": "Last 3 digits"
+    },
+    {
+      "name": "Hysteresis 1",
+      "group": "Control",
+      "area": "holding",
+      "address": 8,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0.1,
+      "write_max": 50,
+      "description": "N321, N322 and N323"
+    },
+    {
+      "name": "Output 2 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "access": "R",
+      "bit": 0,
+      "description": "N322 and N323"
+    },
+    {
+      "name": "Setpoint 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "N322 and N323"
+    },
+    {
+      "name": "Hysteresis 2",
+      "group": "Control",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0.1,
+      "write_max": 50,
+      "description": "N322 and N323"
+    },
+    {
+      "name": "Sensor offset",
+      "group": "Input",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": -10,
+      "write_max": 10,
+      "description": "N322 and N323"
+    },
+    {
+      "name": "Output 3 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 13,
+      "type": "bool",
+      "access": "R",
+      "bit": 0,
+      "description": "N323"
+    },
+    {
+      "name": "Setpoint 3",
+      "group": "Control",
+      "area": "holding",
+      "address": 14,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "description": "N323"
+    },
+    {
+      "name": "Hysteresis 3",
+      "group": "Control",
+      "area": "holding",
+      "address": 15,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0.1,
+      "write_max": 50,
+      "description": "N323"
+    }
+  ]
+}

@@ -1,0 +1,1219 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "N1200",
+  "models": [
+    "N1200"
+  ],
+  "vendor_website": "novus.com.br",
+  "description": "Universal PID process controller with ramp and soak, four alarms and optional RS485 Modbus RTU: PV, setpoints, output power, status, PID, input, alarm, I/O and serial settings",
+  "revision": 1,
+  "revised": "2026-11-26",
+  "firmware": "Communication protocol V1.0x",
+  "source": "Novus N1200 communication protocol V10x",
+  "sources": [
+    {
+      "title": "N1200 Communication Protocol",
+      "version": "V10x",
+      "url": "https://github.com/user-attachments/files/35246288/doc.1.pdf",
+      "note": "register table and tables 2 and 3",
+      "accessed": "2026-11-26",
+      "sha256": "9f9c83f4d2c655756c847faf37c073f82c6ae4e69654859a4dfb0d37d40708b1"
+    }
+  ],
+  "notes": [
+    "Modbus RTU needs the optional RS485 interface. Functions 03, 05, 06 and 16; writes with address 0 are broadcast.",
+    "8 data bits, 1 stop bit, no, even or odd parity. The document gives no factory address, baud rate or parity: check the controller; 9600 bit/s without parity is assumed here.",
+    "Every register is a signed 16-bit value. Registers 12 and up can be read and written; most registers below 12 are read-only.",
+    "Process value, setpoints, limits, offset and alarm setpoints are integers in display units with the decimals of register 30; a temperature is read multiplied by 10.",
+    "A write outside the allowed range is not refused: the controller stores the nearest limit and returns it.",
+    "The document lists speeds up to 115200 bit/s but gives codes 0 to 4 (1200 to 19200) for register 45.",
+    "The ramp and soak programs (registers 100 to 699: events, tolerances, links, times and setpoints of programs 1 to 20) and the calibration registers are not listed.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "no_yes": {
+      "0": "No",
+      "1": "Yes"
+    },
+    "alarm_function_n1200": {
+      "0": "Off",
+      "1": "Input error",
+      "2": "Ramp and soak event",
+      "3": "Sensor failure (rFAi)",
+      "4": "Low",
+      "5": "High",
+      "6": "Differential low",
+      "7": "Differential high",
+      "8": "Differential"
+    },
+    "baud_rate_n1200": {
+      "0": "1200",
+      "1": "2400",
+      "2": "4800",
+      "3": "9600",
+      "4": "19200"
+    }
+  },
+  "registers": [
+    {
+      "name": "Active setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 0,
+      "type": "int16",
+      "access": "RW",
+      "description": "Read: the setpoint in use (main screen, ramp and soak or remote). Write: the main screen setpoint. In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Process value",
+      "group": "Control",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "access": "R",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Output power",
+      "group": "Control",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "R",
+      "description": "Active output (manual or automatic)"
+    },
+    {
+      "name": "Displayed value",
+      "group": "Control",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "access": "RW",
+      "description": "Value of the screen being shown; range depends on the screen"
+    },
+    {
+      "name": "Screen number",
+      "group": "Control",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "R",
+      "description": "High byte: screen cycle, low byte: screen"
+    },
+    {
+      "name": "Setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 25,
+      "type": "int16",
+      "access": "RW",
+      "description": "SV, the main screen setpoint. In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Control mode",
+      "group": "Control",
+      "area": "holding",
+      "address": 46,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Manual",
+        "1": "Automatic"
+      },
+      "write_min": 0,
+      "write_max": 1,
+      "description": "avto"
+    },
+    {
+      "name": "Control enabled",
+      "group": "Control",
+      "area": "holding",
+      "address": 47,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "no_yes",
+      "write_min": 0,
+      "write_max": 1,
+      "description": "rvn (run)"
+    },
+    {
+      "name": "Control action",
+      "group": "Control",
+      "area": "holding",
+      "address": 48,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Direct",
+        "1": "Reverse"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Auto-tune",
+      "group": "Control",
+      "area": "holding",
+      "address": 49,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "no_yes",
+      "write_min": 0,
+      "write_max": 1,
+      "description": "atvn"
+    },
+    {
+      "name": "Remote key action",
+      "group": "Control",
+      "area": "holding",
+      "address": 54,
+      "type": "uint16",
+      "access": "W",
+      "enum": {
+        "1": "P key",
+        "2": "Up key",
+        "4": "Down key",
+        "8": "Back key",
+        "9": "P and back keys"
+      }
+    },
+    {
+      "name": "Segment time left",
+      "group": "Control",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "access": "R",
+      "description": "Remaining time of the ramp and soak segment"
+    },
+    {
+      "name": "Force remote setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 98,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "enum": {
+        "0": "Follows the I/O configuration",
+        "1": "Forced"
+      }
+    },
+    {
+      "name": "Alarm 1 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 2 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 3 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 4 active",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "I/O 5 input active",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "I/O 3 input active",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "I/O 4 input active",
+      "group": "Status",
+      "area": "holding",
+      "address": 6,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Automatic mode",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Running",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "Reverse action",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Auto-tune running",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 1 initial block on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 2 initial block on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 3 initial block on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 7,
+      "access": "R"
+    },
+    {
+      "name": "Alarm 4 initial block on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 8,
+      "access": "R"
+    },
+    {
+      "name": "Unit is °F",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 9,
+      "access": "R",
+      "enum": {
+        "0": "°C",
+        "1": "°F"
+      }
+    },
+    {
+      "name": "Output 1 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 11,
+      "access": "R"
+    },
+    {
+      "name": "Output 2 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 12,
+      "access": "R"
+    },
+    {
+      "name": "Output 3 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 13,
+      "access": "R"
+    },
+    {
+      "name": "Output 4 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 14,
+      "access": "R"
+    },
+    {
+      "name": "Output 5 on",
+      "group": "Status",
+      "area": "holding",
+      "address": 9,
+      "type": "bool",
+      "bit": 15,
+      "access": "R"
+    },
+    {
+      "name": "PV conversion too low",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "bool",
+      "bit": 0,
+      "access": "R"
+    },
+    {
+      "name": "Negative conversion after calibration",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "bool",
+      "bit": 1,
+      "access": "R"
+    },
+    {
+      "name": "PV conversion too high",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "bool",
+      "bit": 2,
+      "access": "R"
+    },
+    {
+      "name": "Linearization limit exceeded",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "bool",
+      "bit": 3,
+      "access": "R"
+    },
+    {
+      "name": "Pt100 cable resistance too high",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "bool",
+      "bit": 4,
+      "access": "R"
+    },
+    {
+      "name": "Auto zero out of limits",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "bool",
+      "bit": 5,
+      "access": "R"
+    },
+    {
+      "name": "Auto span out of limits",
+      "group": "Status",
+      "area": "holding",
+      "address": 10,
+      "type": "bool",
+      "bit": 6,
+      "access": "R"
+    },
+    {
+      "name": "Output 1 (I/O1)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 1 in the manual. Can be written only when I/O1 function is Off"
+    },
+    {
+      "name": "Output 2 (I/O2)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 2 in the manual. Can be written only when I/O2 function is Off"
+    },
+    {
+      "name": "Output 3 (I/O3)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 2,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 3 in the manual. Can be written only when I/O3 function is Off"
+    },
+    {
+      "name": "Output 4 (I/O4)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 3,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 4 in the manual. Can be written only when I/O4 function is Off"
+    },
+    {
+      "name": "Output 5 (I/O5)",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 4,
+      "type": "bool",
+      "access": "RW",
+      "description": "Coil 5 in the manual. Can be written only when I/O5 function is Off"
+    },
+    {
+      "name": "Retransmission low limit",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 79,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Retransmission high limit",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 80,
+      "type": "int16",
+      "access": "RW"
+    },
+    {
+      "name": "Integral rate",
+      "group": "PID",
+      "area": "holding",
+      "address": 11,
+      "type": "uint16",
+      "scale": 0.01,
+      "unit": "rep/min",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 99.99
+    },
+    {
+      "name": "Derivative time",
+      "group": "PID",
+      "area": "holding",
+      "address": 12,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 300,
+      "scale": 0.1
+    },
+    {
+      "name": "Proportional band",
+      "group": "PID",
+      "area": "holding",
+      "address": 13,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 500,
+      "description": "0 = On/Off control"
+    },
+    {
+      "name": "PWM cycle time",
+      "group": "PID",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0.5,
+      "write_max": 100
+    },
+    {
+      "name": "On/off hysteresis",
+      "group": "PID",
+      "area": "holding",
+      "address": 17,
+      "type": "int16",
+      "access": "RW",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Output low limit",
+      "group": "PID",
+      "area": "holding",
+      "address": 19,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 100
+    },
+    {
+      "name": "Output high limit",
+      "group": "PID",
+      "area": "holding",
+      "address": 20,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "%",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 100
+    },
+    {
+      "name": "Bias",
+      "group": "PID",
+      "area": "holding",
+      "address": 68,
+      "type": "int16",
+      "unit": "%",
+      "access": "RW",
+      "write_min": -100,
+      "write_max": 100
+    },
+    {
+      "name": "Soft start time",
+      "group": "PID",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 9999
+    },
+    {
+      "name": "Input type",
+      "group": "Input",
+      "area": "holding",
+      "address": 43,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Input type code; see the operation manual",
+      "write_min": 0,
+      "write_max": 22
+    },
+    {
+      "name": "Decimal point position",
+      "group": "Input",
+      "area": "holding",
+      "address": 30,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "3 decimals",
+        "1": "2 decimals",
+        "2": "1 decimal",
+        "3": "No decimals"
+      },
+      "write_min": 0,
+      "write_max": 3,
+      "description": "dppo"
+    },
+    {
+      "name": "Temperature unit",
+      "group": "Input",
+      "area": "holding",
+      "address": 67,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "°C",
+        "1": "°F"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "PV offset",
+      "group": "Input",
+      "area": "holding",
+      "address": 29,
+      "type": "int16",
+      "access": "RW",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Setpoint low limit",
+      "group": "Input",
+      "area": "holding",
+      "address": 26,
+      "type": "int16",
+      "access": "RW",
+      "description": "spll. In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Setpoint high limit",
+      "group": "Input",
+      "area": "holding",
+      "address": 27,
+      "type": "int16",
+      "access": "RW",
+      "description": "spkl. In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Remote setpoint low limit",
+      "group": "Input",
+      "area": "holding",
+      "address": 55,
+      "type": "int16",
+      "access": "RW",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Remote setpoint high limit",
+      "group": "Input",
+      "area": "holding",
+      "address": 56,
+      "type": "int16",
+      "access": "RW",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Remote setpoint input",
+      "group": "Input",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3,
+      "description": "Input type selected for the remote setpoint"
+    },
+    {
+      "name": "Mains frequency",
+      "group": "Input",
+      "area": "holding",
+      "address": 16,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "enum": {
+        "0": "60 Hz",
+        "1": "50 Hz"
+      }
+    },
+    {
+      "name": "PV filter",
+      "group": "Input",
+      "area": "holding",
+      "address": 18,
+      "type": "int16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 20
+    },
+    {
+      "name": "Square root",
+      "group": "Input",
+      "area": "holding",
+      "address": 74,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "enum": {
+        "0": "Disabled",
+        "1": "Enabled"
+      }
+    },
+    {
+      "name": "Alarm 1 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 31,
+      "type": "int16",
+      "access": "RW",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Alarm 1 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 35,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_function_n1200",
+      "write_min": 0,
+      "write_max": 8
+    },
+    {
+      "name": "Alarm 1 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 39,
+      "type": "int16",
+      "access": "RW",
+      "description": "The manual gives 0 to 9999 (0.00 to 99.99 %)"
+    },
+    {
+      "name": "Alarm 1 initial block",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 50,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "no_yes",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Alarm 2 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 32,
+      "type": "int16",
+      "access": "RW",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Alarm 2 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 36,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_function_n1200",
+      "write_min": 0,
+      "write_max": 8
+    },
+    {
+      "name": "Alarm 2 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 40,
+      "type": "int16",
+      "access": "RW",
+      "description": "The manual gives 0 to 9999 (0.00 to 99.99 %)"
+    },
+    {
+      "name": "Alarm 2 initial block",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 51,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "no_yes",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Alarm 3 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 33,
+      "type": "int16",
+      "access": "RW",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Alarm 3 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 37,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_function_n1200",
+      "write_min": 0,
+      "write_max": 8
+    },
+    {
+      "name": "Alarm 3 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 41,
+      "type": "int16",
+      "access": "RW",
+      "description": "The manual gives 0 to 9999 (0.00 to 99.99 %)"
+    },
+    {
+      "name": "Alarm 3 initial block",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 52,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "no_yes",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Alarm 4 setpoint",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 34,
+      "type": "int16",
+      "access": "RW",
+      "description": "In display units, with the decimals of register 30 (dppo)"
+    },
+    {
+      "name": "Alarm 4 function",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 38,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "alarm_function_n1200",
+      "write_min": 0,
+      "write_max": 8
+    },
+    {
+      "name": "Alarm 4 hysteresis",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 42,
+      "type": "int16",
+      "access": "RW",
+      "description": "The manual gives 0 to 9999 (0.00 to 99.99 %)"
+    },
+    {
+      "name": "Alarm 4 initial block",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 53,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "no_yes",
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Alarm 1 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 62,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 6500
+    },
+    {
+      "name": "Alarm 1 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 63,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 6500
+    },
+    {
+      "name": "Alarm 2 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 6500
+    },
+    {
+      "name": "Alarm 2 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 65,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 6500
+    },
+    {
+      "name": "Flash display on alarm",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 81,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 15,
+      "description": "Alarm mask; see the operation manual"
+    },
+    {
+      "name": "Alarm 3 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 82,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 6500
+    },
+    {
+      "name": "Alarm 3 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 83,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 6500
+    },
+    {
+      "name": "Alarm 4 time 1",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 84,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 6500
+    },
+    {
+      "name": "Alarm 4 time 2",
+      "group": "Alarms",
+      "area": "holding",
+      "address": 85,
+      "type": "uint16",
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 6500
+    },
+    {
+      "name": "I/O 1 function",
+      "group": "I/O",
+      "area": "holding",
+      "address": 57,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 5,
+      "description": "Function code; see the operation manual"
+    },
+    {
+      "name": "I/O 2 function",
+      "group": "I/O",
+      "area": "holding",
+      "address": 58,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 5,
+      "description": "Function code; see the operation manual"
+    },
+    {
+      "name": "I/O 3 function",
+      "group": "I/O",
+      "area": "holding",
+      "address": 59,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 10,
+      "description": "Function code; see the operation manual"
+    },
+    {
+      "name": "I/O 4 function",
+      "group": "I/O",
+      "area": "holding",
+      "address": 60,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 10,
+      "description": "Function code; see the operation manual"
+    },
+    {
+      "name": "I/O 5 function",
+      "group": "I/O",
+      "area": "holding",
+      "address": 61,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 16,
+      "description": "Function code; see the operation manual"
+    },
+    {
+      "name": "Time base",
+      "group": "Ramp and soak",
+      "area": "holding",
+      "address": 14,
+      "type": "uint16",
+      "access": "RW",
+      "enum": {
+        "0": "Seconds",
+        "1": "Minutes"
+      },
+      "write_min": 0,
+      "write_max": 1
+    },
+    {
+      "name": "Running segment",
+      "group": "Ramp and soak",
+      "area": "holding",
+      "address": 70,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Program shown",
+      "group": "Ramp and soak",
+      "area": "holding",
+      "address": 71,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 20,
+      "description": "Program being viewed or edited"
+    },
+    {
+      "name": "Program running",
+      "group": "Ramp and soak",
+      "area": "holding",
+      "address": 72,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 7
+    },
+    {
+      "name": "Modbus address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 44,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 247
+    },
+    {
+      "name": "Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 45,
+      "type": "uint16",
+      "access": "RW",
+      "enum": "baud_rate_n1200",
+      "write_min": 0,
+      "write_max": 4
+    },
+    {
+      "name": "Parity",
+      "group": "Communication",
+      "area": "holding",
+      "address": 89,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 2,
+      "enum": {
+        "0": "None",
+        "1": "Even",
+        "2": "Odd"
+      }
+    },
+    {
+      "name": "Software version",
+      "group": "Identity",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R",
+      "role": "firmware",
+      "description": "100 is V1.00"
+    },
+    {
+      "name": "Equipment ID",
+      "group": "Identity",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "R",
+      "role": "model",
+      "enum": {
+        "48": "N1200"
+      },
+      "description": "Other values are special versions",
+      "reference": 48
+    },
+    {
+      "name": "Serial number (first 4 digits)",
+      "group": "Identity",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Serial number (last 4 digits)",
+      "group": "Identity",
+      "area": "holding",
+      "address": 24,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Protection level",
+      "group": "Device",
+      "area": "holding",
+      "address": 88,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 7
+    }
+  ]
+}

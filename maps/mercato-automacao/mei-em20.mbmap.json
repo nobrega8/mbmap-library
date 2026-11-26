@@ -1,0 +1,2218 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Mercato Automação",
+  "model": "MEI-EM20",
+  "models": [
+    "MEI-EM20"
+  ],
+  "vendor_website": "mercatoautomacao.com.br",
+  "description": "Multifunction energy meter: per-phase values, four-quadrant energy, pulse, temperature and analog inputs, digital and analog outputs, Modbus RTU, TCP and UDP",
+  "revision": 1,
+  "revised": "2026-11-26",
+  "source": "Mercato MEI-EM20 - Integrator manual",
+  "sources": [
+    {
+      "title": "MEI-EM20 - Integrator manual",
+      "url": "https://cdn.shopify.com/s/files/1/0486/4104/8742/files/Manual_Integrador_-_MEI-EM20.pdf",
+      "note": "Modbus register table",
+      "accessed": "2026-11-26",
+      "sha256": "cd9322c6507035aed652591693df46a3c687c495f583abe58c3b033214137a6f"
+    }
+  ],
+  "notes": [
+    "Functions 03 and 04 read the same registers; 06 and 16 write; 43 reads the device identification.",
+    "Modbus RTU is enabled in the settings menu, with 8 data bits, 1 stop bit, no parity and a selectable speed; the manual gives no factory speed or address (9600 bit/s and address 1 assumed). Address 254 is answered by every meter.",
+    "Modbus TCP and UDP use port 502 and ignore the unit identifier; at most 2 TCP connections.",
+    "Multi-register values have the high word first.",
+    "Registers 20000 to 29999 repeat the float registers as 16-bit integers multiplied by 10 (add 20000 to the address); they are not listed.",
+    "The alarm word is at registers 100 and 101; the bits listed are all in register 101.",
+    "Days of a schedule: bit 7 is Sunday down to bit 1 Saturday, bit 0 holidays.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "off_on": {
+      "0": "Off",
+      "1": "On"
+    }
+  },
+  "registers": [
+    {
+      "name": "Voltage A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage C-A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage A-B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage B-C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 10,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 12,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 16,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 26,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 28,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 30,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Apparent power C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 34,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Power factor A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 38,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle C-A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 42,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle A-B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 44,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle B-C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 46,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Total active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 48,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 50,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total apparent power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 52,
+      "type": "float32",
+      "unit": "kVA",
+      "access": "R"
+    },
+    {
+      "name": "Total power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 54,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency (phase A)",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 56,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "NTC 1 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "NTC 2 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "NTC 3 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "NTC 4 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "NTC 5 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Analog input failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Invalid date and time",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Calibration error",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Imported active energy",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 300,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Exported active energy",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 302,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Net active energy",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 304,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy Q1",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 306,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy Q2",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 308,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy Q3",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 310,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy Q4",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 312,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 1",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 314,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 2",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 316,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 3",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 318,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 4",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 320,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 5",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 322,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Imported active energy (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 400,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Exported active energy (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 402,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Net active energy (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 404,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy Q1 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 406,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy Q2 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 408,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy Q3 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 410,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy Q4 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 412,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 1 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 414,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 2 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 416,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 3 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 418,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 4 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 420,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 5 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 422,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Clear energy accumulators",
+      "group": "Commands",
+      "area": "holding",
+      "address": 450,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 1"
+    },
+    {
+      "name": "Clear pulse input accumulators",
+      "group": "Commands",
+      "area": "holding",
+      "address": 451,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 1"
+    },
+    {
+      "name": "Restart minimum and maximum registers",
+      "group": "Commands",
+      "area": "holding",
+      "address": 452,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 1"
+    },
+    {
+      "name": "Clock day",
+      "group": "Clock",
+      "area": "holding",
+      "address": 500,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 501,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 502,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 503,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock minute",
+      "group": "Clock",
+      "area": "holding",
+      "address": 504,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock second",
+      "group": "Clock",
+      "area": "holding",
+      "address": 505,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Set clock day",
+      "group": "Clock",
+      "area": "holding",
+      "address": 600,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Set clock month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 601,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Set clock year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 602,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Set clock hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 603,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Set clock minute",
+      "group": "Clock",
+      "area": "holding",
+      "address": 604,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Set clock second",
+      "group": "Clock",
+      "area": "holding",
+      "address": 605,
+      "type": "uint16",
+      "access": "W"
+    },
+    {
+      "name": "Apply clock setting",
+      "group": "Clock",
+      "area": "holding",
+      "address": 606,
+      "type": "uint16",
+      "access": "W",
+      "description": "Write 12345 to apply registers 600 to 605"
+    },
+    {
+      "name": "Modbus schedule 1 output",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1000,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Modbus schedule 2 output",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1001,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Modbus schedule 3 output",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1002,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Modbus schedule 4 output",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1003,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Modbus schedule 1 period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1100,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 1 period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1101,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 1 period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1102,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 1 period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1103,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 1 period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1104,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 1 period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1105,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 1 period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1106,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 1 period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1107,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 1 period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1108,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 1 period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1109,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 1 period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1110,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 1 period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1111,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 1 period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1112,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 1 period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1113,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 1 period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1114,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 1 period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1115,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 1 period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1116,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 1 period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1117,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 1 period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1118,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 1 period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1119,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 2 period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1200,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 2 period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1201,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 2 period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1202,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 2 period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1203,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 2 period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1204,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 2 period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1205,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 2 period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1206,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 2 period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1207,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 2 period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1208,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 2 period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1209,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 2 period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1210,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 2 period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1211,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 2 period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1212,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 2 period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1213,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 2 period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1214,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 2 period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1215,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 2 period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1216,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 2 period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1217,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 2 period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1218,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 2 period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1219,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 3 period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1300,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 3 period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1301,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 3 period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1302,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 3 period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1303,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 3 period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1304,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 3 period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1305,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 3 period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1306,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 3 period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1307,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 3 period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1308,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 3 period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1309,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 3 period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1310,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 3 period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1311,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 3 period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1312,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 3 period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1313,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 3 period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1314,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 3 period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1315,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 3 period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1316,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 3 period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1317,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 3 period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1318,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 3 period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1319,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 4 period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1400,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 4 period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1401,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 4 period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1402,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 4 period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1403,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 4 period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1404,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 4 period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1405,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 4 period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1406,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 4 period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1407,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 4 period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1408,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 4 period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1409,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 4 period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1410,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 4 period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1411,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 4 period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1412,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 4 period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1413,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 4 period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1414,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 4 period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1415,
+      "type": "uint16",
+      "access": "W",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Modbus schedule 4 period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1416,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 4 period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1417,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Modbus schedule 4 period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1418,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Modbus schedule 4 period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1419,
+      "type": "uint16",
+      "access": "W",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "NTC 1 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2000,
+      "type": "float32",
+      "access": "R",
+      "description": "°C or °F, as configured"
+    },
+    {
+      "name": "NTC 2 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2002,
+      "type": "float32",
+      "access": "R",
+      "description": "°C or °F, as configured"
+    },
+    {
+      "name": "NTC 3 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2004,
+      "type": "float32",
+      "access": "R",
+      "description": "°C or °F, as configured"
+    },
+    {
+      "name": "NTC 4 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2006,
+      "type": "float32",
+      "access": "R",
+      "description": "°C or °F, as configured"
+    },
+    {
+      "name": "NTC 5 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2008,
+      "type": "float32",
+      "access": "R",
+      "description": "°C or °F, as configured"
+    },
+    {
+      "name": "Analog input value",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2010,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Digital input 1",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2012,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital input 2",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2013,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital input 3",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2014,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital input 4",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2015,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital input 5",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 2016,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital output 1",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 2100,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "enum": "off_on",
+      "description": "Can be written when the output has no function assigned"
+    },
+    {
+      "name": "Digital output 2",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 2101,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "enum": "off_on",
+      "description": "Can be written when the output has no function assigned"
+    },
+    {
+      "name": "Analog output value",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 2104,
+      "type": "float32",
+      "access": "RW"
+    },
+    {
+      "name": "Minimum voltage A",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3000,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Maximum voltage A",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3002,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Minimum voltage B",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3004,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Maximum voltage B",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3006,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Minimum voltage C",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3008,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Maximum voltage C",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3010,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Minimum voltage C-A",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3012,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Maximum voltage C-A",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3014,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Minimum voltage A-B",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3016,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Maximum voltage A-B",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3018,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Minimum voltage B-C",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3020,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Maximum voltage B-C",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3022,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Minimum current A",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3024,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Maximum current A",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3026,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Minimum current B",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3028,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Maximum current B",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3030,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Minimum current C",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3032,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Maximum current C",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3034,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Minimum total active power",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3036,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Maximum total active power",
+      "group": "Minimum and maximum",
+      "area": "holding",
+      "address": 3038,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Holiday 1 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 1 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4001,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 2 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4002,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 2 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4003,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 3 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4004,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 3 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4005,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 4 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4006,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 4 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4007,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 5 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4008,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 5 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4009,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 6 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4010,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 6 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4011,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 7 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4012,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 7 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4013,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 8 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4014,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 8 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4015,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 9 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4016,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 9 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4017,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 10 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4018,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 10 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4019,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 11 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4020,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 11 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4021,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 12 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4022,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 12 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4023,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 13 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4024,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 13 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4025,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 14 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4026,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 14 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4027,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 15 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4028,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 15 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4029,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 16 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4030,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 16 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4031,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 17 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4032,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 17 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4033,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 18 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4034,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 18 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4035,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 19 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4036,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 19 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4037,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 20 day",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4038,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Holiday 20 month",
+      "group": "Holidays",
+      "area": "holding",
+      "address": 4039,
+      "type": "uint16",
+      "access": "RW",
+      "description": "0 disables"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Device",
+      "area": "holding",
+      "address": 65001,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R",
+      "role": "firmware"
+    }
+  ]
+}

@@ -1,0 +1,255 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "DigiRail-2R",
+  "models": [
+    "DigiRail-2R"
+  ],
+  "vendor_website": "novus.com.br",
+  "description": "Two-relay digital output module with Modbus RTU over RS485: output states, timed activation, tags and serial settings",
+  "revision": 1,
+  "revised": "2026-11-26",
+  "source": "Novus DigiRail-2R communication manual",
+  "sources": [
+    {
+      "title": "DigiRail-2R Digital Outputs Module - Communication Manual",
+      "url": "https://cdn.shopify.com/s/files/1/2586/3536/files/communication_manual_digirail-2r_english.pdf",
+      "note": "coil tables and holding register table",
+      "accessed": "2026-11-26",
+      "sha256": "50d526578484594b8e02ef2710ebd21e2d679c30d84f24cdc662dc8497956f0f"
+    }
+  ],
+  "notes": [
+    "Factory defaults: address 247, 1200 bit/s, even parity, 1 stop bit. Pressing the RCom button puts the module in diagnostic mode for one minute with address 246, 1200 bit/s, even parity.",
+    "Functions 01, 03, 05, 06 and 15.",
+    "The manual lists no write-multiple function for holding registers, so each word is written with function 06; a tool that writes the activation times or tags with function 16 may be refused.",
+    "The manual does not give the character order of the tags; this map assumes the first character is in the high byte.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 247,
+  "baudrate": 1200,
+  "databits": 8,
+  "parity": "E",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "baud_rate": {
+      "0": "1200",
+      "1": "2400",
+      "2": "4800",
+      "3": "9600",
+      "4": "19200",
+      "5": "38400",
+      "6": "57600",
+      "7": "115200"
+    },
+    "parity": {
+      "0": "None",
+      "1": "Odd",
+      "2": "Even"
+    },
+    "off_on": {
+      "0": "Off",
+      "1": "On"
+    }
+  },
+  "registers": [
+    {
+      "name": "Serial number",
+      "group": "Device",
+      "area": "holding",
+      "address": 0,
+      "type": "uint32",
+      "access": "R",
+      "role": "serial"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 7,
+      "enum": "baud_rate"
+    },
+    {
+      "name": "Modbus address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 3,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 247
+    },
+    {
+      "name": "Parity",
+      "group": "Communication",
+      "area": "holding",
+      "address": 4,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 2,
+      "enum": "parity"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Device",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "scale": 0.01,
+      "access": "R",
+      "role": "firmware"
+    },
+    {
+      "name": "Diagnostic state timer",
+      "group": "Device",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "scale": 0.1,
+      "unit": "s",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 60,
+      "description": "Used by the DigiConfig software"
+    },
+    {
+      "name": "Output state word",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3,
+      "description": "Bit 0: output 1; bit 1: output 2"
+    },
+    {
+      "name": "Output 1 state",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 8,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "enum": "off_on"
+    },
+    {
+      "name": "Output 2 state",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 9,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 1,
+      "enum": "off_on"
+    },
+    {
+      "name": "Output 1 activation time",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 12,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "RW",
+      "description": "Time the relay stays on after an on command; 0 keeps it on until an off command"
+    },
+    {
+      "name": "Output 2 activation time",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 14,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "RW",
+      "description": "Time the relay stays on after an on command; 0 keeps it on until an off command"
+    },
+    {
+      "name": "Output 1 remaining time",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 20,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Output 2 remaining time",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 22,
+      "type": "uint32",
+      "scale": 0.01,
+      "unit": "s",
+      "access": "R"
+    },
+    {
+      "name": "Device tag",
+      "group": "Device",
+      "area": "holding",
+      "address": 34,
+      "type": "string",
+      "length": 5,
+      "access": "RW"
+    },
+    {
+      "name": "Output 1 tag",
+      "group": "Device",
+      "area": "holding",
+      "address": 39,
+      "type": "string",
+      "length": 5,
+      "access": "RW"
+    },
+    {
+      "name": "Output 2 tag",
+      "group": "Device",
+      "area": "holding",
+      "address": 44,
+      "type": "string",
+      "length": 5,
+      "access": "RW"
+    },
+    {
+      "name": "Model code",
+      "group": "Device",
+      "area": "holding",
+      "address": 62,
+      "type": "uint16",
+      "access": "R",
+      "reference": 3,
+      "description": "3 for the DigiRail-2R"
+    },
+    {
+      "name": "Digital output 1",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 0,
+      "type": "bool",
+      "access": "RW"
+    },
+    {
+      "name": "Digital output 2",
+      "group": "Outputs",
+      "area": "coil",
+      "address": 1,
+      "type": "bool",
+      "access": "RW"
+    }
+  ]
+}

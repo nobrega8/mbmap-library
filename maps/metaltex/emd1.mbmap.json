@@ -1,0 +1,160 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Metaltex",
+  "model": "EMD1 and EMD1M",
+  "models": [
+    "EMD1",
+    "EMD1M",
+    "EMD1-100A-M"
+  ],
+  "vendor_website": "metaltex.com.br",
+  "description": "Single-phase DIN rail energy meter with RS485 Modbus RTU: voltage, current, power, power factor, frequency, energy and serial settings",
+  "revision": 1,
+  "revised": "2026-11-26",
+  "source": "Metaltex EMD1 / EMD1M manual, Modbus RTU communication protocol",
+  "sources": [
+    {
+      "title": "Medidor de energia monofásico EMD1 / EMD1M - manual",
+      "url": "https://arquivo.metaltex.com.br/produtos/pdf/manual%20emd1_emd1m.pdf",
+      "note": "page 3, data and parameter registers",
+      "accessed": "2026-11-26",
+      "sha256": "844f8e3307596de61ce0aefff549ba701385fc37b447a1df98b968b4f83151d0"
+    }
+  ],
+  "notes": [
+    "Modbus RTU is on terminals 23 and 24 of the model with communication (EMD1-100A-M). Factory settings: 9600 bit/s, 8 data bits, even parity, 1 stop bit, address 1.",
+    "Measurements are input registers (function 04); settings are holding registers (functions 03 and 16). Restart the meter after changing a setting.",
+    "All values are IEEE 754 floats; the manual does not give the word order and the high word first is assumed.",
+    "The units of the power and energy registers are inconsistent in the manual: compare them with the display.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "E",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "registers": [
+    {
+      "name": "Voltage",
+      "group": "Measurements",
+      "area": "input",
+      "address": 0,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current",
+      "group": "Measurements",
+      "area": "input",
+      "address": 8,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 18,
+      "type": "float32",
+      "access": "R",
+      "description": "The manual prints the unit as kWh"
+    },
+    {
+      "name": "Reactive power",
+      "group": "Measurements",
+      "area": "input",
+      "address": 26,
+      "type": "float32",
+      "unit": "var",
+      "access": "R"
+    },
+    {
+      "name": "Power factor",
+      "group": "Measurements",
+      "area": "input",
+      "address": 42,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "input",
+      "address": 54,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "Total active energy",
+      "group": "Energy",
+      "area": "input",
+      "address": 256,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R",
+      "description": "Called total active power in the manual, with the unit kWh"
+    },
+    {
+      "name": "Total reactive energy",
+      "group": "Energy",
+      "area": "input",
+      "address": 1024,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R",
+      "description": "Called total reactive power in the manual, with the unit kvah"
+    },
+    {
+      "name": "Baud rate",
+      "group": "Communication",
+      "area": "holding",
+      "address": 0,
+      "type": "float32",
+      "access": "RW",
+      "write_min": 1200,
+      "write_max": 9600,
+      "description": "1200, 2400, 4800 or 9600"
+    },
+    {
+      "name": "Parity",
+      "group": "Communication",
+      "area": "holding",
+      "address": 2,
+      "type": "float32",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 2,
+      "description": "0 even, 1 odd, 2 none"
+    },
+    {
+      "name": "Modbus address",
+      "group": "Communication",
+      "area": "holding",
+      "address": 8,
+      "type": "float32",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 247
+    },
+    {
+      "name": "Relay control",
+      "group": "Communication",
+      "area": "holding",
+      "address": 16,
+      "type": "float32",
+      "access": "RW",
+      "write_min": 1,
+      "write_max": 2,
+      "description": "1: switching enabled, 2: no switching"
+    }
+  ]
+}

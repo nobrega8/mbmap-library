@@ -1,0 +1,396 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Novus",
+  "model": "N321S and N322S",
+  "models": [
+    "N321S",
+    "N322S"
+  ],
+  "vendor_website": "novus.com.br",
+  "description": "Differential temperature controllers for solar heating with RS485 Modbus RTU: temperatures, pump differentials, protection setpoints and status",
+  "revision": 1,
+  "revised": "2026-11-26",
+  "firmware": "Registers table for software V1.9x",
+  "source": "Novus N321S / N322S registers table for serial communication V1.9x C",
+  "sources": [
+    {
+      "title": "Line N321S / N322S - Registers Table for Serial Communication",
+      "version": "V1.9x C",
+      "url": "https://github.com/user-attachments/files/35246363/n321S-N322S.pdf",
+      "note": "table 01",
+      "accessed": "2026-11-26",
+      "sha256": "9d974084b13b8f68f1453c19deff87efb79bb3f7e468fee80084515da09db765"
+    }
+  ],
+  "notes": [
+    "Modbus RTU needs the RS485 interface. Functions 03 and 06; a read takes at most four registers. Broadcast (address 0) writes only.",
+    "9600 bit/s, 8 data bits, no parity, 1 stop bit; the address is set with Addr.",
+    "Temperatures, setpoints and hysteresis are sent multiplied by 10.",
+    "A write outside the allowed range is refused with exception 03.",
+    "Written from the manufacturer's document; not tested on a device."
+  ],
+  "protocol": "rtu",
+  "unit_id": 1,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "max_read_registers": 4,
+  "x_status": "official",
+  "enums": {
+    "display": {
+      "0": "T1 (collectors)",
+      "1": "T2 (storage tank)",
+      "2": "T1 - T2",
+      "3": "Alternates T1, T2 and T1 - T2"
+    }
+  },
+  "registers": [
+    {
+      "name": "Temperature T1",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Collector sensor"
+    },
+    {
+      "name": "Temperature T2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 1,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R",
+      "description": "Storage tank sensor"
+    },
+    {
+      "name": "Differential T1 - T2",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Pump on differential",
+      "group": "Control",
+      "area": "holding",
+      "address": 3,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_max": 20,
+      "description": "From the pump off differential up to 20 °C"
+    },
+    {
+      "name": "Pump off differential",
+      "group": "Control",
+      "area": "holding",
+      "address": 4,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 1,
+      "description": "From 1 °C up to the pump on differential"
+    },
+    {
+      "name": "Display selection",
+      "group": "Device",
+      "area": "holding",
+      "address": 5,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 3,
+      "enum": "display"
+    },
+    {
+      "name": "Serial number (high)",
+      "group": "Device",
+      "area": "holding",
+      "address": 6,
+      "type": "uint16",
+      "access": "R",
+      "description": "First 3 digits"
+    },
+    {
+      "name": "Serial number (low)",
+      "group": "Device",
+      "area": "holding",
+      "address": 7,
+      "type": "uint16",
+      "access": "R",
+      "description": "Last 3 digits"
+    },
+    {
+      "name": "Anti-frost setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 8,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW"
+    },
+    {
+      "name": "T1 overheating setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 9,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW"
+    },
+    {
+      "name": "T2 maximum setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 10,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW"
+    },
+    {
+      "name": "Anti-frost hysteresis",
+      "group": "Control",
+      "area": "holding",
+      "address": 11,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0.1,
+      "write_max": 50
+    },
+    {
+      "name": "T1 overheating hysteresis",
+      "group": "Control",
+      "area": "holding",
+      "address": 12,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0.1,
+      "write_max": 50
+    },
+    {
+      "name": "T2 maximum hysteresis",
+      "group": "Control",
+      "area": "holding",
+      "address": 13,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": 0.1,
+      "write_max": 50
+    },
+    {
+      "name": "Output 1 (P1) on",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "Output 2 (P2) on",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "Process value shown",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Serial command received",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "T1 LED",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Defrost LED",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "T2 LED",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Value has decimal point",
+      "group": "Status",
+      "area": "holding",
+      "address": 14,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Measurement status",
+      "group": "Status",
+      "area": "holding",
+      "address": 15,
+      "type": "uint16",
+      "access": "R",
+      "description": "Status word; the document does not define its bits"
+    },
+    {
+      "name": "Displayed value",
+      "group": "Device",
+      "area": "holding",
+      "address": 16,
+      "type": "int16",
+      "access": "R"
+    },
+    {
+      "name": "Firmware version",
+      "group": "Device",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "bit": 8,
+      "bits": 8,
+      "role": "firmware",
+      "description": "High byte"
+    },
+    {
+      "name": "Screen number",
+      "group": "Device",
+      "area": "holding",
+      "address": 17,
+      "type": "uint16",
+      "access": "R",
+      "bit": 0,
+      "bits": 8
+    },
+    {
+      "name": "Sensor 1 offset",
+      "group": "Input",
+      "area": "holding",
+      "address": 18,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": -10,
+      "write_max": 10
+    },
+    {
+      "name": "Sensor 2 offset",
+      "group": "Input",
+      "area": "holding",
+      "address": 19,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW",
+      "write_min": -10,
+      "write_max": 10
+    },
+    {
+      "name": "Anti-frost active",
+      "group": "Status",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "T1 overheating",
+      "group": "Status",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "T2 maximum reached",
+      "group": "Status",
+      "area": "holding",
+      "address": 20,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "Support setpoint",
+      "group": "Control",
+      "area": "holding",
+      "address": 21,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW"
+    },
+    {
+      "name": "Support hysteresis",
+      "group": "Control",
+      "area": "holding",
+      "address": 22,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "°C",
+      "access": "RW"
+    },
+    {
+      "name": "Support control action",
+      "group": "Control",
+      "area": "holding",
+      "address": 23,
+      "type": "uint16",
+      "access": "RW",
+      "description": "The document does not list the values"
+    }
+  ]
+}

@@ -1,0 +1,1965 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nobrega8/mbmap-library/main/schema/mbmap-2.schema.json",
+  "mbmap": 2,
+  "vendor": "Mercato Automação",
+  "model": "MEI-TCI",
+  "models": [
+    "MEI-TCI"
+  ],
+  "vendor_website": "mercatoautomacao.com.br",
+  "description": "Electronic meter for utilities with built-in current transformers and fan coil control: three-phase energy, thermal energy, pulses, temperatures, Modbus RTU and TCP",
+  "revision": 1,
+  "revised": "2026-11-26",
+  "source": "Mercato Medidor Eletrônico de Insumos - MEI-TCI - Manual de Serviço, Revision H, 2023-03-23",
+  "sources": [
+    {
+      "title": "Medidor Eletrônico de Insumos - MEI-TCI - Manual de Serviço",
+      "version": "Revision H, 2023-03-23",
+      "url": "https://cdn.shopify.com/s/files/1/0486/4104/8742/files/MEI-TCI_-_Manual_de_Servico_71ef9dfc-fe5e-4944-9bbe-6c17589aa9d6.pdf",
+      "note": "Modbus register table",
+      "accessed": "2026-11-26",
+      "sha256": "659815051fe41ded742ed4aca4600bedb56e581f68500c6a37b7b174db2fe48f"
+    }
+  ],
+  "notes": [
+    "The same registers answer to functions 03 and 04.",
+    "Modbus RTU uses 8 data bits, 1 stop bit and no parity; the speed is set in the web page (factory 9600 bit/s). The factory Modbus address is 254.",
+    "FLOAT and DWORD values have the high word first.",
+    "The 32-bit alarm word is at registers 100 and 101; the bits listed are all in register 101.",
+    "Days of a schedule: bit 7 is Monday, bit 1 Sunday and bit 0 holidays.",
+    "The functions available depend on the model (appendix A of the manual).",
+    "The clear commands at 450 to 452 follow the order of the manual: energy, cooling and heating, pulses.",
+    "Written from the manufacturer's manual; not tested on a device."
+  ],
+  "protocol": "tcp+rtu",
+  "unit_id": 254,
+  "baudrate": 9600,
+  "databits": 8,
+  "parity": "N",
+  "stopbits": 1,
+  "byte_order": "big",
+  "word_order": "big",
+  "address_base": 0,
+  "x_status": "official",
+  "enums": {
+    "off_on": {
+      "0": "Off",
+      "1": "On"
+    },
+    "mode": {
+      "0": "Automatic",
+      "1": "On",
+      "2": "Off"
+    },
+    "status": {
+      "0": "Off",
+      "1": "On",
+      "2": "Alarm"
+    }
+  },
+  "registers": [
+    {
+      "name": "Voltage phase A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 0,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage phase B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 2,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage phase C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 4,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage C-A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 6,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage A-B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 8,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Voltage B-C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 10,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Current phase A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 12,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current phase B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 14,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Current phase C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 16,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "Active power phase A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 18,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power phase B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 20,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Active power phase C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 22,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 24,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 26,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Reactive power phase C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 28,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Power factor phase A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 30,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor phase B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 32,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Power factor phase C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 34,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle C-A",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 36,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle A-B",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 38,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Phase angle B-C",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 40,
+      "type": "float32",
+      "unit": "°",
+      "access": "R"
+    },
+    {
+      "name": "Total active power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 42,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R"
+    },
+    {
+      "name": "Total reactive power",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 44,
+      "type": "float32",
+      "unit": "kvar",
+      "access": "R"
+    },
+    {
+      "name": "Total power factor",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 46,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Frequency",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 48,
+      "type": "float32",
+      "unit": "Hz",
+      "access": "R"
+    },
+    {
+      "name": "NTC 1 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 50,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "NTC 2 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 52,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "NTC 3 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 54,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "NTC 4 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 56,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "NTC 5 temperature",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 58,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Analog input value",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 60,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Digital input 1",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 62,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital input 2",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 63,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital input 3",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 64,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital input 4",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 65,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital input 5",
+      "group": "Inputs",
+      "area": "holding",
+      "address": 66,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Cooling power",
+      "group": "Thermal",
+      "area": "holding",
+      "address": 67,
+      "type": "float32",
+      "unit": "TR/h",
+      "access": "R"
+    },
+    {
+      "name": "Heating power",
+      "group": "Thermal",
+      "area": "holding",
+      "address": 69,
+      "type": "float32",
+      "unit": "TR/h",
+      "access": "R"
+    },
+    {
+      "name": "Flow",
+      "group": "Thermal",
+      "area": "holding",
+      "address": 71,
+      "type": "float32",
+      "unit": "m³/h",
+      "access": "R"
+    },
+    {
+      "name": "Digital output 1",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 73,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital output 2",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 74,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital output 3",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 75,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Digital output 4",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 76,
+      "type": "uint16",
+      "access": "R",
+      "enum": "off_on"
+    },
+    {
+      "name": "Analog output value",
+      "group": "Outputs",
+      "area": "holding",
+      "address": 77,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Demand of the last 15 minutes",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 79,
+      "type": "float32",
+      "unit": "kW",
+      "access": "R",
+      "description": "Synchronised with the meter clock"
+    },
+    {
+      "name": "Average voltage",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 81,
+      "type": "float32",
+      "unit": "V",
+      "access": "R"
+    },
+    {
+      "name": "Average current",
+      "group": "Measurements",
+      "area": "holding",
+      "address": 83,
+      "type": "float32",
+      "unit": "A",
+      "access": "R"
+    },
+    {
+      "name": "NTC 1 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 0
+    },
+    {
+      "name": "NTC 2 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 1
+    },
+    {
+      "name": "NTC 3 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 2
+    },
+    {
+      "name": "NTC 4 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 3
+    },
+    {
+      "name": "NTC 5 failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 4
+    },
+    {
+      "name": "Analog input failure",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 5
+    },
+    {
+      "name": "Current transformer A reversed",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 6
+    },
+    {
+      "name": "Current transformer B reversed",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 7
+    },
+    {
+      "name": "Current transformer C reversed",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 8
+    },
+    {
+      "name": "Invalid date and time",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 9
+    },
+    {
+      "name": "Invalid calibration table",
+      "group": "Status",
+      "area": "holding",
+      "address": 101,
+      "type": "bool",
+      "access": "R",
+      "bit": 10
+    },
+    {
+      "name": "Active energy",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 300,
+      "type": "float32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy inductive",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 302,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy capacitive",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 304,
+      "type": "float32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 1",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 306,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 2",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 308,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 3",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 310,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 4",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 312,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 5",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 314,
+      "type": "float32",
+      "access": "R"
+    },
+    {
+      "name": "Cooling energy",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 316,
+      "type": "float32",
+      "unit": "TR",
+      "access": "R"
+    },
+    {
+      "name": "Heating energy",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 318,
+      "type": "float32",
+      "unit": "TR",
+      "access": "R"
+    },
+    {
+      "name": "Active energy (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 400,
+      "type": "uint32",
+      "unit": "kWh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy inductive (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 402,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Reactive energy capacitive (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 404,
+      "type": "uint32",
+      "unit": "kvarh",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 1 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 406,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 2 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 408,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 3 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 410,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 4 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 412,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Pulse input 5 (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 414,
+      "type": "uint32",
+      "access": "R"
+    },
+    {
+      "name": "Cooling energy (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 416,
+      "type": "uint32",
+      "unit": "TR",
+      "access": "R"
+    },
+    {
+      "name": "Heating energy (integer)",
+      "group": "Accumulators",
+      "area": "holding",
+      "address": 418,
+      "type": "uint32",
+      "unit": "TR",
+      "access": "R"
+    },
+    {
+      "name": "Clear energy accumulators",
+      "group": "Commands",
+      "area": "holding",
+      "address": 450,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 1"
+    },
+    {
+      "name": "Clear cooling and heating accumulators",
+      "group": "Commands",
+      "area": "holding",
+      "address": 451,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 1"
+    },
+    {
+      "name": "Clear pulse input accumulators",
+      "group": "Commands",
+      "area": "holding",
+      "address": 452,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 1"
+    },
+    {
+      "name": "Clock day",
+      "group": "Clock",
+      "area": "holding",
+      "address": 500,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 501,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 502,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 503,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock minute",
+      "group": "Clock",
+      "area": "holding",
+      "address": 504,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Clock second",
+      "group": "Clock",
+      "area": "holding",
+      "address": 505,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Set clock day",
+      "group": "Clock",
+      "area": "holding",
+      "address": 600,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Set clock month",
+      "group": "Clock",
+      "area": "holding",
+      "address": 601,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Set clock year",
+      "group": "Clock",
+      "area": "holding",
+      "address": 602,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Set clock hour",
+      "group": "Clock",
+      "area": "holding",
+      "address": 603,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Set clock minute",
+      "group": "Clock",
+      "area": "holding",
+      "address": 604,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Set clock second",
+      "group": "Clock",
+      "area": "holding",
+      "address": 605,
+      "type": "uint16",
+      "access": "RW"
+    },
+    {
+      "name": "Apply clock setting",
+      "group": "Clock",
+      "area": "holding",
+      "address": 606,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Write 12345 to apply registers 600 to 605"
+    },
+    {
+      "name": "Operation schedule period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1000,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Operation schedule period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1001,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Operation schedule period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1002,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Operation schedule period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1003,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Operation schedule period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1004,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Operation schedule period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1005,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Operation schedule period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1006,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Operation schedule period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1007,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Operation schedule period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1008,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Operation schedule period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1009,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Operation schedule period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1010,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Operation schedule period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1011,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Operation schedule period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1012,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Operation schedule period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1013,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Operation schedule period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1014,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Operation schedule period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1015,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Operation schedule period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1016,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Operation schedule period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1017,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Operation schedule period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1018,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Operation schedule period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1019,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 1 period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1100,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 1 period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1101,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 1 period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1102,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 1 period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1103,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 1 period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1104,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 1 period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1105,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 1 period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1106,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 1 period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1107,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 1 period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1108,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 1 period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1109,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 1 period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1110,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 1 period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1111,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 1 period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1112,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 1 period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1113,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 1 period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1114,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 1 period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1115,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 1 period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1116,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 1 period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1117,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 1 period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1118,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 1 period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1119,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 2 period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1200,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 2 period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1201,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 2 period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1202,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 2 period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1203,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 2 period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1204,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 2 period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1205,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 2 period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1206,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 2 period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1207,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 2 period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1208,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 2 period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1209,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 2 period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1210,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 2 period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1211,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 2 period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1212,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 2 period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1213,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 2 period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1214,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 2 period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1215,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 2 period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1216,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 2 period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1217,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 2 period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1218,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 2 period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1219,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 3 period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1300,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 3 period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1301,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 3 period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1302,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 3 period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1303,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 3 period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1304,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 3 period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1305,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 3 period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1306,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 3 period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1307,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 3 period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1308,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 3 period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1309,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 3 period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1310,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 3 period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1311,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 3 period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1312,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 3 period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1313,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 3 period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1314,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 3 period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1315,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 3 period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1316,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 3 period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1317,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 3 period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1318,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 3 period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1319,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 4 period 1 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1400,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 4 period 1 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1401,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 4 period 1 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1402,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 4 period 1 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1403,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 4 period 1 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1404,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 4 period 2 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1405,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 4 period 2 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1406,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 4 period 2 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1407,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 4 period 2 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1408,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 4 period 2 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1409,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 4 period 3 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1410,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 4 period 3 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1411,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 4 period 3 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1412,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 4 period 3 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1413,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 4 period 3 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1414,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 4 period 4 days",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1415,
+      "type": "uint16",
+      "access": "RW",
+      "description": "Bit mask of the valid days"
+    },
+    {
+      "name": "Auxiliary schedule 4 period 4 start hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1416,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 4 period 4 start minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1417,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Auxiliary schedule 4 period 4 end hour",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1418,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 23
+    },
+    {
+      "name": "Auxiliary schedule 4 period 4 end minute",
+      "group": "Schedules",
+      "area": "holding",
+      "address": 1419,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 59
+    },
+    {
+      "name": "Room temperature",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2000,
+      "type": "float32",
+      "unit": "°C",
+      "access": "R"
+    },
+    {
+      "name": "Cooling setpoint",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2002,
+      "type": "float32",
+      "unit": "°C",
+      "access": "RW"
+    },
+    {
+      "name": "Proportional valve position",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2004,
+      "type": "float32",
+      "unit": "%",
+      "access": "R"
+    },
+    {
+      "name": "Control enabled",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2006,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Auto/off input",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2007,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "External enable input",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2008,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fan status input",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2009,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fan output",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2010,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "On/off valve output",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2011,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Fan alarm",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2012,
+      "type": "uint16",
+      "access": "R"
+    },
+    {
+      "name": "Operating mode",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2013,
+      "type": "uint16",
+      "access": "RW",
+      "write_min": 0,
+      "write_max": 2,
+      "enum": "mode"
+    },
+    {
+      "name": "Control status",
+      "group": "Fan coil",
+      "area": "holding",
+      "address": 2014,
+      "type": "uint16",
+      "access": "R",
+      "enum": "status"
+    }
+  ]
+}
